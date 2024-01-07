@@ -7,7 +7,7 @@ import logo from "../../assets/images/logo-sm.svg";
 import CarouselPage from "./CarouselPage";
 
 const PageRegister = () => {
-  document.title = "Register |  collin";
+  document.title = "Register |  Arab Deals";
   return (
     <React.Fragment>
       <div className="auth-page">

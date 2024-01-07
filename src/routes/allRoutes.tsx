@@ -127,6 +127,12 @@ import CmsRecordDetails from "src/pages/Cms/ViewCmsOnerecord";
 import CmsTwoRecordDetails from "src/pages/Cms/ViewCmsTworecord";
 import AddCmsSection from "src/pages/Cms/AddcmsSection";
 import AddCmstwosection from "src/pages/Cms/AddcmsTwo";
+import VendorList from "src/pages/venders/Venders";
+import ViewVenders from "src/pages/venders/ViewVenders";
+import KycListing from "src/pages/Kyc/KycListing";
+import ViewKyc from "src/pages/Kyc/ViewKyc";
+import BrandList from "src/pages/branding/BrandList";
+import ViewBrands from "src/pages/branding/ViewBrand";
 interface RouteProps {
   path: string;
   component: any;
@@ -264,6 +270,13 @@ const adminRoutes: Array<RouteProps> = [
 
   // this route should be at the end of all other routes
   { path: "/", exact: true, component: <Navigate to="/dashboard" /> },
+  {path: "/vendors", exact: true, component: <VendorList/>},
+  { path: "/vendors/:id", exact: true, component: <ViewVenders /> },
+
+  {path: "/kyc" , exact: true, component:<KycListing/>},
+  {path: "/kyc/:id" , exact: true, component:<ViewKyc/>},
+  {path: "/brands" , exact: true, component:<BrandList/>},
+  {path: "/brands/:id" , exact: true, component:<ViewBrands/>}
 ];
 
 const authRoutes: Array<RouteProps> = [

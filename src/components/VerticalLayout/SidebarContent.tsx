@@ -155,8 +155,7 @@ const SidebarContent = (props: any) => {
             </li>
             <li className="mt-3 li-sideBar">
               <Link to="/dashboard" className="">
-                {/* <FeatherIcon icon="home" /> <span>{props.t("Dashboard")}</span>
-                 */}
+              
 
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -170,9 +169,9 @@ const SidebarContent = (props: any) => {
               </Link>
             </li>
 
-            <li className="mt-3  li-sideBar">
+            {/* <li className="mt-3  li-sideBar">
               <Link to="/category" className="">
-                {/* <FeatherIcon icon="grid" /> <span>{props.t("Category")}</span> */}
+                
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="15"
@@ -183,17 +182,42 @@ const SidebarContent = (props: any) => {
                 </svg>
                 <span>{props.t("Category")}</span>
               </Link>
-            </li>
-            <li className="mt-3 li-sideBar">
+            </li> */}
+            {/* <li className="mt-3 li-sideBar">
               <Link to="/colors" className="">
                 <FeatherIcon icon="pie-chart" />{" "}
                 <span>{props.t("Colors")}</span>
-                {/* <span>{props.t("Colors")}</span>  */}
+                
+              </Link>
+            </li> */}
+            <li className="mt-3 li-sideBar">
+              <Link to="/vendors" className="">
+                <FeatherIcon icon="pie-chart" />{" "}
+                <span>{props.t("Vendors")}</span>
+               
               </Link>
             </li>
+
             <li className="mt-3 li-sideBar">
+              <Link to="/kyc" className="">
+                <FeatherIcon icon="pie-chart" />{" "}
+                <span>{props.t("Kyc")}</span>
+               
+              </Link>
+            </li>
+
+
+            <li className="mt-3 li-sideBar">
+              <Link to="/brands" className="">
+                <FeatherIcon icon="pie-chart" />{" "}
+                <span>{props.t("Brands")}</span>
+              </Link>
+            </li>
+
+
+            {/* <li className="mt-3 li-sideBar">
               <Link to="/size" className="">
-                {/* <FeatherIcon icon="pie-chart" /> <span>{props.t("Size")}</span> */}
+                
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="14"
@@ -204,11 +228,11 @@ const SidebarContent = (props: any) => {
                 </svg>
                 <span>{props.t("Size")}</span>
               </Link>
-            </li>
-            <li className="mt-3 li-sideBar">
-              <Link to="/product" className=" ">
+            </li> */}
+            {/* <li className="mt-3 li-sideBar">
+              <Link to="/product" className=" "> */}
                 {/* <FeatherIcon icon="shopping-cart" /><span>{props.t("Products")}</span> */}
-                <svg
+                {/* <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="15"
                   height="15"
@@ -219,7 +243,8 @@ const SidebarContent = (props: any) => {
                 <span>{props.t("Products")}</span>
               </Link>
             </li>
-            <li className="mt-3 li-sideBar" >
+             */}
+            {/* <li className="mt-3 li-sideBar" >
               <Link to="/product" >
                 <FeatherIcon icon="home" /> <span>{props.t("CMS")}</span>
                 <div
@@ -241,7 +266,7 @@ const SidebarContent = (props: any) => {
                   </Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
             {/* <li>
               <Link to="/#" className="has-arrow">

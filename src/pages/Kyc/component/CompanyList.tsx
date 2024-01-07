@@ -1,0 +1,264 @@
+
+
+import { gql, useQuery } from "@apollo/client";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Container,
+  Input,
+  Nav,
+  NavItem,
+  NavLink,
+  Row,
+  Table,
+} from "reactstrap";
+import Breadcrumb from "src/components/Common/Breadcrumb";
+
+
+interface ICompanyData {
+    vendorId:string;
+    _id:string;
+    fullName:string;
+    isKycCompleted:boolean;
+    companyName:string;
+    status:string;
+    outletId:string;
+    outletName:string;
+    outletStatus:string;
+}
+
+function CompanyListing() {
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [companyData, setCompanyData] = useState<ICompanyData[]>([]);
+  const [activeTab, setActiveTab] = useState<string>("all");
+  const [maxRecords, setMaxRecords] = useState<number>(0);
+  const pageSize = 10;
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const GET_ALL_COMPANY_DATA = gql`query GetAllVendorCompanyRecordsByAdmin($input: VendorCompanyRecordsByAdminFilter) {
+  getAllVendorCompanyRecordsByAdmin(input: $input) {
+    maxRecords
+    message
+    records {
+      vendorId
+      _id
+      fullName
+      isKycCompleted
+      companyName
+      status
+      outletId
+      outletName
+      outletStatus
+    }
+  }
+}`;
+
+  
+const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
+    variables: {
+      input: {
+        page: null,
+        size: pageSize,
+      },
+    },
+  });
+
+  useEffect(() => {
+    if (kycDataResponse) {
+      setCompanyData(kycDataResponse.getAllVendorCompanyRecordsByAdmin?.records || []);
+    }
+
+  }, [kycDataResponse]);
+
+  console.log(companyData)
+
+  const toggleTab = (tab: string) => {
+    console.log("Active Tab:", tab);
+    setActiveTab(tab);
+  };
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const getFilteredkyc = (): ICompanyData[] => {
+    switch (activeTab) {
+      case "Pending":
+        return companyData.filter((vendor) => vendor.isKycCompleted === false);
+      case "Completed":
+        return companyData.filter((vendor) => vendor.isKycCompleted === true);
+      default:
+        return companyData;
+    }
+  };
+
+  const totalPages = Math.ceil(getFilteredkyc().length / pageSize);
+
+  const handleNextPage = () => {
+    if (currentPage + 1 < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  return (
+    <>
+      <div className="page-content">
+     
+        <Container fluid={true}>
+          <Nav tabs>
+            <NavItem>
+              <NavLink
+                className={activeTab === "all" ? "active" : ""}
+                onClick={() => toggleTab("all")}
+              >
+                All
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                className={activeTab === "Pending" ? "active" : ""}
+                onClick={() => toggleTab("Pending")}
+              >
+                Pending
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                className={activeTab === "Completed" ? "active" : ""}
+                onClick={() => toggleTab("Completed")}
+              >
+                Completed
+              </NavLink>
+            </NavItem>
+          </Nav>
+
+          <Row>
+            <Col lg={12}>
+              <Card>
+                <CardBody>
+                  <Input
+                    type="text"
+                    placeholder="Search by name"
+                    value={searchTerm}
+                    onChange={handleSearch}
+                    style={{ width: "50%", marginBottom: "20px" }}
+                  />
+                  <Table
+                    responsive
+                    className="table table-bordered table-centered mb-0"
+                  >
+                    <thead>
+                      <tr>
+                        <th>No</th>
+                        <th>Full Name</th>
+                        <th>Company Name</th>
+                        <th>Kyc Status</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getFilteredkyc()
+                        .slice(
+                          currentPage * pageSize,
+                          (currentPage + 1) * pageSize
+                        )
+
+                        .map((company, index) => (
+                          <tr key={company._id}>
+                            <td>{index + 1}</td>
+                            <td>{company.fullName}</td>
+                            <td>{company.companyName}</td>
+                            <td
+                              style={{
+                                color: company.isKycCompleted === true ? "#5cb85c" : "red",
+                              }}
+                            >
+                              {company.isKycCompleted === true ? "COMPLETED" : "PENDING"}
+                            </td>
+                            
+                            <td
+                            
+                            >
+                              {company.status}
+                            </td>
+                            <td>
+                              <Link to={`/vendors/${company.vendorId}`}>
+                                <Button style={{ marginLeft: "20px" , backgroundColor: "#000000"}}>
+                                  View
+                                </Button>
+                              </Link>
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </Table>
+                </CardBody>
+                <Row>
+                  <Col>
+                    <div className="d-flex justify-content-end mt-0 ">
+                      <ul className="pagination">
+                        <li
+                          className={`page-item ${
+                            currentPage === 0 ? "disabled" : ""
+                          }`}
+                        >
+                          <button
+                            className="page-link"
+                            onClick={() => setCurrentPage(currentPage - 1)}
+                            disabled={currentPage === 0}
+                          >
+                            Previous
+                          </button>
+                        </li>
+
+                        {Array.from({ length: totalPages }, (_, index) => (
+                          <li
+                            key={`page-${index + 1}`}
+                            className={`page-item ${
+                              currentPage === index ? "active" : ""
+                            }`}
+                          >
+                            <button
+                              className="page-link"
+                              onClick={() => setCurrentPage(index)}
+                            >
+                              {index + 1}
+                            </button>
+                          </li>
+                        ))}
+
+                        {currentPage < totalPages - 1 && (
+                          <li
+                            className={`page-item ${
+                              currentPage === totalPages - 1 ? "disabled" : ""
+                            }`}
+                          >
+                            <button
+                              className="page-link"
+                              onClick={() => setCurrentPage(currentPage + 1)}
+                              disabled={currentPage === totalPages - 1}
+                            >
+                              Next
+                            </button>
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    </>
+  );
+}
+
+export default CompanyListing;
+

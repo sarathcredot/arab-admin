@@ -147,7 +147,7 @@ const UserProfile = () => {
 
         if (response) {
           adminRefetch();
-          localStorage.setItem("adminData", JSON.stringify("admin_collin_Data updated"));
+          localStorage.setItem("adminData", JSON.stringify("admin_Arab Deals_Data updated"));
           toast.success("Successfully Updated Profile");
           formik.resetForm();
         }
@@ -168,7 +168,7 @@ const UserProfile = () => {
     }
   }, [adminData, adminRefetch]);
 
-  document.title = "Profile | collin";
+  document.title = "Profile | Arab Deals";
 
   return (
     <React.Fragment>

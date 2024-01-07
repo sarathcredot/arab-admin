@@ -14,7 +14,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 // import images
-import logo from "../../assets/images/logo-sm.svg";
+import logo from "../../assets/images/arabDealLogo.svg";
 import CarouselPage from "../AuthenticationInner/CarouselPage";
 import { createSelector } from "reselect";
 
@@ -56,7 +56,7 @@ const Register = () => {
     dispatch(apiError(""));
   }, [dispatch]);
 
-  document.title = "Register | collin";
+  document.title = "Register | Arab Deals";
 
   return (
     <React.Fragment>
@@ -70,7 +70,7 @@ const Register = () => {
                     <div className="mb-4 mb-md-5 text-center">
                       <Link to="/dashboard" className="d-block auth-logo">
                         <img src={logo} alt="" height="28" />{" "}
-                        <span className="logo-txt">collin</span>
+                        <span className="logo-txt">Arab deal</span>
                       </Link>
                     </div>
                     <div className="auth-content my-auto">

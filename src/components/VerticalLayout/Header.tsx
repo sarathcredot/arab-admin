@@ -17,7 +17,7 @@ import LightDark from "../CommonForBoth/Menus/LightDark";
 import { Dropdown, DropdownToggle, DropdownMenu, Row, Col } from "reactstrap";
 
 //import images
-import logoSvg from "../../assets/images/image 3.svg";
+import logoSvg from "../../assets/images/arabDealLogo.svg";
 import github from "../../assets/images/brands/github.png";
 import bitbucket from "../../assets/images/brands/bitbucket.png";
 import dribbble from "../../assets/images/brands/dribbble.png";
@@ -72,7 +72,7 @@ const { layoutMode, showRightSidebar } = useSelector(nonauthData);
                 </span>
                 <span className="logo-lg">
                   <img src={logoSvg} alt="" height="24" />{" "}
-                  {/* <span className="logo-txt">Collin</span> */}
+                  {/* <span className="logo-txt">Arab Deals</span> */}
                 </span>
               </Link>
 
@@ -82,7 +82,7 @@ const { layoutMode, showRightSidebar } = useSelector(nonauthData);
                 </span>
                 <span className="logo-lg">
                   <img src={logoSvg} alt="" height="24" />{" "}
-                  <span className="logo-txt">Collin</span>
+                  <span className="logo-txt">Arab Deals</span>
                 </span>
               </Link>
             </div>

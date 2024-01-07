@@ -141,6 +141,7 @@
     "autoprefixer": "10.4.5"
   },
   "devDependencies": {
+    "@types/classnames": "^2.3.1",
     "@types/lodash": "^4.14.196",
     "@types/react-bootstrap-table2-paginator": "^2.1.2",
     "@types/react-bootstrap-table2-toolkit": "^2.1.7"

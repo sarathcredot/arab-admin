@@ -5,7 +5,7 @@ import { Container } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const PageStarter = () => {
-  document.title = "Starter Page | collin";
+  document.title = "Starter Page | Arab Deals";
 
   return (
     <React.Fragment>

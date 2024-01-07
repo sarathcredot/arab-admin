@@ -19,4 +19,18 @@ export const categoryValidation = yup.object().shape({
     size:yup.string().required('size is required').min(1),
   })  
 
+
+  export const vendoreValidation = yup.object({
+    name: yup.string().required("Please enter a name"),
+    email: yup.string().email("Invalid email address").required("Email is required"),
+    phone: yup.string().required("Phone number is required"),
+  });
   
+
+
+  export const brandValidation = yup.object().shape({
+    brandName: yup.string().required('Brand Name is required').min(3),
+    image: yup.string().notRequired(),
+    priority:yup.number().required("Priority is required").min(1)
+
+  });

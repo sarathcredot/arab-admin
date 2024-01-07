@@ -54,7 +54,7 @@ interface Product {
 
 const ProductListing = () => {
   document.title =
-    "Responsive Table | Collin ";
+    "Responsive Table | Arab Deals ";
 
   const pageSize = 10; // Number of items per page
   const [currentPage, setCurrentPage] = useState(0);

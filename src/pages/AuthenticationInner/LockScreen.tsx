@@ -8,7 +8,7 @@ import avatar from "../../assets/images/users/avatar-1.jpg";
 import CarouselPage from "./CarouselPage";
 
 const LockScreen = () => {
-  document.title = "Lock Screen | collin";
+  document.title = "Lock Screen | Arab Deals";
 
   return (
     <React.Fragment>      
