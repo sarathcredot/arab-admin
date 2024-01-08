@@ -165,7 +165,7 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
         });
   
         
-        console.log("Assign brands response:", response);
+       
         toast.success(response?.message)
         
         

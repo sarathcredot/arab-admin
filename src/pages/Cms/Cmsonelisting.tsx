@@ -68,7 +68,7 @@ const CmsListing = () => {
       },
     },
   });
-  console.log("data--------",data);
+ 
   
 
   if (loading) return <p>Loading...</p>;

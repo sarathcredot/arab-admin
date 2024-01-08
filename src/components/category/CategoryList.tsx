@@ -214,7 +214,7 @@ const CategoryList: React.FC<Props> = () => {
 
   const handleSearch = (event: any) => {
     setSearchTerm(event.target.value);
-    console.log(event.target.value);
+   
   };
 
   useEffect(() => {
@@ -466,7 +466,7 @@ const CategoryList: React.FC<Props> = () => {
   }
 
   function handleDelete(id: string) {
-    console.log(`Delete button clicked for ID: ${id}`);
+   
   }
 };
 

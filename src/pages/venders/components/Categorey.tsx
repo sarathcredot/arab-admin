@@ -214,7 +214,7 @@ const CategoryList: React.FC<Props> = () => {
 
   const handleSearch = (event: any) => {
     setSearchTerm(event.target.value);
-    console.log(event.target.value);
+   
   };
 
   useEffect(() => {

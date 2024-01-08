@@ -79,7 +79,7 @@ const VendorList: React.FC = () => {
   useEffect(() => {
     if (vendorDataResponse && vendorDataResponse.getAllVendorsRecordsByAdmin) {
       setVendorData(vendorDataResponse.getAllVendorsRecordsByAdmin.records);
-      console.log(vendorDataResponse, "vendorDataResponse");
+   
     }
   }, [vendorDataResponse]);
 

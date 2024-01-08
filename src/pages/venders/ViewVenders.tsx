@@ -94,7 +94,7 @@ function ViewVenders() {
   };
 
 
-  console.log(vendorData,"handle vendor change")
+ 
 
 
   function getStatusColor(status:any) {

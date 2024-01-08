@@ -135,8 +135,7 @@
     }
 
     function ViewCard({ option, IdBusiness, IdCompany }: IPropes) {
-      //   const { id } = useParams();
-      // const id = console.log(option, "option");
+      
 
       const [showImageModal, setShowImageModal] = useState(false);
       const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -275,7 +274,7 @@
       }, [companyDataResponse, outletDataResponse]);
       
 
-      console.log(companyDataResponse, outletDataResponse);
+      
       // const handleImageClick = (fileURL: string) => {
       //   setSelectedImage(fileURL);
       //   setShowImageModal(true);
@@ -337,7 +336,6 @@
 
           const response = await mutation({ variables });
 
-          console.log(response);
           if (response) {
             setRemarks([""]);
             setOptions("");
@@ -357,7 +355,7 @@
         setOptions(clickedData);
       };
 
-      console.log(companyData, "qwertyuiop[]dxfcvhjkertyguhtryu", outletData);
+     
       const handleImageClick = (fileURL: string) => {
         window.open(fileURL, '_blank');
       };

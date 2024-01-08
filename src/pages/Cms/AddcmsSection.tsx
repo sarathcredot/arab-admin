@@ -103,7 +103,7 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
   >([{ buttonText: null, redirectionURL: null }]);
   useEffect(() => {
     if (Edit && editedcms) {
-      console.log("Edited CMS Data:", editedcms);
+    
 
       setValue("pageName", editedcms.pageName);
       setValue("sectionName", editedcms.sectionName);
@@ -120,7 +120,7 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
     }));
     
     setValue("images", imageValues);
-    console.log("Form images field:", getValues("images"));
+   
   }
   }, [Edit, editedcms, setValue]);
 
@@ -128,8 +128,7 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
     control, // Make sure to pass the control to useFormState
   });
 
-  console.log(editedcms,"Edit========================>",Edit)
-  console.log("editedbtn", editedcms?.buttons);
+
 
   const toggleDropdown = () => setDropdownOpen((prevState) => !prevState);
 

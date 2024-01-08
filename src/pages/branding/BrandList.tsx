@@ -85,7 +85,7 @@ const BrandList: React.FC = () => {
 
  
 
-  console.log(brandData,"brand")
+ 
 
   const totalPages = Math.ceil(brandData.length / pageSize);
 

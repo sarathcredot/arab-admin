@@ -26,15 +26,14 @@ interface IBrand {
   brandName: string;
   isBlocked: boolean;
   logo: ILogo;
-  isPopular:boolean
+  isPopular: boolean;
   priority: number;
-  
 }
 
 function ViewBrands() {
   const { id } = useParams();
 
-  console.log(id);
+
   const [brandData, setBrandData] = useState<IBrand>();
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const GET_ABRAND = gql`
@@ -70,25 +69,16 @@ function ViewBrands() {
     },
   });
 
-
-
   useEffect(() => {
-    
     if (brandDataResponse && brandDataResponse.getBrandRecordByAdmin) {
-        console.log("helo")
       setBrandData(brandDataResponse.getBrandRecordByAdmin?.record);
     }
-  },[id,brandDataResponse]);
-
+  }, [id, brandDataResponse]);
 
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
-    
   };
 
-
-
- console.log(brandData,"brandData============================>")
   return (
     <Container fluid={true} style={{ marginTop: "100px" }}>
       <Breadcrumb title="Dashboard" breadcrumbItem="Brand" link="/" />
@@ -109,23 +99,29 @@ function ViewBrands() {
         <CardBody>
           <CardText>
             <div>
- <p>
-              <strong>Barand Name :</strong> {brandData?.brandName}
-            </p>
-            <p>
-              <strong>Status :</strong>{" "}
-              {brandData?.isBlocked ? "BLOCKED" : "ACTIVE"}
-            </p>
+              <p>
+                <strong>Barand Name :</strong> {brandData?.brandName}
+              </p>
+              <p>
+                <strong>Status :</strong>{" "}
+                {brandData?.isBlocked ? "BLOCKED" : "ACTIVE"}
+              </p>
             </div>
-           
           </CardText>
           <div>
-            <Button color="success"  onClick={() => toggleAddModal()}  >Edit</Button> {" "}
-            <Button variant="success"    >Delete</Button>
+            <Button color="success" onClick={() => toggleAddModal()}>
+              Edit
+            </Button>{" "}
+            <Button variant="success">Delete</Button>
           </div>
         </CardBody>
       </Card>
-      <BrandForm isOpen={showAddModal} toggle={toggleAddModal}   isEdit={brandData} refetch={brandRefetch}/>
+      <BrandForm
+        isOpen={showAddModal}
+        toggle={toggleAddModal}
+        isEdit={brandData}
+        refetch={brandRefetch}
+      />
     </Container>
   );
 }
