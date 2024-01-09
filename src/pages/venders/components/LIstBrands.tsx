@@ -90,43 +90,46 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
 
 const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
 
-  const {
-    loading: brandLoading,
-    error: brandError,
-    data: brandDataResponse,
-    refetch: brandRefetch,
-  } = useQuery(GET_BRAND, {
-    variables: {
-      input: {
-        page: null,
-        size: 10,
-      },
+const {
+  loading: brandLoading,
+  error: brandError,
+  data: brandDataResponse,
+  refetch: brandRefetch,
+} = useQuery(GET_BRAND, {
+  variables: {
+    input: {
+      page: null,
+      size: 10,
     },
-  });
+  },
+});
 
-  const {
-    loading: assignBrandLoading,
-    error: assignBrandError,
-    data: assignBrandDataResponse,
-    refetch: assignBrandRefetch,
-  } = useQuery(GET_BRAND, {
-    variables: {
-      input: {
-        page: null,
-        size: 10,
-        vendorId: id
-      },
+const {
+  loading: assignBrandLoading,
+  error: assignBrandError,
+  data: assignBrandDataResponse,
+  refetch: assignBrandRefetch,
+} = useQuery(GET_ASSIGN_BRAND, {
+  variables: {
+    input: {
+      page: null,
+      size: 10,
+      vendorId: id,
     },
-  });
+  },
+});
 
-  useEffect(() => {
-    if (brandDataResponse && brandDataResponse.getAllBrandRecordsByAdmin) {
-      setBrandData(brandDataResponse.getAllBrandRecordsByAdmin.records);
-    }
-    if(assignBrandDataResponse&& assignBrandDataResponse.getAllBrandRecordsWithVendorByAdmin){
-      setAssignBrandData(assignBrandDataResponse.getAllBrandRecordsWithVendorByAdmin.records);
-    }
-  }, [brandDataResponse, brandRefetch, assignBrandDataResponse, id]);
+
+console.log(assignBrandDataResponse,"kjdddsuiududsdu")
+
+useEffect(() => {
+  if (brandDataResponse && brandDataResponse.getAllBrandRecordsByAdmin) {
+    setBrandData(brandDataResponse.getAllBrandRecordsByAdmin.records);
+  }
+  if (assignBrandDataResponse && assignBrandDataResponse.getAllBrandRecordsWithVendorByAdmin) {
+    setAssignBrandData(assignBrandDataResponse.getAllBrandRecordsWithVendorByAdmin.records);
+  }
+}, [brandDataResponse, brandRefetch, assignBrandDataResponse, id]);
 
   if (brandError) {
     console.error("Error fetching vendor data:", brandError);
@@ -140,6 +143,9 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
       setCurrentPage(currentPage + 1);
     }
   };
+
+
+  console.log(assignBrandData,"wertyui")
 
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
@@ -164,15 +170,11 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
           },
         });
   
-        
-       
         toast.success(response?.message)
-        
-        
-        // await assignBrandRefetch();
+        setSelectedBrands([])
+        await assignBrandRefetch();
       } catch (error:any) {
         console.error("Error assigning brands:", error.message);
-        // Handle the error, display an error message, etc.
       }
     } else {
       console.error("Please select at least one brand to assign");
