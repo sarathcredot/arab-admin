@@ -3,7 +3,7 @@ import { Row, Col, Card, CardBody, Container, CardHeader } from "reactstrap";
 
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { Dropdown, DropdownButton } from "react-bootstrap";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { useSearchParams, useNavigate } from "react-router-dom";
 
 import Cleave from "cleave.js/react";
@@ -11,29 +11,47 @@ import "cleave.js/dist/addons/cleave-phone.in";
 import { Link } from "react-router-dom";
 import { boolean } from "yup";
 import AddProduct from "./addproduct";
+import { ToastContainer, toast } from "react-toastify";
 
+interface IAttribute {
+  attributeId: string;
+  attributeName: string;
+  attributeValueId: string;
+  attributeValue: string;
+  attributeDescription: string;
+}
 interface ProductData {
   _id: string;
-  color: string;
-  size: string;
-  description: string;
-  material: string;
-  shortDescription: string;
-  images: {
-    fileURL: string;
-  }[];
-  mrp: number;
-  productCode: string;
+  vendorId: string;
+  brandId: string;
+  brandName: string;
   productName: string;
+  shortDescription: string;
+  skuId: string;
+  description: string;
+  productInfo: string;
+  productShortInfo: string;
+  material: string;
+  images: {
+    fileType: string;
+    fileURL: string;
+    mimeType: string;
+    originalName: string;
+  }[];
   rating: number;
   sellingPrice: number;
   price: number;
-  skuId:number;
-  tags: string;
-  stock: string;
-  categoryNamePath: string;
+  mrp: number;
+  tags: string[];
+  productCode: string;
   categoryId: string;
-  isBlocked:boolean;
+  categoryNamePath: string;
+  categoryIdPath: string;
+  isBlocked: boolean;
+  stock: number;
+  status: string;
+  offerPrice: number;
+  attributes: IAttribute[];
 }
 interface IVariant {
   _id: string;
@@ -61,38 +79,52 @@ const ProductDetails = () => {
   );
 
   const GET_PRODUCT = gql`
-    query GetVariants($input: ProductId!) {
+    query GetProductByAdmin($input: ProductId!) {
       getProductByAdmin(input: $input) {
+        message
         product {
           _id
-          categoryId
-          categoryIdPath
-          categoryNamePath
-          color
+          vendorId
+          brandId
+          brandName
+          productName
+          shortDescription
+          skuId
+          description
+          productInfo
+          productShortInfo
+          material
           images {
             fileType
             fileURL
             mimeType
             originalName
           }
-          description
-          isBlocked
-          material
-          mrp
-          price
-          productCode
-          productName
           rating
           sellingPrice
-          shortDescription
-          size
-          skuId
-          stock
+          price
+          mrp
           tags
+          productCode
+          categoryId
+          categoryNamePath
+          categoryIdPath
+          isBlocked
+          stock
+          status
+          offerPrice
+          attributes {
+            attributeId
+            attributeName
+            attributeValueId
+            attributeValue
+            attributeDescription
+          }
         }
       }
     }
   `;
+
   const GET_VARIANTS = gql`
     query Variants($input: VariantsInput!) {
       getVariants(input: $input) {
@@ -106,6 +138,19 @@ const ProductDetails = () => {
       }
     }
   `;
+
+  const PUT_STATUS = gql`
+    mutation UpdateProductStatus($input: ProductStatusInput!) {
+      updateProductStatus(input: $input) {
+        _id
+        message
+      }
+    }
+  `;
+
+
+const [UpdateProductStatus]=useMutation(PUT_STATUS)
+
 
   const {
     data: data,
@@ -135,15 +180,22 @@ const ProductDetails = () => {
   });
   console.log("data------------", data);
 
+  // useEffect(() => {
+  //   if (data && data.getProductByAdmin && data.getProductByAdmin.product) {
+  //     let product: ProductData = data.getProductByAdmin.product;
+  //     setProduct(product);
+  //     setSelectedVSize(product.size);
+  //     setSelectedVColor(product.color);
+  //     setSelectedImage(product.images[0]?.fileURL || "");
+  //   }
+  // }, [data]);
+
   useEffect(() => {
     if (data && data.getProductByAdmin && data.getProductByAdmin.product) {
       let product: ProductData = data.getProductByAdmin.product;
       setProduct(product);
-      setSelectedVSize(product.size);
-      setSelectedVColor(product.color);
-      setSelectedImage(product.images[0]?.fileURL || "");
     }
-  }, [data]);
+  });
 
   useEffect(() => {
     if (data2 && data2.getVariants && data2.getVariants.variants) {
@@ -208,104 +260,109 @@ const ProductDetails = () => {
     return true;
   };
 
-  const renderVariants = () => {
-    if (!vColors || !vColors.length) {
-      return null;
-    }
 
-    return (
-      <div>
-        <label htmlFor="">
-          <span className="text-sm font-medium">
-            Color:
-            <span className="ml-1 font-semibold">{selectedVColor}</span>
-          </span>
-        </label>
-        <div className="mt-2">
-          {vColors.length &&
-            vColors.map((color) => (
-              <div
-                style={{
-                  border:
-                    color.name === selectedVColor ? "1px solid #2B2B2A" : "",
-                  borderRadius: "30px",
-                  display: "inline-block",
-                  padding: "4px",
-                }}
-                key={`vc-${color.name}`}
-              >
-                <button
-                  onClick={() => handlecolorChange(color.name)}
-                  style={{
-                    borderRadius: "30px",
-                    width: "60px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "30px",
-                    backgroundColor: color.colorCode,
-                  }}
-                ></button>
-              </div>
-            ))}
-        </div>
-      </div>
-    );
-  };
-  const renderSizeList = () => {
-    if (!vSizes || vSizes.length === 0) {
-      return null;
-    }
-    return (
-      <div>
-        <div className="flex font-medium text-sm justify-between">
-          <label htmlFor="">
-            <span className="">
-              Size:
-              <span className="ml-1 font-semibold">{selectedVSize}</span>
-            </span>
-          </label>
-          <div>
-            {vSizes.length &&
-              vSizes.map((size) => {
-                const isActive = size === selectedVSize;
-                const sizeOutStock = isSizeOutOfStock(size);
-                const isExists = getProductVariant(size);
-                if (!isExists) {
-                  return <></>;
-                }
 
-                return (
-                  <button
-                    onClick={() => handleSizeChange(size)}
-                    style={{
-                      padding: "10px",
-                      borderRadius: "10px",
-                      border: "1px solid #2B2B2A",
-                      marginRight: "10px",
-                      marginTop: "10px",
-                      backgroundColor: sizeOutStock
-                        ? isActive
-                          ? "#2B2B2A "
-                          : "#E3E5E4"
-                        : isActive
-                        ? "#2B2B2A "
-                        : "white",
-                      minWidth: "70px",
-                      height: "50px",
-                      color: isActive ? "white" : "#2B2B2A",
-                    }}
-                    key={`vs-${size}`}
-                  >
-                    {size}
-                  </button>
-                );
-              })}
-          </div>
-        </div>
-      </div>
-    );
-  };
+
+
+
+  // const renderVariants = () => {
+  //   if (!vColors || !vColors.length) {
+  //     return null;
+  //   }
+
+  //   return (
+  //     <div>
+  //       <label htmlFor="">
+  //         <span className="text-sm font-medium">
+  //           Color:
+  //           <span className="ml-1 font-semibold">{selectedVColor}</span>
+  //         </span>
+  //       </label>
+  //       <div className="mt-2">
+  //         {vColors.length &&
+  //           vColors.map((color) => (
+  //             <div
+  //               style={{
+  //                 border:
+  //                   color.name === selectedVColor ? "1px solid #2B2B2A" : "",
+  //                 borderRadius: "30px",
+  //                 display: "inline-block",
+  //                 padding: "4px",
+  //               }}
+  //               key={`vc-${color.name}`}
+  //             >
+  //               <button
+  //                 onClick={() => handlecolorChange(color.name)}
+  //                 style={{
+  //                   borderRadius: "30px",
+  //                   width: "60px",
+  //                   display: "flex",
+  //                   justifyContent: "center",
+  //                   alignItems: "center",
+  //                   height: "30px",
+  //                   backgroundColor: color.colorCode,
+  //                 }}
+  //               ></button>
+  //             </div>
+  //           ))}
+  //       </div>
+  //     </div>
+  //   );
+  // };
+  // const renderSizeList = () => {
+  //   if (!vSizes || vSizes.length === 0) {
+  //     return null;
+  //   }
+  //   return (
+  //     <div>
+  //       <div className="flex font-medium text-sm justify-between">
+  //         <label htmlFor="">
+  //           <span className="">
+  //             Size:
+  //             <span className="ml-1 font-semibold">{selectedVSize}</span>
+  //           </span>
+  //         </label>
+  //         <div>
+  //           {vSizes.length &&
+  //             vSizes.map((size) => {
+  //               const isActive = size === selectedVSize;
+  //               const sizeOutStock = isSizeOutOfStock(size);
+  //               const isExists = getProductVariant(size);
+  //               if (!isExists) {
+  //                 return <></>;
+  //               }
+
+  //               return (
+  //                 <button
+  //                   onClick={() => handleSizeChange(size)}
+  //                   style={{
+  //                     padding: "10px",
+  //                     borderRadius: "10px",
+  //                     border: "1px solid #2B2B2A",
+  //                     marginRight: "10px",
+  //                     marginTop: "10px",
+  //                     backgroundColor: sizeOutStock
+  //                       ? isActive
+  //                         ? "#2B2B2A "
+  //                         : "#E3E5E4"
+  //                       : isActive
+  //                       ? "#2B2B2A "
+  //                       : "white",
+  //                     minWidth: "70px",
+  //                     height: "50px",
+  //                     color: isActive ? "white" : "#2B2B2A",
+  //                   }}
+  //                   key={`vs-${size}`}
+  //                 >
+  //                   {size}
+  //                 </button>
+  //               );
+  //             })}
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   const [edit, setEdit] = useState(false);
   const handleEditProduct = () => {
@@ -313,15 +370,43 @@ const ProductDetails = () => {
     setEdit(true);
   };
 
+  const handleStatusChange = async (status:any,e:any) => {
+  e.preventDefault();
+    try {
+      let input: any = {
+        _id: _id,
+        status: "APPROVED",
+      };
+      const response = await UpdateProductStatus({variables:{input: input}});
+      if (response ) {
+        console.log(response);
+        toast.success(response.data.updateProductStatus.message)
+        refetch()
+      } else {
+        console.log("Unexpected response format:", response);
+      }
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+  
+
+
   return (
     <React.Fragment>
       {edit ? (
-        <AddProduct Edit={true} editedProduct={editedProduct} />
+        // <AddProduct Edit={true} editedProduct={editedProduct} />
+        <>""</>
       ) : (
         <div className="page-content">
           <Container fluid={true}>
-            <Breadcrumbs title="Product" breadcrumbItem="Product Details"  link="/product"/>
-            <div className="d-flex justify-content-end mb-3" style={{gap:"20px"}}>
+            <ToastContainer/>
+            <Breadcrumbs
+              title="Product"
+              breadcrumbItem="Product Details"
+              link="/product"
+            />
+            {/* <div className="d-flex justify-content-end mb-3" style={{gap:"20px"}}>
               <Link
                 to={`/add-variant?productCode=${product?.productCode}&productId=${product?._id}&category=${product?.categoryId}`}
                 style={{ textDecoration: "none" }}
@@ -353,7 +438,7 @@ const ProductDetails = () => {
               >
                 Edit Product
               </button>
-            </div>
+            </div> */}
             {/* <div className="d-flex justify-content-end mb-3">
               <button
                 onClick={handleEditProduct}
@@ -371,7 +456,7 @@ const ProductDetails = () => {
             <Row>
               <Col lg={12}>
                 <Card>
-                  <CardHeader>
+                  {/* <CardHeader>
                     <Row>
                       <Col xl={6}>
                         <div
@@ -410,7 +495,7 @@ const ProductDetails = () => {
                         </div>
                       </Col>
                     </Row>
-                  </CardHeader>
+                  </CardHeader> */}
 
                   <CardBody>
                     <form action="#">
@@ -476,6 +561,28 @@ const ProductDetails = () => {
                       </div>
                       <div className="border mt-3 border-dashed"></div>
 
+                      <div className="mt-4">
+                        <Row>
+                          <Col xl={6}>
+                            {product?.attributes.map((attribute, index) => (
+                              <>
+                                <div className="mb-3" key={index}>
+                                  <label
+                                    htmlFor="cleave-time-format"
+                                    className="form-label"
+                                  >
+                                    {attribute.attributeDescription}
+                                  </label>
+                                  <p className="form-control-static">
+                                    {attribute.attributeValue}
+                                  </p>
+                                </div>
+                              </>
+                            ))}
+                          </Col>
+                        </Row>
+                      </div>
+                      <div className="border mt-3 border-dashed"></div>
                       <div className="mt-4">
                         <Row>
                           <Col xl={6}>
@@ -601,6 +708,39 @@ const ProductDetails = () => {
                               <p className="form-control-static">
                                 {product?.tags}
                               </p>
+                            </div>
+                          </Col>
+
+                          <Col xl={6}>
+                            <div
+                              className="mb-3"
+                              style={{ display: "flex", gap: "4px" }}
+                            >
+                              <button
+                                onClick={(e)=>handleStatusChange("COMPLETED",e)}
+                                style={{
+                                  backgroundColor: "black",
+                                  color: "white",
+                                  width: "100px",
+                                  height: "40px",
+                                  borderColor: "black",
+                                }}
+                              >
+                                Approve
+                              </button>
+
+                              <button
+                                onClick={(e)=>handleStatusChange("REJECTED",e)}
+                                style={{
+                                  backgroundColor: "red",
+                                  color: "white",
+                                  width: "100px",
+                                  height: "40px",
+                                  borderColor: "red",
+                                }}
+                              >
+                                Reject
+                              </button>
                             </div>
                           </Col>
                         </Row>

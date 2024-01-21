@@ -3,43 +3,23 @@ import { Row, Col, Card, CardBody, CardHeader, Button, Input } from "reactstrap"
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
 
-const GET_PRODUCTS = gql`
- query GetProductsByAdmin($input: ProductFilters) {
-  getProductsByAdmin(input: $input) {
+const GET_VARIANTS = gql`
+query GetVariantsTableByAdmin($input: ProductVariantsByAdminFilter!) {
+  getVariantsTableByAdmin(input: $input) {
     maxRecords
+    message
     records {
       _id
-      vendorId
-      brandId
-      brandName
       productName
-      shortDescription
-      skuId
-      description
-      productInfo
-      productShortInfo
-      material
       images {
         fileType
         fileURL
         mimeType
         originalName
       }
-      rating
-      sellingPrice
-      price
-      mrp
-      productCode
-      categoryId
-      categoryNamePath
-      categoryIdPath
-      isBlocked
-      stock
-      status
-      offerPrice
       attributes {
         attributeId
         attributeName
@@ -47,28 +27,38 @@ const GET_PRODUCTS = gql`
         attributeValue
         attributeDescription
       }
+      stock
+      status
+      isBlocked
     }
   }
 }
+
 `;
 
-
-
-
 interface Product {
-  _id: string;
-  productName: string;
-  productCode: string;
-  shortDescription: string;
-  categoryNamePath: string;
-  images: {
-    fileURL: string;
-  }[];
-  isBlocked: boolean;
-  status:string;
+    _id: string;
+    productName: string;
+    images: {
+      fileType: string;
+      fileURL: string;
+      mimeType: string;
+      originalName: string;
+    }[];
+    attributes: {
+      attributeId: string;
+      attributeName: string;
+      attributeValueId: string;
+      attributeValue: string;
+      attributeDescription: string;
+    }[];
+    stock: number; // Assuming stock is a number, adjust the type if needed
+    status: string; // Assuming status is a string, adjust the type if needed
+    isBlocked: boolean;
+  
 }
 
-const ProductListing = () => {
+const VariantListing = () => {
   document.title =
     "Responsive Table | Arab Deals ";
 
@@ -80,13 +70,16 @@ const ProductListing = () => {
   const [maxRecords, setMaxRecords] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [params] = useSearchParams();
+  const _id = params.get("_id");
 
-  const { data,refetch } = useQuery(GET_PRODUCTS, {
+  const { data,refetch } = useQuery(GET_VARIANTS, {
     variables: {
       input: {
         page: currentPage,
         size: pageSize,
-        query: searchTerm,
+       _id:_id
+
         // parentCategory: searchTerm,
         // categories:[searchTerm],
         // color: [searchTerm],
@@ -97,13 +90,7 @@ const ProductListing = () => {
 
   
 
-  // if (loading) return <p>Loading...</p>;
-  // if (error) return <p>Error: {error.message}</p>;
-
-  // const products = data.getProductsByAdmin.records;
-  // const maxRecords = data.getProductsByAdmin.maxRecords;
-
-  // console.log(products)
+  
 
 
   useEffect(() => {
@@ -114,11 +101,12 @@ const ProductListing = () => {
           input: {
             page: currentPage,
             size: pageSize,
-            query: searchTerm,
+            // query: searchTerm,
+            _id:_id,
           },
         });
-        setProducts(result.data.getProductsByAdmin.records);
-        setMaxRecords(result.data.getProductsByAdmin.maxRecords);
+        setProducts(result.data.getVariantsTableByAdmin.records);
+        setMaxRecords(result.data.getVariantsTableByAdmin.maxRecords);
       } catch (error:any) {
         setError(error.message);
       } finally {
@@ -147,8 +135,8 @@ const ProductListing = () => {
       <div className="page-content">
         <div className="container-fluid">
           <Breadcrumbs title="Dashboard" breadcrumbItem="Product" link="/dashboard" />
-          <Row>
-            {/* <Col lg={12}>
+          {/* <Row>
+            <Col lg={12}>
              
                 <div className="d-flex justify-content-end mb-3">
                 <Link to="/add-product">
@@ -166,17 +154,17 @@ const ProductListing = () => {
                   </Link>
                 </div>
              
-            </Col> */}
-          </Row>
+            </Col>
+          </Row> */}
 
           <Row>
             <Col>
               <Card>
                 <CardHeader>
-                  <h4 className="card-title">Products</h4>
+                  <h4 className="card-title">Variants</h4>
 
 
-                  <Col xs={5} style={{marginTop:"20px"}}>
+                  {/* <Col xs={5} style={{marginTop:"20px"}}>
                       <Input
                         type="text"
                         placeholder="Search Product"
@@ -184,7 +172,7 @@ const ProductListing = () => {
                         onChange={handleSearch}
                         style={{ width: "50%" }}
                       />
-                    </Col>
+                    </Col> */}
                 </CardHeader>
 
                
@@ -203,12 +191,11 @@ const ProductListing = () => {
                       >
                         <Thead>
                           <Tr>
-                            <Th>ProductCode</Th>
                             <Th data-priority="1">Name</Th>
-                            <Th data-priority="3">Short Description</Th>
-                            <Th data-priority="3">Category</Th>
+                            <Th data-priority="3">Attributes</Th>
+                            <Th data-priority="3">Stock</Th>
                             <Th data-priority="1">Image</Th>
-                            <Th  data-priority="3"> Verify Status</Th>
+                            <Th data-priority="3">Verify Status</Th>
                             <Th data-priority="3">Status</Th>
                             <Th data-priority="3">View</Th>
                           </Tr>
@@ -216,10 +203,11 @@ const ProductListing = () => {
                         <Tbody>
                           {products.map((product: Product, index: number) => (
                             <Tr key={index}>
-                              <Td>{product.productCode}</Td>
                               <Td>{product.productName}</Td>
-                              <Td>{product.shortDescription}</Td>
-                              <Td>{product?.categoryNamePath}</Td>
+                              <Td>{product.attributes[0].attributeDescription}: {product.attributes[0].attributeValue}</Td>
+                              
+                              <Td>{product.stock}</Td>
+                    
                               <Td>
                                 <img
                                   src={product.images[0]?.fileURL}
@@ -228,9 +216,7 @@ const ProductListing = () => {
                                   height={80}
                                 />
                               </Td>
-                              <Td>
-                                {product?.status}
-                              </Td>
+                              <Td>{product?.status}</Td>
                               <Td>
                                 {product.isBlocked ? "Blocked" : "Active"}
                               </Td>
@@ -244,7 +230,7 @@ const ProductListing = () => {
                                   }}
                                   tag={Link}
                                   to={{
-                                    pathname: "/product/variant/",
+                                    pathname: "/product/details/",
                                     search: `?_id=${product._id}`,
                                   }}
                                 >
@@ -320,4 +306,4 @@ const ProductListing = () => {
   );
 };
 
-export default ProductListing;
+export default VariantListing;

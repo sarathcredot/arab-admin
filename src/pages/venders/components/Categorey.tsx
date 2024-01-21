@@ -18,14 +18,16 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Label,
 } from "reactstrap";
 
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { result } from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
-
+import Select from "react-select";
+import { useParams } from "react-router";
 interface sizeChart {
   fileType: string;
   fileURL: string;
@@ -41,6 +43,7 @@ interface Category {
   isLeaf: boolean;
   sizeChart: sizeChart;
   isBlocked: boolean;
+  fullCategoryName: string;
 }
 
 interface Props {}
@@ -48,27 +51,23 @@ interface Props {}
 const CategoryList: React.FC<Props> = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  // const [itemsPerPage] = useState<number>(5);
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null
-  );
-  const [showSubCategories, setShowSubCategories] = useState<boolean>(false);
+  const [selectedCategory, setSelectedCategory] = useState<
+    Array<{ label: string; value: string }>
+  >([]);
   const [categoryData, setCategoryData] = useState<Category[]>([]);
-  const [editCategory, setEditCategory] = useState<Category | null>(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState<string>("");
-  const [breadcrumb, setBreadcrumb] = useState<Category[]>([]);
-  const [topCategory, setTopCategory] = useState<boolean>(false);
-  const [filteredCategory, setFilteredCategory] = useState<Category[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<{
     value: string;
     label: string;
   } | null>(null);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
-  const GET_CATEGORY = gql`
-    query Records($input: GetAllChildLevelCategoriesInput!) {
-      getAllChildCategories(input: $input) {
+  const [assignedCategryData, setAssignedCategryData] =useState<Category[]>([]);
+  const { id } = useParams();
+  const GET_ALL_ISLEAF_CATEGORY = gql`
+    query Records {
+      getAllLeafRecords {
         records {
           categoryName
           _id
@@ -76,90 +75,71 @@ const CategoryList: React.FC<Props> = () => {
           fullCategoryName
           isLeaf
           description
-          sizeChart {
-            fileType
-            fileURL
-            mimeType
-            originalName
-          }
         }
       }
     }
   `;
 
-  const GET_CHAILEDCATGORY = gql`
-    query Records($input: GetAllChildLevelCategoriesInput!) {
-      getAllChildCategories(input: $input) {
-        records {
-          categoryName
-          _id
-          isBlocked
-          fullCategoryName
-          isLeaf
-          description
-          sizeChart {
-            fileType
-            fileURL
-            mimeType
-            originalName
-          }
-        }
-      }
+
+const GET_ASSIGNED_CATEGORY=gql`query GetAllCategoriesOfVendor($input: vendorIdInput!) {
+  getAllCategoriesOfVendor(input: $input) {
+    records {
+      categoryName
+      _id
+      isBlocked
+      fullCategoryName
+      isLeaf
     }
-  `;
+  }
+}
+`;
+
+const PUT_VENDOR = gql`mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
+  updateVendorProfileByAdmin(input: $input) {
+    _id
+    message
+  }
+}`;
+
+const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR) 
+
   const {
     loading: categoryLoading,
     error: categoryError,
     data: categoryDataResponse,
     refetch: categoryRefetch,
-  } = useQuery(GET_CATEGORY, {
-    variables: {
-      input: {
-        parent: null,
-      },
-    },
-  });
-  const {
-    loading: childCategoryLoading,
-    error: childCategoryError,
-    data: childCategoryData,
-    refetch: childCategoryRefetch,
-  } = useQuery(GET_CHAILEDCATGORY, {
-    variables: {
-      input: {
-        parent:
-          breadcrumb.length === 0
-            ? null
-            : breadcrumb[breadcrumb.length - 1]._id,
-      },
-    },
-  });
+  } = useQuery(GET_ALL_ISLEAF_CATEGORY);
 
-  const handleGoBack = () => {
-    const newBreadcrumb = breadcrumb.slice(0, breadcrumb.length - 1);
-    setBreadcrumb(newBreadcrumb);
-  };
+
+  const {
+    loading: assignCategoryLoading,
+    error: assignCategoryError,
+    data: assignCategoryDataResponse,
+    refetch: assignCategoryRefetch,
+  } = useQuery(GET_ASSIGNED_CATEGORY,{
+    variables:{
+      input:{
+        vendorId:id
+      }
+    }
+  });
 
   useEffect(() => {
-    if (showSubCategories) {
-      setCategoryData(childCategoryData?.getAllChildCategories?.records || []);
-    } else {
-      setCategoryData(
-        categoryDataResponse?.getAllChildCategories?.records || []
-      );
+    if (categoryDataResponse) {
+      setCategoryData(categoryDataResponse?.getAllLeafRecords?.records || []);
     }
-  }, [
-    categoryLoading,
-    showSubCategories,
-    categoryDataResponse,
-    childCategoryData,
-    topCategory,
-  ]);
+
+    if(assignCategoryDataResponse){
+      setAssignedCategryData(assignCategoryDataResponse?.getAllCategoriesOfVendor?.records ||[])
+    }
+  }, [categoryDataResponse, assignCategoryDataResponse]);
 
   const openImageModal = (imageUrl: string) => {
     setSelectedImageUrl(imageUrl);
     setIsImageModalOpen(true);
   };
+
+  console.log(assignedCategryData,"adsfgf")
 
   const flattenedCategories: Category[] = flattenCategories(categoryData);
 
@@ -168,33 +148,11 @@ const CategoryList: React.FC<Props> = () => {
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
-    if (showAddModal) {
-      setEditCategory(null);
-    }
+    
   };
 
   const handleAddCategory = () => {
     toggleAddModal();
-  };
-
-  const handleNext = (category: Category) => {
-    setSelectedCategory(category);
-    setShowSubCategories(true);
-    setBreadcrumb([...breadcrumb, category]);
-  };
-
-  const handleBreadcrumbClick = (index: number) => {
-    if (index === -1) {
-      // Clicked on base category (top level)
-      setShowSubCategories(false);
-      setBreadcrumb([]);
-      setSelectedCategory(null);
-    } else {
-      const newBreadcrumb = breadcrumb.slice(0, index + 1);
-      setBreadcrumb(newBreadcrumb);
-      setShowSubCategories(index < breadcrumb.length - 1);
-      setSelectedCategory(newBreadcrumb[index]);
-    }
   };
 
   const statusOptions = [
@@ -214,74 +172,53 @@ const CategoryList: React.FC<Props> = () => {
 
   const handleSearch = (event: any) => {
     setSearchTerm(event.target.value);
-   
   };
 
-  useEffect(() => {
-    if (selectedStatus) {
-      const filtered = categoryData.filter((size: any) => {
-        const isNameMatch = size.categoryName
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase());
-        if (selectedStatus.value === "all") {
-          return isNameMatch;
-        } else {
-          return (
-            isNameMatch &&
-            size?.isBlocked ===
-              (selectedStatus.value === "blocked" ? true : false)
-          );
-        }
-      });
-      setFilteredCategory(filtered);
+  const handleBrandSelection = (
+    selectedOptions: Array<{ label: string; value: string }>
+  ) => {
+    setSelectedCategory(selectedOptions);
+  };
+
+
+  const handleAssignCategory = async () => {
+    if (selectedCategory.length > 0) {
+      const categoryIds = selectedCategory.map((category) => category.value);
+      try {
+        const response:any = await UpdateVendorProfileByAdmin({
+          variables: {
+            input: {
+              _id: id,
+              categories: categoryIds
+            },
+          },
+        });
+  
+        toast.success(response?.message)
+        assignCategoryRefetch()
+        categoryRefetch()
+        setSelectedCategory([])
+        
+      } catch (error:any) {
+        toast.error( error.message);
+      }
     } else {
-      const filtered = categoryData.filter((size: any) =>
-        size.categoryName.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredCategory(filtered);
+      toast.error("Please select at least one brand to assign");
     }
-  }, [selectedStatus, categoryData, breadcrumb, searchTerm]);
+  };
 
   return (
     <>
-      <ToastContainer />
+     
       <div className="page-content">
-        <div className="mb-0" style={{ display: "flex", gap: "5px" }}>
-          {breadcrumb.length > 0 && (
-            <span
-              style={{ cursor: "pointer", color: "black", fontWeight: "bold" }}
-              onClick={() => handleBreadcrumbClick(-1)}
-            >
-              Home /
-            </span>
-          )}
-          {breadcrumb.map((category, index) => (
-            <span key={category._id} color="gray ">
-              {index > 0 && " / "}
-              {index === breadcrumb.length - 1 ? (
-                category.categoryName
-              ) : (
-                <span
-                  style={{
-                    cursor: "pointer",
-                    color: "black",
-                    fontWeight: "bold",
-                  }}
-                  onClick={() => handleBreadcrumbClick(index)}
-                >
-                  {category.categoryName}
-                </span>
-              )}
-            </span>
-          ))}
-        </div>
-        <Container fluid={true} style={{ marginTop: "40px" }}>
+      <ToastContainer />
+        <Container fluid={true} >
           <Row>
             <Col lg={12}>
               <Card>
                 <CardHeader>
                   <Row>
-                    <Col xs={5} style={{ display: "flex", gap: "20px" }}>
+                    {/* <Col xs={5} style={{ display: "flex", gap: "20px" }}>
                       <Input
                         type="text"
                         placeholder="Search by name"
@@ -310,24 +247,35 @@ const CategoryList: React.FC<Props> = () => {
                           ))}
                         </DropdownMenu>
                       </Dropdown>
-                    </Col>
+                    </Col> */}
 
-                    <Col
-                      xs={6}
-                      style={{
-                        display: "flex",
-                        gap: "20px",
-                        justifyContent: "flex-end",
-                        marginLeft: "127px",
-                      }}
-                    >
-                      <Button
-                        style={{ backgroundColor: "rgba(0, 0, 0, 1)" }}
-                        onClick={() => toggleAddModal()}
-                      >
-                        Add Category
-                      </Button>
-                    </Col>
+                    <div className="d-flex justify-content-end mb-3">
+                      <Label className="mt-2 " style={{ marginRight: "20px" }}>
+                        Assign Brands:
+                      </Label>
+                      <Select
+                        isMulti
+                        options={categoryData.map((category) => ({
+                          label: category.categoryName,
+                          value: category._id,
+                        }))}
+                        value={selectedCategory}
+                        onChange={(selectedOptions: any) =>
+                          handleBrandSelection(selectedOptions)
+                        }
+                        placeholder="Select Category...."
+                        styles={{
+                          control: (styles: any) => ({
+                            ...styles,
+                            marginRight: "10px",
+                            // width: "200px",
+                          }),
+                        }}
+                      />
+                      <Button onClick={() => handleAssignCategory()} style={{backgroundColor:"#000000"}}>
+                      Assign Brands
+                    </Button>
+                    </div>
                   </Row>
                 </CardHeader>
                 <CardBody>
@@ -339,59 +287,20 @@ const CategoryList: React.FC<Props> = () => {
                       <tr>
                         <th>No</th>
                         <th>Name</th>
-                        <th>Description</th>
-                        {/* <th>Size Chart Image</th> */}
+                        <th>Category full Name</th>
+
                         <th>Status</th>
-                        <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredCategory.map((category, index) => (
+                      {assignedCategryData.map((category, index) => (
                         <tr key={category._id}>
                           <td>{index + 1}</td>
                           <td>{category.categoryName}</td>
-                          <td>{category.description}</td>
-                          {/* <td>
-                            {category.sizeChart && (
-                              <img
-                                src={category?.sizeChart?.fileURL}
-                                alt="Size Chart"
-                                style={{
-                                  width: "50px",
-                                  height: "50px",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() =>
-                                  openImageModal(category?.sizeChart?.fileURL)
-                                }
-                              />
-                            )}
-                          </td> */}
+                          <td>{category.fullCategoryName}</td>
 
                           <td>
                             {category?.isBlocked == false ? "Active" : "Block"}
-                          </td>
-
-                          <td>
-                            {category.isLeaf ? null : (
-                              <Button
-                                size="sm"
-                                onClick={() => handleNext(category)}
-                                style={{ backgroundColor: "rgba(0, 0, 0, 1)" }}
-                              >
-                                Next
-                              </Button>
-                            )}
-                            {"  "}
-                            <Button
-                              size="sm"
-                              onClick={() => handleEdit(category)}
-                              style={{
-                                backgroundColor: "rgba(177, 35, 73, 1)",
-                              }}
-                            >
-                              Edit
-                            </Button>{" "}
                           </td>
                         </tr>
                       ))}
@@ -457,10 +366,10 @@ const CategoryList: React.FC<Props> = () => {
     return [currentItems, totalPages];
   }
 
-  function handleEdit(data: Category) {
-    setEditCategory(data);
-    toggleAddModal();
-  }
+  // function handleEdit(data: Category) {
+  //   setEditCategory(data);
+  //   toggleAddModal();
+  // }
 
   function handleDelete(id: string) {
     console.log(`Delete button clicked for ID: ${id}`);

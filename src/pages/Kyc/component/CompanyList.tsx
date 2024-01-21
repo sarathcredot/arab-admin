@@ -34,7 +34,7 @@ interface ICompanyData {
 function CompanyListing() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [companyData, setCompanyData] = useState<ICompanyData[]>([]);
-  const [activeTab, setActiveTab] = useState<string>("all");
+  const [activeTab, setActiveTab] = useState<string>("UNDER_VERIFICATION");
   const [maxRecords, setMaxRecords] = useState<number>(0);
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState(0);
@@ -61,8 +61,9 @@ function CompanyListing() {
 const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
     variables: {
       input: {
-        page: null,
+        page: currentPage,
         size: pageSize,
+        status:activeTab
       },
     },
   });
@@ -70,9 +71,10 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
   useEffect(() => {
     if (kycDataResponse) {
       setCompanyData(kycDataResponse.getAllVendorCompanyRecordsByAdmin?.records || []);
+      
     }
 
-  }, [kycDataResponse]);
+  }, [ kycDataResponse , activeTab ,currentPage]);
 
   console.log(companyData)
 
@@ -85,18 +87,18 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
     setSearchTerm(event.target.value);
   };
 
-  const getFilteredkyc = (): ICompanyData[] => {
-    switch (activeTab) {
-      case "Pending":
-        return companyData.filter((vendor) => vendor.isKycCompleted === false);
-      case "Completed":
-        return companyData.filter((vendor) => vendor.isKycCompleted === true);
-      default:
-        return companyData;
-    }
-  };
-
-  const totalPages = Math.ceil(getFilteredkyc().length / pageSize);
+  // const getFilteredkyc = (): ICompanyData[] => {
+  //   switch (activeTab) {
+  //     case "Pending":
+  //       return companyData.filter((vendor) => vendor.isKycCompleted === false);
+  //     case "Completed":
+  //       return companyData.filter((vendor) => vendor.isKycCompleted === true);
+  //     default:
+  //       return companyData;
+  //   }
+  // };
+  const totalRecords = kycDataResponse?.getAllVendorCompanyRecordsByAdmin.maxRecords || 0;
+  const totalPages = Math.ceil(totalRecords / pageSize);
 
   const handleNextPage = () => {
     if (currentPage + 1 < totalPages) {
@@ -112,24 +114,24 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
           <Nav tabs>
             <NavItem>
               <NavLink
-                className={activeTab === "all" ? "active" : ""}
-                onClick={() => toggleTab("all")}
+                className={activeTab === "UNDER_VERIFICATION" ? "active" : ""}
+                onClick={() => toggleTab("UNDER_VERIFICATION")}
               >
-                All
+                Verify
               </NavLink>
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === "Pending" ? "active" : ""}
-                onClick={() => toggleTab("Pending")}
+                className={activeTab === "PENDING" ? "active" : ""}
+                onClick={() => toggleTab("PENDING")}
               >
                 Pending
               </NavLink>
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === "Completed" ? "active" : ""}
-                onClick={() => toggleTab("Completed")}
+                className={activeTab === "COMPLETED" ? "active" : ""}
+                onClick={() => toggleTab("COMPLETED")}
               >
                 Completed
               </NavLink>
@@ -162,7 +164,7 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
                       </tr>
                     </thead>
                     <tbody>
-                      {getFilteredkyc()
+                      {companyData
                         .slice(
                           currentPage * pageSize,
                           (currentPage + 1) * pageSize
@@ -198,7 +200,7 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
                     </tbody>
                   </Table>
                 </CardBody>
-                <Row>
+                <Row style={{marginRight:"10px"}}>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">

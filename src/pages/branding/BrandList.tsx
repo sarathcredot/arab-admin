@@ -19,15 +19,14 @@ import FormVender from "../venders/FormVender";
 import { bR } from "@fullcalendar/core/internal-common";
 import BrandForm from "./BrandForm";
 
-
 interface IBrandRecord {
-    _id: string;
-    brandName: string;
-    isBlocked: boolean;
-    logo: {
-      fileURL: string;
-    };
-  }
+  _id: string;
+  brandName: string;
+  isBlocked: boolean;
+  logo: {
+    fileURL: string;
+  };
+}
 
 const BrandList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -38,20 +37,20 @@ const BrandList: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
 
   const GET_BRAND = gql`
-   query GetAllBrandRecordsByAdmin($input: BrandRecordsFilter) {
-  getAllBrandRecordsByAdmin(input: $input) {
-    maxRecords
-    message
-    records {
-      _id
-      brandName
-      isBlocked
-      logo {
-        fileURL
+    query GetAllBrandRecordsByAdmin($input: BrandRecordsFilter) {
+      getAllBrandRecordsByAdmin(input: $input) {
+        maxRecords
+        message
+        records {
+          _id
+          brandName
+          isBlocked
+          logo {
+            fileURL
+          }
+        }
       }
     }
-  }
-}
   `;
 
   const {
@@ -64,28 +63,20 @@ const BrandList: React.FC = () => {
       input: {
         page: null,
         size: 10,
-        
       },
     },
   });
- 
-
 
   useEffect(() => {
     if (brandDataResponse && brandDataResponse.getAllBrandRecordsByAdmin) {
       setBrandData(brandDataResponse.getAllBrandRecordsByAdmin.records);
     }
-  }, [brandDataResponse,brandRefetch]);
-  
+  }, [brandDataResponse, brandRefetch]);
 
   if (brandError) {
     console.error("Error fetching vendor data:", brandError);
-    // Handle error, display an error message, etc.
+  
   }
-
- 
-
- 
 
   const totalPages = Math.ceil(brandData.length / pageSize);
 
@@ -95,10 +86,8 @@ const BrandList: React.FC = () => {
     }
   };
 
-
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
-    
   };
 
   return (
@@ -117,7 +106,7 @@ const BrandList: React.FC = () => {
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === false? "active" : ""}
+                className={activeTab === false ? "active" : ""}
                 onClick={() => setActiveTab(false)}
               >
                 Active
@@ -132,7 +121,6 @@ const BrandList: React.FC = () => {
               </NavLink>
             </NavItem>
           </Nav>
-          
 
           <Row>
             <Col lg={12}>
@@ -146,12 +134,20 @@ const BrandList: React.FC = () => {
                     style={{ width: "50%", marginBottom: "20px" }}
                   />
 
-<div className="d-flex justify-content-end mb-3">
-            <Button  onClick={() => toggleAddModal()}  style={{backgroundColor: "#000000"}}>Add New Brand</Button>
-          </div>
+                  <div className="d-flex justify-content-end mb-3">
+                    <Button
+                      onClick={() => toggleAddModal()}
+                      style={{ backgroundColor: "#000000" }}
+                    >
+                      Add New Brand
+                    </Button>
+                  </div>
 
-          
-<BrandForm isOpen={showAddModal} toggle={toggleAddModal} refetch={brandRefetch} />
+                  <BrandForm
+                    isOpen={showAddModal}
+                    toggle={toggleAddModal}
+                    refetch={brandRefetch}
+                  />
 
                   <Table
                     responsive
@@ -177,22 +173,31 @@ const BrandList: React.FC = () => {
                           <tr key={brand._id}>
                             <td>{index + 1}</td>
                             <td>{brand.brandName}</td>
-                            
+
                             <td>
-          {brand.logo && (
-            <img
-              src={brand.logo.fileURL}
-              alt={`Logo for ${brand.brandName}`}
-              style={{ width: '50px', height: '50px' }}
-            />
-          )}
-        </td>
-                            <td   style={{
+                              {brand.logo && (
+                                <img
+                                  src={brand.logo.fileURL}
+                                  alt={`Logo for ${brand.brandName}`}
+                                  style={{ width: "50px", height: "50px" }}
+                                />
+                              )}
+                            </td>
+                            <td
+                              style={{
                                 color: brand.isBlocked ? "red" : "#5cb85c",
-                              }}>{brand.isBlocked?"Blocked":"Active"}</td>
+                              }}
+                            >
+                              {brand.isBlocked ? "Blocked" : "Active"}
+                            </td>
                             <td>
                               <Link to={`/brands/${brand._id}`}>
-                                <Button style={{ marginLeft: "20px"  , backgroundColor: "#000000"}}>
+                                <Button
+                                  style={{
+                                    marginLeft: "20px",
+                                    backgroundColor: "#000000",
+                                  }}
+                                >
                                   View
                                 </Button>
                               </Link>
@@ -203,7 +208,7 @@ const BrandList: React.FC = () => {
                   </Table>
                 </CardBody>
 
-                <Row>
+                <Row style={{ marginRight: "10px" }}>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">

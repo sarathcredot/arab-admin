@@ -18,20 +18,32 @@ import {
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
+import AttributeForm from "./AttributeForm";
+import SubAttributeForm from "./SubAttributeForm";
 
-interface IBrandRecord {
+interface AttributeValue {
   _id: string;
-  brandName: string;
+  value: string;
+  colorCode: string;
+  priority: number;
   isBlocked: boolean;
-  logo: {
-    fileURL: string;
-  };
 }
 
-const BrandList: React.FC = () => {
+interface IAttribute {
+  _id: string;
+  attributeType: string;
+  name: string;
+  description: string;
+  attributeValues: AttributeValue[];
+  isBlocked: boolean;
+}
+
+  
+
+const ValueAttributeList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [brandData, setBrandData] = useState<IBrandRecord[]>([]);
-  const [assignBrandData, setAssignBrandData] = useState<IBrandRecord[]>([]);
+  const [attributeData, setAttributeData] = useState<IAttribute>();
+//   const [assignBrandData, setAssignBrandData] = useState<IBrandRecord[]>([]);
   const [activeTab, setActiveTab] = useState<boolean>();
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 10; // Number of items per page
@@ -40,103 +52,70 @@ const BrandList: React.FC = () => {
     Array<{ label: string; value: string }>
   >([]);
   const { id } = useParams();
-  const GET_BRAND = gql`
-    query GetAllBrandRecordsByAdmin($input: BrandRecordsFilter) {
-      getAllBrandRecordsByAdmin(input: $input) {
-        maxRecords
-        message
-        records {
-          _id
-          brandName
-          isBlocked
-          logo {
-            fileURL
-          }
-        }
+  const GET_SUBATTRIBUTES = gql`
+    query GetAttributeRecordByAdmin($input: AttributeRecordByAdminInput!) {
+  getAttributeRecordByAdmin(input: $input) {
+    message
+    record {
+      _id
+      attributeType
+      name
+      description
+      attributeValues {
+        _id
+        value
+        colorCode
+        priority
+        isBlocked
       }
+      isBlocked
     }
+  }
+}
   `;
 
 
-const GET_ASSIGN_BRAND= gql`query GetAllBrandRecordsWithVendorByAdmin($input: VendorInput!) {
-  getAllBrandRecordsWithVendorByAdmin(input: $input) {
-    maxRecords
-    records {
-      _id
-      brandName
-      isBlocked
-      logo {
-        fileType
-        fileURL
-        mimeType
-        originalName
-      }
-      isPopular
-      priority
-    }
-    message
-  }
-}`
 
 
-const PUT_VENDOR=gql`
-mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
-  updateVendorProfileByAdmin(input: $input) {
-    _id
-    message
-  }
-}`
+
+// const PUT_VENDOR=gql`
 
 
-const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
+// `
+
+
+// const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
 
 const {
-  loading: brandLoading,
-  error: brandError,
-  data: brandDataResponse,
-  refetch: brandRefetch,
-} = useQuery(GET_BRAND, {
+  loading: attributeLoading,
+  error: attributeError,
+  data: attributeResponse,
+  refetch: attributeRefetch,
+} = useQuery(GET_SUBATTRIBUTES, {
   variables: {
     input: {
-      page: null,
-      size: 10,
-    },
-  },
-});
-
-const {
-  loading: assignBrandLoading,
-  error: assignBrandError,
-  data: assignBrandDataResponse,
-  refetch: assignBrandRefetch,
-} = useQuery(GET_ASSIGN_BRAND, {
-  variables: {
-    input: {
-      page: null,
-      size: 10,
-      vendorId: id,
+      attributeId: id
     },
   },
 });
 
 
-console.log(assignBrandDataResponse,"kjdddsuiududsdu")
+
+
 
 useEffect(() => {
-  if (brandDataResponse && brandDataResponse.getAllBrandRecordsByAdmin) {
-    setBrandData(brandDataResponse.getAllBrandRecordsByAdmin.records);
+  if (attributeResponse && attributeResponse.getAttributeRecordByAdmin) {
+    setAttributeData(attributeResponse.getAttributeRecordByAdmin.record);
   }
-  if (assignBrandDataResponse && assignBrandDataResponse.getAllBrandRecordsWithVendorByAdmin) {
-    setAssignBrandData(assignBrandDataResponse.getAllBrandRecordsWithVendorByAdmin.records);
-  }
-}, [brandDataResponse, brandRefetch, assignBrandDataResponse, id]);
+}, [attributeResponse, attributeRefetch, id, activeTab]);
 
-  if (brandError) {
-    console.error("Error fetching vendor data:", brandError);
-    // Handle error, display an error message, etc.
+
+  if (attributeError) {
+    console.error("Error fetching vendor data:", attributeError);
+    // Handle error, display an error message, etc .
   }
 
-  const totalPages = Math.ceil(brandData.length / pageSize);
+  const totalPages = Math.ceil(10 / pageSize);
 
   const handleNextPage = () => {
     if (currentPage + 1 < totalPages) {
@@ -145,7 +124,7 @@ useEffect(() => {
   };
 
 
-  console.log(assignBrandData,"wertyui")
+  console.log(attributeData,"wertyui")
 
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
@@ -157,36 +136,39 @@ useEffect(() => {
     setSelectedBrands(selectedOptions);
   };
 
-  const handleAssignBrands = async () => {
-    if (selectedBrands.length > 0) {
-      const brandIds = selectedBrands.map((brand) => brand.value);
-      try {
-        const response:any = await UpdateVendorProfileByAdmin({
-          variables: {
-            input: {
-              _id: id,
-              brands: brandIds,
-            },
-          },
-        });
+  // const handleAssignBrands = async () => {
+  //   if (selectedBrands.length > 0) {
+  //     const brandIds = selectedBrands.map((brand) => brand.value);
+  //     try {
+  //       const response:any = await UpdateVendorProfileByAdmin({
+  //         variables: {
+  //           input: {
+  //             _id: id,
+  //             brands: brandIds,
+  //           },
+  //         },
+  //       });
   
-        toast.success(response?.message)
-        setSelectedBrands([])
-         assignBrandRefetch();
-      } catch (error:any) {
-        console.error("Error assigning brands:", error.message);
-      }
-    } else {
-      console.error("Please select at least one brand to assign");
-    }
-  };
+  //       toast.success(response?.message)
+  //       setSelectedBrands([])
+        
+  //     } catch (error:any) {
+  //       console.error("Error assigning brands:", error.message);
+  //     }
+  //   } else {
+  //     console.error("Please select at least one brand to assign");
+  //   }
+  // };
   
+
 
   return (
     <>
-      <div className="page-content" >
+      <div className="page-content">
       <ToastContainer/>
-        <Container fluid={true} > 
+
+        <Container fluid={true}>
+        <Breadcrumb title="Dashboard" breadcrumbItem={attributeData?.description.toString()} link="/" />
           {/* <Nav tabs>
             <NavItem>
               <NavLink
@@ -207,7 +189,7 @@ useEffect(() => {
             <NavItem>
               <NavLink
                 className={activeTab === true ? "active" : ""}
-                onClick={() => setActiveTab(true)}
+            {}    onClick={() => setActiveTab(true)}
               >
                 Blocked
               </NavLink>
@@ -218,40 +200,21 @@ useEffect(() => {
             <Col lg={12}>
               <Card>
                 <CardBody>
-                  {/* <Input
+                  <Input
                     type="text"
                     placeholder="Search by name"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{ width: "50%", marginBottom: "20px" }}
-                  /> */}
+                    style={{ width: "50%", marginBottom: "3px" }}
+                  />
 
                   <div className="d-flex justify-content-end mb-3">
-                    <Label className="mt-2 " style={{ marginRight: "20px" }}>
-                      Assign Brands:
-                    </Label>
-                    <Select
-                      isMulti
-                      options={brandData.map((brand) => ({
-                        label: brand.brandName,
-                        value: brand._id,
-                      }))}
-                      value={selectedBrands}
-                      onChange={(selectedOptions: any) =>
-                        handleBrandSelection(selectedOptions)
-                      }
-                      placeholder="Select Brands..."
-                      styles={{
-                        control: (styles: any) => ({
-                          ...styles,
-                          marginRight: "10px",
-                          // width: "200px",
-                        }),
-                      }}
-                    />
-                    <Button onClick={() => handleAssignBrands()} style={{backgroundColor:"#000000"}}>
-                      Assign Brands
+                    
+                    <Button  onClick={() => toggleAddModal()} style={{backgroundColor:"#000000"}}>
+                      Add Attribute
                     </Button>
+
+                    <SubAttributeForm isOpen={showAddModal} toggle={toggleAddModal} refetch={attributeRefetch} Id={id} />
                   </div>
 
                   <Table
@@ -261,54 +224,47 @@ useEffect(() => {
                     <thead>
                       <tr>
                         <th>No</th>
-                        <th>Brand Name</th>
-                        <th>Logo</th>
+                        <th>value</th>
+                        <th>colorCode</th>
+                        <th>priority</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        {/* <th>Action</th> */}
                       </tr>
                     </thead>
                     <tbody>
-                      {assignBrandData
-                        .filter((brand) =>
-                          brand.brandName
+                      {attributeData?.attributeValues
+                        .filter((attribute) =>
+                        attribute.value
                             .toLowerCase()
                             .includes(searchTerm.toLowerCase())
                         )
-                        .map((brand, index) => (
-                          <tr key={brand._id}>
+                        .map((attribute, index) => (
+                          <tr key={attribute._id}>
                             <td>{index + 1}</td>
-                            <td>{brand.brandName}</td>
-
-                            <td>
-                              {brand.logo && (
-                                <img
-                                  src={brand.logo.fileURL}
-                                  alt={`Logo for ${brand.brandName}`}
-                                  style={{ width: "50px", height: "50px" }}
-                                />
-                              )}
-                            </td>
+                            <td>{attribute.value}</td>
+                            <td>{attribute.colorCode}</td>
+                            <td>{attribute.priority}</td>                            
                             <td
                               style={{
-                                color: brand.isBlocked ? "red" : "#5cb85c",
+                                color: attribute.isBlocked ? "red" : "#5cb85c",
                               }}
                             >
-                              {brand.isBlocked ? "Blocked" : "Active"}
+                              {attribute.isBlocked ? "Blocked" : "Active"}
                             </td>
-                            <td>
-                              <Link to={`/brands/${brand._id}`}>
+                            {/* <td>
+                              <Link to={`/attributes/${attribute._id}`}>
                                 <Button style={{ marginLeft: "20px" }}>
                                   View
                                 </Button>
                               </Link>
-                            </td>
+                            </td> */}
                           </tr>
                         ))}
                     </tbody>
                   </Table>
                 </CardBody>
 
-                <Row>
+                {/* <Row>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">
@@ -360,7 +316,7 @@ useEffect(() => {
                       </ul>
                     </div>
                   </Col>
-                </Row>
+                </Row> */}
               </Card>
             </Col>
           </Row>
@@ -370,4 +326,4 @@ useEffect(() => {
   );
 };
 
-export default BrandList;
+export default ValueAttributeList;

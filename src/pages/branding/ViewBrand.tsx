@@ -99,20 +99,20 @@ function ViewBrands() {
         <CardBody>
           <CardText>
             <div>
-              <p>
+              <p className="pt-3">
                 <strong>Barand Name :</strong> {brandData?.brandName}
               </p>
-              <p>
+              <p className="pt-3">
                 <strong>Status :</strong>{" "}
                 {brandData?.isBlocked ? "BLOCKED" : "ACTIVE"}
               </p>
             </div>
           </CardText>
-          <div>
-            <Button color="success" onClick={() => toggleAddModal()}>
+          <div className="pt-3">
+            <Button style={{backgroundColor: "#000000"}}  onClick={() => toggleAddModal()}>
               Edit
             </Button>{" "}
-            <Button variant="success">Delete</Button>
+            {/* <Button variant="success">Delete</Button> */}
           </div>
         </CardBody>
       </Card>

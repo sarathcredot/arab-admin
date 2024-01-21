@@ -34,7 +34,7 @@ interface IOutlet {
 function OutletListing() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [outletData, setOutletData] = useState<IOutlet[]>([]);
-  const [activeTab, setActiveTab] = useState<string>("all");
+  const [activeTab, setActiveTab] = useState<string>("UNDER_VERIFICATION");
   const [maxRecords, setMaxRecords] = useState<number>(0);
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState(0);
@@ -58,7 +58,7 @@ function OutletListing() {
 }
   `;
 
-  console.log(outletData, "asdfghjkl;=====================>");
+  
   const {
     loading: kycLoading,
     error: kycError,
@@ -67,8 +67,9 @@ function OutletListing() {
   } = useQuery(GET_ALL_KYC, {
     variables: {
       input: {
-        page: null,
+        page: currentPage,
         size: pageSize,
+        status:activeTab
       },
     },
   });
@@ -77,7 +78,7 @@ function OutletListing() {
     if (kycDataResponse) {
       setOutletData(kycDataResponse.getAllVendorOutletRecordsByAdmin?.records || []);
     }
-  }, [kycDataResponse]);
+  }, [kycDataResponse,currentPage]);
 
   const toggleTab = (tab: string) => {
     console.log("Active Tab:", tab);
@@ -88,18 +89,18 @@ function OutletListing() {
     setSearchTerm(event.target.value);
   };
 
-  const getFilteredkyc = (): IOutlet[] => {
-    switch (activeTab) {
-      case "Pending":
-        return outletData.filter((vendor) => vendor.isKycCompleted === false);
-      case "Completed":
-        return outletData.filter((vendor) => vendor.isKycCompleted === true);
-      default:
-        return outletData;
-    }
-  };
-
-  const totalPages = Math.ceil(getFilteredkyc().length / pageSize);
+  // const getFilteredkyc = (): IOutlet[] => {
+  //   switch (activeTab) {
+  //     case "Pending":
+  //       return outletData.filter((vendor) => vendor.isKycCompleted === false);
+  //     case "Completed":
+  //       return outletData.filter((vendor) => vendor.isKycCompleted === true);
+  //     default:
+  //       return outletData;
+  //   }
+  // };
+  const totalRecords = kycDataResponse?.getAllVendorOutletRecordsByAdmin.maxRecords || 0;
+  const totalPages = Math.ceil(totalRecords / pageSize);
 
   const handleNextPage = () => {
     if (currentPage + 1 < totalPages) {
@@ -114,24 +115,24 @@ function OutletListing() {
           <Nav tabs>
             <NavItem>
               <NavLink
-                className={activeTab === "all" ? "active" : ""}
-                onClick={() => toggleTab("all")}
+                className={activeTab === "UNDER_VERIFICATION" ? "active" : ""}
+                onClick={() => toggleTab("UNDER_VERIFICATION")}
               >
-                All
+                Verify
               </NavLink>
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === "Pending" ? "active" : ""}
-                onClick={() => toggleTab("Pending")}
+                className={activeTab === "PENDING" ? "active" : ""}
+                onClick={() => toggleTab("PENDING")}
               >
                 Pending
               </NavLink>
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === "Completed" ? "active" : ""}
-                onClick={() => toggleTab("Completed")}
+                className={activeTab === "COMPLETED" ? "active" : ""}
+                onClick={() => toggleTab("COMPLETED")}
               >
                 Completed
               </NavLink>
@@ -164,7 +165,7 @@ function OutletListing() {
                       </tr>
                     </thead>
                     <tbody>
-                      {getFilteredkyc()
+                      {outletData
                         .slice(
                           currentPage * pageSize,
                           (currentPage + 1) * pageSize
@@ -180,7 +181,7 @@ function OutletListing() {
                                 color: outlet.isKycCompleted ? "#5cb85c" : "red",
                               }}
                               >
-                              {outlet.isKycCompleted ? "COMPLETED" : "PENDING"}
+                              {outlet.isKycCompleted  ? "COMPLETED" : "PENDING"}
                             </td>
                               <td>{outlet.status}</td>
                             <td>
@@ -196,7 +197,7 @@ function OutletListing() {
                   </Table>
                 </CardBody>
 
-                <Row>
+                <Row style={{marginRight:"10px"}}>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">

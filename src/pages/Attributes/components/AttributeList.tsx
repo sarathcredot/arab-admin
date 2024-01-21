@@ -18,20 +18,21 @@ import {
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
+import AttributeForm from "./AttributeForm";
 
-interface IBrandRecord {
-  _id: string;
-  brandName: string;
-  isBlocked: boolean;
-  logo: {
-    fileURL: string;
-  };
-}
+interface IAttribute {
+    _id: string;
+    attributeType: string;
+    name: string;
+    description: string;
+    isBlocked: boolean;
+  }
+  
 
-const BrandList: React.FC = () => {
+const AttributeList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [brandData, setBrandData] = useState<IBrandRecord[]>([]);
-  const [assignBrandData, setAssignBrandData] = useState<IBrandRecord[]>([]);
+  const [attributeData, setAttributeData] = useState<IAttribute[]>([]);
+//   const [assignBrandData, setAssignBrandData] = useState<IBrandRecord[]>([]);
   const [activeTab, setActiveTab] = useState<boolean>();
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 10; // Number of items per page
@@ -40,43 +41,23 @@ const BrandList: React.FC = () => {
     Array<{ label: string; value: string }>
   >([]);
   const { id } = useParams();
-  const GET_BRAND = gql`
-    query GetAllBrandRecordsByAdmin($input: BrandRecordsFilter) {
-      getAllBrandRecordsByAdmin(input: $input) {
-        maxRecords
-        message
-        records {
-          _id
-          brandName
-          isBlocked
-          logo {
-            fileURL
-          }
-        }
-      }
-    }
-  `;
-
-
-const GET_ASSIGN_BRAND= gql`query GetAllBrandRecordsWithVendorByAdmin($input: VendorInput!) {
-  getAllBrandRecordsWithVendorByAdmin(input: $input) {
+  const GET_ATTRIBUTES = gql`
+     query GetAllAttributeRecordsByAdmin($input: AttributeRecordsByAdminFilter) {
+  getAllAttributeRecordsByAdmin(input: $input) {
     maxRecords
     records {
       _id
-      brandName
+      attributeType
+      name
+      description
       isBlocked
-      logo {
-        fileType
-        fileURL
-        mimeType
-        originalName
-      }
-      isPopular
-      priority
     }
-    message
   }
-}`
+}
+  `;
+
+
+
 
 
 const PUT_VENDOR=gql`
@@ -91,53 +72,39 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
 const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
 
 const {
-  loading: brandLoading,
-  error: brandError,
-  data: brandDataResponse,
-  refetch: brandRefetch,
-} = useQuery(GET_BRAND, {
+  loading: attributeLoading,
+  error: attributeError,
+  data: attributeResponse,
+  refetch: attributeRefetch,
+} = useQuery(GET_ATTRIBUTES, {
   variables: {
     input: {
-      page: null,
-      size: 10,
-    },
-  },
-});
-
-const {
-  loading: assignBrandLoading,
-  error: assignBrandError,
-  data: assignBrandDataResponse,
-  refetch: assignBrandRefetch,
-} = useQuery(GET_ASSIGN_BRAND, {
-  variables: {
-    input: {
-      page: null,
-      size: 10,
-      vendorId: id,
+      page: currentPage,
+      size: pageSize,
+      isBlocked: activeTab,
     },
   },
 });
 
 
-console.log(assignBrandDataResponse,"kjdddsuiududsdu")
+
+
 
 useEffect(() => {
-  if (brandDataResponse && brandDataResponse.getAllBrandRecordsByAdmin) {
-    setBrandData(brandDataResponse.getAllBrandRecordsByAdmin.records);
+  if (attributeResponse && attributeResponse.getAllAttributeRecordsByAdmin) {
+    setAttributeData(attributeResponse.getAllAttributeRecordsByAdmin.records);
   }
-  if (assignBrandDataResponse && assignBrandDataResponse.getAllBrandRecordsWithVendorByAdmin) {
-    setAssignBrandData(assignBrandDataResponse.getAllBrandRecordsWithVendorByAdmin.records);
-  }
-}, [brandDataResponse, brandRefetch, assignBrandDataResponse, id]);
 
-  if (brandError) {
-    console.error("Error fetching vendor data:", brandError);
+}, [attributeResponse,attributeRefetch,id,activeTab,currentPage]);
+
+  if (attributeError) {
+    console.error("Error fetching vendor data:", attributeError);
     // Handle error, display an error message, etc.
   }
 
-  const totalPages = Math.ceil(brandData.length / pageSize);
-
+  // const totalPages = Math.ceil(attributeData.length / pageSize);
+  const totalRecords = attributeResponse?.getAllAttributeRecordsByAdmin.maxRecords || 0;
+  const totalPages = Math.ceil(totalRecords / pageSize);
   const handleNextPage = () => {
     if (currentPage + 1 < totalPages) {
       setCurrentPage(currentPage + 1);
@@ -145,7 +112,7 @@ useEffect(() => {
   };
 
 
-  console.log(assignBrandData,"wertyui")
+  console.log(attributeData,"wertyui")
 
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
@@ -172,7 +139,7 @@ useEffect(() => {
   
         toast.success(response?.message)
         setSelectedBrands([])
-         assignBrandRefetch();
+        
       } catch (error:any) {
         console.error("Error assigning brands:", error.message);
       }
@@ -182,12 +149,15 @@ useEffect(() => {
   };
   
 
+
   return (
     <>
-      <div className="page-content" >
+      <div className="page-content">
       <ToastContainer/>
-        <Container fluid={true} > 
-          {/* <Nav tabs>
+
+        <Container fluid={true}>
+        <Breadcrumb title="Dashboard" breadcrumbItem="Attributes" link="/" />
+          <Nav tabs>
             <NavItem>
               <NavLink
                 className={activeTab === undefined ? "active" : ""}
@@ -212,46 +182,27 @@ useEffect(() => {
                 Blocked
               </NavLink>
             </NavItem>
-          </Nav> */}
+          </Nav>
 
           <Row>
             <Col lg={12}>
               <Card>
                 <CardBody>
-                  {/* <Input
+                  <Input
                     type="text"
                     placeholder="Search by name"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     style={{ width: "50%", marginBottom: "20px" }}
-                  /> */}
+                  />
 
                   <div className="d-flex justify-content-end mb-3">
-                    <Label className="mt-2 " style={{ marginRight: "20px" }}>
-                      Assign Brands:
-                    </Label>
-                    <Select
-                      isMulti
-                      options={brandData.map((brand) => ({
-                        label: brand.brandName,
-                        value: brand._id,
-                      }))}
-                      value={selectedBrands}
-                      onChange={(selectedOptions: any) =>
-                        handleBrandSelection(selectedOptions)
-                      }
-                      placeholder="Select Brands..."
-                      styles={{
-                        control: (styles: any) => ({
-                          ...styles,
-                          marginRight: "10px",
-                          // width: "200px",
-                        }),
-                      }}
-                    />
-                    <Button onClick={() => handleAssignBrands()} style={{backgroundColor:"#000000"}}>
-                      Assign Brands
+                    
+                    <Button  onClick={() => toggleAddModal()} style={{backgroundColor:"#000000"}}>
+                      Add Attribute
                     </Button>
+
+                    <AttributeForm isOpen={showAddModal} toggle={toggleAddModal} refetch={attributeRefetch} />
                   </div>
 
                   <Table
@@ -261,43 +212,36 @@ useEffect(() => {
                     <thead>
                       <tr>
                         <th>No</th>
-                        <th>Brand Name</th>
-                        <th>Logo</th>
+                        <th>Name</th>
+                        <th>Description</th>
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {assignBrandData
-                        .filter((brand) =>
-                          brand.brandName
+                      {attributeData
+                        .filter((attribute) =>
+                          attribute.attributeType
                             .toLowerCase()
                             .includes(searchTerm.toLowerCase())
                         )
-                        .map((brand, index) => (
-                          <tr key={brand._id}>
+                        .map((attribute, index) => (
+                          <tr key={attribute._id}>
                             <td>{index + 1}</td>
-                            <td>{brand.brandName}</td>
+                            <td>{attribute.attributeType}</td>
+                            <td>{attribute.description}</td>
 
-                            <td>
-                              {brand.logo && (
-                                <img
-                                  src={brand.logo.fileURL}
-                                  alt={`Logo for ${brand.brandName}`}
-                                  style={{ width: "50px", height: "50px" }}
-                                />
-                              )}
-                            </td>
+                            
                             <td
                               style={{
-                                color: brand.isBlocked ? "red" : "#5cb85c",
+                                color: attribute.isBlocked ? "red" : "#5cb85c",
                               }}
                             >
-                              {brand.isBlocked ? "Blocked" : "Active"}
+                              {attribute.isBlocked ? "Blocked" : "Active"}
                             </td>
                             <td>
-                              <Link to={`/brands/${brand._id}`}>
-                                <Button style={{ marginLeft: "20px" }}>
+                              <Link to={`/attributes/${attribute._id}`}>
+                                <Button style={{ marginLeft: "20px", backgroundColor: "#000000" }}>
                                   View
                                 </Button>
                               </Link>
@@ -308,7 +252,7 @@ useEffect(() => {
                   </Table>
                 </CardBody>
 
-                <Row>
+                <Row style={{marginRight:"10px"}}>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">
@@ -370,4 +314,4 @@ useEffect(() => {
   );
 };
 
-export default BrandList;
+export default AttributeList;

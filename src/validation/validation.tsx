@@ -34,3 +34,15 @@ export const categoryValidation = yup.object().shape({
     priority:yup.number().required("Priority is required").min(1)
 
   });
+
+  export const AttributeValidation = yup.object().shape({
+    attributeName: yup.string().required('Attribute Name is required').min(3),
+    description: yup.string().required('description is required').min(3),
+  });
+
+
+  export const subAttributeVAlidation= yup.object().shape({
+    attributeValue: yup.string().required('Attribute value is required').min(1),
+    colorCode: yup.string().required('color code required').min(1),
+    priority:yup.number().required("Priority is required").min(1)
+  });

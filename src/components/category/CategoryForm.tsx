@@ -31,7 +31,7 @@ interface Category {
   description: string;
   children?: Category[];
   isLeaf?: boolean;
-  sizeChart: sizeChart;
+  // sizeChart: sizeChart;
   isBlocked: boolean;
 }
 
@@ -207,7 +207,7 @@ const CategoryForm: React.FC<Props> = ({
                 <div className="text-danger">{formik.errors.description}</div>
               )}
             </FormGroup>
-            <FormGroup>
+            {/* <FormGroup>
               <Label for="categoryImage">Size Chart</Label>
 
               {isEdit && isEdit.sizeChart ? (
@@ -243,7 +243,7 @@ const CategoryForm: React.FC<Props> = ({
               {formik.touched.image && formik.errors.image && (
                 <div className="text-danger">{formik.errors.image}</div>
               )}
-            </FormGroup>
+            </FormGroup> */}
 
 
             {!isEdit ? (
