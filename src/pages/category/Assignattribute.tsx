@@ -25,7 +25,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import ReactSelect from "react-select";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import Select from "react-select";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 
 function Assignattribute() {
   interface Category {
@@ -234,7 +234,7 @@ function Assignattribute() {
           variables: {
             input: {
               _id: selectedCategory.value,
-              attibutes: attributeIds,
+              attributes: attributeIds,
             },
           },
         });
@@ -243,6 +243,7 @@ function Assignattribute() {
         setSelectedAttributes([]);
         assignAttributeRefetch()
       } catch (error: any) {
+        toast.error(error.message);
         console.error("Error assigning brands:", error.message);
       }
     } else {
@@ -261,6 +262,7 @@ function Assignattribute() {
   return (
     <>
       <div className="page-content">
+        <ToastContainer/>
         <Container fluid={true}>
           <Breadcrumb title="Dashboard" link="/" breadcrumbItem="Assign-Attribute" />
           <Row>
