@@ -34,52 +34,43 @@ function AssignBrands() {
     fullCategoryName: string;
   }
 
-  interface ColorType {
-    _id: string;
-    categoryIdPath: string;
-    colorCode: string;
-    colorName: string;
-    isBlocked: boolean;
-  }
-
   interface IBrands {
-         _id: string;
-      brandName: string;
-      isBlocked: boolean;
-      logo: {
-        fileURL: string;
-      };
-  }
-
-  interface IAssingBrand {
     _id: string;
-    categoryName: string;
-    brands: IBrands[];
+    brandName: string;
+    isBlocked: boolean;
+    logo: {
+      fileURL: string;
+    };
   }
 
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<any>();
-  const [showAddModal, setShowAddModal] = useState<boolean>(false);
-  const [colors, setColors] = useState([]);
-  const [editColor, setEditColor] = useState<ColorType | null>(null);
-  const [Brands, setBrands] = useState<IBrands[]>([]);
-  const toggleDropdown = () => setDropdownOpen((prevState) => !prevState);
+  interface IAssingCategory {
+    brandId: string;
+    brandName: string;
+    categories: Category[];
+  }
 
-  const [categories, setCategoryData] = useState([]);
+  const [selectedBrand, setSelectedBrand] = useState<any>();
+  const [Brands, setBrands] = useState<IBrands[]>([]);
+  const [categories, setCategoryData] = useState<Category[]>([]);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<{
     value: string;
     label: string;
   } | null>(null);
-
-  const [selectedBrands, setSelectedBrands] = useState<
+  const [selectedCategory, setSelectedCategory] = useState<
     Array<{ label: string; value: string }>
   >([]);
+  const [assignCategoryDatas, setAssignCategoryDatas] =
+    useState<IAssingCategory>();
+  const PUT_BRAND = gql`
+    mutation UpdateBrand($input: updateBrandInput!) {
+      updateBrand(input: $input) {
+        _id
+        message
+      }
+    }
+  `;
 
-  const [assignBrandDatas, setAssignBrandDatas] =
-    useState<IAssingBrand>();
-
-  const [filteredColors, setFilteredColors] = useState<ColorType[]>([]);
   const GET_LEAF_RECORDS = gql`
     query GetAllLeafRecords {
       getAllLeafRecords {
@@ -93,123 +84,52 @@ function AssignBrands() {
     }
   `;
 
-  const GET_ALL_COLORES = gql`
-    query GetAllColorsWithCategoryId($input: CategoryIdInput) {
-      getAllColorsWithCategoryId(input: $input) {
-        records {
-          categoryIdPath
-          colorCode
-          colorName
-          isBlocked
-        }
-      }
-    }
-  `;
-
-
-
-  const GET_ALL_ATTRIBUTES_WITH_CATEGORY_ID = gql`
-    query GetAttributesDetailsWithCategory(
-      $input: AttributesDetailsWithCategoryIdInput!
-    ) {
-      getAttributesDetailsWithCategory(input: $input) {
-        message
-        record {
-          _id
-          categoryName
-          attributes {
-            _id
-            attributeType
-            description
-            isBlocked
-            name
-          }
-        }
-      }
-    }
-  `;
-
-  const GET_ALL_ATTRIBUTES = gql`
-    query GetAllAttributeRecordsByAdmin($input: AttributeRecordsByAdminFilter) {
-      getAllAttributeRecordsByAdmin(input: $input) {
+  const GET_BRAND = gql`
+    query GetAllBrandRecordsByAdmin($input: BrandRecordsFilter) {
+      getAllBrandRecordsByAdmin(input: $input) {
         maxRecords
+        message
         records {
           _id
-          attributeType
-          name
-          description
+          brandName
           isBlocked
         }
       }
     }
   `;
 
-  const PUT_CETEGORY = gql`
-    mutation UpdateCategory($input: UpdateCategoryInput!) {
-      updateCategory(input: $input) {
-        _id
-        message
+  const GET_ASSIGNED_CATEGORY = gql`
+    query GetCategoryDetailsWithBrand(
+      $input: CategoriesDetailsWithBrandIdInput!
+    ) {
+      getCategoryDetailsWithBrand(input: $input) {
+        records {
+          categories {
+            _id
+            categoryName
+            description
+            fullCategoryName
+            isBlocked
+            isLeaf
+          }
+          brandId
+          brandName
+        }
       }
     }
   `;
 
-
-const GET_BRAND = gql`
-   query GetAllBrandRecordsByAdmin($input: BrandRecordsFilter) {
-  getAllBrandRecordsByAdmin(input: $input) {
-    maxRecords
-    message
-    records {
-      _id
-      brandName
-      isBlocked
-    }
-  }
-}`;
-
-
-const GET_ASSIGNED_CATEGORY =  gql`query GetBrandDetailsWithCategory($input: BrandsDetailsWithCategoryIdInput!) {
-  getBrandDetailsWithCategory(input: $input) {
-    message
-    record {
-      _id
-      categoryName
-      brands {
-        _id
-        brandName
-        isBlocked
-        logo {
-          fileType
-          fileURL
-          mimeType
-          originalName
-        }
-        isPopular
-        priority
-      }
-    }
-  }
-}`;
-
-  const [updateCategory] = useMutation(PUT_CETEGORY);
-
+  const [UpdateBrand] = useMutation(PUT_BRAND);
   const { loading: categoriesLoading, data: categoriesData } =
     useQuery(GET_LEAF_RECORDS);
 
   const {
-    loading: assignBrandLoading,
-    data: assignBrandsData,
-    refetch: assignBrandRefetch,
+    loading: assignCategoryLoading,
+    data: assignCategoryData,
+    refetch: assignCategoryRefetch,
   } = useQuery(GET_ASSIGNED_CATEGORY, {
-    variables: { input: { categoryId: selectedCategory?.value || "" } },
+    variables: { input: { brandId: selectedBrand?.value || "" } },
   });
-
-  const {
-    loading: attributesLoding,
-    data: attributesData,
-    refetch: attributesRefetch,
-  } = useQuery(GET_ALL_ATTRIBUTES);
-
 
   const {
     loading: brandLoading,
@@ -221,189 +141,133 @@ const GET_ASSIGNED_CATEGORY =  gql`query GetBrandDetailsWithCategory($input: Bra
       input: {
         page: null,
         size: 10,
-        
       },
     },
   });
-
 
   useEffect(() => {
     if (categoriesData) {
       setCategoryData(categoriesData?.getAllLeafRecords?.records);
     }
-
     if (brandDataResponse) {
       setBrands(brandDataResponse?.getAllBrandRecordsByAdmin?.records);
     }
-
   }, [categoriesData, brandDataResponse]);
 
   useEffect(() => {
-    if (selectedCategory) {
-      assignBrandRefetch({
-        input: { categoryId: selectedCategory?.value },
+    if (selectedBrand) {
+      assignCategoryRefetch({
+        input: { brandId: selectedBrand?.value },
       });
-      setAssignBrandDatas(
-        assignBrandsData?.getBrandDetailsWithCategory?.record
+      setAssignCategoryDatas(
+        assignCategoryData?.getCategoryDetailsWithBrand?.records
       );
     }
-  }, [selectedCategory , assignBrandRefetch, brandRefetch]);
+  }, [selectedBrand]);
 
-  const handleCategorySelect = (category: Category) => {
-    setSelectedCategory(category);
+  const handleBrandSelected = (brand: IBrands) => {
+    setSelectedBrand(brand);
   };
 
-  const toggleAddModal = () => {
-    setShowAddModal(!showAddModal);
-    if (showAddModal) {
-      setEditColor(null);
-    }
-  };
-
-  const toggleStatusDropdown = () => {
-    setStatusDropdownOpen(!statusDropdownOpen);
-  };
-
-  const handleStatusSelect = (selectedOption: any) => {
-    setSelectedStatus(selectedOption);
-    setStatusDropdownOpen(false);
-  };
-
-  const statusOptions = [
-    { value: "all", label: "All" },
-    { value: "blocked", label: "Blocked" },
-    { value: "nonBlocked", label: "Non-Blocked" },
-  ];
-
-  console.log(selectedCategory);
 
 
-  function handleEdit(data: ColorType) {
-    setEditColor(data);
-    toggleAddModal();
-  }
+
+
+ 
 
   const handleAssignBrand = async () => {
-   
-    if (selectedBrands.length > 0) {
-      const brandIds = selectedBrands.map(
-        (brand) => brand.value
-      );
+    if (selectedCategory.length > 0) {
+      const categoryIds = selectedCategory.map((category) => category.value);
 
-     
       try {
-        const response: any = await updateCategory({
+        const response: any = await UpdateBrand({
           variables: {
             input: {
-              _id: selectedCategory.value,
-              brands: brandIds,
+              _id: selectedBrand.value,
+              categories: categoryIds,
             },
           },
         });
-        assignBrandRefetch()
-        brandRefetch()
-        toast.success("Successfully updated");
-        setSelectedBrands([]);
-        // assignAttributeRefetch()
+        if (response){
+          
+         await assignCategoryRefetch();
+         
+        }
        
+        toast.success("Successfully updated");
+        setSelectedCategory([]);
       } catch (error: any) {
         console.error("Error assigning brands:", error.message);
-        toast.error(error.message)
+        toast.error(error.message);
       }
     } else {
       console.error("Please select at least one brand to assign");
       toast.error("Please select at least one brand to assign");
-     
     }
   };
 
-  const handleBrandSelection = (
+  const handleCategorySelection = (
     selectedOptions: Array<{ label: string; value: string }>
   ) => {
-    setSelectedBrands(selectedOptions);
+    setSelectedCategory(selectedOptions);
   };
-
-  console.log(assignBrandDatas);
 
   return (
     <>
       <div className="page-content">
-        <ToastContainer/>
+        <ToastContainer />
         <Container fluid={true}>
-          <Breadcrumb title="Dashboard" link="/" breadcrumbItem="Assign-Brands" />
+          <Breadcrumb
+            title="Dashboard"
+            link="/"
+            breadcrumbItem="Assign-Brands"
+          />
           <Row>
             <Col lg={12}>
               <Card>
                 <CardHeader>
                   <Row>
-                  
-                    <Col xs={4}>
+                    <Col xs={3}>
                       <ReactSelect
-                        value={selectedCategory || ""}
+                        value={selectedBrand || ""}
                         onChange={(selectedOption: any) => {
-                          handleCategorySelect(selectedOption);
+                          handleBrandSelected(selectedOption);
                         }}
-                        options={categories.map((category: Category) => ({
-                          value: category._id,
-                          label: category.fullCategoryName,
+                        options={Brands.map((brand: IBrands) => ({
+                          value: brand._id,
+                          label: brand.brandName,
                         }))}
-                        placeholder="Select Category"
+                        placeholder="Select Brand"
                         isSearchable
                       />
                     </Col>{" "}
-                    <Col xs={3}>
-                      <Dropdown
-                        isOpen={statusDropdownOpen}
-                        toggle={toggleStatusDropdown}
-                      >
-                        <DropdownToggle caret>
-                          {selectedStatus
-                            ? selectedStatus?.label
-                            : "Select Status"}{" "}
-                          <FontAwesomeIcon icon={faAngleDown} />
-                        </DropdownToggle>
-                        <DropdownMenu>
-                          {statusOptions.map((option) => (
-                            <DropdownItem
-                              key={option.value}
-                              onClick={() => handleStatusSelect(option)}
-                            >
-                              {option.label}
-                            </DropdownItem>
-                          ))}
-                        </DropdownMenu>
-                      </Dropdown>
-                    </Col>
-                  
                     <Col
-                      xs={4}
+                      xs={8}
                       className="text-right"
                       style={{
                         display: "flex",
                         justifyContent: "flex-end",
-                        marginLeft: "100px",
+                        marginLeft: "130px",
                       }}
                     >
-                     
-
                       <div className="d-flex justify-content-end mb-3">
                         <Label
                           className="mt-2 "
                           style={{ marginRight: "20px" }}
                         >
-                          Assign Brands:
+                          Assign Category:
                         </Label>
                         <Select
                           isMulti
-                          options={Brands.map((brand) => ({
-                            label: brand.brandName,
-                            value: brand._id,
+                          options={categories.map((category) => ({
+                            label: category.fullCategoryName,
+                            value: category._id,
                           }))}
-                          value={selectedBrands}
+                          value={selectedCategory}
                           onChange={(selectedOptions: any) =>
-                            handleBrandSelection(selectedOptions)
+                            handleCategorySelection(selectedOptions)
                           }
-                          placeholder="Select Attributes..."
+                          placeholder="Select Category..."
                           styles={{
                             control: (styles: any) => ({
                               ...styles,
@@ -416,7 +280,7 @@ const GET_ASSIGNED_CATEGORY =  gql`query GetBrandDetailsWithCategory($input: Bra
                           style={{ backgroundColor: "#000000" }}
                           onClick={handleAssignBrand}
                         >
-                          Assign Brands 
+                          Assign Category
                         </Button>
                       </div>
                     </Col>
@@ -431,30 +295,19 @@ const GET_ASSIGNED_CATEGORY =  gql`query GetBrandDetailsWithCategory($input: Bra
                     <thead>
                       <tr>
                         <th style={{ width: "10%" }}>No</th>
-                        <th style={{ width: "40%" }}>Brand Name</th>
-                        <th style={{ width: "40%" }}>Logo</th>
-                        {/* <th style={{ width: "40%" }}>status</th> */}
+                        <th style={{ width: "40%" }}>Category Name</th>
+                        <th style={{ width: "40%" }}>Categorey FullName</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {selectedCategory ? (
+                      {selectedBrand ? (
                         <>
-                          {assignBrandDatas?.brands?.map(
-                            (value: IBrands, index: any) => (
+                          {assignCategoryDatas?.categories?.map(
+                            (value: Category, index: any) => (
                               <tr key={index}>
                                 <td>{index + 1}</td>
-                                <td>{value.brandName}</td>
-                                {/* <td>{value.description}</td>
-                                <td>{value.name}</td> */}
-                                <td>
-          {value.logo && (
-            <img
-              src={value.logo.fileURL}
-              alt={`Logo for ${value.brandName}`}
-              style={{ width: '50px', height: '50px' }}
-            />
-          )}
-        </td>
+                                <td>{value.categoryName}</td>
+                                <td>{value.fullCategoryName}</td>
                               </tr>
                             )
                           )}
@@ -462,7 +315,7 @@ const GET_ASSIGNED_CATEGORY =  gql`query GetBrandDetailsWithCategory($input: Bra
                       ) : (
                         <tr>
                           <td colSpan={3} className="text-center">
-                            Please select a category
+                            Please select a Brand
                           </td>
                         </tr>
                       )}

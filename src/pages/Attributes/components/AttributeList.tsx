@@ -214,6 +214,7 @@ useEffect(() => {
                         <th>No</th>
                         <th>Name</th>
                         <th>Description</th>
+                        <th>Attribute Type</th>
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -228,9 +229,9 @@ useEffect(() => {
                         .map((attribute, index) => (
                           <tr key={attribute._id}>
                             <td>{index + 1}</td>
-                            <td>{attribute.attributeType}</td>
+                            <td>{attribute.name}</td>
                             <td>{attribute.description}</td>
-
+                            <td>{attribute.attributeType}</td>
                             
                             <td
                               style={{

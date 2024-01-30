@@ -27,7 +27,6 @@ import user1 from "src/assets/images/users/avatar-1.jpg";
 import ConfirmationModal from "./ConfirmationModal";
 import { ToastContainer, toast } from "react-toastify";
 
-
 interface IcontactPerson {
   phoneNumber: string;
   name: string;
@@ -72,25 +71,24 @@ const GET_AVENDOR = gql`
         companyName
         companyStatus
         profilePic {
-            fileType
-            fileURL
-            mimeType
-            originalName
-          }
+          fileType
+          fileURL
+          mimeType
+          originalName
+        }
       }
     }
   }
 `;
 
-
 const PUT_VENDOR_PROFILE = gql`
-mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
-  updateVendorProfileByAdmin(input: $input) {
-    _id
-    message
+  mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
+    updateVendorProfileByAdmin(input: $input) {
+      _id
+      message
+    }
   }
-}
-`
+`;
 
 function ViewVenders() {
   const { id } = useParams();
@@ -103,7 +101,7 @@ function ViewVenders() {
     loading: vendorLoading,
     error: vendorError,
     data: vendorDataResponse,
-    refetch: vendorRefetch
+    refetch: vendorRefetch,
   } = useQuery(GET_AVENDOR, {
     variables: {
       input: {
@@ -142,18 +140,18 @@ function ViewVenders() {
     toggleConfirmationModal();
   };
 
-  const handleConfirmation =  async() => {
+  const handleConfirmation = async () => {
     try {
-      const {data} = await updateVendorProfile({
-        variables:{
-          input:{
-            _id:id,
-            isKycCompleted: true
-          }
-        }
-      })
-     
-      vendorRefetch()
+      const { data } = await updateVendorProfile({
+        variables: {
+          input: {
+            _id: id,
+            isKycCompleted: true,
+          },
+        },
+      });
+
+      vendorRefetch();
       toggleConfirmationModal();
       setTimeout(() => {
         if (data) {
@@ -161,21 +159,16 @@ function ViewVenders() {
           vendorRefetch();
         }
       }, 3000);
-    } catch (error:any) {
-      toast.error(error.message)
-      
+    } catch (error: any) {
+      toast.error(error.message);
     }
-    
-    
   };
 
-
   return (
-    
     <Container fluid={true} style={{ marginTop: "100px" }}>
-     <ToastContainer/>
+      <ToastContainer />
       <Breadcrumb title="Dashboard" breadcrumbItem="Vendor" link="/" />
-      
+
       <Nav tabs>
         <NavItem>
           <NavLink
@@ -278,14 +271,22 @@ function ViewVenders() {
               </CardText>
 
               <div>
-                <Button style={{ backgroundColor: "#000000" }}   onClick={() => setShowConfirmationModal(true)}>Verify Vendor</Button>
-
+                {vendorData?.isKycCompleted ? (
+                  <>{null}</>
+                ) : (
+                  <Button
+                    style={{ backgroundColor: "#000000" }}
+                    onClick={() => setShowConfirmationModal(true)}
+                  >
+                    Verify Vendor
+                  </Button>
+                )}
               </div>
               <ConfirmationModal
-  isOpen={showConfirmationModal}
-  onConfirm={handleConfirmation}
-  onCancel={handleCancel}
-/>
+                isOpen={showConfirmationModal}
+                onConfirm={handleConfirmation}
+                onCancel={handleCancel}
+              />
             </CardBody>
           </Card>
         </TabPane>

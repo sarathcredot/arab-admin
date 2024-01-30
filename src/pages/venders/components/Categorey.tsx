@@ -184,6 +184,7 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
   const handleAssignCategory = async () => {
     if (selectedCategory.length > 0) {
       const categoryIds = selectedCategory.map((category) => category.value);
+      console.log(categoryIds,"selectedCategory")
       try {
         const response:any = await UpdateVendorProfileByAdmin({
           variables: {

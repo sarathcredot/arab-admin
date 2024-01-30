@@ -175,18 +175,15 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
                             <td>{index + 1}</td>
                             <td>{company.fullName}</td>
                             <td>{company.companyName}</td>
-                            <td
-                              style={{
-                                color: company.isKycCompleted === true ? "#5cb85c" : "red",
-                              }}
-                            >
-                              {company.isKycCompleted === true ? "COMPLETED" : "PENDING"}
-                            </td>
+                            <td style={{ color: company.isKycCompleted ? "#5cb85c" : "red" }}>
+  {company.isKycCompleted ? "COMPLETED" : "PENDING"}
+</td>
+
                             
                             <td
                             
                             >
-                              {company.status}
+                              {company?.status}
                             </td>
                             <td>
                               <Link to={`/vendors/${company.vendorId}`}>

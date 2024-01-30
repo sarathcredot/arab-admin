@@ -43,6 +43,6 @@ export const categoryValidation = yup.object().shape({
 
   export const subAttributeVAlidation= yup.object().shape({
     attributeValue: yup.string().required('Attribute value is required').min(1),
-    colorCode: yup.string().required('color code required').min(1),
+    colorCode: yup.string().min(1,'color code required'),
     priority:yup.number().required("Priority is required").min(1)
   });

@@ -241,7 +241,7 @@ function Assignattribute() {
 
         toast.success(response?.message);
         setSelectedAttributes([]);
-        assignAttributeRefetch()
+        await Promise.all([assignAttributeRefetch(), attributesRefetch()]);
       } catch (error: any) {
         toast.error(error.message);
         console.error("Error assigning brands:", error.message);

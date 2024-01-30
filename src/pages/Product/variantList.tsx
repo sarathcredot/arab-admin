@@ -4,7 +4,8 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { Link, useSearchParams } from "react-router-dom";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { ToastContainer, toast } from "react-toastify";
 
 const GET_VARIANTS = gql`
 query GetVariantsTableByAdmin($input: ProductVariantsByAdminFilter!) {
@@ -36,6 +37,14 @@ query GetVariantsTableByAdmin($input: ProductVariantsByAdminFilter!) {
 
 `;
 
+const PUT_STATUS = gql`
+mutation UpdateProductStatus($input: ProductStatusInput!) {
+  updateProductStatus(input: $input) {
+    _id
+    message
+  }
+}
+`;
 interface Product {
     _id: string;
     productName: string;
@@ -52,8 +61,8 @@ interface Product {
       attributeValue: string;
       attributeDescription: string;
     }[];
-    stock: number; // Assuming stock is a number, adjust the type if needed
-    status: string; // Assuming status is a string, adjust the type if needed
+    stock: number; 
+    status: string; 
     isBlocked: boolean;
   
 }
@@ -88,34 +97,37 @@ const VariantListing = () => {
     },
   });
 
+
+
+
+
+const [UpdateProductStatus]=useMutation(PUT_STATUS)
   
 
-  
+const fetchData = async () => {
+  try {
+    setLoading(true);
+    const result = await refetch({
+      input: {
+        page: currentPage,
+        size: pageSize,
+        // query: searchTerm,
+        _id:_id,
+      },
+    });
+    setProducts(result.data.getVariantsTableByAdmin.records);
+    setMaxRecords(result.data.getVariantsTableByAdmin.maxRecords);
+  } catch (error:any) {
+    setError(error.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const result = await refetch({
-          input: {
-            page: currentPage,
-            size: pageSize,
-            // query: searchTerm,
-            _id:_id,
-          },
-        });
-        setProducts(result.data.getVariantsTableByAdmin.records);
-        setMaxRecords(result.data.getVariantsTableByAdmin.maxRecords);
-      } catch (error:any) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-  
     fetchData();
-  }, [searchTerm, currentPage, refetch]);
+  }, [searchTerm, currentPage]);
   
 
   const totalPages = Math.ceil(maxRecords / pageSize);
@@ -130,8 +142,30 @@ const VariantListing = () => {
     setSearchTerm(event.target.value);
     console.log(event.target.value);
   };
+
+  const handleStatusChange = async (status:any,e:any,proId:string) => {
+    e.preventDefault();
+      try {
+        let input: any = {
+          _id: proId,
+          status: status,
+        };
+        const response = await UpdateProductStatus({variables:{input: input}});
+        
+        if (response ) {
+          console.log(response);
+          toast.success(response.data.updateProductStatus.message)
+          fetchData()
+        } else {
+          console.log("Unexpected response format:", response);
+        }
+      } catch (error: any) {
+        console.log(error.message);
+      }
+    };
   return (
     <React.Fragment>
+      <ToastContainer/>
       <div className="page-content">
         <div className="container-fluid">
           <Breadcrumbs title="Dashboard" breadcrumbItem="Product" link="/dashboard" />
@@ -197,7 +231,7 @@ const VariantListing = () => {
                             <Th data-priority="1">Image</Th>
                             <Th data-priority="3">Verify Status</Th>
                             <Th data-priority="3">Status</Th>
-                            <Th data-priority="3">View</Th>
+                            <Th data-priority="3">Action</Th>
                           </Tr>
                         </Thead>
                         <Tbody>
@@ -231,11 +265,31 @@ const VariantListing = () => {
                                   tag={Link}
                                   to={{
                                     pathname: "/product/details/",
-                                    search: `?_id=${product._id}`,
+                                     search: `?_id=${product._id}`,
                                   }}
                                 >
-                                  View
+                                  view
                                 </Button>
+
+                                {product?.status==="APPROVED"? <>
+                                {null}
+                                </>:<>
+                                <Button
+                                  color="white"
+                                  style={{
+                                    backgroundColor: "black",
+                                    alignItems: "center",
+                                    color: "white",
+                                    marginLeft:"10px"
+                                  }}
+                                  
+                                 onClick={(e )=>handleStatusChange("APPROVED",e, product?._id)}
+                                >
+                                  Approve
+                                </Button>
+                                </>}
+
+                               
                               </Td>
                             </Tr>
                           ))}

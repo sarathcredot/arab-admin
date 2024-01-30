@@ -225,7 +225,8 @@ useEffect(() => {
                       <tr>
                         <th>No</th>
                         <th>value</th>
-                        <th>colorCode</th>
+                        {attributeData?.description.toLowerCase() === "color" ? <th>colorCode</th> : null}
+                       
                         <th>priority</th>
                         <th>Status</th>
                         {/* <th>Action</th> */}
@@ -242,7 +243,8 @@ useEffect(() => {
                           <tr key={attribute._id}>
                             <td>{index + 1}</td>
                             <td>{attribute.value}</td>
-                            <td>{attribute.colorCode}</td>
+                            {attributeData?.description.toLowerCase() === "color" ? <td>{attribute.colorCode}</td> : null}
+                            
                             <td>{attribute.priority}</td>                            
                             <td
                               style={{

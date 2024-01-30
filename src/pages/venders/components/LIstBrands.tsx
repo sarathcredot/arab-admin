@@ -112,7 +112,7 @@ const {
 } = useQuery(GET_ASSIGN_BRAND, {
   variables: {
     input: {
-      page: null,
+      page: currentPage,
       size: 10,
       vendorId: id,
     },
@@ -172,7 +172,7 @@ useEffect(() => {
   
         toast.success(response?.message)
         setSelectedBrands([])
-         assignBrandRefetch();
+        assignBrandRefetch();
       } catch (error:any) {
         console.error("Error assigning brands:", error.message);
       }

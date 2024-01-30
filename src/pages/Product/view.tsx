@@ -375,7 +375,7 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
     try {
       let input: any = {
         _id: _id,
-        status: "APPROVED",
+        status: status,
       };
       const response = await UpdateProductStatus({variables:{input: input}});
       if (response ) {
@@ -675,6 +675,8 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
                                 {product?.mrp}
                               </p>
                             </div>
+
+                            
                           </Col>
                           <Col xl={6}>
                             <div
@@ -692,6 +694,9 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
                                 {product?.stock}
                               </p>
                             </div>
+
+                      
+                            
                           </Col>
                           <Col xl={6}>
                             <div
@@ -708,16 +713,23 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
                               <p className="form-control-static">
                                 {product?.tags}
                               </p>
+
+            
                             </div>
+
+                            
                           </Col>
 
+                          {product?.status==="APPROVED" ?<>
+                          {null}
+                          </>:<>
                           <Col xl={6}>
                             <div
                               className="mb-3"
                               style={{ display: "flex", gap: "4px" }}
                             >
                               <button
-                                onClick={(e)=>handleStatusChange("COMPLETED",e)}
+                                onClick={(e)=>handleStatusChange("APPROVED",e)}
                                 style={{
                                   backgroundColor: "black",
                                   color: "white",
@@ -743,6 +755,10 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
                               </button>
                             </div>
                           </Col>
+                          
+                          </>}
+
+                          
                         </Row>
                       </div>
                     </form>
