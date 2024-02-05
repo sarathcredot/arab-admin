@@ -27,7 +27,7 @@ import { useFormik } from "formik";
 import { userForgetPassword } from "../../store/actions";
 
 // import images
-import logo from "../../assets/images/logo-sm.svg";
+import logo from "../../assets/images/arabDealLogo.svg";
 import CarouselPage from "../AuthenticationInner/CarouselPage";
 import { createSelector } from "reselect";
 
@@ -64,7 +64,7 @@ const ForgetPasswordPage = ({ history }: ForgetPasswordProps) => {
     },
   });
 
-  document.title = "Forget Password | collin";
+  document.title = "Forget Password | Arab Deals";
 
   return (
     <React.Fragment>

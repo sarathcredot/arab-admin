@@ -7,7 +7,7 @@ import logo from "../../assets/images/logo-sm.svg";
 import CarouselPage from "./CarouselPage";
 
 const EmailVerification = () => {
-  document.title = "Email Verification | collin";
+  document.title = "Email Verification | Arab Deals";
 
   return (
     <React.Fragment>

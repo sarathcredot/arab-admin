@@ -52,7 +52,6 @@ import UiGeneral from "src/pages/UiComponents/UiGeneral";
 import UiColors from "src/pages/UiComponents/UiColors";
 import UiUtilities from "src/pages/UiComponents/Uiutilities";
 
-
 //Extended pages
 import UiLightbox from "src/pages/Extended/Lightbox";
 import SessionTimeout from "src/pages/Extended/SessionTimeout";
@@ -127,6 +126,18 @@ import CmsRecordDetails from "src/pages/Cms/ViewCmsOnerecord";
 import CmsTwoRecordDetails from "src/pages/Cms/ViewCmsTworecord";
 import AddCmsSection from "src/pages/Cms/AddcmsSection";
 import AddCmstwosection from "src/pages/Cms/AddcmsTwo";
+import VendorList from "src/pages/venders/Venders";
+import ViewVenders from "src/pages/venders/ViewVenders";
+import KycListing from "src/pages/Kyc/KycListing";
+import ViewKyc from "src/pages/Kyc/ViewKyc";
+import BrandList from "src/pages/branding/BrandList";
+import ViewBrands from "src/pages/branding/ViewBrand";
+import AttributeList from "src/pages/Attributes/components/AttributeList";
+import ValueAttributeList from "src/pages/Attributes/components/AttributeValue";
+import Assignattribute from "src/pages/category/Assignattribute";
+import VariantListing from "src/pages/Product/variantList";
+import AssignBrands from "src/pages/branding/AssignBrands";
+import UserList from "src/pages/Users/UserList";
 interface RouteProps {
   path: string;
   component: any;
@@ -171,30 +182,17 @@ const adminRoutes: Array<RouteProps> = [
   // { path: "/pages-pricing", component: <PagePricing /> },
   //Utility
 
-  { path: "/product", component: <Productlisting/> },
-  { path: "/product/details",component:<View/> },
-  { path: "/add-product",component:<Addproduct/> },
-  {path:"/add-variant",component:<AddVariant/>},
-  {path:"/cmslisting",component:<CmsListing/>},
-  {path:"/cmstwolisting",component:<CmstwoListing/>},
-  { path: "/cms/details",component:<CmsRecordDetails/>},
-  { path: "/cmstwo/details",component:<CmsTwoRecordDetails/>},
-  { path: "/add-cms",component:<AddCmsSection/>},
-  { path: "/add-cms2",component:<AddCmstwosection/>},
-
-
-
-
-
-
-
-  
-
-  
-
-
-  
-
+  { path: "/product", component: <Productlisting /> },
+  { path: "/product/details", component: <View /> },
+  { path: "/product/variant", component: <VariantListing /> },
+  { path: "/add-product", component: <Addproduct /> },
+  { path: "/add-variant", component: <AddVariant /> },
+  { path: "/cmslisting", component: <CmsListing /> },
+  { path: "/cmstwolisting", component: <CmstwoListing /> },
+  { path: "/cms/details", component: <CmsRecordDetails /> },
+  { path: "/cmstwo/details", component: <CmsTwoRecordDetails /> },
+  { path: "/add-cms", component: <AddCmsSection /> },
+  { path: "/add-cms2", component: <AddCmstwosection /> },
 
   // //UI Components
   // { path: "/ui-alerts", component: <UiAlert /> },
@@ -259,11 +257,24 @@ const adminRoutes: Array<RouteProps> = [
   // { path: "/maps-leaflet", component: <MapsLeaflet /> },
 
   { path: "/category", component: <Category /> },
-  {path: "/colors", component: <ColorList/>},
-  {path: "/size", component: <SizeList/>},
+  {path: "/assign-attribute" , component: <Assignattribute/>},
+  { path: "/colors", component: <ColorList /> },
+  { path: "/size", component: <SizeList /> },
 
   // this route should be at the end of all other routes
   { path: "/", exact: true, component: <Navigate to="/dashboard" /> },
+  { path: "/vendors", exact: true, component: <VendorList /> },
+  { path: "/vendors/:id", exact: true, component: <ViewVenders /> },
+
+  { path: "/kyc", exact: true, component: <KycListing /> },
+  { path: "/kyc/:id", exact: true, component: <ViewKyc /> },
+  { path: "/brands", exact: true, component: <BrandList /> },
+  { path: "/brands/:id", exact: true, component: <ViewBrands /> },
+  {path: "/assign-brands" , component: <AssignBrands/>},
+
+  { path: "/attributes", exact: true, component: <AttributeList /> },
+  { path: "/attributes/:id", exact: true, component: <ValueAttributeList /> },
+  { path: "/users", exact: true, component: <UserList /> },
 ];
 
 const authRoutes: Array<RouteProps> = [

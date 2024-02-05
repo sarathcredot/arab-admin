@@ -7,38 +7,53 @@ import { Link } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
 
 const GET_PRODUCTS = gql`
-  query GetProductsByAdmin($input: ProductFilters) {
-    getProductsByAdmin(input: $input) {
-      maxRecords
-      records {
-        _id
-        categoryId
-        categoryNamePath
-        color
-        description
-        images {
-          fileType
-          fileURL
-          mimeType
-          originalName
-        }
-        isBlocked
-        material
-        mrp
-        price
-        productCode
-        productName
-        rating
-        sellingPrice
-        shortDescription
-        size
-        skuId
-        tags
-        stock
+ query GetProductsByAdmin($input: ProductFilters) {
+  getProductsByAdmin(input: $input) {
+    maxRecords
+    records {
+      _id
+      vendorId
+      brandId
+      brandName
+      productName
+      shortDescription
+      skuId
+      description
+      productInfo
+      productShortInfo
+      material
+      images {
+        fileType
+        fileURL
+        mimeType
+        originalName
+      }
+      rating
+      sellingPrice
+      price
+      mrp
+      productCode
+      categoryId
+      categoryNamePath
+      categoryIdPath
+      isBlocked
+      stock
+      status
+      offerPrice
+      attributes {
+        attributeId
+        attributeName
+        attributeValueId
+        attributeValue
+        attributeDescription
       }
     }
   }
+}
 `;
+
+
+
 
 interface Product {
   _id: string;
@@ -50,11 +65,12 @@ interface Product {
     fileURL: string;
   }[];
   isBlocked: boolean;
+  status:string;
 }
 
 const ProductListing = () => {
   document.title =
-    "Responsive Table | Collin ";
+    "Responsive Table | Arab Deals ";
 
   const pageSize = 10; // Number of items per page
   const [currentPage, setCurrentPage] = useState(0);
@@ -132,7 +148,7 @@ const ProductListing = () => {
         <div className="container-fluid">
           <Breadcrumbs title="Dashboard" breadcrumbItem="Product" link="/dashboard" />
           <Row>
-            <Col lg={12}>
+            {/* <Col lg={12}>
              
                 <div className="d-flex justify-content-end mb-3">
                 <Link to="/add-product">
@@ -150,7 +166,7 @@ const ProductListing = () => {
                   </Link>
                 </div>
              
-            </Col>
+            </Col> */}
           </Row>
 
           <Row>
@@ -192,6 +208,7 @@ const ProductListing = () => {
                             <Th data-priority="3">Short Description</Th>
                             <Th data-priority="3">Category</Th>
                             <Th data-priority="1">Image</Th>
+                            <Th  data-priority="3"> Verify Status</Th>
                             <Th data-priority="3">Status</Th>
                             <Th data-priority="3">View</Th>
                           </Tr>
@@ -212,6 +229,9 @@ const ProductListing = () => {
                                 />
                               </Td>
                               <Td>
+                                {product?.status}
+                              </Td>
+                              <Td>
                                 {product.isBlocked ? "Blocked" : "Active"}
                               </Td>
                               <Td>
@@ -224,7 +244,7 @@ const ProductListing = () => {
                                   }}
                                   tag={Link}
                                   to={{
-                                    pathname: "/product/details/",
+                                    pathname: "/product/variant/",
                                     search: `?_id=${product._id}`,
                                   }}
                                 >

@@ -23,7 +23,7 @@ export const responseInterceptor = new ApolloLink(
     return new Observable((observer) => {
       const subscription = forward(operation).subscribe({
         next: (result) => {
-          console.log('GraphQL Result:', result?.errors);
+          console.log('GraphQL Result:', result);
           // Check if there are errors in the result
           if (result.errors && result.errors.some((error: any) => error.extensions?.code === "UNAUTHORIZED")){
             console.log("Redirecting to login page");

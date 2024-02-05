@@ -17,7 +17,7 @@ import ProfileMenu from "../CommonForBoth/TopbarDropdown/ProfileMenu";
 import LightDark from "../CommonForBoth/Menus/LightDark";
 
 // import images
-import logo from "../../assets/images/image 3.svg";
+import logo from "../../assets/images/arabDealLogo.svg";
 import github from "../../assets/images/brands/github.png";
 import bitbucket from "../../assets/images/brands/bitbucket.png";
 import dribbble from "../../assets/images/brands/dribbble.png";

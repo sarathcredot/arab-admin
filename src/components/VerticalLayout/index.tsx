@@ -167,7 +167,7 @@ const Layout = (props: any) => {
         />
         <div className="main-content">
           {props.children}
-          <Footer />
+          {/* <Footer /> */}
         </div>
       </div>
       {showRightSidebar ? (

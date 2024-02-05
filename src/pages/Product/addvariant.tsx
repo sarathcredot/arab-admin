@@ -89,10 +89,9 @@ const AddVariant = ({}) => {
   const {
     control,
     handleSubmit,
-    setValue, // Add this line
+    setValue, 
     formState: { errors },
   } = useForm<ProductForm>({
-    // Add validation rules
     criteriaMode: "all",
     shouldFocusError: true,
     mode: "onBlur",
@@ -126,18 +125,17 @@ const AddVariant = ({}) => {
 
   const [categories, setCategoryData] = useState([]);
   useEffect(() => {
-    // Retrieve category ID from query parameters
     const categoryIdParam = new URLSearchParams(location.search).get(
       "category"
     );
-    setDropdownDisabled(true); // Disable the dropdown after setting the default category
+    setDropdownDisabled(true); 
 
-    // Find the category with the matching ID from the list of categories
+   
     const defaultCategory = categories.find(
       (category: Category) => category._id === categoryIdParam
     );
 
-    // If a matching category is found, set it as the default selected category
+    
     if (defaultCategory) {
       setSelectedCategory(defaultCategory);
     }
@@ -247,7 +245,7 @@ const AddVariant = ({}) => {
       return;
     }
 
-    // Construct the input variables for the mutation
+    
     const mutationInput = {
       productCode: parseInt(productCodeParam),
       categoryId: selectedCategory?._id,

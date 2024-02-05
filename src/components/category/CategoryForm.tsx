@@ -31,7 +31,7 @@ interface Category {
   description: string;
   children?: Category[];
   isLeaf?: boolean;
-  sizeChart: sizeChart;
+  // sizeChart: sizeChart;
   isBlocked: boolean;
 }
 
@@ -66,11 +66,12 @@ const CategoryForm: React.FC<Props> = ({
   
 
   const POST_CATEGORY = gql`
-    mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
-      createCategory(input: $input, image: $image) {
-        _id
-      }
-    }
+mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
+  createCategory(input: $input, image: $image) {
+    _id
+  }
+}
+
   `;
 
   const PUT_CATEGORY = gql`
@@ -92,6 +93,7 @@ const CategoryForm: React.FC<Props> = ({
   const onSubmit = async (values: any ,{resetForm}:any) => {
     try {
       // values.preventDefault();
+      
       let variables: any = {
         input: {
           _id: isEdit?._id,
@@ -103,6 +105,8 @@ const CategoryForm: React.FC<Props> = ({
         },
       };
       if (values.image) {
+        
+        console.log("hduyydsuydsuyf",values.image);
         variables = {
           ...variables,
           image: values?.image,
@@ -128,6 +132,7 @@ const CategoryForm: React.FC<Props> = ({
         });
 
         if (response) {
+          console.log("Successfully created category")
           toast.success("Successfully added category");
           refetch();
           childrefetch();
@@ -148,7 +153,7 @@ const CategoryForm: React.FC<Props> = ({
     initialValues: {
       name: isEdit ? isEdit.categoryName : "",
       description: isEdit ? isEdit.description : "",
-      image: null,
+      image:null
     },
     validationSchema: categoryValidation,
     onSubmit: async (values,{ resetForm }) => {
@@ -208,9 +213,9 @@ const CategoryForm: React.FC<Props> = ({
               )}
             </FormGroup>
             <FormGroup>
-              <Label for="categoryImage">Size Chart</Label>
+              <Label for="categoryImage">Category Icon</Label>
 
-              {isEdit && isEdit.sizeChart ? (
+              {/* {isEdit && isEdit.sizeChart ? (
                 <div>
                   <img
                     src={isEdit.sizeChart.fileURL}
@@ -223,7 +228,7 @@ const CategoryForm: React.FC<Props> = ({
                     onClick={() => openImageModal(isEdit.sizeChart.fileURL)}
                   />
                 </div>
-              ) : null}
+              ) : null} */}
 
               <Input
                 style={{ marginTop: "10px" }}
@@ -234,7 +239,7 @@ const CategoryForm: React.FC<Props> = ({
                 onChange={(event) => {
                   formik.setFieldValue(
                     "image",
-                    event.currentTarget.files?.[0] || []
+                    event.currentTarget.files?.[0] 
                   );
                 }}
                 onBlur={formik.handleBlur}
@@ -243,7 +248,7 @@ const CategoryForm: React.FC<Props> = ({
               {formik.touched.image && formik.errors.image && (
                 <div className="text-danger">{formik.errors.image}</div>
               )}
-            </FormGroup>
+            </FormGroup> 
 
 
             {!isEdit ? (
@@ -284,7 +289,7 @@ const CategoryForm: React.FC<Props> = ({
             ) : null}
 
             <ModalFooter style={{ marginTop: "20px" }}>
-              <Button  style={{backgroundColor:"rgba(0, 0, 0, 1)"}}>Add</Button>
+              <Button type="submit"  style={{backgroundColor:"rgba(0, 0, 0, 1)"}}>submit</Button>
               <Button style={{backgroundColor:"rgba(177, 35, 73, 1)"}} onClick={toggle}>
                 Cancel
               </Button>

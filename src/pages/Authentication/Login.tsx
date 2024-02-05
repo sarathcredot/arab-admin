@@ -32,7 +32,7 @@ import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props
 import { loginUser, socialLogin } from "../../store/actions";
 
 // import images
-import logo from "../../assets/images/brands/Logo - login.png";
+import logo from "../../assets/images/arabDealLogo.svg";
 
 //Import config
 import config from "../../config";
@@ -99,7 +99,7 @@ const Login = (props: any) => {
 
   const [loginAdmin] = useMutation(LOGIN_MUTATION);
 
-  document.title = "Login | Collin";
+  document.title = "Login | Arab Deals";
 
   const validation = useFormik({
     enableReinitialize: true,
@@ -169,14 +169,14 @@ const Login = (props: any) => {
                     {/* <div className="mb-4 mb-md-5 text-center">
                       <Link to="/dashboard" className="d-block auth-logo">
                         <img src={logo} alt="" height="28" />{" "}
-                        <span className="logo-txt">Collin Admin Portal</span>
+                        <span className="logo-txt">Arab Deals Admin Portal</span>
                       </Link>
                     </div> */}
                     <div className="auth-content my-auto">
                       <div className="text-center">
                         {/* <h5 className="mb-0">Welcome Back !</h5>
                         <p className="text-muted mt-2">
-                          Sign in to continue to Collin.
+                          Sign in to continue to Arab Deals.
                         </p> */}
 
                         <img src={logo} alt="" height="90%" />

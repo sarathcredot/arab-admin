@@ -74,7 +74,7 @@ const options: Object = {
 //meta title
 
 const Dashboard = () => {
-  document.title = "Dashboard | collin";
+  document.title = "Dashboard | Arab Deals";
   return (
     <React.Fragment>
       <div className="page-content">

@@ -151,13 +151,12 @@ const AddCmsTwoSection: React.FC<AddCmsTwoSectionProps> = ({
         _id: item._id
       }));
 
-      console.log(items,"sdsfghjklhgfjk")
 
       setButtons(items);
       editedcmstwo.items.forEach((item, index) => {
         const imageUrl: any = item.image ? item.image.fileURL : null;
         setValue(`items.${index}.image`, imageUrl);
-        console.log("imurl", imageUrl);
+       
       });
     }
   }, [edit, editedcmstwo, setValue]);
@@ -238,9 +237,7 @@ const navigate=useNavigate()
     if (itemId) {
       setFileMap((prevFileMap: any) => {
         const updatedIndexState = [...indexState, index];
-        console.log(updatedIndexState,"updatedIndexState")
         const lastIndex = updatedIndexState.length - 1;
-        console.log(lastIndex,"lastIndex  ")
         return {
           ...prevFileMap,
           [itemId]: lastIndex,

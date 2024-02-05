@@ -55,7 +55,7 @@
 
   const { layoutType } = useSelector(selectCalendar);
 
-  console.log(layoutType,"layoutType")
+ 
 
     function getLayout() {
       let layoutCls: Object = VerticalLayout;

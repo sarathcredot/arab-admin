@@ -39,7 +39,7 @@ interface Category {
   description: string;
   children?: Category[];
   isLeaf: boolean;
-  sizeChart: sizeChart;
+  // sizeChart: sizeChart;
   isBlocked: boolean;
 }
 
@@ -76,12 +76,7 @@ const CategoryList: React.FC<Props> = () => {
           fullCategoryName
           isLeaf
           description
-          sizeChart {
-            fileType
-            fileURL
-            mimeType
-            originalName
-          }
+         
         }
       }
     }
@@ -97,12 +92,7 @@ const CategoryList: React.FC<Props> = () => {
           fullCategoryName
           isLeaf
           description
-          sizeChart {
-            fileType
-            fileURL
-            mimeType
-            originalName
-          }
+          
         }
       }
     }
@@ -214,7 +204,7 @@ const CategoryList: React.FC<Props> = () => {
 
   const handleSearch = (event: any) => {
     setSearchTerm(event.target.value);
-    console.log(event.target.value);
+   
   };
 
   useEffect(() => {
@@ -343,7 +333,7 @@ const CategoryList: React.FC<Props> = () => {
                         <th>No</th>
                         <th>Name</th>
                         <th>Description</th>
-                        <th>Size Chart Image</th>
+                        {/* <th>Size Chart Image</th> */}
                         <th>Status</th>
                         <th>Actions</th>
                       </tr>
@@ -354,7 +344,7 @@ const CategoryList: React.FC<Props> = () => {
                           <td>{index + 1}</td>
                           <td>{category.categoryName}</td>
                           <td>{category.description}</td>
-                          <td>
+                          {/* <td>
                             {category.sizeChart && (
                               <img
                                 src={category?.sizeChart?.fileURL}
@@ -369,7 +359,7 @@ const CategoryList: React.FC<Props> = () => {
                                 }
                               />
                             )}
-                          </td>
+                          </td> */}
 
                           <td>
                             {category?.isBlocked == false ? "Active" : "Block"}
@@ -466,7 +456,7 @@ const CategoryList: React.FC<Props> = () => {
   }
 
   function handleDelete(id: string) {
-    console.log(`Delete button clicked for ID: ${id}`);
+   
   }
 };
 
