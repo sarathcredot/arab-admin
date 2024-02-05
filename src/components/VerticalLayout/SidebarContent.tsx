@@ -186,6 +186,14 @@ const SidebarContent = (props: any) => {
             </li>
 
             <li className="mt-3 li-sideBar">
+              <Link to="/users" className="">
+                <FeatherIcon icon="pie-chart" />{" "}
+                <span>{props.t("Users")}</span>
+               
+              </Link>
+            </li>
+
+            <li className="mt-3 li-sideBar">
               <Link to="/kyc" className="">
                 <FeatherIcon icon="pie-chart" />{" "}
                 <span>{props.t("Kyc")}</span>

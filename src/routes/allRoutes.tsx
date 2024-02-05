@@ -137,6 +137,7 @@ import ValueAttributeList from "src/pages/Attributes/components/AttributeValue";
 import Assignattribute from "src/pages/category/Assignattribute";
 import VariantListing from "src/pages/Product/variantList";
 import AssignBrands from "src/pages/branding/AssignBrands";
+import UserList from "src/pages/Users/UserList";
 interface RouteProps {
   path: string;
   component: any;
@@ -273,6 +274,7 @@ const adminRoutes: Array<RouteProps> = [
 
   { path: "/attributes", exact: true, component: <AttributeList /> },
   { path: "/attributes/:id", exact: true, component: <ValueAttributeList /> },
+  { path: "/users", exact: true, component: <UserList /> },
 ];
 
 const authRoutes: Array<RouteProps> = [

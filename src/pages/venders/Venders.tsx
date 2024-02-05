@@ -37,7 +37,7 @@
     const [vendorData, setVendorData] = useState<IVendor[]>([]);
     const [activeTab, setActiveTab] = useState<boolean>();
     const [currentPage, setCurrentPage] = useState(0);
-    const pageSize = 10; // Number of items per page
+    const pageSize = 10;
     const [showAddModal, setShowAddModal] = useState<boolean>(false);
 
     const GET_VENDOR = gql`
