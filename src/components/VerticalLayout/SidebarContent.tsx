@@ -104,21 +104,22 @@ const SidebarContent = (props: any) => {
   };
 
   const path = useLocation();
+
   const activeMenu = useCallback(() => {
     const pathName = path.pathname;
-    let matchingMenuItem = null;
+
     const ul: any = document.getElementById("side-menu");
     const items = ul.getElementsByTagName("a");
+
     removeActivation(items);
 
     for (let i = 0; i < items.length; ++i) {
-      if (pathName === items[i].pathname) {
-        matchingMenuItem = items[i];
+      const itemPath = items[i].getAttribute("href");
+
+      if (itemPath && (pathName === itemPath || pathName.startsWith(itemPath))) {
+        activateParentDropdown(items[i]);
         break;
       }
-    }
-    if (matchingMenuItem) {
-      activateParentDropdown(matchingMenuItem);
     }
   }, [path.pathname, activateParentDropdown]);
 
@@ -150,12 +151,10 @@ const SidebarContent = (props: any) => {
       <SimpleBar style={{ maxHeight: "100%" }} ref={ref}>
         <div id="sidebar-menu">
           <ul className="metismenu list-unstyled" id="side-menu">
-            <li className="menu-title" style={{ color: "#FFF" }}>
-              {props.t("Menu")}{" "}
-            </li>
+
             <li className="mt-3 li-sideBar">
               <Link to="/dashboard" className="">
-              
+
 
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -169,7 +168,7 @@ const SidebarContent = (props: any) => {
               </Link>
             </li>
 
-            
+
             {/* <li className="mt-3 li-sideBar">
               <Link to="/colors" className="">
                 <FeatherIcon icon="pie-chart" />{" "}
@@ -181,7 +180,7 @@ const SidebarContent = (props: any) => {
               <Link to="/vendors" className="">
                 <FeatherIcon icon="pie-chart" />{" "}
                 <span>{props.t("Vendors")}</span>
-               
+
               </Link>
             </li>
 
@@ -189,7 +188,7 @@ const SidebarContent = (props: any) => {
               <Link to="/users" className="">
                 <FeatherIcon icon="pie-chart" />{" "}
                 <span>{props.t("Users")}</span>
-               
+
               </Link>
             </li>
 
@@ -197,32 +196,30 @@ const SidebarContent = (props: any) => {
               <Link to="/kyc" className="">
                 <FeatherIcon icon="pie-chart" />{" "}
                 <span>{props.t("Kyc")}</span>
-               
+
               </Link>
             </li>
 
-          
 
-            
+
+
 
             <li className="mt-3  li-sideBar" >
               <Link to="/category" className="">
-                
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="15"
-                  height="15"
-                  viewBox="0 0 15 15"
-                >
-                  <path d="M4.0625 6.875L7.5 1.25L10.9375 6.875H4.0625ZM10.9375 13.75C10.1562 13.75 9.49219 13.4766 8.94531 12.9297C8.39844 12.3828 8.125 11.7188 8.125 10.9375C8.125 10.1562 8.39844 9.49219 8.94531 8.94531C9.49219 8.39844 10.1562 8.125 10.9375 8.125C11.7188 8.125 12.3828 8.39844 12.9297 8.94531C13.4766 9.49219 13.75 10.1562 13.75 10.9375C13.75 11.7188 13.4766 12.3828 12.9297 12.9297C12.3828 13.4766 11.7188 13.75 10.9375 13.75ZM1.875 13.4375V8.4375H6.875V13.4375H1.875Z" />
-                </svg>
-                <span className="arrow-down">{props.t("Category")}</span>
-               
 
-               
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "center", }}>
+                    <FeatherIcon icon="shopping-bag" />
+                    <span>{props.t("Categories List")}</span>
+                  </div>
+                  <div
+                    className="arrow-down"
+                    style={{ position: "absolute", top: "10px", right: "25px" }}
+                  ></div>
+                </div>
               </Link>
 
-               {/* <p
+              {/* <p
                   className="arrow-down"
                   style={{ marginLeft: "150px", height:"20px" }}
                 ></p> */}
@@ -241,13 +238,21 @@ const SidebarContent = (props: any) => {
                   </Link>
                 </li>
               </ul>
-              
+
             </li>
 
             <li className="mt-3 li-sideBar">
               <Link to="/brands" className="">
-                <FeatherIcon icon="pie-chart" />{" "}
-                <span className="arrow-down">{props.t("Brands")}</span>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "center", }}>
+                    <FeatherIcon icon="shopping-bag" />
+                    <span>{props.t("Brands")}</span>
+                  </div>
+                  <div
+                    className="arrow-down"
+                    style={{ position: "absolute", top: "10px", right: "25px" }}
+                  ></div>
+                </div>
               </Link>
 
 
@@ -262,6 +267,48 @@ const SidebarContent = (props: any) => {
                   <Link to="/assign-brands">
                     <FeatherIcon icon="chevron-right" />{" "}
                     <span>{props.t("Assign Category")}</span>
+                  </Link>
+                </li>
+              </ul>
+            </li>
+
+            {/* ORDERS */}
+            <li className="mt-3 li-sideBar" >
+              <Link to="/order-resolution" >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "center", }}>
+                    <FeatherIcon icon="shopping-bag" />
+                    <span>{props.t("Order Resolution")}</span>
+                  </div>
+                  <div
+                    className="arrow-down"
+                    style={{ position: "absolute", top: "10px", right: "25px" }}
+                  ></div>
+                </div>
+              </Link>
+              <ul className="sub-menu">
+                <li>
+                  <Link to="/orders">
+                    <FeatherIcon icon="chevron-right" />{" "}
+                    <span>{props.t("All Orders")}</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/shipping-orders">
+                    <FeatherIcon icon="chevron-right" />{" "}
+                    <span>{props.t("Shipping Orders")}</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/return-orders">
+                    <FeatherIcon icon="chevron-right" />{" "}
+                    <span>{props.t("Return orders")}</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/refund-orders">
+                    <FeatherIcon icon="chevron-right" />{" "}
+                    <span>{props.t("Refund orders")}</span>
                   </Link>
                 </li>
               </ul>
@@ -304,8 +351,8 @@ const SidebarContent = (props: any) => {
                 <span>{props.t("Size")}</span>
               </Link>
             </li> */}
-          
-            
+
+
             {/* <li className="mt-3 li-sideBar" >
               <Link to="/product" >
                 <FeatherIcon icon="home" /> <span>{props.t("CMS")}</span>
