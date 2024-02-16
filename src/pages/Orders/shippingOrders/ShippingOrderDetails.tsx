@@ -305,10 +305,6 @@ const ShippingOrderDetails = () => {
                           gap: "4px",
                         }}
                       >
-                        {/* <label
-                                                        htmlFor="colorDropdown"
-                                                        className="form-label"
-                                                    ></label> */}
                       </div>
                       <div >
                         <div style={{ display: "flex", flexDirection: "row", }}>
