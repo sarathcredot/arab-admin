@@ -54,34 +54,36 @@ function KycListing() {
       <div className="page-content">
         <Breadcrumb title="Dashboard" breadcrumbItem="Kyc Listing" link="/" />
         <Container fluid={true}>
-        <Nav tabs>
+          <Nav tabs>
             <NavItem>
               <NavLink
-                className={classnames({ active: activeTab === "CompanyList" })} onClick={() => handleTabChange("CompanyList")}
+                className={activeTab === "CompanyList" ? "tab-button active" : "tab-button"}
+                onClick={() => handleTabChange("CompanyList")}
               >
                 Company List
               </NavLink>
             </NavItem>
             <NavItem>
               <NavLink
-                className={classnames({ active: activeTab === "OutletList" })} onClick={() => handleTabChange("OutletList")}>
-               Outlet List
+                className={activeTab === "OutletList" ? "tab-button active" : "tab-button"}
+                onClick={() => handleTabChange("OutletList")}>
+                Outlet List
               </NavLink>
             </NavItem>
-            
+
           </Nav>
 
 
           <TabContent activeTab={activeTab}>
 
-          <TabPane tabId="CompanyList">
-          <CompanyListing/>
-        </TabPane>
+            <TabPane tabId="CompanyList">
+              <CompanyListing />
+            </TabPane>
 
-        <TabPane tabId="OutletList">
-        <OutletListing/>
-        </TabPane>
-  </TabContent>
+            <TabPane tabId="OutletList">
+              <OutletListing />
+            </TabPane>
+          </TabContent>
         </Container>
       </div>
     </>

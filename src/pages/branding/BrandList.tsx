@@ -75,7 +75,7 @@ const BrandList: React.FC = () => {
 
   if (brandError) {
     console.error("Error fetching vendor data:", brandError);
-  
+
   }
 
   const totalPages = Math.ceil(brandData.length / pageSize);
@@ -98,7 +98,7 @@ const BrandList: React.FC = () => {
           <Nav tabs>
             <NavItem>
               <NavLink
-                className={activeTab === undefined ? "active" : ""}
+                className={activeTab === undefined ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(undefined)}
               >
                 All
@@ -106,7 +106,7 @@ const BrandList: React.FC = () => {
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === false ? "active" : ""}
+                className={activeTab === false ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(false)}
               >
                 Active
@@ -114,7 +114,7 @@ const BrandList: React.FC = () => {
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === true ? "active" : ""}
+                className={activeTab === true ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(true)}
               >
                 Blocked
@@ -213,9 +213,8 @@ const BrandList: React.FC = () => {
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">
                         <li
-                          className={`page-item ${
-                            currentPage === 0 ? "disabled" : ""
-                          }`}
+                          className={`page-item ${currentPage === 0 ? "disabled" : ""
+                            }`}
                         >
                           <button
                             className="page-link"
@@ -229,9 +228,8 @@ const BrandList: React.FC = () => {
                         {Array.from({ length: totalPages }, (_, index) => (
                           <li
                             key={index}
-                            className={`page-item ${
-                              currentPage === index ? "active" : ""
-                            }`}
+                            className={`page-item ${currentPage === index ? "active" : ""
+                              }`}
                           >
                             <button
                               className="page-link"
@@ -244,9 +242,8 @@ const BrandList: React.FC = () => {
 
                         {currentPage < totalPages - 1 && (
                           <li
-                            className={`page-item ${
-                              currentPage === totalPages - 1 ? "disabled" : ""
-                            }`}
+                            className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                              }`}
                           >
                             <button
                               className="page-link"

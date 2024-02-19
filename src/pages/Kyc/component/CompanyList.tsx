@@ -20,15 +20,15 @@ import Breadcrumb from "src/components/Common/Breadcrumb";
 
 
 interface ICompanyData {
-    vendorId:string;
-    _id:string;
-    fullName:string;
-    isKycCompleted:boolean;
-    companyName:string;
-    status:string;
-    outletId:string;
-    outletName:string;
-    outletStatus:string;
+  vendorId: string;
+  _id: string;
+  fullName: string;
+  isKycCompleted: boolean;
+  companyName: string;
+  status: string;
+  outletId: string;
+  outletName: string;
+  outletStatus: string;
 }
 
 function CompanyListing() {
@@ -57,13 +57,13 @@ function CompanyListing() {
   }
 }`;
 
-  
-const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
+
+  const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
     variables: {
       input: {
         page: currentPage,
         size: pageSize,
-        status:activeTab
+        status: activeTab
       },
     },
   });
@@ -71,10 +71,10 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
   useEffect(() => {
     if (kycDataResponse) {
       setCompanyData(kycDataResponse.getAllVendorCompanyRecordsByAdmin?.records || []);
-      
+
     }
 
-  }, [ kycDataResponse , activeTab ,currentPage]);
+  }, [kycDataResponse, activeTab, currentPage]);
 
   console.log(companyData)
 
@@ -109,12 +109,12 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
   return (
     <>
       <div className="page-content">
-     
+
         <Container fluid={true}>
           <Nav tabs>
             <NavItem>
               <NavLink
-                className={activeTab === "UNDER_VERIFICATION" ? "active" : ""}
+                className={activeTab === "UNDER_VERIFICATION" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("UNDER_VERIFICATION")}
               >
                 Verify
@@ -122,7 +122,7 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === "PENDING" ? "active" : ""}
+                className={activeTab === "PENDING" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("PENDING")}
               >
                 Pending
@@ -130,7 +130,7 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === "COMPLETED" ? "active" : ""}
+                className={activeTab === "COMPLETED" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("COMPLETED")}
               >
                 Completed
@@ -176,18 +176,18 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
                             <td>{company.fullName}</td>
                             <td>{company.companyName}</td>
                             <td style={{ color: company.isKycCompleted ? "#5cb85c" : "red" }}>
-  {company.isKycCompleted ? "COMPLETED" : "PENDING"}
-</td>
+                              {company.isKycCompleted ? "COMPLETED" : "PENDING"}
+                            </td>
 
-                            
+
                             <td
-                            
+
                             >
                               {company?.status}
                             </td>
                             <td>
                               <Link to={`/vendors/${company.vendorId}`}>
-                                <Button style={{ marginLeft: "20px" , backgroundColor: "#000000"}}>
+                                <Button style={{ marginLeft: "20px", backgroundColor: "#000000" }}>
                                   View
                                 </Button>
                               </Link>
@@ -197,14 +197,13 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
                     </tbody>
                   </Table>
                 </CardBody>
-                <Row style={{marginRight:"10px"}}>
+                <Row style={{ marginRight: "10px" }}>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">
                         <li
-                          className={`page-item ${
-                            currentPage === 0 ? "disabled" : ""
-                          }`}
+                          className={`page-item ${currentPage === 0 ? "disabled" : ""
+                            }`}
                         >
                           <button
                             className="page-link"
@@ -218,9 +217,8 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
                         {Array.from({ length: totalPages }, (_, index) => (
                           <li
                             key={`page-${index + 1}`}
-                            className={`page-item ${
-                              currentPage === index ? "active" : ""
-                            }`}
+                            className={`page-item ${currentPage === index ? "active" : ""
+                              }`}
                           >
                             <button
                               className="page-link"
@@ -233,9 +231,8 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
 
                         {currentPage < totalPages - 1 && (
                           <li
-                            className={`page-item ${
-                              currentPage === totalPages - 1 ? "disabled" : ""
-                            }`}
+                            className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                              }`}
                           >
                             <button
                               className="page-link"

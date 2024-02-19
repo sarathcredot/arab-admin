@@ -66,10 +66,10 @@ const FormVender: React.FC<Props> = ({
     enableReinitialize: true,
     initialValues: {
       name: "",
-      email:  "",
-      phone:  "",
+      email: "",
+      phone: "",
     },
-    
+
     validationSchema: vendoreValidation,
     onSubmit: async (values, { resetForm }) => {
       await onSubmit(values, { resetForm });
@@ -79,20 +79,20 @@ const FormVender: React.FC<Props> = ({
 
   // when clicking the add category
   const onSubmit = async (values: any, { resetForm }: any) => {
-  console.log(values,"VAUEMONEEEEEEEEEEEEEEEEEEEEEEEEEE")
+    console.log(values, "VAUEMONEEEEEEEEEEEEEEEEEEEEEEEEEE")
     try {
       let variables: any = {
         input: {
           email: values?.email,
           fullName: values?.name,
           mobileNumber: values?.phone.toString(),
-          isBlocked: null,  
+          isBlocked: null,
           isKycCompleted: null,
         },
       };
 
 
-      console.log(variables,"variables")
+      console.log(variables, "variables")
 
       const response = await createAvendore({
         variables,
@@ -112,7 +112,7 @@ const FormVender: React.FC<Props> = ({
     }
   };
 
- 
+
   const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState<string>("");
 
@@ -198,11 +198,11 @@ const FormVender: React.FC<Props> = ({
             ) : null}
 
             <ModalFooter style={{ marginTop: "20px" }}>
-              <Button style={{ backgroundColor: "rgba(0, 0, 0, 1)" }}>
-                Add
+              <Button color="primary">
+                Submit
               </Button>
               <Button
-                style={{ backgroundColor: "rgba(177, 35, 73, 1)" }}
+                color="secondary"
                 onClick={toggle}
               >
                 Cancel

@@ -146,6 +146,7 @@ import ReturnOrders from "src/pages/Orders/returnOrders/ReturnOrders";
 import ReturnOrderDetails from "src/pages/Orders/returnOrders/ReturnOrderDetails";
 import RefundOrders from "src/pages/Orders/refundOrders/RefundOrders";
 import RefundOrderDetails from "src/pages/Orders/refundOrders/RefundOrderDetails";
+import Settings from "src/pages/settings/Settings";
 interface RouteProps {
   path: string;
   component: any;
@@ -208,7 +209,7 @@ const adminRoutes: Array<RouteProps> = [
   { path: "/refund-orders", component: <RefundOrders /> },
   { path: "/refund-orders/details", component: <RefundOrderDetails /> },
 
-  // { path: "/settings", component: <Settings /> },
+  { path: "/settings", component: <Settings /> },
 ];
 
 const authRoutes: Array<RouteProps> = [
