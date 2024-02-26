@@ -1478,7 +1478,7 @@ $form-feedback-tooltip-border-radius: $tooltip-border-radius;
 // scss-docs-start popover-variables
 $popover-font-size:                 $font-size-sm;
 $popover-bg:                        var(--#{$prefix}secondary-bg);
-$popover-max-width:                 276px;
+$popover-max-width:                 500px;
 $popover-border-width:              $border-width;
 $popover-border-color:              var(--#{$prefix}border-color);
 $popover-border-radius:             $border-radius-lg;

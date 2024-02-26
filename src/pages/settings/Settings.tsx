@@ -336,9 +336,9 @@ function Settings() {
                                     >
                                         <div style={{ display: "flex", alignItems: "center", gap: "20px", marginBottom: "10px" }}>
                                             <div>
-                                                <CreditCard size={55} color={"#b12349"} />
+                                                <CreditCard size={55} color={"#e30613"} />
                                             </div>
-                                            <CardTitle tag="h5" style={{ color: "#b12349" }}>
+                                            <CardTitle tag="h5" style={{ color: "#e30613" }}>
                                                 Payment Options
                                             </CardTitle>
                                         </div>

@@ -146,6 +146,7 @@ const SidebarContent = (props: any) => {
     }
   }
 
+
   return (
     <React.Fragment>
       <SimpleBar style={{ maxHeight: "100%" }} ref={ref}>
@@ -214,7 +215,7 @@ const SidebarContent = (props: any) => {
                   </div>
                   <div
                     className="arrow-down"
-                    style={{ position: "absolute", top: "10px", right: "25px" }}
+                    style={{ position: "absolute", top: "30px", right: "25px" }}
                   ></div>
                 </div>
               </Link>
@@ -250,7 +251,7 @@ const SidebarContent = (props: any) => {
                   </div>
                   <div
                     className="arrow-down"
-                    style={{ position: "absolute", top: "10px", right: "25px" }}
+                    style={{ position: "absolute", top: "30px", right: "25px" }}
                   ></div>
                 </div>
               </Link>
@@ -282,7 +283,7 @@ const SidebarContent = (props: any) => {
                   </div>
                   <div
                     className="arrow-down"
-                    style={{ position: "absolute", top: "10px", right: "25px" }}
+                    style={{ position: "absolute", top: "30px", right: "25px" }}
                   ></div>
                 </div>
               </Link>

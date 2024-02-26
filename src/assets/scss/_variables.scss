@@ -17,7 +17,7 @@ $sidebar-menu-item-active-effact-color: var(--#{$prefix}sidebar-menu-item-active
 $sidebar-border-color: var(--#{$prefix}sidebar-border-color);
 $sidebar-alert: var(--#{$prefix}sidebar-alert);
 $sidebar-width: 250px;
-$sidebar-collapsed-width: 70px;
+$sidebar-collapsed-width: 80px;
 $sidebar-width-sm: 160px;
 
 $sidebar-dark-bg: var(--#{$prefix}sidebar-dark-bg);
@@ -368,6 +368,16 @@ $cyans: (
 // fusv-enable
 
 // scss-docs-start theme-color-variables
+// $blue: #007bff;
+// $gray-600: #51575d;
+// $green: #28a745;
+// $cyan: #17a2b8;
+// $yellow: #ffc107;
+// $red: #dc3545;
+// $gray-200: #f8f9fa;
+// $gray-900: #343a40;
+
+// Your Theme Colors
 $primary: #e30613;
 $secondary: black;
 $success: $green;
@@ -376,9 +386,8 @@ $warning: $yellow;
 $danger: $red;
 $light: $gray-200;
 $dark: $gray-900;
-// scss-docs-end theme-color-variables
 
-// scss-docs-start theme-colors-map
+// Bootstrap Theme Colors Map
 $theme-colors: (
   "primary": $primary,
   "secondary": $secondary,
@@ -389,7 +398,6 @@ $theme-colors: (
   "light": $light,
   "dark": $dark
 );
-// scss-docs-end theme-colors-map
 
 // scss-docs-start theme-text-variables
 $primary-text-emphasis: shade-color($primary, 60%);
@@ -1493,7 +1501,7 @@ $form-feedback-tooltip-border-radius: $tooltip-border-radius;
 // scss-docs-start popover-variables
 $popover-font-size: $font-size-sm;
 $popover-bg: var(--#{$prefix}secondary-bg);
-$popover-max-width: 276px;
+$popover-max-width: 500px;
 $popover-border-width: var(--#{$prefix}border-width);
 $popover-border-color: var(--#{$prefix}border-color-translucent);
 $popover-border-radius: var(--#{$prefix}border-radius-lg);
@@ -1689,9 +1697,9 @@ $figure-caption-color: var(--#{$prefix}secondary-color);
 // scss-docs-start breadcrumb-variables
 $breadcrumb-font-size: null;
 $breadcrumb-padding-y: .75rem;
-$breadcrumb-padding-x: 1rem;
+$breadcrumb-padding-x:0;
 $breadcrumb-item-padding-x: .5rem;
-$breadcrumb-margin-bottom: 1rem;
+$breadcrumb-margin-bottom: 2rem;
 $breadcrumb-bg: null;
 $breadcrumb-divider-color: var(--#{$prefix}secondary-color);
 $breadcrumb-active-color: var(--#{$prefix}secondary-color);

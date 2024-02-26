@@ -34,14 +34,14 @@ const Header = (props: any) => {
 
   const nonauthData = createSelector(
 
-    (state : any) => state.Layout,
+    (state: any) => state.Layout,
     (layout) => ({
-        layoutMode: layout.layoutMode,
-        showRightSidebar: layout.showRightSidebar,
+      layoutMode: layout.layoutMode,
+      showRightSidebar: layout.showRightSidebar,
     })
   );
-// Inside your component
-const { layoutMode, showRightSidebar } = useSelector(nonauthData);
+  // Inside your component
+  const { layoutMode, showRightSidebar } = useSelector(nonauthData);
 
   const [search, setsearch] = useState<boolean>(false);
   const [socialDrp, setsocialDrp] = useState<boolean>(false);
@@ -77,9 +77,9 @@ const { layoutMode, showRightSidebar } = useSelector(nonauthData);
               </Link>
 
               <Link to="/dashboard" className="logo logo-light">
-                <span className="logo-sm">
+                {/* <span className="logo-sm">
                   <img src={logoSvg} alt="" height="24" />
-                </span>
+                </span> */}
                 <span className="logo-lg">
                   <img src={logoSvg} alt="" height="24" />{" "}
                   <span className="logo-txt">Arab Deals</span>
@@ -87,7 +87,7 @@ const { layoutMode, showRightSidebar } = useSelector(nonauthData);
               </Link>
             </div>
 
-            {/* <button
+            <button
               onClick={() => {
                 tToggle();
               }}
@@ -96,7 +96,7 @@ const { layoutMode, showRightSidebar } = useSelector(nonauthData);
               id="vertical-menu-btn"
             >
               <i className="fa fa-fw fa-bars"></i>
-            </button> */}
+            </button>
 
             {/* <form className="app-search d-none d-lg-block">
               <div className="position-relative">

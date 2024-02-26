@@ -54,7 +54,7 @@ File: Custom Bootstrap Css File
   --bs-light-rgb: 233, 233, 239;
   --bs-dark-rgb: 33, 37, 41;
   --bs-primary-text-emphasis: #20224c;
-  --bs-secondary-text-emphasis: #2e3038;
+  --bs-secondary-text-emphasis: #2e3038; 
   --bs-success-text-emphasis: #114832;
   --bs-info-text-emphasis: #1e4260;
   --bs-warning-text-emphasis: #664c21;
@@ -5777,7 +5777,7 @@ textarea.form-control-lg {
 
 .popover {
   --bs-popover-zindex: 1070;
-  --bs-popover-max-width: 276px;
+  --bs-popover-max-width: 500px;
   --bs-popover-font-size: 0.765625rem;
   --bs-popover-bg: var(--bs-secondary-bg);
   --bs-popover-border-width: var(--bs-border-width);
@@ -5832,6 +5832,7 @@ textarea.form-control-lg {
   border-color: transparent;
   border-style: solid;
   border-width: 0;
+  width: 500px;
 }
 
 .bs-popover-top > .popover-arrow, .bs-popover-auto[data-popper-placement^=top] > .popover-arrow {
