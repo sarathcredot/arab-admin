@@ -22,10 +22,10 @@ import Candlestick from "../AllCharts/echart/candlestickchart";
 import GaugeChart from "../AllCharts/echart/gaugechart";
 
 const EChart = () => {
-  document.title = "E Charts | Minia - React Admin & Dashboard Template";
+  // document.title = "E Charts | Minia - React Admin & Dashboard Template";
   return (
     <React.Fragment>
-      <div className="page-content">       
+      <div className="page-content">
         <Container fluid={true}>
           {/* Render Breadcrumb */}
           <Breadcrumbs title="Charts" breadcrumbItem="Echarts" />

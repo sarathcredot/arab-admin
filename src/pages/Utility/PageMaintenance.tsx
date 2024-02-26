@@ -7,7 +7,7 @@ import logo from "../../assets/images/logo-sm.svg";
 
 const PageMaintenance = () => {
 
-  document.title = "Maintenance | Arab Deals ";
+  // document.title = "Maintenance | Arab Deals ";
 
   return (
     <React.Fragment>
@@ -21,7 +21,7 @@ const PageMaintenance = () => {
                     <Link to="/dashboard">
                       <img src={logo} alt="" height="30" className="me-1" />
                       <span className="logo-txt text-dark font-size-22">
-                       Arab Deals
+                        Arab Deals
                       </span>
                     </Link>
                   </div>

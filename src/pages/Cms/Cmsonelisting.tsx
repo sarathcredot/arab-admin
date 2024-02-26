@@ -35,27 +35,27 @@ query GetAllCmsRecords($input: CmsRecordsByAdminFilter) {
 `;
 
 interface CmsRecord {
-    _id: string; // Add this line
-    buttons: {
-      buttonText: string;
-      redirectionURL: string;
-    }[];
-    description: string;
-    images: {
-      fileType: string;
-      fileURL: string;
-      mimeType: string;
-      originalName: string;
-    }[];
-    isBlocked: boolean;
-    sectionName: string;
-    pageName: string;
-    subTitle: string;
-    title: string;
-  }
+  _id: string; // Add this line
+  buttons: {
+    buttonText: string;
+    redirectionURL: string;
+  }[];
+  description: string;
+  images: {
+    fileType: string;
+    fileURL: string;
+    mimeType: string;
+    originalName: string;
+  }[];
+  isBlocked: boolean;
+  sectionName: string;
+  pageName: string;
+  subTitle: string;
+  title: string;
+}
 
 const CmsListing = () => {
-  document.title = "CMS Listing";
+  // document.title = "CMS Listing";
 
   const pageSize = 10; // Number of items per page
   const [currentPage, setCurrentPage] = useState(0);
@@ -68,14 +68,14 @@ const CmsListing = () => {
       },
     },
   });
- 
-  
+
+
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  const cmsRecords = data. getAllCmsRecordsByAdmin.records;
-  const maxRecords = data. getAllCmsRecordsByAdmin.maxRecords;
+  const cmsRecords = data.getAllCmsRecordsByAdmin.records;
+  const maxRecords = data.getAllCmsRecordsByAdmin.maxRecords;
 
   const totalPages = Math.ceil(maxRecords / pageSize);
 
@@ -188,9 +188,8 @@ const CmsListing = () => {
                       <div className="d-flex justify-content-end mt-0 ">
                         <ul className="pagination">
                           <li
-                            className={`page-item ${
-                              currentPage === 0 ? "disabled" : ""
-                            }`}
+                            className={`page-item ${currentPage === 0 ? "disabled" : ""
+                              }`}
                           >
                             <button
                               className="page-link"
@@ -204,9 +203,8 @@ const CmsListing = () => {
                           {Array.from({ length: totalPages }, (_, index) => (
                             <li
                               key={index}
-                              className={`page-item ${
-                                currentPage === index ? "active" : ""
-                              }`}
+                              className={`page-item ${currentPage === index ? "active" : ""
+                                }`}
                             >
                               <button
                                 className="page-link"
@@ -219,9 +217,8 @@ const CmsListing = () => {
 
                           {currentPage < totalPages - 1 && (
                             <li
-                              className={`page-item ${
-                                currentPage === totalPages - 1 ? "disabled" : ""
-                              }`}
+                              className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                                }`}
                             >
                               <button
                                 className="page-link"

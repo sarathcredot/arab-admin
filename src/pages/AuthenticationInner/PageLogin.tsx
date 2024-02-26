@@ -9,7 +9,7 @@ const PageLogin = () => {
 
   const [passwordShow, setPasswordShow] = useState(false);
 
-  document.title = "Login | Arab Deals ";
+  // document.title = "Login | Arab Deals ";
   return (
     <React.Fragment>
       <div className="auth-page">
@@ -157,7 +157,7 @@ const PageLogin = () => {
                       <p className="mb-0">
                         © {new Date().getFullYear()} Arab Deals .{" "}
                         <i className="mdi mdi-heart text-danger"></i>
-                      
+
                       </p>
                     </div>
                   </div>

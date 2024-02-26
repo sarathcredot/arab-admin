@@ -24,7 +24,7 @@ import NormalValidation from "./NormalValidation";
 import TooltipsValidation from "./TooltipsValidation";
 
 const FormValidation = () => {
-  document.title = "Form Validation | Minia - React Admin & Dashboard Template";
+  // document.title = "Form Validation | Minia - React Admin & Dashboard Template";
 
   // Form validation 
   const validationType = useFormik({
@@ -126,7 +126,7 @@ const FormValidation = () => {
 
   return (
     <React.Fragment>
-      <div className="page-content">       
+      <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
           <Breadcrumbs title="Forms" breadcrumbItem="Form Validation" />
@@ -143,11 +143,11 @@ const FormValidation = () => {
               <Card>
                 <CardHeader>
                   <h4 className="card-title">Validation type</h4>
-                    <p className="card-title-desc">
-                      Parsley is a availity reactstrap validation. It helps you
-                      provide your users with feedback on their form submission
-                      before sending it to your server.
-                    </p>
+                  <p className="card-title-desc">
+                    Parsley is a availity reactstrap validation. It helps you
+                    provide your users with feedback on their form submission
+                    before sending it to your server.
+                  </p>
                 </CardHeader>
                 <CardBody>
                   <Form

@@ -14,7 +14,7 @@ var regular: string = "";
 var brand: string = "";
 
 const IconFontawesome = () => {
-  document.title = "Font awesome | Minia - React Admin & Dashboard Template";
+  // document.title = "Font awesome | Minia - React Admin & Dashboard Template";
 
   useEffect(() => {
     for (let entry of icons.data) {
@@ -59,7 +59,7 @@ const IconFontawesome = () => {
 
   return (
     <React.Fragment>
-      <div className="page-content">       
+      <div className="page-content">
         <Container fluid={true}>
           <Breadcrumbs title="Icons" breadcrumbItem="Font Awesome" />
 

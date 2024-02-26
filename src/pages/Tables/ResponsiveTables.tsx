@@ -13,7 +13,7 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { tabledata } from "src/common/data";
 
 const ResponsiveTables = () => {
-  document.title = "Responsive Table | Minia - React Admin & Dashboard Template";
+  // document.title = "Responsive Table | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
@@ -52,7 +52,7 @@ const ResponsiveTables = () => {
                           </Tr>
                         </Thead>
                         <Tbody>
-                          {tabledata.map((rowData : any, index : any) => (
+                          {tabledata.map((rowData: any, index: any) => (
                             <Tr key={index}>
                               <Th>
                                 {rowData.ticker} <span className="co-name">{rowData.companyName}</span>

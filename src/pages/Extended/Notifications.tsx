@@ -11,7 +11,7 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import logo from "../../assets/images/logo-sm.svg";
 
 const Notifications = () => {
-  document.title = "Notifications | Minia - React Admin & Dashboard Template";
+  // document.title = "Notifications | Minia - React Admin & Dashboard Template";
 
   const toast1 = () => {
     let toast1: any = document.getElementById("toast1");
@@ -287,20 +287,20 @@ const Notifications = () => {
                   <p className="text-muted">Use <code>data-toast</code> <code>data-toast-text=""</code> <code>data-toast-gravity=""</code> <code>data-toast-position=""</code> <code>data-toast-className=""</code> <code>data-toast-duration=""</code> <code>data-toast-close="close"</code> <code>data-toast-style="style"</code> as per your toast requirement.</p>
                   <div>
                     <div className="hstack flex-wrap gap-2">
-                      <button  onClick={defaultnotify} className="w-xs btn btn-primary">Default</button>
-                      <button  onClick={successnotify} className="w-xs btn btn-primary">Success</button>
-                      <button  onClick={warningnotify} className="w-xs btn btn-primary">Warning</button>
-                      <button  onClick={errornotify} className="w-xs btn btn-primary">Error</button>
+                      <button onClick={defaultnotify} className="w-xs btn btn-primary">Default</button>
+                      <button onClick={successnotify} className="w-xs btn btn-primary">Success</button>
+                      <button onClick={warningnotify} className="w-xs btn btn-primary">Warning</button>
+                      <button onClick={errornotify} className="w-xs btn btn-primary">Error</button>
                     </div>
                     <div className="mt-4 pt-2">
                       <h5 className="fs-md mb-3">Display Position</h5>
                       <div className="hstack flex-wrap gap-2">
-                        <button  className="w-xs btn btn-primary" onClick={topleftnotify}>Top Left</button>
-                        <button  className="w-xs btn btn-primary" onClick={topcenternotify}>Top Center</button>
-                        <button  className="w-xs btn btn-primary" onClick={toprightnotify}>Top Right</button>
-                        <button  className="w-xs btn btn-primary" onClick={bottomleftnotify}>Bottom Left</button>
-                        <button  className="w-xs btn btn-primary" onClick={bottomcenternotify}>Bottom Center</button>
-                        <button  className="w-xs btn btn-primary" onClick={bottomrightnotify}>Bottom Right</button>
+                        <button className="w-xs btn btn-primary" onClick={topleftnotify}>Top Left</button>
+                        <button className="w-xs btn btn-primary" onClick={topcenternotify}>Top Center</button>
+                        <button className="w-xs btn btn-primary" onClick={toprightnotify}>Top Right</button>
+                        <button className="w-xs btn btn-primary" onClick={bottomleftnotify}>Bottom Left</button>
+                        <button className="w-xs btn btn-primary" onClick={bottomcenternotify}>Bottom Center</button>
+                        <button className="w-xs btn btn-primary" onClick={bottomrightnotify}>Bottom Right</button>
                       </div>
                     </div>
 
@@ -309,7 +309,7 @@ const Notifications = () => {
                         <div className="mt-4">
                           <h5 className="fs-md mb-3">Offset Position</h5>
                           <div className="d-flex align-items-center flex-wrap gap-2">
-                            <button  className="w-xs btn btn-primary" onClick={offsetnotify}>Click Me</button>
+                            <button className="w-xs btn btn-primary" onClick={offsetnotify}>Click Me</button>
                           </div>
                         </div>
                       </Col>
@@ -317,7 +317,7 @@ const Notifications = () => {
                         <div className="mt-4">
                           <h5 className="fs-md mb-3">Close icon Display</h5>
                           <div className="d-flex align-items-center flex-wrap gap-2">
-                            <button  className="w-xs btn btn-primary" onClick={closeiconnotify}>Click Me</button>
+                            <button className="w-xs btn btn-primary" onClick={closeiconnotify}>Click Me</button>
                           </div>
                         </div>
                       </Col>
@@ -325,7 +325,7 @@ const Notifications = () => {
                         <div className="mt-4">
                           <h5 className="fs-md mb-3">Duration</h5>
                           <div className="d-flex align-items-center flex-wrap gap-2">
-                            <button  className="w-xs btn btn-primary" onClick={durationnotify}>Click Me</button>
+                            <button className="w-xs btn btn-primary" onClick={durationnotify}>Click Me</button>
                           </div>
                         </div>
                       </Col>

@@ -5,7 +5,7 @@ import { Card, CardBody, Col, Container, Row } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const PageFaqs = () => {
-  document.title = "FAQS | Minia - React Admin & Dashboard Template";
+  // document.title = "FAQS | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

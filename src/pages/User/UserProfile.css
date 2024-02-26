@@ -1,0 +1,12 @@
+.clickable-card-container {
+    cursor: pointer;
+}
+
+.clickable-card {
+    width: 100%;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.clickable-card:hover  {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); 
+}

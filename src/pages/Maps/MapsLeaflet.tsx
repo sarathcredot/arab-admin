@@ -13,7 +13,7 @@ import MapLayerControl from "./LeafletMap/MapLayerControl";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const MapsLeaflet = () => {
-  document.title = "Leaflet Maps | Minia - React Admin & Dashboard Template";
+  // document.title = "Leaflet Maps | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

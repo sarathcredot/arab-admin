@@ -8,7 +8,7 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import smallImage from "../../assets/images/small/img-1.jpg";
 
 const UiPlaceholders = () => {
-    document.title = "Placeholders | Minia - React Admin & Dashboard Template";
+    // document.title = "Placeholders | Minia - React Admin & Dashboard Template";
 
     return (
         <React.Fragment>
@@ -83,7 +83,7 @@ const UiPlaceholders = () => {
                                     <p className="card-title-desc">You can change the <code>width</code> through grid column classes, width utilities, or inline styles.</p>
                                 </CardHeader>
                                 <CardBody>
-                                   
+
                                     <div>
                                         <span className="placeholder col-6"></span>
                                         <span className="placeholder w-75"></span>{" "}
@@ -143,7 +143,7 @@ const UiPlaceholders = () => {
                                     <p className="card-title-desc">Animate placeholders with <code>.placeholder-glow</code> or <code>.placeholder-wave</code> to better convey the perception of something being <em>actively</em> loaded.</p>
                                 </CardHeader>
                                 <CardBody>
-                                    
+
                                     <div className="">
                                         <p className="placeholder-glow">
                                             <span className="placeholder col-12"></span>

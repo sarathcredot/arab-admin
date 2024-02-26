@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { capitalCase } from "change-case";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -17,10 +17,11 @@ import {
     Table
 } from "reactstrap";
 import { formatCurrency } from "src/utils/formatCurrency";
-
-
 import { useNavigate } from "react-router-dom";
 import Iconify from "src/components/iconify";
+import Loader from "src/components/Common/Loader";
+import { toast } from "react-toastify";
+import AllOrderFilters from "../AllOrderFilters";
 
 
 interface ShippingAddress {
@@ -152,6 +153,7 @@ const InProgressOrders = () => {
         data: ordersDataResponse,
         refetch: ordersRefetch,
     } = useQuery(GET_ORDERS, {
+        fetchPolicy: "network-only",
         variables: {
             input: {
                 page: currentPage,
@@ -216,10 +218,51 @@ const InProgressOrders = () => {
     };
 
 
+    // EXPORT 
+
+    const EXPORT_ORDERS = gql`
+      mutation ExportAdminOrders($input: ExportAdminOrdersInput!) {
+         exportAdminOrders(input: $input) {
+           message
+         }
+       }`;
+
+    const [ExportAdminOrders] = useMutation(EXPORT_ORDERS);
+
+    const handleExportClick = async () => {
+        try {
+            const result = await ExportAdminOrders({
+                variables: {
+                    input: {
+                        orderId: filterData.orderId || searchTerm,
+                        orderStatus: "IN_PROGRESS",
+                        ...(filterData._id && { _id: filterData._id }),
+                        ...(filterData.userId && { userId: filterData.userId }),
+                        startDate: filterData?.startDate,
+                        endDate: filterData?.endDate,
+                        paymentMode: filterData?.paymentMode,
+                    }
+                }
+            })
+
+            if (result.data.exportAdminOrders) {
+                toast.success("Export Successfull")
+            }
+        } catch (error: any) {
+            toast.success(error)
+            console.log(error)
+        }
+    }
+
+    const handleFormSubmit = (formData: FilterData) => {
+        setFilterData(formData);
+        setCurrentPage(0);
+    };
+
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: "30px", marginTop: "30px" }}>
             <Row style={{ display: "flex", alignItems: "center", }}>
-                <Col xs={11} style={{ display: "flex", gap: "20px", }}>
+                <Col xs={9} style={{ display: "flex", gap: "20px", }}>
                     <Input
                         type="text"
                         placeholder="Search by Order Id"
@@ -229,171 +272,101 @@ const InProgressOrders = () => {
                     />
 
                 </Col>
-                <Col xs={1} style={{ display: "flex", gap: "20px", }}>
-                    <Button onClick={toggle} style={{ width: "100%", display: "flex", gap: "5px", alignItems: "center", justifyContent: "center", background: "black" }} >
+                <Col xs={3} style={{ display: "flex", gap: "20px", justifyContent: "flex-end" }}>
+
+                    <Button onClick={handleExportClick} outline color="primary" style={{ width: "100px", display: "flex", gap: "5px", alignItems: "center", justifyContent: "center", }} >
+                        <Iconify icon="ph:export-bold" />
+                        Export
+                    </Button>
+                    <Button onClick={toggle} style={{ background: "black", width: "100px", display: "flex", gap: "5px", alignItems: "center", justifyContent: "center", }} >
                         <Iconify icon="foundation:filter" />
                         Filters
                     </Button>
 
                 </Col>
                 <Collapse isOpen={isOpen} style={{ marginTop: '20px', }}>
-                    <Card>
-                        <CardBody>
-                            <CardTitle><h4 style={{ marginBottom: "20px" }}>Filters</h4></CardTitle>
-                            <Form onSubmit={handleSubmit}>
-                                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
-                                    <div>
-                                        <FormGroup>
-                                            <Label for="orderId">Order ID</Label>
-                                            <Input
-                                                type="text"
-                                                name="orderId"
-                                                id="orderId"
-                                                value={formData.orderId}
-                                                onChange={handleChange}
-                                            />
-                                        </FormGroup>
-                                    </div>
-                                    <div>
-                                        <FormGroup>
-                                            <Label for="startDate">Start Date</Label>
-                                            <Input
-                                                type="date"
-                                                name="startDate"
-                                                id="startDate"
-                                                value={formData.startDate}
-                                                onChange={handleChange}
-
-                                            />
-                                        </FormGroup>
-                                    </div>
-                                    <div>
-                                        <FormGroup>
-                                            <Label for="endDate">End Date</Label>
-                                            <Input
-                                                type="date"
-                                                name="endDate"
-                                                id="endDate"
-                                                value={formData.endDate}
-                                                onChange={handleChange}
-
-                                            />
-                                        </FormGroup>
-                                    </div>
-                                    <div>
-                                        <FormGroup>
-                                            <Label for="paymentMode">Payment Mode</Label>
-                                            <Input
-                                                type="select"
-                                                name="paymentMode"
-                                                id="paymentMode"
-                                                value={formData.paymentMode}
-                                                onChange={handleChange}
-
-                                            >
-                                                <option value="">Select Payment Mode</option>
-                                                <option value="COD">COD</option>
-                                                {/* <option value="ONLINE">ONLINE</option> */}
-                                            </Input>
-                                        </FormGroup>
-                                    </div>
-
-                                    <div>
-                                        <FormGroup>
-                                            <Label for="userId">User ID</Label>
-                                            <Input
-                                                type="text"
-                                                name="userId"
-                                                id="userId"
-                                                value={formData.userId}
-                                                onChange={handleChange}
-
-                                            />
-                                        </FormGroup>
-                                    </div>
-                                </div>
-                                <Button color="primary" type="submit">Apply Filters</Button>
-                            </Form>
-                        </CardBody>
-                    </Card>
+                    <AllOrderFilters onSubmit={handleFormSubmit} />
                 </Collapse>
-
             </Row>
             <Card>
                 <CardBody>
+                    <div>
+                        {
+                            ordersLoading ?
+                                <Loader />
+                                :
 
-                    <Table
-                        responsive
-                        className="table table-bordered table-centered mb-0"
-                    >
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th> Order Date</th>
 
-                                <th>Order Id</th>
-                                <th>Username</th>
-                                <th>Payment Mode</th>
-                                <th>Order Status</th>
-                                <th>Address</th>
-                                <th>Amount</th>
-                                <th>View</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {orders?.map((order, index) => (
-                                <tr key={order?._id}>
-                                    <td> {currentPage * pageSize + index + 1}</td>
-                                    <td>{moment(order?.orderDate).format("ll")}</td>
-                                    <td>{order?.orderId}</td>
-                                    <td>{order?.username && capitalCase(order?.username)}</td>
-                                    <td>{order?.paymentMode}</td>
-                                    <td><div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                                        <div style={{
-                                            width: "8px", height: "8px", borderRadius: "50%",
-                                            background: order?.orderStatus === "PENDING" ? "#ff9500" : (order?.orderStatus === "IN_PROGRESS" ? "#fff200" : "green")
-                                        }} />
-                                        {order?.orderStatus.replace("_", " ")}
-                                    </div>
-                                    </td>
-                                    <td>  {`${order?.shippingAddress["city"]},  ${order?.shippingAddress["state"]}`}</td>
-                                    <td>
-                                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                            <div>
-                                                <div>
-                                                    Total MRP:
+                                <Table id="tech-companies-1" className="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th> Order Date</th>
+                                            <th>Order Id</th>
+                                            <th>Username</th>
+                                            <th>Payment Mode</th>
+                                            <th>Order Status</th>
+                                            <th>Address</th>
+                                            <th>Amount</th>
+                                            <th>View</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {orders?.map((order, index) => (
+                                            <tr key={order?._id}>
+                                                <td> {currentPage * pageSize + index + 1}</td>
+                                                <td>{moment(order?.orderDate).format("ll")}</td>
+                                                <td>{order?.orderId}</td>
+                                                <td>{order?.username && capitalCase(order?.username)}</td>
+                                                <td>{order?.paymentMode}</td>
+                                                <td><div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                                                    <div style={{
+                                                        width: "8px", height: "8px", borderRadius: "50%",
+                                                        background: order?.orderStatus === "PENDING" ? "#ff9500" : (order?.orderStatus === "IN_PROGRESS" ? "#fff200" : "green")
+                                                    }} />
+                                                    {order?.orderStatus.replace("_", " ")}
                                                 </div>
-                                                <div>
-                                                    Total Selling:
-                                                </div>
-                                                <div>
-                                                    Total Refund:
-                                                </div>
-                                                <div>
-                                                    Total Shipping :
-                                                </div>
-                                            </div>
-                                            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                                                <div>
-                                                    {formatCurrency(order?.orderPriceInfo.totalMRP)}
-                                                </div>
-                                                <div>
-                                                    {formatCurrency(order?.orderPriceInfo.totalSellingPrice)}
-                                                </div>
-                                                <div>
-                                                    {formatCurrency(order?.orderPriceInfo.totalRefundAmount)}
-                                                </div>
-                                                <div>
-                                                    {formatCurrency(order?.orderPriceInfo.totalShippingCharge)}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td><Button size="sm" onClick={() => navigate(`/orders/details?orderId=${order?.orderId}`)} style={{ background: "#b12349" }}>View</Button></td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
+                                                </td>
+                                                <td>  {`${order?.shippingAddress["city"]},  ${order?.shippingAddress["state"]}`}</td>
+                                                <td>
+                                                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                                                        <div>
+                                                            <div>
+                                                                Total MRP:
+                                                            </div>
+                                                            <div>
+                                                                Total Selling:
+                                                            </div>
+                                                            <div>
+                                                                Total Refund:
+                                                            </div>
+                                                            <div>
+                                                                Total Shipping :
+                                                            </div>
+                                                        </div>
+                                                        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                                                            <div>
+                                                                {formatCurrency(order?.orderPriceInfo.totalMRP)}
+                                                            </div>
+                                                            <div>
+                                                                {formatCurrency(order?.orderPriceInfo.totalSellingPrice)}
+                                                            </div>
+                                                            <div>
+                                                                {formatCurrency(order?.orderPriceInfo.totalRefundAmount)}
+                                                            </div>
+                                                            <div>
+                                                                {formatCurrency(order?.orderPriceInfo.totalShippingCharge)}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td><Button size="sm" onClick={() => navigate(`/orders/details?orderId=${order?.orderId}`)} color="primary">View</Button></td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+                        }
+                    </div>
                 </CardBody>
                 <Row>
                     <Col>

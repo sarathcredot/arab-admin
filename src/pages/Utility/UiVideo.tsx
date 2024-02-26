@@ -5,7 +5,7 @@ import { Card, CardBody, CardHeader, Col, Container, Row } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const UiVideo = () => {
-  document.title = "Video | Minia - React Admin & Dashboard Template";
+  // document.title = "Video | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

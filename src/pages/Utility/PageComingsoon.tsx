@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { Carousel, CarouselItem, Col, Container, Row } from "reactstrap";
 
 const PagesComingsoon = () => {
-  document.title = "Coming Soon | Minia - React Admin & Dashboard Template";
+  // document.title = "Coming Soon | Minia - React Admin & Dashboard Template";
 
   const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
     if (completed) {
@@ -95,7 +95,7 @@ const PagesComingsoon = () => {
     setActiveIndex(nextIndex);
   };
 
-  const goToIndex = (newIndex : any) => {
+  const goToIndex = (newIndex: any) => {
     if (animating) return;
     setActiveIndex(newIndex);
   };
@@ -112,7 +112,7 @@ const PagesComingsoon = () => {
     );
   });
 
-  const handleSelect = (selectedIndex : any) => {
+  const handleSelect = (selectedIndex: any) => {
     setActiveIndex(selectedIndex);
   };
 
@@ -133,7 +133,7 @@ const PagesComingsoon = () => {
   return (
     <React.Fragment>
       <div className="preview-img">
-      <div className="swiper-container preview-thumbsnav">
+        <div className="swiper-container preview-thumbsnav">
           {renderIndicators()}
         </div>
         <Carousel activeIndex={activeIndex} next={next} previous={previous} onSelect={handleSelect}>

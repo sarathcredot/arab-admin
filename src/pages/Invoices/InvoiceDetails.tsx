@@ -16,7 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { createSelector } from "reselect";
 
 const InvoiceDetails = (props: any) => {
-  document.title = "Invoice Detail | Minia - React Admin & Dashboard Template";
+  // document.title = "Invoice Detail | Minia - React Admin & Dashboard Template";
 
   const dispatch = useDispatch();
 

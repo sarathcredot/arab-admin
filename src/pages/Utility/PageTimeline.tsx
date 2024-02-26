@@ -16,7 +16,7 @@ import img1 from "../../assets/images/small/img-2.jpg";
 import img2 from "../../assets/images/small/img-5.jpg";
 
 const PageTimeline = () => {
-  document.title = "Timeline | Minia - React Admin & Dashboard Template";
+  // document.title = "Timeline | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

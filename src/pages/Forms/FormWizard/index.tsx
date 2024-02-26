@@ -7,7 +7,7 @@ import BasicPills from "./BasicPills";
 import ProgressbarWizard from "./ProgressbarWizard";
 
 const FormWizard = () => {
-  document.title = "Form Wizard | Minia - React Admin & Dashboard Template";
+  // document.title = "Form Wizard | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

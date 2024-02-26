@@ -14,7 +14,7 @@ import {
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const UiModal = () => {
-  document.title = "Modals | Minia - React Admin & Dashboard Template";
+  // document.title = "Modals | Minia - React Admin & Dashboard Template";
 
   const [modal_standard, setmodal_standard] = useState(false);
   const [modal_large, setmodal_large] = useState(false);
@@ -83,18 +83,18 @@ const UiModal = () => {
   function tog_between_modal() {
     setmodal_between_modal(!modal_between_modal)
     removeBodyCss()
-}
+  }
 
-function tog_between_secondmodal() {
+  function tog_between_secondmodal() {
     setmodal_between_secondmodal(!modal_between_secondmodal)
     removeBodyCss()
-}
+  }
 
-function tog_varyingmodal(title : any) {
+  function tog_varyingmodal(title: any) {
     setvaryingtitle(title)
     setmodal_varyingmodal(!modal_varyingmodal)
     removeBodyCss()
-}
+  }
 
   return (
     <React.Fragment>
@@ -107,12 +107,12 @@ function tog_varyingmodal(title : any) {
               <Card>
                 <CardHeader>
                   <CardTitle className="h4">Modals Examples</CardTitle>
-                    <p className="card-title-desc">
-                      Modals are streamlined, but flexible dialog prompts powered
-                      by JavaScript. They support a number of use cases from user
-                      notification to completely custom content and feature a
-                      handful of helpful subcomponents, sizes, and more.
-                    </p>
+                  <p className="card-title-desc">
+                    Modals are streamlined, but flexible dialog prompts powered
+                    by JavaScript. They support a number of use cases from user
+                    notification to completely custom content and feature a
+                    handful of helpful subcomponents, sizes, and more.
+                  </p>
                 </CardHeader>
                 <CardBody>
                   <div
@@ -938,7 +938,7 @@ function tog_varyingmodal(title : any) {
             <Col lg={6}>
               <Card>
                 <CardHeader>
-                <h5 className="card-title">Static Backdrop</h5>
+                  <h5 className="card-title">Static Backdrop</h5>
                   <p className="card-title-desc">
                     When backdrop is set to static, the modal will not close
                     when clicking outside it. Click the button below to try it.
@@ -1011,130 +1011,130 @@ function tog_varyingmodal(title : any) {
                   <p className="card-title-desc">Modal of buttons that all trigger the same modal with slightly different contents. Use <code>event.relatedTarget</code> and HTML <code>data-bs-target</code> attributes to vary the contents of the modal depending on which button was clicked.</p>
                 </CardHeader>
                 <CardBody>
-                    <div>
-                        <div className="d-flex flex-wrap gap-3">
-                            <button type="button" className="btn btn-primary" onClick={() => {
-                                tog_varyingmodal('@mdo')
-                            }}>Open modal for @mdo</button>
-                            <button type="button" className="btn btn-primary" onClick={() => {
-                                tog_varyingmodal('@fat')
-                            }}>Open modal for @fat</button>
-                            <button type="button" className="btn btn-primary" onClick={() => {
-                                tog_varyingmodal('@getbootstrap')
-                            }}>Open modal for @getbootstrap</button>
-                        </div>
-
-                        <Modal
-                            isOpen={modal_varyingmodal}
-                            toggle={() => {
-                                tog_varyingmodal('@mdo')
-                            }}
-                            scrollable={true}
-                            id="staticBackdrop"
-                        >
-                            <div className="modal-header">
-                            <h5 className="modal-title">New message to {varyingtitle}</h5>
-                                <button type="button" className="btn-close"
-                                    onClick={() => {
-                                        setmodal_varyingmodal(false)
-                                    }} aria-label="Close"></button>
-                            </div>
-                            <div className="modal-body">
-                                <form>
-                                    <div className="mb-3">
-                                        <label htmlFor="recipient-name" className="col-form-label">Recipient:</label>
-                                        <input type="text" className="form-control" id="recipient-name" defaultValue={varyingtitle} />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="message-text" className="col-form-label">Message:</label>
-                                        <textarea className="form-control" id="message-text"></textarea>
-                                    </div>
-                                </form>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" onClick={() => {
-                                    setmodal_varyingmodal(false)
-                                }}>Close</button>
-                            </div>
-                        </Modal>
-
+                  <div>
+                    <div className="d-flex flex-wrap gap-3">
+                      <button type="button" className="btn btn-primary" onClick={() => {
+                        tog_varyingmodal('@mdo')
+                      }}>Open modal for @mdo</button>
+                      <button type="button" className="btn btn-primary" onClick={() => {
+                        tog_varyingmodal('@fat')
+                      }}>Open modal for @fat</button>
+                      <button type="button" className="btn btn-primary" onClick={() => {
+                        tog_varyingmodal('@getbootstrap')
+                      }}>Open modal for @getbootstrap</button>
                     </div>
+
+                    <Modal
+                      isOpen={modal_varyingmodal}
+                      toggle={() => {
+                        tog_varyingmodal('@mdo')
+                      }}
+                      scrollable={true}
+                      id="staticBackdrop"
+                    >
+                      <div className="modal-header">
+                        <h5 className="modal-title">New message to {varyingtitle}</h5>
+                        <button type="button" className="btn-close"
+                          onClick={() => {
+                            setmodal_varyingmodal(false)
+                          }} aria-label="Close"></button>
+                      </div>
+                      <div className="modal-body">
+                        <form>
+                          <div className="mb-3">
+                            <label htmlFor="recipient-name" className="col-form-label">Recipient:</label>
+                            <input type="text" className="form-control" id="recipient-name" defaultValue={varyingtitle} />
+                          </div>
+                          <div className="mb-3">
+                            <label htmlFor="message-text" className="col-form-label">Message:</label>
+                            <textarea className="form-control" id="message-text"></textarea>
+                          </div>
+                        </form>
+                      </div>
+                      <div className="modal-footer">
+                        <button type="button" className="btn btn-primary" onClick={() => {
+                          setmodal_varyingmodal(false)
+                        }}>Close</button>
+                      </div>
+                    </Modal>
+
+                  </div>
                 </CardBody>
               </Card>
-            </Col>  
+            </Col>
             <Col lg={6}>
               <Card>
                 <CardHeader>
                   <h4 className="card-title">Toggle Between Modals</h4>
-                  <p className="card-title-desc">Toggle between multiple modals with some clever placement of the <code>data-bs-target</code> and <code>data-bs-toggle</code> attributes.</p>     
+                  <p className="card-title-desc">Toggle between multiple modals with some clever placement of the <code>data-bs-target</code> and <code>data-bs-toggle</code> attributes.</p>
                 </CardHeader>
                 <CardBody>
-                    <div>
-                        <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={() => {
-                                tog_between_modal()
-                            }}
-                            data-toggle="modal"
-                        >
-                            Open First Modal
-                        </button>
-                        <Modal
-                            isOpen={modal_between_modal}
-                            toggle={() => {
-                                tog_between_modal()
-                            }}
-                            scrollable={true}
-                            id="staticBackdrop"
-                        >
-                            <div className="modal-header">
-                            <h5 className="modal-title">Modal 1</h5>
-                                <button type="button" className="btn-close"
-                                    onClick={() => {
-                                        setmodal_between_modal(false)
-                                    }} aria-label="Close"></button>
-                            </div>
-                            <div className="modal-body">
-                                <p>Show a second modal and hide this one with the button below.</p>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" onClick={() => {
-                                    setmodal_between_modal(false)
-                                    setmodal_between_secondmodal(true)
-                                }}>Open Second Modal</button>
-                            </div>
-                        </Modal>
-                        <Modal
-                            isOpen={modal_between_secondmodal}
-                            toggle={() => {
-                                tog_between_secondmodal()
-                            }}
-                            scrollable={true}
-                            id="staticBackdrop"
-                        >
-                            <div className="modal-header">
-                            <h5 className="modal-title">Modal 2</h5>
-                                <button type="button" className="btn-close"
-                                    onClick={() => {
-                                        setmodal_between_secondmodal(false)
-                                    }} aria-label="Close"></button>
-                            </div>
-                            <div className="modal-body">
-                                <p>Hide this modal and show the first with the button below.</p>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" onClick={() => {
-                                    setmodal_between_modal(true)
-                                    setmodal_between_secondmodal(false)
-                                }}>Back to First</button>
-                            </div>
-                        </Modal>
-                    </div>
+                  <div>
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={() => {
+                        tog_between_modal()
+                      }}
+                      data-toggle="modal"
+                    >
+                      Open First Modal
+                    </button>
+                    <Modal
+                      isOpen={modal_between_modal}
+                      toggle={() => {
+                        tog_between_modal()
+                      }}
+                      scrollable={true}
+                      id="staticBackdrop"
+                    >
+                      <div className="modal-header">
+                        <h5 className="modal-title">Modal 1</h5>
+                        <button type="button" className="btn-close"
+                          onClick={() => {
+                            setmodal_between_modal(false)
+                          }} aria-label="Close"></button>
+                      </div>
+                      <div className="modal-body">
+                        <p>Show a second modal and hide this one with the button below.</p>
+                      </div>
+                      <div className="modal-footer">
+                        <button type="button" className="btn btn-primary" onClick={() => {
+                          setmodal_between_modal(false)
+                          setmodal_between_secondmodal(true)
+                        }}>Open Second Modal</button>
+                      </div>
+                    </Modal>
+                    <Modal
+                      isOpen={modal_between_secondmodal}
+                      toggle={() => {
+                        tog_between_secondmodal()
+                      }}
+                      scrollable={true}
+                      id="staticBackdrop"
+                    >
+                      <div className="modal-header">
+                        <h5 className="modal-title">Modal 2</h5>
+                        <button type="button" className="btn-close"
+                          onClick={() => {
+                            setmodal_between_secondmodal(false)
+                          }} aria-label="Close"></button>
+                      </div>
+                      <div className="modal-body">
+                        <p>Hide this modal and show the first with the button below.</p>
+                      </div>
+                      <div className="modal-footer">
+                        <button type="button" className="btn btn-primary" onClick={() => {
+                          setmodal_between_modal(true)
+                          setmodal_between_secondmodal(false)
+                        }}>Back to First</button>
+                      </div>
+                    </Modal>
+                  </div>
                 </CardBody>
               </Card>
-            </Col>                    
-        </Row>  
+            </Col>
+          </Row>
         </Container>
       </div>
     </React.Fragment>

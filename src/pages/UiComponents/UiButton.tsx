@@ -18,7 +18,7 @@ import {
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const UiButton = () => {
-  document.title = "Buttons | Minia - React Admin & Dashboard Template";
+  // document.title = "Buttons | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

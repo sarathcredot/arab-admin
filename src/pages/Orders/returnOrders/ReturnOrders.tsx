@@ -31,7 +31,6 @@ const ReturnOrders = () => {
 
   return (
     <>
-      <ToastContainer />
       <div className="page-content">
         <Container fluid={true} >
           {/* <Breadcrumb items={items} currentPage="Return Orders" /> */}

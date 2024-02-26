@@ -5,7 +5,7 @@ import { Row, Col, Card, CardBody, Container, CardHeader } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const IconDripicons = () => {
-  document.title = "Boxicons | Minia - React Admin & Dashboard Template";
+  // document.title = "Boxicons | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

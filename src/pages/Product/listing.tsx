@@ -65,12 +65,12 @@ interface Product {
     fileURL: string;
   }[];
   isBlocked: boolean;
-  status:string;
+  status: string;
 }
 
 const ProductListing = () => {
-  document.title =
-    "Responsive Table | Arab Deals ";
+  // document.title =
+  "Responsive Table | Arab Deals ";
 
   const pageSize = 10; // Number of items per page
   const [currentPage, setCurrentPage] = useState(0);
@@ -81,7 +81,7 @@ const ProductListing = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { data,refetch } = useQuery(GET_PRODUCTS, {
+  const { data, refetch } = useQuery(GET_PRODUCTS, {
     variables: {
       input: {
         page: currentPage,
@@ -95,7 +95,7 @@ const ProductListing = () => {
     },
   });
 
-  
+
 
   // if (loading) return <p>Loading...</p>;
   // if (error) return <p>Error: {error.message}</p>;
@@ -119,16 +119,16 @@ const ProductListing = () => {
         });
         setProducts(result.data.getProductsByAdmin.records);
         setMaxRecords(result.data.getProductsByAdmin.maxRecords);
-      } catch (error:any) {
+      } catch (error: any) {
         setError(error.message);
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, [searchTerm, currentPage, refetch]);
-  
+
 
   const totalPages = Math.ceil(maxRecords / pageSize);
 
@@ -176,21 +176,21 @@ const ProductListing = () => {
                   <h4 className="card-title">Products</h4>
 
 
-                  <Col xs={5} style={{marginTop:"20px"}}>
-                      <Input
-                        type="text"
-                        placeholder="Search Product"
-                        value={searchTerm}
-                        onChange={handleSearch}
-                        style={{ width: "50%" }}
-                      />
-                    </Col>
+                  <Col xs={5} style={{ marginTop: "20px" }}>
+                    <Input
+                      type="text"
+                      placeholder="Search Product"
+                      value={searchTerm}
+                      onChange={handleSearch}
+                      style={{ width: "50%" }}
+                    />
+                  </Col>
                 </CardHeader>
 
-               
-               
 
-              
+
+
+
                 <CardBody>
                   <div className="table-rep-plugin">
                     <div
@@ -208,7 +208,7 @@ const ProductListing = () => {
                             <Th data-priority="3">Short Description</Th>
                             <Th data-priority="3">Category</Th>
                             <Th data-priority="1">Image</Th>
-                            <Th  data-priority="3"> Verify Status</Th>
+                            <Th data-priority="3"> Verify Status</Th>
                             <Th data-priority="3">Status</Th>
                             <Th data-priority="3">View</Th>
                           </Tr>
@@ -262,9 +262,8 @@ const ProductListing = () => {
                       <div className="d-flex justify-content-end mt-0 ">
                         <ul className="pagination">
                           <li
-                            className={`page-item ${
-                              currentPage === 0 ? "disabled" : ""
-                            }`}
+                            className={`page-item ${currentPage === 0 ? "disabled" : ""
+                              }`}
                           >
                             <button
                               className="page-link"
@@ -278,9 +277,8 @@ const ProductListing = () => {
                           {Array.from({ length: totalPages }, (_, index) => (
                             <li
                               key={index}
-                              className={`page-item ${
-                                currentPage === index ? "active" : ""
-                              }`}
+                              className={`page-item ${currentPage === index ? "active" : ""
+                                }`}
                             >
                               <button
                                 className="page-link"
@@ -293,9 +291,8 @@ const ProductListing = () => {
 
                           {currentPage < totalPages - 1 && (
                             <li
-                              className={`page-item ${
-                                currentPage === totalPages - 1 ? "disabled" : ""
-                              }`}
+                              className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                                }`}
                             >
                               <button
                                 className="page-link"

@@ -53,7 +53,7 @@ interface CurrentUserTypes {
   isActive: boolean;
 }
 const Chat = () => {
-  document.title = "Chat | Minia - React Admin & Dashboard Template";
+  // document.title = "Chat | Minia - React Admin & Dashboard Template";
   const dispatch = useDispatch();
 
   const chatData = createSelector(

@@ -11,7 +11,6 @@ import { FormGroup, Input, Label } from "reactstrap";
 import "cleave.js/dist/addons/cleave-phone.in";
 import { useState } from "react";
 import { formatCurrency } from "src/utils/formatCurrency";
-
 import moment from "moment";
 import Iconify from "../iconify/Iconify";
 import { capitalCase } from "change-case";
@@ -34,11 +33,12 @@ interface ProductEditFormData {
     refundRequestDate: string | null;
     refundDate: string | null;
     refundAmount: number;
+    shippingCharge: number;
 }
 
 
 
-function OrderProductDetails({ product, orderProdcutsRefetch }: any) {
+function OrderProductDetails({ product, orderProdcutsRefetch, orderRefetch }: any) {
 
     const navigate = useNavigate();
 
@@ -103,6 +103,7 @@ function OrderProductDetails({ product, orderProdcutsRefetch }: any) {
         refundRequestDate: null,
         refundDate: null,
         refundAmount: 0,
+        shippingCharge: 0,
     };
     const [productEditFormData, setProductEditFormData] = useState<ProductEditFormData>(initialProductEditFormData);
 
@@ -121,7 +122,8 @@ function OrderProductDetails({ product, orderProdcutsRefetch }: any) {
             returnDate: product?.returnDate ? moment(product.returnDate).format('YYYY-MM-DD') : null,
             refundRequestDate: product?.refundRequestDate ? moment(product.refundRequestDate).format('YYYY-MM-DD') : null,
             refundDate: product?.refundDate ? moment(product.refundDate).format('YYYY-MM-DD') : null,
-            refundAmount: product?.refundAmount
+            refundAmount: product?.refundAmount,
+            shippingCharge: product?.shippingCharge
 
         })
     }, [product,])
@@ -204,6 +206,7 @@ function OrderProductDetails({ product, orderProdcutsRefetch }: any) {
             if (result.data.updateAdminOrderProduct) {
                 orderProdcutsRefetch();
                 setShippingModal(!shippingModal);
+                orderRefetch();
                 toast.success("Shipping Status has been updated")
                 setShippedDate("");
                 setDeliveredDate("");
@@ -275,6 +278,7 @@ function OrderProductDetails({ product, orderProdcutsRefetch }: any) {
             if (result.data.updateAdminOrderProduct) {
                 orderProdcutsRefetch();
                 setReturnModal(!returnModal);
+                orderRefetch();
                 toast.success("Return Status has been updated")
                 setReturnComment("");
                 setReturnDate("");
@@ -331,6 +335,7 @@ function OrderProductDetails({ product, orderProdcutsRefetch }: any) {
                 },
             });
             if (result.data.updateAdminOrderProduct) {
+                orderRefetch();
                 orderProdcutsRefetch();
                 setRefundModal(!refundModal);
                 toast.success("Refund Status has been updated")
@@ -378,6 +383,7 @@ function OrderProductDetails({ product, orderProdcutsRefetch }: any) {
             });
 
             if (result.data.updateAdminOrderProduct) {
+                orderRefetch();
                 orderProdcutsRefetch();
                 setInvoiceModal(!invoiceModal);
                 toast.success("Invoice has been updated")
@@ -441,6 +447,7 @@ function OrderProductDetails({ product, orderProdcutsRefetch }: any) {
                 },
             });
             if (result.data.updateAdminOrderProduct) {
+                orderRefetch();
                 orderProdcutsRefetch();
                 setCommentEditModal(!commentEditModal);
                 toast.success("Comments has been updated")
@@ -483,12 +490,14 @@ function OrderProductDetails({ product, orderProdcutsRefetch }: any) {
                         refundRequestDate: productEditFormData.refundRequestDate,
                         refundDate: productEditFormData.refundDate,
                         refundAmount: parseFloat(parseFloat(`${productEditFormData.refundAmount}`).toFixed(2)),
+                        shippingCharge: parseFloat(parseFloat(`${productEditFormData.shippingCharge}`).toFixed(2)),
                     },
                 },
             });
             if (result.data.updateAdminOrderProduct) {
                 orderProdcutsRefetch();
                 setProductEditModal(!productEditModal);
+                orderRefetch();
                 toast.success("Product has been updated")
             }
         } catch (error: any) {
@@ -496,7 +505,6 @@ function OrderProductDetails({ product, orderProdcutsRefetch }: any) {
             toast.error(error.message);
         }
     }
-    console.log(productEditFormData)
 
     const UPDATE_PRODUCT = gql`
     mutation UpdateAdminOrderProduct($input: UpdateAdminOrderProductInput!, $invoice: Upload) {
@@ -562,13 +570,14 @@ function OrderProductDetails({ product, orderProdcutsRefetch }: any) {
                                 </p>
 
                                 <div style={{ display: "flex", flexDirection: "row", gap: "20px" }}>
-                                    <div style={{ width: "200px", }}>
+                                    <div style={{ width: "220px", }}>
                                         <p className="form-control-static" style={{ margin: 10 }} >Item Id</p>
                                         <p className="form-control-static" style={{ margin: 10 }}>Courier ID
                                         </p>
                                         <p className="form-control-static" style={{ margin: 10 }} >Invoice Number</p>
                                         <p className="form-control-static" style={{ margin: 10 }} >Pyment Status</p>
                                         <p className="form-control-static" style={{ margin: 10 }} >Selling Price</p>
+                                        <p className="form-control-static" style={{ margin: 10 }} >Shipping Charge</p>
                                         {
                                             product?.refundAmount ?
                                                 <p className="form-control-static" style={{ margin: 10 }} >Refund Amount</p> : ""
@@ -580,6 +589,7 @@ function OrderProductDetails({ product, orderProdcutsRefetch }: any) {
                                         <p className="form-control-static" style={{ margin: 10 }} >{product?.invoiceNumber || "nill"}</p>
                                         <p className="form-control-static" style={{ margin: 10 }} >{product?.paymentStatus || "nill"}</p>
                                         <p className="form-control-static" style={{ margin: 10 }} >{formatCurrency(product?.sellingPrice)}</p>
+                                        <p className="form-control-static" style={{ margin: 10 }} >{formatCurrency(product?.shippingCharge)}</p>
                                         {
                                             product?.refundAmount ?
                                                 <p className="form-control-static" style={{ margin: 10 }} >{formatCurrency(product?.refundAmount)}</p> : ""
@@ -743,7 +753,7 @@ function OrderProductDetails({ product, orderProdcutsRefetch }: any) {
                         </div>
                     </div>
 
-                    <Button onClick={toggle} color="primary" style={{ margin: "0 auto 30px auto" }}>
+                    <Button onClick={toggle} color="primary" style={{ margin: "0 auto 0px auto" }}>
                         {!isOpen ?
                             <>
                                 View More
@@ -1186,49 +1196,73 @@ function OrderProductDetails({ product, orderProdcutsRefetch }: any) {
                 <ModalBody>
                     <Row>
                         <Col xl={6}>
-                            <FormGroup>
-                                <Label for="invoiceNumber">Enter Invoice Number</Label>
-                                <Input
-                                    type="text"
-                                    name="invoiceNumber"
-                                    id="invoiceNumber"
-                                    value={productEditFormData.invoiceNumber}
-                                    onChange={handleProductEditInputChange}
+                            <Row>
+                                <Col xs={12}>
+                                    <FormGroup>
+                                        <Label for="invoiceNumber">Enter Invoice Number</Label>
+                                        <Input
+                                            type="text"
+                                            name="invoiceNumber"
+                                            id="invoiceNumber"
+                                            value={productEditFormData.invoiceNumber}
+                                            onChange={handleProductEditInputChange}
 
-                                />
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="courierId">Enter Courier ID</Label>
-                                <Input
-                                    type="text"
-                                    name="courierId"
-                                    id="courierId"
-                                    value={productEditFormData.courierId}
-                                    onChange={handleProductEditInputChange}
-                                />
-                            </FormGroup>
-
-                            <FormGroup >
-                                <Label
-                                    for="paymentStatus"
-                                >
-                                    Select Payment Status
-                                </Label>
-                                <Input
-                                    id="paymentStatus"
-                                    name="paymentStatus"
-                                    type="select"
-                                    value={productEditFormData.paymentStatus}
-                                    onChange={handleProductEditInputChange}
-                                >
-                                    <option value={"COMPLETED"}>
-                                        COMPLETED
-                                    </option >
-                                    <option value={"PENDING"}>
-                                        PENDING
-                                    </option>
-                                </Input>
-                            </FormGroup>
+                                        />
+                                    </FormGroup>
+                                </Col>
+                                <Col xs={12}>
+                                    <FormGroup>
+                                        <Label for="courierId">Enter Courier ID</Label>
+                                        <Input
+                                            type="text"
+                                            name="courierId"
+                                            id="courierId"
+                                            value={productEditFormData.courierId}
+                                            onChange={handleProductEditInputChange}
+                                        />
+                                    </FormGroup>
+                                </Col>
+                                <Col xs={6}>
+                                    <FormGroup >
+                                        <Label
+                                            for="paymentStatus"
+                                        >
+                                            Select Payment Status
+                                        </Label>
+                                        <Input
+                                            id="paymentStatus"
+                                            name="paymentStatus"
+                                            type="select"
+                                            value={productEditFormData.paymentStatus}
+                                            onChange={handleProductEditInputChange}
+                                        >
+                                            <option value={"COMPLETED"}>
+                                                COMPLETED
+                                            </option >
+                                            <option value={"PENDING"}>
+                                                PENDING
+                                            </option>
+                                        </Input>
+                                    </FormGroup>
+                                </Col>
+                                <Col xs={6}>
+                                    <FormGroup>
+                                        <Label for="shippingCharge">Shipping Charge</Label>
+                                        <div className="input-group">
+                                            <div className="input-group-prepend">
+                                                <span className="input-group-text">&#x20B9;</span>
+                                            </div>
+                                            <Input
+                                                type="number"
+                                                name="shippingCharge"
+                                                id="shippingCharge"
+                                                value={productEditFormData?.shippingCharge}
+                                                onChange={handleProductEditInputChange}
+                                            />
+                                        </div>
+                                    </FormGroup>
+                                </Col>
+                            </Row>
                         </Col>
                         <Col xl={6}>
                             <Row>

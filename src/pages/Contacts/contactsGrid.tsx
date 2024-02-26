@@ -27,7 +27,7 @@ import Pagination from "src/components/Common/Pagination";
 import { createSelector } from "reselect";
 
 const ContactsGrid = () => {
-  document.title = "User Grid | Minia - React Admin & Dashboard Template";
+  // document.title = "User Grid | Minia - React Admin & Dashboard Template";
 
   const dispatch = useDispatch();
 

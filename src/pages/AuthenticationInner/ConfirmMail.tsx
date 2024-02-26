@@ -7,11 +7,11 @@ import logo from "../../assets/images/logo-sm.svg";
 import CarouselPage from "./CarouselPage";
 
 const ConfirmMail = () => {
-  document.title = "Confirm Mail | Minia - React Admin & Dashboard Template";
+  // document.title = "Confirm Mail | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
-      
+
       <div className="auth-page">
         <Container fluid className="p-0">
           <Row className="g-0">

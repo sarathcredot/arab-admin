@@ -13,10 +13,10 @@ import {
 } from "react-sparklines";
 
 const SparklineChart = () => {
-  document.title = "Sparkline | Minia - React Admin & Dashboard Template";
+  // document.title = "Sparkline | Minia - React Admin & Dashboard Template";
   return (
     <React.Fragment>
-      <div className="page-content">        
+      <div className="page-content">
         <div className="container-fluid">
           {/* Render Breadcrumb */}
           <Breadcrumbs title="Charts" breadcrumbItem="Sparkline" />

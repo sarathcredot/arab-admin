@@ -15,7 +15,7 @@ import avtar5 from "../../assets/images/users/avatar-5.jpg";
 import avtar1 from "../../assets/images/users/avatar-1.jpg";
 
 const UiImages = () => {
-  document.title = "Images | Minia - React Admin & Dashboard Template";
+  // document.title = "Images | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

@@ -46,30 +46,30 @@ mutation UpdateProductStatus($input: ProductStatusInput!) {
 }
 `;
 interface Product {
-    _id: string;
-    productName: string;
-    images: {
-      fileType: string;
-      fileURL: string;
-      mimeType: string;
-      originalName: string;
-    }[];
-    attributes: {
-      attributeId: string;
-      attributeName: string;
-      attributeValueId: string;
-      attributeValue: string;
-      attributeDescription: string;
-    }[];
-    stock: number; 
-    status: string; 
-    isBlocked: boolean;
-  
+  _id: string;
+  productName: string;
+  images: {
+    fileType: string;
+    fileURL: string;
+    mimeType: string;
+    originalName: string;
+  }[];
+  attributes: {
+    attributeId: string;
+    attributeName: string;
+    attributeValueId: string;
+    attributeValue: string;
+    attributeDescription: string;
+  }[];
+  stock: number;
+  status: string;
+  isBlocked: boolean;
+
 }
 
 const VariantListing = () => {
-  document.title =
-    "Responsive Table | Arab Deals ";
+  // document.title =
+  "Responsive Table | Arab Deals ";
 
   const pageSize = 10; // Number of items per page
   const [currentPage, setCurrentPage] = useState(0);
@@ -82,12 +82,12 @@ const VariantListing = () => {
   const [params] = useSearchParams();
   const _id = params.get("_id");
 
-  const { data,refetch } = useQuery(GET_VARIANTS, {
+  const { data, refetch } = useQuery(GET_VARIANTS, {
     variables: {
       input: {
         page: currentPage,
         size: pageSize,
-       _id:_id
+        _id: _id
 
         // parentCategory: searchTerm,
         // categories:[searchTerm],
@@ -101,34 +101,34 @@ const VariantListing = () => {
 
 
 
-const [UpdateProductStatus]=useMutation(PUT_STATUS)
-  
+  const [UpdateProductStatus] = useMutation(PUT_STATUS)
 
-const fetchData = async () => {
-  try {
-    setLoading(true);
-    const result = await refetch({
-      input: {
-        page: currentPage,
-        size: pageSize,
-        // query: searchTerm,
-        _id:_id,
-      },
-    });
-    setProducts(result.data.getVariantsTableByAdmin.records);
-    setMaxRecords(result.data.getVariantsTableByAdmin.maxRecords);
-  } catch (error:any) {
-    setError(error.message);
-  } finally {
-    setLoading(false);
-  }
-};
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const result = await refetch({
+        input: {
+          page: currentPage,
+          size: pageSize,
+          // query: searchTerm,
+          _id: _id,
+        },
+      });
+      setProducts(result.data.getVariantsTableByAdmin.records);
+      setMaxRecords(result.data.getVariantsTableByAdmin.maxRecords);
+    } catch (error: any) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   useEffect(() => {
     fetchData();
   }, [searchTerm, currentPage]);
-  
+
 
   const totalPages = Math.ceil(maxRecords / pageSize);
 
@@ -143,29 +143,29 @@ const fetchData = async () => {
     console.log(event.target.value);
   };
 
-  const handleStatusChange = async (status:any,e:any,proId:string) => {
+  const handleStatusChange = async (status: any, e: any, proId: string) => {
     e.preventDefault();
-      try {
-        let input: any = {
-          _id: proId,
-          status: status,
-        };
-        const response = await UpdateProductStatus({variables:{input: input}});
-        
-        if (response ) {
-          console.log(response);
-          toast.success(response.data.updateProductStatus.message)
-          fetchData()
-        } else {
-          console.log("Unexpected response format:", response);
-        }
-      } catch (error: any) {
-        console.log(error.message);
+    try {
+      let input: any = {
+        _id: proId,
+        status: status,
+      };
+      const response = await UpdateProductStatus({ variables: { input: input } });
+
+      if (response) {
+        console.log(response);
+        toast.success(response.data.updateProductStatus.message)
+        fetchData()
+      } else {
+        console.log("Unexpected response format:", response);
       }
-    };
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
   return (
     <React.Fragment>
-      <ToastContainer/>
+      <ToastContainer />
       <div className="page-content">
         <div className="container-fluid">
           <Breadcrumbs title="Dashboard" breadcrumbItem="Product" link="/dashboard" />
@@ -209,10 +209,10 @@ const fetchData = async () => {
                     </Col> */}
                 </CardHeader>
 
-               
-               
 
-              
+
+
+
                 <CardBody>
                   <div className="table-rep-plugin">
                     <div
@@ -239,9 +239,9 @@ const fetchData = async () => {
                             <Tr key={index}>
                               <Td>{product.productName}</Td>
                               <Td>{product.attributes[0].attributeDescription}: {product.attributes[0].attributeValue}</Td>
-                              
+
                               <Td>{product.stock}</Td>
-                    
+
                               <Td>
                                 <img
                                   src={product.images[0]?.fileURL}
@@ -265,31 +265,31 @@ const fetchData = async () => {
                                   tag={Link}
                                   to={{
                                     pathname: "/product/details/",
-                                     search: `?_id=${product._id}`,
+                                    search: `?_id=${product._id}`,
                                   }}
                                 >
                                   view
                                 </Button>
 
-                                {product?.status==="APPROVED"? <>
-                                {null}
-                                </>:<>
-                                <Button
-                                  color="white"
-                                  style={{
-                                    backgroundColor: "black",
-                                    alignItems: "center",
-                                    color: "white",
-                                    marginLeft:"10px"
-                                  }}
-                                  
-                                 onClick={(e )=>handleStatusChange("APPROVED",e, product?._id)}
-                                >
-                                  Approve
-                                </Button>
+                                {product?.status === "APPROVED" ? <>
+                                  {null}
+                                </> : <>
+                                  <Button
+                                    color="white"
+                                    style={{
+                                      backgroundColor: "black",
+                                      alignItems: "center",
+                                      color: "white",
+                                      marginLeft: "10px"
+                                    }}
+
+                                    onClick={(e) => handleStatusChange("APPROVED", e, product?._id)}
+                                  >
+                                    Approve
+                                  </Button>
                                 </>}
 
-                               
+
                               </Td>
                             </Tr>
                           ))}
@@ -302,9 +302,8 @@ const fetchData = async () => {
                       <div className="d-flex justify-content-end mt-0 ">
                         <ul className="pagination">
                           <li
-                            className={`page-item ${
-                              currentPage === 0 ? "disabled" : ""
-                            }`}
+                            className={`page-item ${currentPage === 0 ? "disabled" : ""
+                              }`}
                           >
                             <button
                               className="page-link"
@@ -318,9 +317,8 @@ const fetchData = async () => {
                           {Array.from({ length: totalPages }, (_, index) => (
                             <li
                               key={index}
-                              className={`page-item ${
-                                currentPage === index ? "active" : ""
-                              }`}
+                              className={`page-item ${currentPage === index ? "active" : ""
+                                }`}
                             >
                               <button
                                 className="page-link"
@@ -333,9 +331,8 @@ const fetchData = async () => {
 
                           {currentPage < totalPages - 1 && (
                             <li
-                              className={`page-item ${
-                                currentPage === totalPages - 1 ? "disabled" : ""
-                              }`}
+                              className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                                }`}
                             >
                               <button
                                 className="page-link"

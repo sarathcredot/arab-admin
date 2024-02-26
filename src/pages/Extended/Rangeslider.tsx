@@ -7,7 +7,7 @@
 // import "react-rangeslider/lib/index.css";
 
 // const RangeSlider = () => {
-//   document.title = "Range Slider | Minia - React Admin & Dashboard Template";
+//   // document.title = "Range Slider | Minia - React Admin & Dashboard Template";
 
 //   const formatkg = (value: number) => "$ " + value;
 //   const formatdollar = (value: number) => value + " kg";

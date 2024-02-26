@@ -5,14 +5,14 @@ import { Container } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const PageStarter = () => {
-  document.title = "Starter Page | Arab Deals";
+  // document.title = "Starter Page | Arab Deals";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Pages" breadcrumbItem="Starter Page"  link={"#"}/>
+          <Breadcrumbs title="Pages" breadcrumbItem="Starter Page" link={"#"} />
         </Container>
       </div>
     </React.Fragment>

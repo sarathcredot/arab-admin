@@ -22,7 +22,7 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import logo from "../../assets/images/logo.svg";
 
 const UiToast = () => {
-  document.title = "Toast | Minia - React Admin & Dashboard Template";
+  // document.title = "Toast | Minia - React Admin & Dashboard Template";
 
   const [toast, setToast] = useState(false);
   const [toast1, setToast1] = useState(true);

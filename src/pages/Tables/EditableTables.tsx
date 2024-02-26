@@ -40,7 +40,7 @@ const columns = [
 ];
 
 const EditableTables = () => {
-  document.title = "Editable Table | Minia - React Admin & Dashboard Template";
+  // document.title = "Editable Table | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

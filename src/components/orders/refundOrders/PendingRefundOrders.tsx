@@ -16,10 +16,10 @@ import {
     Table
 } from "reactstrap";
 import { formatCurrency } from "src/utils/formatCurrency";
-
-
 import { useNavigate } from "react-router-dom";
 import Iconify from "src/components/iconify";
+import Loader from "src/components/Common/Loader";
+import RefundOrdersFilters from "../RefundOrdersFilters";
 
 
 
@@ -204,6 +204,7 @@ const PendingRefundOrders = () => {
         data: ordersDataResponse,
         refetch: ordersRefetch,
     } = useQuery(GET_ORDERS, {
+        fetchPolicy: "network-only",
         variables: {
             input: {
                 page: currentPage,
@@ -278,6 +279,11 @@ const PendingRefundOrders = () => {
         setFilterData(formData)
     };
 
+    const handleFormSubmit = (formData: FilterData) => {
+        setFilterData(formData);
+        setCurrentPage(0);
+    };
+
     return (
         <div>
             <Row style={{ display: "flex", alignItems: "center", margin: "20px 0px" }}>
@@ -306,254 +312,113 @@ const PendingRefundOrders = () => {
 
                 </Col>
                 <Collapse isOpen={isOpen} style={{ marginTop: '20px' }}>
-                    <Card>
-                        <CardBody>
-                            <CardTitle><h4 style={{ marginBottom: "20px" }}>Filters</h4></CardTitle>
-                            <Form onSubmit={handleSubmit}>
-                                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="orderId">Order ID</Label>
-                                            <Input
-                                                type="text"
-                                                name="orderId"
-                                                id="orderId"
-                                                value={formData.orderId}
-                                                onChange={handleChange}
-                                            />
-                                        </FormGroup>
-                                    </div>
+                    <RefundOrdersFilters onSubmit={handleFormSubmit} />
 
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="itemId">Item ID</Label>
-                                            <Input
-                                                type="text"
-                                                name="itemId"
-                                                id="itemId"
-                                                value={formData.itemId}
-                                                onChange={handleChange}
-                                            />
-                                        </FormGroup>
-                                    </div>
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="courierId">Courier ID</Label>
-                                            <Input
-                                                type="text"
-                                                name="courierId"
-                                                id="courierId"
-                                                value={formData.courierId}
-                                                onChange={handleChange}
-                                            />
-                                        </FormGroup>
-                                    </div>
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="invoiceNumber">Invoice Number</Label>
-                                            <Input
-                                                type="text"
-                                                name="invoiceNumber"
-                                                id="invoiceNumber"
-                                                value={formData.invoiceNumber}
-                                                onChange={handleChange}
-                                            />
-                                        </FormGroup>
-                                    </div>
-
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="skuId">SKU ID</Label>
-                                            <Input
-                                                type="text"
-                                                name="skuId"
-                                                id="skuId"
-                                                value={formData.skuId}
-                                                onChange={handleChange}
-                                            />
-                                        </FormGroup>
-                                    </div>
-
-                                </div>
-
-                                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
-
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="productId">Product ID</Label>
-                                            <Input
-                                                type="text"
-                                                name="productId"
-                                                id="productId"
-                                                value={formData.productId}
-                                                onChange={handleChange}
-                                            />
-                                        </FormGroup>
-                                    </div>
-
-
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="paymentStatus">Payment Status</Label>
-                                            <Input
-                                                type="select"
-                                                name="paymentStatus"
-                                                id="paymentStatus"
-                                                value={formData.paymentStatus}
-                                                onChange={handleChange}
-                                            >
-                                                <option value="">All</option>
-                                                <option value="PENDING">PENDING</option>
-                                                <option value="COMPLETED">COMPLETED</option>
-                                            </Input>
-                                        </FormGroup>
-                                    </div>
-
-
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="refundRequestStartDate">Start Date</Label>
-                                            <Input
-                                                type="date"
-                                                name="refundRequestStartDate"
-                                                id="refundRequestStartDate"
-                                                value={formData.refundRequestStartDate}
-                                                onChange={handleChange}
-                                            />
-                                        </FormGroup>
-                                    </div>
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="refundRequestEndDate">End Date</Label>
-                                            <Input
-                                                type="date"
-                                                name="refundRequestEndDate"
-                                                id="refundRequestEndDate"
-                                                value={formData.refundRequestEndDate}
-                                                onChange={handleChange}
-                                            />
-                                        </FormGroup>
-                                    </div>
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup >
-                                            <Label for="paymentMode">Payment Mode</Label>
-                                            <Input
-                                                type="select"
-                                                name="paymentMode"
-                                                id="paymentMode"
-                                                value={formData.paymentMode}
-                                                onChange={handleChange}
-                                            >
-                                                <option value="">All</option>
-                                                <option value="COD">COD</option>
-                                                {/* <option value="ONLINE">ONLINE</option> */}
-                                            </Input>
-                                        </FormGroup>
-                                    </div>
-                                </div>
-                                <Button color="primary" type="submit">Apply Filters</Button>
-                            </Form>
-                        </CardBody>
-                    </Card>
                 </Collapse>
 
             </Row>
 
             <Card>
                 <CardBody>
-                    <Table
-                        responsive
-                        className="table table-bordered table-centered mb-0"
-                    >
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Requested On</th>
-                                <th>Order Id</th>
-                                <th>Username</th>
-                                <th>Product</th>
-                                <th>Payment Mode</th>
-                                {/* <th>Payment Status</th> */}
-                                <th>Amount</th>
-                                <th>View</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {orders?.map((order, index) => (
-                                <tr key={order?._id}>
-                                    <td> {currentPage * pageSize + index + 1}</td>
-                                    <td>{moment(order?.refundRequestDate).format("ll")}</td>
-                                    <td>
-                                        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                                            <div>
-                                                <p style={{ margin: "0", fontSize: "10px", fontWeight: "500" }}> Order Id :</p>
-                                                {<p style={{ fontSize: "14px", margin: "0", }}>{order?.orderId}</p>}
-                                            </div>
-                                            <div>
-                                                <p style={{ margin: "0", fontSize: "10px", fontWeight: '500' }}> Item Id :</p>
-                                                {<p style={{ fontSize: "14px", margin: "0", }}>{order?.itemId}</p>}
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>{order?.username && capitalCase(order?.username)}</td>
 
-                                    <td>
-                                        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                                            <div>
-                                                <img width={"50px"} src={order?.image?.fileURL} />
-                                            </div>
+                    <div>
+                        {
+                            ordersLoading ?
+                                <Loader />
+                                :
 
-                                            <div>
-                                                {order?.productName}
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>{order?.paymentMode}</td>
-                                    {/* <td><div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                                <Table id="tech-companies-1" className="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Requested On</th>
+                                            <th>Order Id</th>
+                                            <th>Username</th>
+                                            <th>Product</th>
+                                            <th>Payment Mode</th>
+                                            {/* <th>Payment Status</th> */}
+                                            <th>Amount</th>
+                                            <th>View</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {orders?.map((order, index) => (
+                                            <tr key={order?._id}>
+                                                <td> {currentPage * pageSize + index + 1}</td>
+                                                <td>{moment(order?.refundRequestDate).format("ll")}</td>
+                                                <td>
+                                                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                                                        <div>
+                                                            <p style={{ margin: "0", fontSize: "10px", fontWeight: "500" }}> Order Id :</p>
+                                                            {<p style={{ fontSize: "14px", margin: "0", }}>{order?.orderId}</p>}
+                                                        </div>
+                                                        <div>
+                                                            <p style={{ margin: "0", fontSize: "10px", fontWeight: '500' }}> Item Id :</p>
+                                                            {<p style={{ fontSize: "14px", margin: "0", }}>{order?.itemId}</p>}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{order?.username && capitalCase(order?.username)}</td>
+
+                                                <td>
+                                                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                                                        <div>
+                                                            <img width={"50px"} src={order?.image?.fileURL} />
+                                                        </div>
+
+                                                        <div>
+                                                            {order?.productName}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{order?.paymentMode}</td>
+                                                {/* <td><div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                                         <div style={{
                                             width: "8px", height: "8px", borderRadius: "50%",
                                             background: order?.paymentStatus === "PENDING" ? "#ff9500" : (order.paymentStatus === "IN_PROGRESS" ? "#fff200" : "green")
                                         }} />
                                         {order?.paymentStatus?.replace("_", " ")}
-                                    </div>
+                                        </div>
                                     </td> */}
-                                    <td>
-                                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                            <div>
-                                                {/* <div>
+                                                <td>
+                                                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                                                        <div>
+                                                            {/* <div>
                                                      MRP:
                                                 </div> */}
-                                                <div>
-                                                    Selling:
-                                                </div>
-                                                <div>
-                                                    Shipping :
-                                                </div>
-                                                {/* <div>
+                                                            <div>
+                                                                Selling:
+                                                            </div>
+                                                            <div>
+                                                                Shipping :
+                                                            </div>
+                                                            {/* <div>
                                                     Refund:
                                                 </div> */}
-                                            </div>
-                                            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                                                {/* <div>
+                                                        </div>
+                                                        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                                                            {/* <div>
                                                     {formatCurrency(order.mrp)}
                                                 </div> */}
-                                                <div>
-                                                    {formatCurrency(order?.sellingPrice)}
-                                                </div>
-                                                <div>
-                                                    {formatCurrency(order?.shippingCharge)}
-                                                </div>
-                                                {/* <div>
+                                                            <div>
+                                                                {formatCurrency(order?.sellingPrice)}
+                                                            </div>
+                                                            <div>
+                                                                {formatCurrency(order?.shippingCharge)}
+                                                            </div>
+                                                            {/* <div>
                                                     {formatCurrency(order.refundAmount)}
                                                 </div> */}
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td><Button size="sm" color="primary" onClick={() => navigate(`/refund-orders/details?orderId=${order?.orderId}&_id=${order?._id}`)}>View</Button></td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td><Button size="sm" color="primary" onClick={() => navigate(`/refund-orders/details?orderId=${order?.orderId}&_id=${order?._id}`)}>View</Button></td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+                        }
+                    </div>
                 </CardBody>
                 <Row>
                     <Col>

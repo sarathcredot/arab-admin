@@ -13,7 +13,7 @@ import {
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const UiColors = () => {
-  document.title = "Colors | Minia - React Admin & Dashboard Template";
+  // document.title = "Colors | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

@@ -13,7 +13,7 @@ import EmailSideBar from "./email-sidebar";
 import EmailToolbar from "./email-toolbar";
 
 const EmailInbox = () => {
-  document.title = "Email Inbox | Minia - React Admin & Dashboard Template";
+  // document.title = "Email Inbox | Minia - React Admin & Dashboard Template";
   return (
     <React.Fragment>
       <div className="page-content">

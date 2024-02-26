@@ -5,7 +5,7 @@ import { Card, Row, Col, CardBody, Container, CardHeader } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const UiTypography = () => {
-  document.title = "Typography | Minia - React Admin & Dashboard Template";
+  // document.title = "Typography | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

@@ -16,10 +16,9 @@ import {
     Table
 } from "reactstrap";
 import { formatCurrency } from "src/utils/formatCurrency";
-
-
 import { useNavigate } from "react-router-dom";
 import Iconify from "src/components/iconify";
+import RefundOrdersFilters from "../RefundOrdersFilters";
 
 
 
@@ -205,6 +204,7 @@ const All = () => {
         data: ordersDataResponse,
         refetch: ordersRefetch,
     } = useQuery(GET_ORDERS, {
+        fetchPolicy: "network-only",
         variables: {
             input: {
                 page: currentPage,
@@ -275,6 +275,11 @@ const All = () => {
         setFilterData(formData)
     };
 
+    const handleFormSubmit = (formData: FilterData) => {
+        setFilterData(formData);
+        setCurrentPage(0);
+    };
+
     return (
         <div>
             <Row style={{ display: "flex", alignItems: "center", margin: "20px 0px" }}>
@@ -303,165 +308,14 @@ const All = () => {
 
                 </Col>
                 <Collapse isOpen={isOpen} style={{ marginTop: '20px' }}>
-                    <Card>
-                        <CardBody>
-                            <CardTitle><h4 style={{ marginBottom: "20px" }}>Filters</h4></CardTitle>
-                            <Form onSubmit={handleSubmit}>
-                                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="orderId">Order ID</Label>
-                                            <Input
-                                                type="text"
-                                                name="orderId"
-                                                id="orderId"
-                                                value={formData.orderId}
-                                                onChange={handleChange}
-                                            />
-                                        </FormGroup>
-                                    </div>
-
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="itemId">Item ID</Label>
-                                            <Input
-                                                type="text"
-                                                name="itemId"
-                                                id="itemId"
-                                                value={formData.itemId}
-                                                onChange={handleChange}
-                                            />
-                                        </FormGroup>
-                                    </div>
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="courierId">Courier ID</Label>
-                                            <Input
-                                                type="text"
-                                                name="courierId"
-                                                id="courierId"
-                                                value={formData.courierId}
-                                                onChange={handleChange}
-                                            />
-                                        </FormGroup>
-                                    </div>
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="invoiceNumber">Invoice Number</Label>
-                                            <Input
-                                                type="text"
-                                                name="invoiceNumber"
-                                                id="invoiceNumber"
-                                                value={formData.invoiceNumber}
-                                                onChange={handleChange}
-                                            />
-                                        </FormGroup>
-                                    </div>
-
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="skuId">SKU ID</Label>
-                                            <Input
-                                                type="text"
-                                                name="skuId"
-                                                id="skuId"
-                                                value={formData.skuId}
-                                                onChange={handleChange}
-                                            />
-                                        </FormGroup>
-                                    </div>
-
-                                </div>
-
-                                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
-
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="productId">Product ID</Label>
-                                            <Input
-                                                type="text"
-                                                name="productId"
-                                                id="productId"
-                                                value={formData.productId}
-                                                onChange={handleChange}
-                                            />
-                                        </FormGroup>
-                                    </div>
-
-
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="paymentStatus">Payment Status</Label>
-                                            <Input
-                                                type="select"
-                                                name="paymentStatus"
-                                                id="paymentStatus"
-                                                value={formData.paymentStatus}
-                                                onChange={handleChange}
-                                            >
-                                                <option value="">All</option>
-                                                <option value="PENDING">PENDING</option>
-                                                <option value="COMPLETED">COMPLETED</option>
-                                            </Input>
-                                        </FormGroup>
-                                    </div>
-
-
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="refundRequestStartDate">Start Date</Label>
-                                            <Input
-                                                type="date"
-                                                name="refundRequestStartDate"
-                                                id="refundRequestStartDate"
-                                                value={formData.refundRequestStartDate}
-                                                onChange={handleChange}
-                                            />
-                                        </FormGroup>
-                                    </div>
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup>
-                                            <Label for="refundRequestEndDate">End Date</Label>
-                                            <Input
-                                                type="date"
-                                                name="refundRequestEndDate"
-                                                id="refundRequestEndDate"
-                                                value={formData.refundRequestEndDate}
-                                                onChange={handleChange}
-                                            />
-                                        </FormGroup>
-                                    </div>
-                                    <div style={{ width: "200px" }}>
-                                        <FormGroup >
-                                            <Label for="paymentMode">Payment Mode</Label>
-                                            <Input
-                                                type="select"
-                                                name="paymentMode"
-                                                id="paymentMode"
-                                                value={formData.paymentMode}
-                                                onChange={handleChange}
-                                            >
-                                                <option value="">All</option>
-                                                <option value="COD">COD</option>
-                                                {/* <option value="ONLINE">ONLINE</option> */}
-                                            </Input>
-                                        </FormGroup>
-                                    </div>
-                                </div>
-                                <Button color="primary" type="submit">Apply Filters</Button>
-                            </Form>
-                        </CardBody>
-                    </Card>
+                    <RefundOrdersFilters onSubmit={handleFormSubmit} />
                 </Collapse>
 
             </Row>
 
             <Card>
                 <CardBody>
-                    <Table
-                        responsive
-                        className="table table-bordered table-centered mb-0"
-                    >
+                    <Table id="tech-companies-1" className="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>No</th>

@@ -7,17 +7,17 @@ import { Rating } from "react-simple-star-rating";
 
 
 const UiRating = () => {
-  document.title = "Rating | Minia - React Admin & Dashboard Template";
+  // document.title = "Rating | Minia - React Admin & Dashboard Template";
 
   const [customize, setcustomize] = useState<number>(0)
   const [rating, setRating] = useState<number>(0)
 
   const handleRating = (rate: number) => {
-      setRating(rate)
+    setRating(rate)
   }
 
   const handleReset = () => {
-      setRating(0)
+    setRating(0)
   }
 
   return (
@@ -102,8 +102,8 @@ const UiRating = () => {
                   <div className="p-lg-5 p-4 text-center" dir="ltr">
                     <h5 className="font-size-15 mb-4">Clear/Reset rater</h5>
                     <div id="raterreset" className="align-middle">
-                    <Rating onClick={handleRating} initialValue={rating} size={25} />
-                    <button id="raterreset-button" className="btn btn-outline-primary btn-sm ms-2" onClick={handleReset}>Reset</button>
+                      <Rating onClick={handleRating} initialValue={rating} size={25} />
+                      <button id="raterreset-button" className="btn btn-outline-primary btn-sm ms-2" onClick={handleReset}>Reset</button>
                     </div>
                   </div>
                 </Col>

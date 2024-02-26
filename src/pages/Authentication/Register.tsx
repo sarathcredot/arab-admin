@@ -56,7 +56,7 @@ const Register = () => {
     dispatch(apiError(""));
   }, [dispatch]);
 
-  document.title = "Register | Arab Deals";
+  // document.title = "Register | Arab Deals";
 
   return (
     <React.Fragment>

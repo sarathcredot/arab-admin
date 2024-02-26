@@ -12,7 +12,7 @@ import {
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const BasicTable = () => {
-  document.title = "Basic Tables | Minia - React Admin & Dashboard Template";
+  // document.title = "Basic Tables | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

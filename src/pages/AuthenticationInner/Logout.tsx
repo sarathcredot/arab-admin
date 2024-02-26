@@ -6,7 +6,7 @@ import logo from "../../assets/images/logo-sm.svg";
 
 const Logout = () => {
 
-  document.title = "Log out | Minia - React Admin & Dashboard Template";
+  // document.title = "Log out | Minia - React Admin & Dashboard Template";
 
   return (
     <Container fluid className='p-0'>

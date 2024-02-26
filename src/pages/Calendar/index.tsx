@@ -274,7 +274,7 @@ const Calender = ({ className }: CalendarProps) => {
       dispatch(onAddNewEvent(modifiedData));
     }
   };
-  document.title = "Calendar | Minia - React Admin & Dashboard Template";
+  // document.title = "Calendar | Minia - React Admin & Dashboard Template";
   return (
     <React.Fragment>
       <DeleteModal

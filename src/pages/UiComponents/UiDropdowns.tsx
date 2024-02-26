@@ -22,7 +22,7 @@ import {
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const UiDropdowns = () => {
-  document.title = "Dropdowns | Minia - React Admin & Dashboard Template";
+  // document.title = "Dropdowns | Minia - React Admin & Dashboard Template";
 
   const [btnprimary1, setBtnprimary1] = useState(false);
   const [btnsecondary1, setBtnsecondary1] = useState(false);
@@ -1004,7 +1004,7 @@ const UiDropdowns = () => {
             <Col xl={6}>
               <Card>
                 <CardHeader>
-                  <h4 className="card-title">Dropup Variation</h4>  
+                  <h4 className="card-title">Dropup Variation</h4>
                   <p className="card-title-desc">
                     Trigger dropdown menus above elements by adding{" "}
                     <code className="highlighter-rouge">.dropup</code> to the
@@ -1134,7 +1134,7 @@ const UiDropdowns = () => {
                       direction="end"
                     >
                       <DropdownToggle className="btn btn-info" caret>
-                      Dropend <i className="mdi mdi-chevron-right" />
+                        Dropend <i className="mdi mdi-chevron-right" />
                       </DropdownToggle>
                       <DropdownMenu data-popper-placement="right-start">
                         <DropdownItem>Action</DropdownItem>

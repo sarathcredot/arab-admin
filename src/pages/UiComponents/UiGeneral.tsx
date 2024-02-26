@@ -23,7 +23,7 @@ import {
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const UiGeneral = () => {
-  document.title = "General | Minia - React Admin & Dashboard Template";
+  // document.title = "General | Minia - React Admin & Dashboard Template";
 
   const [popovertop, setpopovertop] = useState(false);
   const [popoverleft, setpopoverleft] = useState(false);
@@ -506,27 +506,27 @@ const UiGeneral = () => {
                     </PaginationItem>
                   </Pagination>
 
-                    <Pagination aria-label="Page navigation example" className="mb-0">
-                      <PaginationItem>
-                        <PaginationLink href="#" previous>
-                          <i className="mdi mdi-chevron-left" />
-                        </PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink href="#">1</PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink href="#">2</PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink href="#">3</PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink next>
-                          <i className="mdi mdi-chevron-right" />
-                        </PaginationLink>
-                      </PaginationItem>
-                    </Pagination>
+                  <Pagination aria-label="Page navigation example" className="mb-0">
+                    <PaginationItem>
+                      <PaginationLink href="#" previous>
+                        <i className="mdi mdi-chevron-left" />
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink href="#">1</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink href="#">2</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink href="#">3</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink next>
+                        <i className="mdi mdi-chevron-right" />
+                      </PaginationLink>
+                    </PaginationItem>
+                  </Pagination>
 
                 </CardBody>
               </Card>
@@ -798,8 +798,8 @@ const UiGeneral = () => {
 
                 </CardHeader>
                 <CardBody className="bg-dark">
-                    <button type="button" className="btn-close btn-close-white" aria-label="Close"></button>{" "}
-                    <button type="button" className="btn-close btn-close-white" disabled aria-label="Close"></button>
+                  <button type="button" className="btn-close btn-close-white" aria-label="Close"></button>{" "}
+                  <button type="button" className="btn-close btn-close-white" disabled aria-label="Close"></button>
                 </CardBody>
               </Card>
             </Col>

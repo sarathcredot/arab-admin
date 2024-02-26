@@ -11,9 +11,8 @@ import { capitalCase, sentenceCase } from "change-case";
 import moment from "moment";
 import userAvatar from "src/assets/images/users/user-dummy-img.jpg";
 import OrderDetails from "src/components/orders/OrderProductDetails";
-import OrderProductsDetails from "src/components/orders/OrderProductDetails";
-import { formatCurrency } from "src/utils/formatCurrency";
-formatCurrency
+import { formatCurrency } from "src/utils/formatCurrency"; import OrderProductsDetails from "src/components/orders/OrderProductDetails";
+import OrderShippingAddress from "src/components/orders/OrderShippingAddress";
 
 interface ShippingAddress {
     _id: string;
@@ -28,6 +27,7 @@ interface ShippingAddress {
     postCode: string;
     landmark: string;
     alternateMobile: string;
+    addressType: string;
 }
 
 interface OrderPriceInfo {
@@ -110,7 +110,6 @@ const ALlOrderDetails = () => {
     const [orderProducts, setOrderProducts] = useState<ProductsData | []>([]);
 
 
-
     const GET_ORDER = gql`
     query GetAdminOrderDetails($input: GetAdminOrderDetailsInput!) {
     getAdminOrderDetails(input: $input) {
@@ -129,6 +128,7 @@ const ALlOrderDetails = () => {
       country
       state
       city
+      addressType
       address
       address2
       postCode
@@ -210,6 +210,7 @@ const ALlOrderDetails = () => {
         error: orderError,
         refetch: orderRefetch,
     } = useQuery(GET_ORDER, {
+        fetchPolicy: "network-only",
         variables: {
             input: {
                 orderId: orderId,
@@ -223,6 +224,7 @@ const ALlOrderDetails = () => {
         error: orderProductsError,
         refetch: orderProdcutsRefetch
     } = useQuery(GET_ORDER_PRODUCTS, {
+        fetchPolicy: "network-only",
         variables: {
             input: {
                 orderId: orderId
@@ -255,7 +257,6 @@ const ALlOrderDetails = () => {
             <div className="page-content">
                 <Container fluid={true}>
                     {/* <Breadcrumbs items={items} currentPage="Details" /> */}
-
                     <Row>
                         <Col lg={12}>
                             <Card>
@@ -338,91 +339,7 @@ const ALlOrderDetails = () => {
 
                                 <CardBody>
                                     <form action="#">
-                                        <div>
-                                            <Row style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
-                                                <Col xl={12}>
-                                                    <div
-                                                        className="mb-3"
-                                                        style={{ display: "flex", gap: "4px" }}
-                                                    >
-                                                        <label
-
-                                                            htmlFor="cleave-date"
-                                                            className="form-label"
-                                                        >
-                                                            User Profile:
-                                                        </label>
-
-                                                    </div>
-
-                                                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "30px" }}>
-                                                        <div style={{ width: "80px", height: "80px", borderRadius: "50%", }}>
-                                                            <img width={"100%"} height={"100%"} style={{ borderRadius: "50%" }} src={userAvatar} />
-                                                        </div>
-
-                                                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", border: "1px solid  rgba(0, 0, 0,0.3)", borderRadius: "7px", padding: "4px 10px", width: "350px" }}>
-                                                            <p className="form-control-static" style={{ fontSize: "12px", margin: 0 }}>
-                                                                Fullname:
-                                                            </p>
-                                                            <p className="form-control-static" style={{ fontWeight: 500, margin: 0 }}>
-                                                                {order?.username && capitalCase(order?.username)}
-                                                            </p>
-                                                        </div>
-
-                                                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", border: "1px solid rgba(0, 0, 0,0.3)", borderRadius: "7px", padding: "4px 10px", width: "350px" }}>
-                                                            <p className="form-control-static" style={{ fontSize: "12px", margin: 0 }}>
-                                                                Id:
-                                                            </p>
-                                                            <p className="form-control-static" style={{ fontWeight: 500, margin: 0 }}>
-                                                                {order?.userId}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-
-                                                </Col>
-
-                                                <Col xl={12}>
-                                                    <div
-                                                        className="mb-3"
-                                                        style={{ display: "flex", gap: "4px" }}
-                                                    >
-                                                        <label
-                                                            htmlFor="cleave-date"
-                                                            className="form-label"
-                                                        >
-                                                            Shipping Address:
-                                                        </label>
-
-                                                    </div>
-
-                                                    <div >
-                                                        <div style={{ display: "flex", flexDirection: "row", }}>
-                                                            <div style={{ width: "200px" }}>
-                                                                <p className="form-control-static">email</p>
-                                                                <p className="form-control-static">Mobile</p>
-                                                                <p className="form-control-static">Address</p>
-                                                                <p className="form-control-static">Address2</p>
-                                                                <p className="form-control-static" >City</p>
-                                                                <p className="form-control-static" >Landmark</p>
-                                                                <p className="form-control-static" >Postcode</p>
-                                                                <p className="form-control-static" >Country</p>
-                                                            </div>
-                                                            <div >
-                                                                <p className="form-control-static">{order?.shippingAddress["email"] || "nill"}</p>
-                                                                <p className="form-control-static">{order?.shippingAddress["mobile"] || "nill"}</p>
-                                                                <p className="form-control-static">{order?.shippingAddress["address"] && sentenceCase(order?.shippingAddress["address"]) || "nill"} </p>
-                                                                <p className="form-control-static">{order?.shippingAddress["address2"] && sentenceCase(order?.shippingAddress["address2"]) || "nill"}  </p>
-                                                                <p className="form-control-static">{order?.shippingAddress["city"] && sentenceCase(order?.shippingAddress["city"]) || "nill"} </p>
-                                                                <p className="form-control-static">{order?.shippingAddress["landmark"] ? sentenceCase(order?.shippingAddress["landmark"]) : "nill"} </p>
-                                                                <p className="form-control-static">{order?.shippingAddress["postCode"] || "nill"}</p>
-                                                                <p className="form-control-static">{order?.shippingAddress["country"] || "nill"}</p>
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
-                                                </Col>
-                                            </Row>
-                                        </div>
+                                        <OrderShippingAddress order={order} />
 
                                         <div className="border mt-3 border-dashed"></div>
 
@@ -440,7 +357,7 @@ const ALlOrderDetails = () => {
                                                         </div>
                                                         <div>
                                                             {Array.isArray(orderProducts) && orderProducts.map((product: ProductsData, index: number) => (
-                                                                <OrderProductsDetails key={index} product={product} orderProdcutsRefetch={orderProdcutsRefetch} />
+                                                                <OrderProductsDetails key={index} product={product} orderProdcutsRefetch={orderProdcutsRefetch} orderRefetch={orderRefetch} />
                                                             ))}
                                                         </div>
                                                     </Col>

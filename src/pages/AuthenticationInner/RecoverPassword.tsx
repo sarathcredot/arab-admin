@@ -7,7 +7,7 @@ import logo from "../../assets/images/logo-sm.svg";
 import CarouselPage from "./CarouselPage";
 
 const RecoverPassword = () => {
-  document.title = "Recover Password | Minia - React Admin & Dashboard Template";
+  // document.title = "Recover Password | Minia - React Admin & Dashboard Template";
   return (
     <React.Fragment>
       <div className="auth-page">

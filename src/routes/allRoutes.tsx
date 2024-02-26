@@ -105,7 +105,7 @@ import Login from "src/pages/Authentication/Login";
 import Logout from "src/pages/Authentication/Logout";
 import Register from "src/pages/Authentication/Register";
 import ForgetPassword from "src/pages/Authentication/ForgetPassword";
-import UserProfile from "src/pages/Authentication/user-profile";
+import AdminProfile from "src/pages/Authentication/user-profile";
 import PagesComingsoon from "src/pages/Utility/PageComingsoon";
 import AuthLogout from "../pages/AuthenticationInner/Logout";
 
@@ -137,7 +137,7 @@ import ValueAttributeList from "src/pages/Attributes/components/AttributeValue";
 import Assignattribute from "src/pages/category/Assignattribute";
 import VariantListing from "src/pages/Product/variantList";
 import AssignBrands from "src/pages/branding/AssignBrands";
-import UserList from "src/pages/Users/UserList";
+import UserList from "src/pages/User/UserList";
 import AllOrders from "src/pages/Orders/allOrders/AllOrders";
 import ALlOrderDetails from "src/pages/Orders/allOrders/AllOrderDetails";
 import ShippingOrders from "src/pages/Orders/shippingOrders/ShippingOrders";
@@ -147,6 +147,7 @@ import ReturnOrderDetails from "src/pages/Orders/returnOrders/ReturnOrderDetails
 import RefundOrders from "src/pages/Orders/refundOrders/RefundOrders";
 import RefundOrderDetails from "src/pages/Orders/refundOrders/RefundOrderDetails";
 import Settings from "src/pages/settings/Settings";
+import UserProfile from "src/pages/User/UserProfile";
 interface RouteProps {
   path: string;
   component: any;
@@ -155,7 +156,7 @@ interface RouteProps {
 
 const adminRoutes: Array<RouteProps> = [
   //User Profile
-  { path: "/profile", component: <UserProfile /> },
+  { path: "/profile", component: <AdminProfile /> },
 
   //dashboard
   { path: "/dashboard", component: <Dashboard /> },
@@ -194,7 +195,7 @@ const adminRoutes: Array<RouteProps> = [
   { path: "/attributes", exact: true, component: <AttributeList /> },
   { path: "/attributes/:id", exact: true, component: <ValueAttributeList /> },
   { path: "/users", exact: true, component: <UserList /> },
-
+  { path: "/user/view", component: <UserProfile /> },
 
   // ORDERS
   { path: "/orders", component: <AllOrders /> },

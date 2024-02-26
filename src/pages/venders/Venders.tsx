@@ -167,8 +167,8 @@ const VendorList: React.FC = () => {
                   <FormVender isOpen={showAddModal} toggle={toggleAddModal} refetch={refetchVendore} />
 
                   <Table
-                    responsive
-                    className="table table-bordered table-centered mb-0"
+                    id="tech-companies-1"
+                    className="table table-striped table-bordered"
                   >
                     <thead>
                       <tr>

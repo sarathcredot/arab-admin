@@ -16,7 +16,7 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { Link } from "react-router-dom";
 
 const FormUpload = () => {
-  document.title = "Form File Upload | Minia - React Admin & Dashboard Template";
+  // document.title = "Form File Upload | Minia - React Admin & Dashboard Template";
 
   const [selectedFiles, setselectedFiles] = useState<any>([]);
 

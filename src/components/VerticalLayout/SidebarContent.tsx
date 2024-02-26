@@ -338,7 +338,7 @@ const SidebarContent = (props: any) => {
             </li>
 
             <li className="mt-3 li-sideBar">
-              <Link to="/attributes" className="">
+              <Link to="/settings" className="">
                 <FeatherIcon icon="settings" />{" "}
                 <span>{props.t("Settings")}</span>
               </Link>

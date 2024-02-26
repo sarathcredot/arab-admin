@@ -16,7 +16,7 @@ import {
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const UiAlert = () => {
-  document.title = "Alerts | Minia - React Admin & Dashboard Template";
+  // document.title = "Alerts | Minia - React Admin & Dashboard Template";
 
   const [show, setShow] = useState(false);
 

@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import {
+  Button,
   Col,
   Container,
   Nav,
   NavItem,
   NavLink,
+  Popover,
+  PopoverBody,
+  PopoverHeader,
   Row,
-  TabContent, TabPane
+  TabContent, TabPane, Table
 } from "reactstrap";
 import CompletedOrders from "src/components/orders/allOrders/CompletedOrders";
 import InProgressOrders from "src/components/orders/allOrders/InProgressOrders";
@@ -16,10 +20,19 @@ import All from "src/components/orders/allOrders/All";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 
 import "../orders.css";
+import CustomButton from "src/components/Common/CustomButton";
+import { gql, useQuery } from "@apollo/client";
+import moment from "moment";
+import ExportExcelList from "src/components/orders/ExportExcelList";
 
 
 const AllOrders = () => {
   const [activeTab, setActiveTab] = useState("2");
+
+
+
+
+
 
   const toggle = (tab: any) => {
     if (activeTab !== tab) setActiveTab(tab);
@@ -29,58 +42,67 @@ const AllOrders = () => {
     { text: "Dashboard", link: `/` },
   ];
 
+
+
   return (
     <>
-      <ToastContainer />
+
       <div className="page-content">
         <Container fluid={true} >
           {/* <Breadcrumb items={items} currentPage="All Orders" /> */}
           <Row>
-            <Col lg={12}>
-              <div>
-                <Nav tabs>
+            <Col xs={12} style={{ display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}>
+              <ExportExcelList name={"ORDER_EXPORT"} />
+            </Col>
 
-                  <NavItem>
-                    <NavLink
-                      className={activeTab === "2" ? "tab-button active" : "tab-button"}
-                      onClick={() => {
-                        toggle("2");
-                      }}
-                    >
-                      PENDING
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink
-                      className={activeTab === "3" ? "tab-button active" : "tab-button"}
-                      onClick={() => {
-                        toggle("3");
-                      }}
-                    >
-                      IN PROGRESS
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink
-                      className={activeTab === "4" ? "tab-button active" : "tab-button"}
-                      onClick={() => {
-                        toggle("4");
-                      }}
-                    >
-                      COMPLETED
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink
-                      className={activeTab === "1" ? "tab-button active" : "tab-button"}
-                      onClick={() => {
-                        toggle("1");
-                      }}
-                    >
-                      All
-                    </NavLink>
-                  </NavItem>
-                </Nav>
+            <Col lg={12}>
+              <Row>
+                <Col xs={12}>
+                  <Nav tabs>
+                    <NavItem>
+                      <NavLink
+                        className={activeTab === "2" ? "tab-button active" : "tab-button"}
+                        onClick={() => {
+                          toggle("2");
+                        }}
+                      >
+                        PENDING
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink
+                        className={activeTab === "3" ? "tab-button active" : "tab-button"}
+                        onClick={() => {
+                          toggle("3");
+                        }}
+                      >
+                        IN PROGRESS
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink
+                        className={activeTab === "4" ? "tab-button active" : "tab-button"}
+                        onClick={() => {
+                          toggle("4");
+                        }}
+                      >
+                        COMPLETED
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink
+                        className={activeTab === "1" ? "tab-button active" : "tab-button"}
+                        onClick={() => {
+                          toggle("1");
+                        }}
+                      >
+                        All
+                      </NavLink>
+                    </NavItem>
+                  </Nav>
+                </Col>
+
+
                 <TabContent activeTab={activeTab}>
 
                   <TabPane tabId="2">
@@ -112,10 +134,11 @@ const AllOrders = () => {
                     </Row>
                   </TabPane>
                 </TabContent>
-              </div>
+              </Row>
             </Col>
           </Row>
         </Container>
+
       </div>
     </>
   );

@@ -14,7 +14,7 @@ import {
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const UiProgressbar = () => {
-  document.title = "Progress Bars | Minia - React Admin & Dashboard Template";
+  // document.title = "Progress Bars | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
