@@ -25,7 +25,7 @@ const UiAlert = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Components" breadcrumbItem="Alerts" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Alerts" /> */}
 
           <Row>
             <Col xl={6}>

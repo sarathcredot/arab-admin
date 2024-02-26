@@ -185,10 +185,6 @@ const UserList = () => {
     }));
   };
 
-  const items = [
-    { text: sentenceCase("Dashboard"), link: `/` },
-  ];
-
 
 
   const copyToClipboard = (text: any, index: any) => {
@@ -197,12 +193,15 @@ const UserList = () => {
     setCopiedIndex(index);
     setCopiedPage(currentPage);
   }
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
 
   return (
     <>
       <div className="page-content">
         <Container fluid={true} >
-          {/* <Breadcrumb items={items} currentPage="Users" /> */}
+          <Breadcrumb items={items} currentPage="Users" />
           <Row>
             <Col lg={12}>
               <Card>

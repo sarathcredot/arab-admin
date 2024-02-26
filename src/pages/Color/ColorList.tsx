@@ -45,7 +45,7 @@ function ColorList() {
   const [selectedCategory, setSelectedCategory] = useState<any>();
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const [colors, setColors] = useState([]);
-  const [editColor, setEditColor]=useState<ColorType | null>(null)
+  const [editColor, setEditColor] = useState<ColorType | null>(null)
 
   const toggleDropdown = () => setDropdownOpen((prevState) => !prevState);
 
@@ -156,15 +156,15 @@ function ColorList() {
   }
 
 
-  console.log(colors,"selected");
+  console.log(colors, "selected");
   return (
     <>
       <div className="page-content">
         <Container fluid={true}>
-          
-          <Breadcrumb title="Dashboard" link="/" breadcrumbItem="ColorList"/>
-         
-       
+
+          {/* <Breadcrumb title="Dashboard" link="/" breadcrumbItem="ColorList"/> */}
+
+
           <Row>
             <Col lg={12}>
               <Card>
@@ -209,7 +209,7 @@ function ColorList() {
                         }))}
                         placeholder="Select Category"
                         isSearchable
-                       
+
                       />
                     </Col>{" "}
                     <Col xs={3}>
@@ -244,7 +244,7 @@ function ColorList() {
                         style={{ width: "100%" }}
                       />
                     </Col> */}
-                    <Col xs={4} className="text-right" style={{display:"flex",justifyContent:"flex-end", marginLeft:"100px"}}>
+                    <Col xs={4} className="text-right" style={{ display: "flex", justifyContent: "flex-end", marginLeft: "100px" }}>
                       <Button
                         style={{ backgroundColor: "#000000" }}
                         onClick={() => toggleAddModal()}

@@ -61,9 +61,9 @@ const CategoryForm: React.FC<Props> = ({
   const [isBlockCategoryChecked, setIsBlockCategoryChecked] = useState<boolean>(
     isEdit?.isBlocked !== undefined ? isEdit.isBlocked : false
   );
-  
 
-  
+
+
 
   const POST_CATEGORY = gql`
 mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
@@ -90,10 +90,10 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
   };
 
   // when clicking the add category
-  const onSubmit = async (values: any ,{resetForm}:any) => {
+  const onSubmit = async (values: any, { resetForm }: any) => {
     try {
       // values.preventDefault();
-      
+
       let variables: any = {
         input: {
           _id: isEdit?._id,
@@ -105,8 +105,8 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
         },
       };
       if (values.image) {
-        
-        console.log("hduyydsuydsuyf",values.image);
+
+        console.log("hduyydsuydsuyf", values.image);
         variables = {
           ...variables,
           image: values?.image,
@@ -153,10 +153,10 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
     initialValues: {
       name: isEdit ? isEdit.categoryName : "",
       description: isEdit ? isEdit.description : "",
-      image:null
+      image: null
     },
     validationSchema: categoryValidation,
-    onSubmit: async (values,{ resetForm }) => {
+    onSubmit: async (values, { resetForm }) => {
       await onSubmit(values, { resetForm });
     },
   });
@@ -239,7 +239,7 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
                 onChange={(event) => {
                   formik.setFieldValue(
                     "image",
-                    event.currentTarget.files?.[0] 
+                    event.currentTarget.files?.[0]
                   );
                 }}
                 onBlur={formik.handleBlur}
@@ -248,26 +248,26 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
               {formik.touched.image && formik.errors.image && (
                 <div className="text-danger">{formik.errors.image}</div>
               )}
-            </FormGroup> 
+            </FormGroup>
 
 
             {!isEdit ? (
-             <FormGroup check>
-             <Label check>
-               <Input
-                 type="checkbox"
-                 id="isLeaf"
-                 name="isLeaf"
-                 checked={isChecked}
-                 onClick={(e) => {
-                   checking();
-                 }}
-               />{" "}
-               final Category
-             </Label>
-           </FormGroup>
-            ):""}
-            
+              <FormGroup check>
+                <Label check>
+                  <Input
+                    type="checkbox"
+                    id="isLeaf"
+                    name="isLeaf"
+                    checked={isChecked}
+                    onClick={(e) => {
+                      checking();
+                    }}
+                  />{" "}
+                  final Category
+                </Label>
+              </FormGroup>
+            ) : ""}
+
 
             {isEdit ? (
               <div>
@@ -289,8 +289,8 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
             ) : null}
 
             <ModalFooter style={{ marginTop: "20px" }}>
-              <Button type="submit"  style={{backgroundColor:"rgba(0, 0, 0, 1)"}}>submit</Button>
-              <Button style={{backgroundColor:"rgba(177, 35, 73, 1)"}} onClick={toggle}>
+              <Button type="submit" color="primary" >Submit</Button>
+              <Button onClick={toggle}>
                 Cancel
               </Button>
             </ModalFooter>

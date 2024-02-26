@@ -11,7 +11,7 @@ const UiTypography = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Components" breadcrumbItem="Typography" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Typography" /> */}
 
           <Row>
             <Col xl={6}>

@@ -295,7 +295,7 @@ function ViewCard({ option, IdBusiness, IdCompany }: IPropes) {
 
   const handleRemoveRemark = (index: any) => {
     const updatedRemarks = [...remarks];
-    updatedRemarks.splice(index, 1); 
+    updatedRemarks.splice(index, 1);
     setRemarks(updatedRemarks);
   };
   const handleApproval = async (statusValue?: any, event?: any) => {
@@ -367,13 +367,15 @@ function ViewCard({ option, IdBusiness, IdCompany }: IPropes) {
 
   return (
     <div>
-       {/* <ToastContainer /> */}
+      {/* <ToastContainer /> */}
       <Container fluid={true} style={{ marginTop: "100px" }}>
         {option == "businessoutlet" ? (
           <>
-           {/* <ToastContainer /> */}
-            <Card  style={{ boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-              marginTop: "5rem",}}>
+            {/* <ToastContainer /> */}
+            <Card style={{
+              boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+              marginTop: "5rem",
+            }}>
               <CardBody>
                 {/* <CardTitle>
                   <strong>Business Outlet Data</strong>
@@ -382,103 +384,103 @@ function ViewCard({ option, IdBusiness, IdCompany }: IPropes) {
                   <Row>
                     <Col md={3}>
 
-                    <div>
-                    <p className="mt-5">
-                      <strong>Business Name :</strong> {outletData?.outletName}
-                    </p>
-                    <p className="mt-5">
-                      <strong>Address : </strong>
-                      {outletData?.address}
-                    </p>
-                  </div>
-                
+                      <div>
+                        <p className="mt-5">
+                          <strong>Business Name :</strong> {outletData?.outletName}
+                        </p>
+                        <p className="mt-5">
+                          <strong>Address : </strong>
+                          {outletData?.address}
+                        </p>
+                      </div>
 
-                  <p className="mt-5">
-                    <div className="truncate-text">
-                      {outletData?.exteriorImage && (
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <span
-                            onClick={() =>
-                              handleImageClick(
-                                outletData?.exteriorImage?.fileURL
-                              )
-                            }
-                            style={{
-                              cursor: "pointer",
-                              border: "1px solid #ccc",
-                              padding: "8px",
-                              borderRadius: "5px",
-                              transition: "background-color 0.3s",
-                              marginRight: "10px", // Adjust spacing between the spans
-                            }}
-                          >
-                            Exterior Image
-                            <i className="fas fa-external-link-alt"></i>
-                          </span>
 
-                          <span
-                            onClick={() =>
-                              handleImageClick(
-                                outletData?.interiorImage?.fileURL
-                              )
-                            }
-                            style={{
-                              cursor: "pointer",
-                              border: "1px solid #ccc",
-                              padding: "8px",
-                              borderRadius: "5px",
-                              transition: "background-color 0.3s",
-                            }}
-                          >
-                            Interior Image
-                            <i className="fas fa-external-link-alt"></i>
-                          </span>
+                      <p className="mt-5">
+                        <div className="truncate-text">
+                          {outletData?.exteriorImage && (
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                              <span
+                                onClick={() =>
+                                  handleImageClick(
+                                    outletData?.exteriorImage?.fileURL
+                                  )
+                                }
+                                style={{
+                                  cursor: "pointer",
+                                  border: "1px solid #ccc",
+                                  padding: "8px",
+                                  borderRadius: "5px",
+                                  transition: "background-color 0.3s",
+                                  marginRight: "10px", // Adjust spacing between the spans
+                                }}
+                              >
+                                Exterior Image
+                                <i className="fas fa-external-link-alt"></i>
+                              </span>
+
+                              <span
+                                onClick={() =>
+                                  handleImageClick(
+                                    outletData?.interiorImage?.fileURL
+                                  )
+                                }
+                                style={{
+                                  cursor: "pointer",
+                                  border: "1px solid #ccc",
+                                  padding: "8px",
+                                  borderRadius: "5px",
+                                  transition: "background-color 0.3s",
+                                }}
+                              >
+                                Interior Image
+                                <i className="fas fa-external-link-alt"></i>
+                              </span>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  </p>
+                      </p>
                     </Col>
 
                     <Col md={3}>
-                    <p className="mt-5">
-                    <strong>Status:</strong>
-                    <span
-                      style={{
-                        display: "inline-block",
-                        padding: "5px 10px",
-                        borderRadius: "15px",
-                        background: getStatusColor(outletData?.status), 
-                        color: "#fff", 
-                        marginLeft: "10px",
-                      }}
-                    >
-                      {outletData?.status}
-                    </span>
-                  </p>
+                      <p className="mt-5">
+                        <strong>Status:</strong>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            padding: "5px 10px",
+                            borderRadius: "15px",
+                            background: getStatusColor(outletData?.status),
+                            color: "#fff",
+                            marginLeft: "10px",
+                          }}
+                        >
+                          {outletData?.status}
+                        </span>
+                      </p>
 
-                  <p className="mt-5">
-                    {outletData && (
-                      <CardText>
-                        <strong>Remarks:</strong>
-                        <ul>
-                          {outletData?.remarks.map(
-                            (remark: any, index: any) => (
-                              <li key={index}>{remark}</li>
-                            )
-                          )}
-                        </ul>
-                      </CardText>
-                    )}
-                  </p>
+                      <p className="mt-5">
+                        {outletData && (
+                          <CardText>
+                            <strong>Remarks:</strong>
+                            <ul>
+                              {outletData?.remarks.map(
+                                (remark: any, index: any) => (
+                                  <li key={index}>{remark}</li>
+                                )
+                              )}
+                            </ul>
+                          </CardText>
+                        )}
+                      </p>
                     </Col>
                   </Row>
-                
-                  
+
+
                 </CardText>
                 {!(outletData?.status === "COMPLETED") ? (
                   <>
                     <Button
-                      style={{ backgroundColor: "#000000" }}
+                      color="primary"
                       onClick={() => {
                         handleApproval("COMPLETED");
                         setOptions("businessOutlet");
@@ -487,9 +489,8 @@ function ViewCard({ option, IdBusiness, IdCompany }: IPropes) {
                       Approve
                     </Button>
                     <Button
-                      color="danger"
                       onClick={() => handleRejection("businessOutlet")}
-                      style={{ marginLeft: "4px" }}
+                      style={{ marginLeft: "10px" }}
                     >
                       Reject
                     </Button>
@@ -504,100 +505,102 @@ function ViewCard({ option, IdBusiness, IdCompany }: IPropes) {
 
         {option === "companydetails" ? (
           <>
-           {/* <ToastContainer /> */}
-            <Card style={{ boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-              marginTop: "5rem",}}>
+            {/* <ToastContainer /> */}
+            <Card style={{
+              boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+              marginTop: "5rem",
+            }}>
               <CardBody>
                 {/* <CardTitle>
                   <strong>Company Details</strong>
                 </CardTitle> */}
                 <CardText>
                   <Row>
-                <Col md={3}> 
-                <div>
-                    <p className="mt-5">
-                      <strong>Company Name : </strong>
-                      {companyData?.companyName}
-                    </p>
-                    <p className="mt-5">
-                      <strong>Address : </strong>
-                      {companyData?.address}
-                    </p>
+                    <Col md={3}>
+                      <div>
+                        <p className="mt-5">
+                          <strong>Company Name : </strong>
+                          {companyData?.companyName}
+                        </p>
+                        <p className="mt-5">
+                          <strong>Address : </strong>
+                          {companyData?.address}
+                        </p>
 
-                    <p className="mt-5">
-                      <strong>CR Number : </strong>
-                      {companyData?.crNumber}{" "}
-                    </p>
-                  </div>
+                        <p className="mt-5">
+                          <strong>CR Number : </strong>
+                          {companyData?.crNumber}{" "}
+                        </p>
+                      </div>
 
-                  <div className="truncate-text mt-5">
-                    {companyData?.cooCertificate && (
-                      <div style={{ display: "flex", alignItems: "center" }}>
+                      <div className="truncate-text mt-5">
+                        {companyData?.cooCertificate && (
+                          <div style={{ display: "flex", alignItems: "center" }}>
+                            <span
+                              onClick={() =>
+                                handleImageClick(
+                                  companyData?.cooCertificate?.fileURL
+                                )
+                              }
+                              style={{
+                                cursor: "pointer",
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                                borderRadius: "5px",
+                                transition: "background-color 0.3s",
+                                marginRight: "10px",
+                              }}
+                            >
+                              cooCertificate
+                              <i className="fas fa-external-link-alt"></i>
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+
+                    </Col>
+                    <Col md={3}>
+
+                      <p className="mt-5">
+                        <strong>Status:</strong>
                         <span
-                          onClick={() =>
-                            handleImageClick(
-                              companyData?.cooCertificate?.fileURL
-                            )
-                          }
                           style={{
-                            cursor: "pointer",
-                            border: "1px solid #ccc",
-                            padding: "8px",
-                            borderRadius: "5px",
-                            transition: "background-color 0.3s",
-                            marginRight: "10px",
+                            display: "inline-block",
+                            padding: "5px 10px",
+                            borderRadius: "15px",
+                            background: getStatusColor(companyData?.status),
+                            color: "#fff",
+                            marginLeft: "10px",
                           }}
                         >
-                          cooCertificate
-                          <i className="fas fa-external-link-alt"></i>
+                          {companyData?.status}
                         </span>
-                      </div>
-                    )}
-                  </div>
-                
-                
-                </Col>
-                <Col md={3}> 
+                      </p>
 
-                <p className="mt-5">
-                    <strong>Status:</strong>
-                    <span
-                      style={{
-                        display: "inline-block",
-                        padding: "5px 10px",
-                        borderRadius: "15px",
-                        background: getStatusColor(companyData?.status),
-                        color: "#fff",
-                        marginLeft: "10px",
-                      }}
-                    >
-                      {companyData?.status}
-                    </span>
-                  </p>
-                  
-                  <p className="mt-5">
-                    {companyData && (
-                      <CardText>
-                        <strong>Remarks:</strong>
-                        <ul>
-                          {companyData?.remarks.map(
-                            (remark: any, index: any) => (
-                              <li key={index}>{remark}</li>
-                            )
-                          )}
-                        </ul>
-                      </CardText>
-                    )}
-                  </p>
+                      <p className="mt-5">
+                        {companyData && (
+                          <CardText>
+                            <strong>Remarks:</strong>
+                            <ul>
+                              {companyData?.remarks.map(
+                                (remark: any, index: any) => (
+                                  <li key={index}>{remark}</li>
+                                )
+                              )}
+                            </ul>
+                          </CardText>
+                        )}
+                      </p>
 
-               
-                  </Col> 
+
+                    </Col>
                   </Row>
                 </CardText>
                 {!(companyData?.status === "COMPLETED") ? (
                   <>
                     <Button
-                      style={{ backgroundColor: "#000000" }}
+                      color="primary"
                       onClick={() => {
                         handleApproval("COMPLETED");
                         setOptions("companyDetails");
@@ -606,9 +609,8 @@ function ViewCard({ option, IdBusiness, IdCompany }: IPropes) {
                       Approve
                     </Button>
                     <Button
-                      color="danger"
                       onClick={() => handleRejection("companyDetails")}
-                      style={{ marginLeft: "4px" }}
+                      style={{ marginLeft: "10px" }}
                     >
                       Reject
                     </Button>

@@ -18,6 +18,7 @@ import { Dropdown, DropdownToggle, DropdownMenu, Row, Col } from "reactstrap";
 
 //import images
 import logoSvg from "../../assets/images/arabDealLogo.svg";
+import logoSvgSmall from "../../assets/images/arabDealLogoSmall.png";
 import github from "../../assets/images/brands/github.png";
 import bitbucket from "../../assets/images/brands/bitbucket.png";
 import dribbble from "../../assets/images/brands/dribbble.png";
@@ -68,7 +69,7 @@ const Header = (props: any) => {
             <div className="navbar-brand-box">
               <Link to="/dashboard" className="logo logo-dark">
                 <span className="logo-sm">
-                  <img src={logoSvg} alt="" height="24" />
+                  <img src={logoSvgSmall} alt="" height="24" />
                 </span>
                 <span className="logo-lg">
                   <img src={logoSvg} alt="" height="24" />{" "}

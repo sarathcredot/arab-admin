@@ -40,7 +40,7 @@ const UiGeneral = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Components" breadcrumbItem="General" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="General" /> */}
 
           <Row>
             <Col lg={6}>

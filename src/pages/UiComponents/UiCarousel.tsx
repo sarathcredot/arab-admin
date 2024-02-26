@@ -25,7 +25,7 @@ const UiCarousel = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Components" breadcrumbItem="Carousel" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Carousel" /> */}
 
           <Row>
             <Col lg={6}>

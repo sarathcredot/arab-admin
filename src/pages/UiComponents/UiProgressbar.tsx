@@ -20,7 +20,7 @@ const UiProgressbar = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Components" breadcrumbItem="Progress Bars" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Progress Bars" /> */}
 
           <Row>
             <Col xl={6}>

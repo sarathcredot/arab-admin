@@ -58,7 +58,7 @@ const BrandList: React.FC = () => {
   `;
 
 
-const GET_ASSIGN_BRAND= gql`query GetAllBrandRecordsWithVendorByAdmin($input: VendorInput!) {
+  const GET_ASSIGN_BRAND = gql`query GetAllBrandRecordsWithVendorByAdmin($input: VendorInput!) {
   getAllBrandRecordsWithVendorByAdmin(input: $input) {
     maxRecords
     records {
@@ -79,7 +79,7 @@ const GET_ASSIGN_BRAND= gql`query GetAllBrandRecordsWithVendorByAdmin($input: Ve
 }`
 
 
-const PUT_VENDOR=gql`
+  const PUT_VENDOR = gql`
 mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
   updateVendorProfileByAdmin(input: $input) {
     _id
@@ -88,48 +88,48 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
 }`
 
 
-const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
+  const [UpdateVendorProfileByAdmin] = useMutation(PUT_VENDOR)
 
-const {
-  loading: brandLoading,
-  error: brandError,
-  data: brandDataResponse,
-  refetch: brandRefetch,
-} = useQuery(GET_BRAND, {
-  variables: {
-    input: {
-      page: null,
-      size: 10,
+  const {
+    loading: brandLoading,
+    error: brandError,
+    data: brandDataResponse,
+    refetch: brandRefetch,
+  } = useQuery(GET_BRAND, {
+    variables: {
+      input: {
+        page: null,
+        size: 10,
+      },
     },
-  },
-});
+  });
 
-const {
-  loading: assignBrandLoading,
-  error: assignBrandError,
-  data: assignBrandDataResponse,
-  refetch: assignBrandRefetch,
-} = useQuery(GET_ASSIGN_BRAND, {
-  variables: {
-    input: {
-      page: currentPage,
-      size: 10,
-      vendorId: id,
+  const {
+    loading: assignBrandLoading,
+    error: assignBrandError,
+    data: assignBrandDataResponse,
+    refetch: assignBrandRefetch,
+  } = useQuery(GET_ASSIGN_BRAND, {
+    variables: {
+      input: {
+        page: currentPage,
+        size: 10,
+        vendorId: id,
+      },
     },
-  },
-});
+  });
 
 
-console.log(assignBrandDataResponse,"kjdddsuiududsdu")
+  console.log(assignBrandDataResponse, "kjdddsuiududsdu")
 
-useEffect(() => {
-  if (brandDataResponse && brandDataResponse.getAllBrandRecordsByAdmin) {
-    setBrandData(brandDataResponse.getAllBrandRecordsByAdmin.records);
-  }
-  if (assignBrandDataResponse && assignBrandDataResponse.getAllBrandRecordsWithVendorByAdmin) {
-    setAssignBrandData(assignBrandDataResponse.getAllBrandRecordsWithVendorByAdmin.records);
-  }
-}, [brandDataResponse, brandRefetch, assignBrandDataResponse, id]);
+  useEffect(() => {
+    if (brandDataResponse && brandDataResponse.getAllBrandRecordsByAdmin) {
+      setBrandData(brandDataResponse.getAllBrandRecordsByAdmin.records);
+    }
+    if (assignBrandDataResponse && assignBrandDataResponse.getAllBrandRecordsWithVendorByAdmin) {
+      setAssignBrandData(assignBrandDataResponse.getAllBrandRecordsWithVendorByAdmin.records);
+    }
+  }, [brandDataResponse, brandRefetch, assignBrandDataResponse, id]);
 
   if (brandError) {
     console.error("Error fetching vendor data:", brandError);
@@ -145,7 +145,7 @@ useEffect(() => {
   };
 
 
-  console.log(assignBrandData,"wertyui")
+  console.log(assignBrandData, "wertyui")
 
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
@@ -161,7 +161,7 @@ useEffect(() => {
     if (selectedBrands.length > 0) {
       const brandIds = selectedBrands.map((brand) => brand.value);
       try {
-        const response:any = await UpdateVendorProfileByAdmin({
+        const response: any = await UpdateVendorProfileByAdmin({
           variables: {
             input: {
               _id: id,
@@ -169,24 +169,24 @@ useEffect(() => {
             },
           },
         });
-  
+
         toast.success(response?.message)
         setSelectedBrands([])
         assignBrandRefetch();
-      } catch (error:any) {
+      } catch (error: any) {
         console.error("Error assigning brands:", error.message);
       }
     } else {
       console.error("Please select at least one brand to assign");
     }
   };
-  
+
 
   return (
     <>
       <div className="page-content" >
-      <ToastContainer/>
-        <Container fluid={true} > 
+        <ToastContainer />
+        <Container fluid={true} >
           {/* <Nav tabs>
             <NavItem>
               <NavLink
@@ -249,15 +249,12 @@ useEffect(() => {
                         }),
                       }}
                     />
-                    <Button onClick={() => handleAssignBrands()} style={{backgroundColor:"#000000"}}>
+                    <Button onClick={() => handleAssignBrands()} style={{ backgroundColor: "#000000" }}>
                       Assign Brands
                     </Button>
                   </div>
 
-                  <Table
-                    responsive
-                    className="table table-bordered table-centered mb-0"
-                  >
+                  <Table id="tech-companies-1" className="table table-striped table-bordered">
                     <thead>
                       <tr>
                         <th>No</th>
@@ -313,9 +310,8 @@ useEffect(() => {
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">
                         <li
-                          className={`page-item ${
-                            currentPage === 0 ? "disabled" : ""
-                          }`}
+                          className={`page-item ${currentPage === 0 ? "disabled" : ""
+                            }`}
                         >
                           <button
                             className="page-link"
@@ -329,9 +325,8 @@ useEffect(() => {
                         {Array.from({ length: totalPages }, (_, index) => (
                           <li
                             key={index}
-                            className={`page-item ${
-                              currentPage === index ? "active" : ""
-                            }`}
+                            className={`page-item ${currentPage === index ? "active" : ""
+                              }`}
                           >
                             <button
                               className="page-link"
@@ -344,9 +339,8 @@ useEffect(() => {
 
                         {currentPage < totalPages - 1 && (
                           <li
-                            className={`page-item ${
-                              currentPage === totalPages - 1 ? "disabled" : ""
-                            }`}
+                            className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                              }`}
                           >
                             <button
                               className="page-link"

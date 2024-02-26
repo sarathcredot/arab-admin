@@ -52,7 +52,7 @@ const InvoiceDetails = (props: any) => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Invoices" breadcrumbItem="Invoice Detail" />
+          {/* <Breadcrumbs title="Invoices" breadcrumbItem="Invoice Detail" /> */}
 
           {!isEmpty(invoiceDetail) && (
             <Row>

@@ -10,7 +10,7 @@ const RangeSlider = () => {
         <React.Fragment>
             <div className="page-content">
                 <Container fluid={true}>
-                    <Breadcrumb title="Components" breadcrumbItem="Range Slider" />
+                    {/* <Breadcrumb title="Components" breadcrumbItem="Range Slider" /> */}
                     <NouiSliders />
                     <ColorScheme />
                 </Container>

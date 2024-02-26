@@ -93,7 +93,7 @@ const CmstwoListing = () => {
     <React.Fragment>
       <div className="page-content">
         <div className="container-fluid">
-          <Breadcrumbs title="Tables" breadcrumbItem="" />
+          {/* <Breadcrumbs title="Tables" breadcrumbItem="" /> */}
           <Row>
             <Col lg={12}>
               <div className="d-flex justify-content-end mb-3">

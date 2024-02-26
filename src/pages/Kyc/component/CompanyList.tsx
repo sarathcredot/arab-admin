@@ -149,10 +149,7 @@ function CompanyListing() {
                     onChange={handleSearch}
                     style={{ width: "50%", marginBottom: "20px" }}
                   />
-                  <Table
-                    responsive
-                    className="table table-bordered table-centered mb-0"
-                  >
+                  <Table id="tech-companies-1" className="table table-striped table-bordered">
                     <thead>
                       <tr>
                         <th>No</th>
@@ -172,22 +169,18 @@ function CompanyListing() {
 
                         .map((company, index) => (
                           <tr key={company._id}>
-                            <td>{index + 1}</td>
+                            <td>{pageSize * currentPage + index + 1}</td>
                             <td>{company.fullName}</td>
                             <td>{company.companyName}</td>
                             <td style={{ color: company.isKycCompleted ? "#5cb85c" : "red" }}>
                               {company.isKycCompleted ? "COMPLETED" : "PENDING"}
                             </td>
-
-
-                            <td
-
-                            >
+                            <td >
                               {company?.status}
                             </td>
                             <td>
                               <Link to={`/vendors/${company.vendorId}`}>
-                                <Button style={{ marginLeft: "20px", backgroundColor: "#000000" }}>
+                                <Button size="sm" color="primary">
                                   View
                                 </Button>
                               </Link>

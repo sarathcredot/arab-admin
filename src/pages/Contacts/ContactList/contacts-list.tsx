@@ -295,7 +295,7 @@ const ContactsList = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Contacts" breadcrumbItem="User List" />
+          {/* <Breadcrumbs title="Contacts" breadcrumbItem="User List" /> */}
 
           <Row className="align-items-center">
             <Col md={6}>

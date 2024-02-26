@@ -20,7 +20,7 @@ const UiColors = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Components" breadcrumbItem="Colors" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Colors" /> */}
           <div className="row">
             <div className="col-12">
               <div className="card">

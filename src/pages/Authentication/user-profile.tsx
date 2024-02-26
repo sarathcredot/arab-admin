@@ -170,13 +170,17 @@ const UserProfile = () => {
 
   // document.title = "Profile | Arab Deals";
 
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
+
   return (
     <React.Fragment>
       <ToastContainer />
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumb */}
-          <Breadcrumb title="" breadcrumbItem="Profile" />
+          <Breadcrumb items={items} currentPage="Profile" />
 
           <Row>
             <Col lg="12">

@@ -23,7 +23,7 @@ const EmailRead = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Email" breadcrumbItem="Read Email" />
+          {/* <Breadcrumbs title="Email" breadcrumbItem="Read Email" /> */}
 
           <Row>
             <Col xs="12">

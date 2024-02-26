@@ -12,7 +12,7 @@ const PageStarter = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Pages" breadcrumbItem="Starter Page" link={"#"} />
+          {/* <Breadcrumbs title="Pages" breadcrumbItem="Starter Page" link={"#"} /> */}
         </Container>
       </div>
     </React.Fragment>

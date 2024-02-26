@@ -14,7 +14,7 @@ const AdvancedPlugins = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Forms" breadcrumbItem="Forms Advanced Plugins" />
+          {/* <Breadcrumbs title="Forms" breadcrumbItem="Forms Advanced Plugins" /> */}
           <Row>
             <Col lg={12}>
               <Card>

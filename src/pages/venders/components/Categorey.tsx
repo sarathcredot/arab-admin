@@ -46,7 +46,7 @@ interface Category {
   fullCategoryName: string;
 }
 
-interface Props {}
+interface Props { }
 
 const CategoryList: React.FC<Props> = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -63,7 +63,7 @@ const CategoryList: React.FC<Props> = () => {
     label: string;
   } | null>(null);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
-  const [assignedCategryData, setAssignedCategryData] =useState<Category[]>([]);
+  const [assignedCategryData, setAssignedCategryData] = useState<Category[]>([]);
   const { id } = useParams();
   const GET_ALL_ISLEAF_CATEGORY = gql`
     query Records {
@@ -81,7 +81,7 @@ const CategoryList: React.FC<Props> = () => {
   `;
 
 
-const GET_ASSIGNED_CATEGORY=gql`query GetAllCategoriesOfVendor($input: vendorIdInput!) {
+  const GET_ASSIGNED_CATEGORY = gql`query GetAllCategoriesOfVendor($input: vendorIdInput!) {
   getAllCategoriesOfVendor(input: $input) {
     records {
       categoryName
@@ -94,14 +94,14 @@ const GET_ASSIGNED_CATEGORY=gql`query GetAllCategoriesOfVendor($input: vendorIdI
 }
 `;
 
-const PUT_VENDOR = gql`mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
+  const PUT_VENDOR = gql`mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
   updateVendorProfileByAdmin(input: $input) {
     _id
     message
   }
 }`;
 
-const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR) 
+  const [UpdateVendorProfileByAdmin] = useMutation(PUT_VENDOR)
 
   const {
     loading: categoryLoading,
@@ -116,10 +116,10 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
     error: assignCategoryError,
     data: assignCategoryDataResponse,
     refetch: assignCategoryRefetch,
-  } = useQuery(GET_ASSIGNED_CATEGORY,{
-    variables:{
-      input:{
-        vendorId:id
+  } = useQuery(GET_ASSIGNED_CATEGORY, {
+    variables: {
+      input: {
+        vendorId: id
       }
     }
   });
@@ -129,8 +129,8 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
       setCategoryData(categoryDataResponse?.getAllLeafRecords?.records || []);
     }
 
-    if(assignCategoryDataResponse){
-      setAssignedCategryData(assignCategoryDataResponse?.getAllCategoriesOfVendor?.records ||[])
+    if (assignCategoryDataResponse) {
+      setAssignedCategryData(assignCategoryDataResponse?.getAllCategoriesOfVendor?.records || [])
     }
   }, [categoryDataResponse, assignCategoryDataResponse]);
 
@@ -139,7 +139,7 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
     setIsImageModalOpen(true);
   };
 
-  console.log(assignedCategryData,"adsfgf")
+  console.log(assignedCategryData, "adsfgf")
 
   const flattenedCategories: Category[] = flattenCategories(categoryData);
 
@@ -148,7 +148,7 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
-    
+
   };
 
   const handleAddCategory = () => {
@@ -184,9 +184,9 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
   const handleAssignCategory = async () => {
     if (selectedCategory.length > 0) {
       const categoryIds = selectedCategory.map((category) => category.value);
-      console.log(categoryIds,"selectedCategory")
+      console.log(categoryIds, "selectedCategory")
       try {
-        const response:any = await UpdateVendorProfileByAdmin({
+        const response: any = await UpdateVendorProfileByAdmin({
           variables: {
             input: {
               _id: id,
@@ -194,14 +194,14 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
             },
           },
         });
-  
+
         toast.success(response?.message)
         assignCategoryRefetch()
         categoryRefetch()
         setSelectedCategory([])
-        
-      } catch (error:any) {
-        toast.error( error.message);
+
+      } catch (error: any) {
+        toast.error(error.message);
       }
     } else {
       toast.error("Please select at least one brand to assign");
@@ -210,9 +210,9 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
 
   return (
     <>
-     
+
       <div className="page-content">
-      <ToastContainer />
+        <ToastContainer />
         <Container fluid={true} >
           <Row>
             <Col lg={12}>
@@ -273,17 +273,14 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
                           }),
                         }}
                       />
-                      <Button onClick={() => handleAssignCategory()} style={{backgroundColor:"#000000"}}>
-                      Assign Brands
-                    </Button>
+                      <Button onClick={() => handleAssignCategory()} style={{ backgroundColor: "#000000" }}>
+                        Assign Brands
+                      </Button>
                     </div>
                   </Row>
                 </CardHeader>
                 <CardBody>
-                  <Table
-                    responsive
-                    className="table table-bordered table-centered mb-0"
-                  >
+                  <Table id="tech-companies-1" className="table table-striped table-bordered">
                     <thead>
                       <tr>
                         <th>No</th>

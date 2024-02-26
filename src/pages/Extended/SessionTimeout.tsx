@@ -50,7 +50,7 @@ const SessionTimeout = () => {
       <div className="page-content">
         <Container fluid={true}>
 
-          <Breadcrumbs title="Extended" breadcrumbItem="Session Timeout" />
+          {/* <Breadcrumbs title="Extended" breadcrumbItem="Session Timeout" /> */}
           <Row>
             <Col>
               <Card>

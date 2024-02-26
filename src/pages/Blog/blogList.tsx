@@ -43,7 +43,7 @@ const blogList = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title="Blog" breadcrumbItem="Blog List" />
+          {/* <Breadcrumbs title="Blog" breadcrumbItem="Blog List" /> */}
           <Row className="row align-items-center mt-0">
             <Col md={6}>
               <div className="mb-3">

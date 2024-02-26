@@ -55,7 +55,7 @@ interface CmsTwoRecord {
     };
     subTitle: string;
     title: string;
-    _id:string;
+    _id: string;
   }[];
   isBlocked: string;
 }
@@ -108,10 +108,10 @@ const CmsTwoRecordDetails = () => {
       ) : (
         <div className="page-content">
           <Container fluid={true}>
-            <Breadcrumbs
+            {/* <Breadcrumbs
               title="CMS Record"
               breadcrumbItem="CMS2 Record Details"
-            />
+            /> */}
             <div className="d-flex justify-content-end mb-3">
               <button
                 onClick={handleEditProduct}

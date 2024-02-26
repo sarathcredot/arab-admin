@@ -46,7 +46,7 @@ const EditableTables = () => {
     <React.Fragment>
       <div className="page-content">
         <div className="container-fluid">
-          <Breadcrumbs title="Tables" breadcrumbItem="Editable Table" />
+          {/* <Breadcrumbs title="Tables" breadcrumbItem="Editable Table" /> */}
 
           <Row>
             <Col>

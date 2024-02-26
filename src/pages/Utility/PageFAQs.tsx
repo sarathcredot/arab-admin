@@ -12,7 +12,7 @@ const PageFaqs = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Pages" breadcrumbItem="FAQs" />
+          {/* <Breadcrumbs title="Pages" breadcrumbItem="FAQs" /> */}
           <Row>
             <Col lg={12}>
               <Card>

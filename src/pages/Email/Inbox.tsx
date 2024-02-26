@@ -19,7 +19,7 @@ const EmailInbox = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Email" breadcrumbItem="Email Inbox" />
+          {/* <Breadcrumbs title="Email" breadcrumbItem="Email Inbox" /> */}
 
           <Row>
             <Col xs="12">

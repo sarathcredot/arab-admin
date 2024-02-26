@@ -98,10 +98,10 @@ const CmsRecordDetails = () => {
       ) : (
         <div className="page-content">
           <Container fluid={true}>
-            <Breadcrumbs
+            {/* <Breadcrumbs
               title="CMS Record"
               breadcrumbItem="CMS Record Details"
-            />
+            /> */}
             <div className="d-flex justify-content-end mb-3">
               <button
                 onClick={handleEditProduct}

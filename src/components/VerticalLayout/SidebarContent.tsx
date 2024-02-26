@@ -18,6 +18,7 @@ import MetisMenu from "metismenujs";
 import { Link, useLocation } from "react-router-dom";
 
 import withRouter from "../../../src/components/Common/withRouter";
+import Iconify from "../iconify/Iconify";
 
 const SidebarContent = (props: any) => {
   const ref: any = useRef();
@@ -179,7 +180,7 @@ const SidebarContent = (props: any) => {
             </li> */}
             <li className="mt-3 li-sideBar">
               <Link to="/vendors" className="">
-                <FeatherIcon icon="pie-chart" />{" "}
+                <FeatherIcon icon="users" />{" "}
                 <span>{props.t("Vendors")}</span>
 
               </Link>
@@ -187,7 +188,7 @@ const SidebarContent = (props: any) => {
 
             <li className="mt-3 li-sideBar">
               <Link to="/users" className="">
-                <FeatherIcon icon="pie-chart" />{" "}
+                <FeatherIcon icon="user" />{" "}
                 <span>{props.t("Users")}</span>
 
               </Link>
@@ -195,7 +196,7 @@ const SidebarContent = (props: any) => {
 
             <li className="mt-3 li-sideBar">
               <Link to="/kyc" className="">
-                <FeatherIcon icon="pie-chart" />{" "}
+                <FeatherIcon icon="shield" />{" "}
                 <span>{props.t("Kyc")}</span>
 
               </Link>
@@ -243,7 +244,7 @@ const SidebarContent = (props: any) => {
             </li>
 
             <li className="mt-3 li-sideBar">
-              <Link to="/brands" className="">
+              <Link to="/brandslist" className="">
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <div style={{ display: "flex", alignItems: "center", }}>
                     <FeatherIcon icon="shopping-bag" />

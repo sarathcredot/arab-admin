@@ -73,7 +73,7 @@ const FormMask = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Form" breadcrumbItem="Form Mask" />
+          {/* <Breadcrumbs title="Form" breadcrumbItem="Form Mask" /> */}
 
           <Row>
             <Col lg={12}>

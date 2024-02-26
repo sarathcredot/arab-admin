@@ -24,7 +24,7 @@ const UiRating = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Extended" breadcrumbItem="Rating" />
+          {/* <Breadcrumbs title="Extended" breadcrumbItem="Rating" /> */}
 
           <Card>
             <CardHeader>

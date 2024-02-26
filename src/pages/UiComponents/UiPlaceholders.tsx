@@ -14,7 +14,7 @@ const UiPlaceholders = () => {
         <React.Fragment>
             <div className="page-content">
                 <Container fluid={true}>
-                    <Breadcrumbs title="Components" breadcrumbItem="Placeholders" />
+                    {/* <Breadcrumbs title="Components" breadcrumbItem="Placeholders" /> */}
                     <Row>
                         <Col xl={6}>
                             <Card>

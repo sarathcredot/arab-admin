@@ -72,7 +72,7 @@ function ViewKyc() {
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [modal, setModal] = useState(false);
 
-  const toggle :any= () => setModal(!modal);
+  const toggle: any = () => setModal(!modal);
 
 
 
@@ -178,8 +178,8 @@ function ViewKyc() {
 
   console.log(kycData);
   console.log('Loading:', kycLoading);
-console.log('Error:', kycError);
-console.log('Data:', kycDataResponse,);
+  console.log('Error:', kycError);
+  console.log('Data:', kycDataResponse,);
 
 
   const handleImageClick = (fileURL: string) => {
@@ -196,88 +196,90 @@ console.log('Data:', kycDataResponse,);
     PUT_KYC_APPROVE_COMPANY_DETAILS
   );
 
-  const [options,setOptions]=useState("")
+  const [options, setOptions] = useState("")
 
 
   const [remarks, setRemarks] = useState<any>(['']); // Initial state with an empty remark
 
   const handleAddRemark = () => {
-    setRemarks([...remarks,'']); // Add an empty remark to the array
+    setRemarks([...remarks, '']); // Add an empty remark to the array
   };
 
-  const handleRemoveRemark = (index:any) => {
+  const handleRemoveRemark = (index: any) => {
     const updatedRemarks = [...remarks];
     updatedRemarks.splice(index, 1); // Remove the remark at the specified index
     setRemarks(updatedRemarks);
   };
- const handleApproval = async (statusValue?: any, event?: any) => {
-  
-  try {
-    if (event) {
-      event.preventDefault();
-    }
+  const handleApproval = async (statusValue?: any, event?: any) => {
 
-    let mutation, inputKey;
+    try {
+      if (event) {
+        event.preventDefault();
+      }
 
-    switch (options) {
-      case "businessOutlet":
-        mutation = UpdateKycBusinessOutletApprovalByAdmin;
-        inputKey = "businessOutlet";
-        break;
-      case "companyDetails":
-        mutation = UpdateKycCompanyDetailsApprovalByAdmin;
-        inputKey = "companyDetails";
-        break;
-      case "sellingProduct":
-        mutation = UpdateKycSellingProductApprovalByAdmin;
-        inputKey = "sellingProduct";
-        break;
-      default:
-        return;
-    }
+      let mutation, inputKey;
 
-    const variables: any = {
-      input: {
-        [inputKey]: {
-          remarks: remarks?remarks:[],
-          status: statusValue,
+      switch (options) {
+        case "businessOutlet":
+          mutation = UpdateKycBusinessOutletApprovalByAdmin;
+          inputKey = "businessOutlet";
+          break;
+        case "companyDetails":
+          mutation = UpdateKycCompanyDetailsApprovalByAdmin;
+          inputKey = "companyDetails";
+          break;
+        case "sellingProduct":
+          mutation = UpdateKycSellingProductApprovalByAdmin;
+          inputKey = "sellingProduct";
+          break;
+        default:
+          return;
+      }
+
+      const variables: any = {
+        input: {
+          [inputKey]: {
+            remarks: remarks ? remarks : [],
+            status: statusValue,
+          },
+          _id: id,
         },
-        _id: id,
-      },
-    };
+      };
 
-    const response = await mutation({ variables });
+      const response = await mutation({ variables });
 
-    console.log(response);
-    if (response) {
-      setRemarks([''])
-      setOptions("")
-      setShowRejectModal(false);
-      toast.success("Successfully updated Kyc Status");
-     
-      
-      
-      return kycRefetch();
+      console.log(response);
+      if (response) {
+        setRemarks([''])
+        setOptions("")
+        setShowRejectModal(false);
+        toast.success("Successfully updated Kyc Status");
+
+
+
+        return kycRefetch();
+      }
+    } catch (error: any) {
+      console.log(error.message);
     }
-  } catch (error: any) {
-    console.log(error.message);
-  }
-};
-
-
-
-  const handleRejection = (clickedData:string) => {
-    setShowRejectModal(true);
-    setOptions(clickedData);
   };
 
 
 
+  const handleRejection = (clickedData: string) => {
+    setShowRejectModal(true);
+    setOptions(clickedData);
+  };
+
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
+
   return (
     <div>
-      <ToastContainer/>
+      <ToastContainer />
       <Container fluid={true} style={{ marginTop: "100px" }}>
-        <Breadcrumb title="Dashboard" breadcrumbItem="Kyc" link="/" />
+        <Breadcrumb items={items} currentPage="KYC" />
         <Card style={{ width: "40rem" }}>
           <CardBody>
             <CardTitle>
@@ -285,17 +287,17 @@ console.log('Data:', kycDataResponse,);
             </CardTitle>
             <CardText>
               <div>
-              <p>
-                {" "}
-                <strong>Full Name : </strong>
-                {kycData?.fullName}
-              </p>
-              <p>
-                <strong>Kyc Status : </strong>
-                {kycData?.isKycCompleted ? "Completed" : "Pending"}
-              </p>
+                <p>
+                  {" "}
+                  <strong>Full Name : </strong>
+                  {kycData?.fullName}
+                </p>
+                <p>
+                  <strong>Kyc Status : </strong>
+                  {kycData?.isKycCompleted ? "Completed" : "Pending"}
+                </p>
               </div>
-              
+
             </CardText>
             <Link to={`/vendors/${kycData?.vendorId}`}>
               <Button style={{ marginLeft: "20px" }}>View</Button>
@@ -311,16 +313,16 @@ console.log('Data:', kycDataResponse,);
               </CardTitle>
               <CardText>
                 <div>
-                <p>
-                  <strong>Business Name :</strong>{" "}
-                  {kycData?.businessOutlet?.name}
-                </p>
-                <p>
-                  <strong>Address : </strong>
-                  {kycData?.businessOutlet?.address}
-                </p>
+                  <p>
+                    <strong>Business Name :</strong>{" "}
+                    {kycData?.businessOutlet?.name}
+                  </p>
+                  <p>
+                    <strong>Address : </strong>
+                    {kycData?.businessOutlet?.address}
+                  </p>
                 </div>
-               
+
                 {kycData?.businessOutlet && (
                   <CardText>
                     <strong>Remarks:</strong>
@@ -346,7 +348,7 @@ console.log('Data:', kycDataResponse,);
                         <img
                           src={kycData?.businessOutlet?.exteriorImage?.fileURL}
                           alt="Exterior Image"
-                          style={{ maxWidth: "50%", height:"50%", cursor: "pointer" }}
+                          style={{ maxWidth: "50%", height: "50%", cursor: "pointer" }}
                         />
                       </div>
                     )}
@@ -359,15 +361,15 @@ console.log('Data:', kycDataResponse,);
                 <>
                   <Button
                     variant="success"
-                    onClick={() =>{
-                      handleApproval( "COMPLETED")
+                    onClick={() => {
+                      handleApproval("COMPLETED")
                       setOptions("businessOutlet")
 
                     }}
                   >
                     Approve
                   </Button>
-                  <Button color="danger" onClick={()=>handleRejection("businessOutlet")} style={{ marginLeft: "4px" }}>
+                  <Button color="danger" onClick={() => handleRejection("businessOutlet")} style={{ marginLeft: "4px" }}>
                     Reject
                   </Button>
                 </>
@@ -384,25 +386,25 @@ console.log('Data:', kycDataResponse,);
                 <div>
 
 
-                <p>
-                  <strong>Company Name : </strong>
-                  {kycData?.companyDetails?.name}
-                </p>
-                <p>
-                  <strong>Address : </strong>
-                  {kycData?.businessOutlet?.address}
-                </p>
-                <p>
-                  <strong>CR License : </strong>
-                  {kycData?.companyDetails?.crLicence}{" "}
-                </p>
-                <p>
-                  <strong>CR Number : </strong>
-                  {kycData?.companyDetails?.crNumber}{" "}
-                </p>
+                  <p>
+                    <strong>Company Name : </strong>
+                    {kycData?.companyDetails?.name}
+                  </p>
+                  <p>
+                    <strong>Address : </strong>
+                    {kycData?.businessOutlet?.address}
+                  </p>
+                  <p>
+                    <strong>CR License : </strong>
+                    {kycData?.companyDetails?.crLicence}{" "}
+                  </p>
+                  <p>
+                    <strong>CR Number : </strong>
+                    {kycData?.companyDetails?.crNumber}{" "}
+                  </p>
 
                 </div>
-               
+
 
                 <div className="truncate-text">
                   {kycData?.companyDetails && (
@@ -418,7 +420,7 @@ console.log('Data:', kycDataResponse,);
                           kycData?.companyDetails?.companyLicenceImage?.fileURL
                         }
                         alt="Company Licence Image"
-                        style={{ maxWidth: "50%" ,height:"50%", cursor: "pointer" }}
+                        style={{ maxWidth: "50%", height: "50%", cursor: "pointer" }}
                       />
                     </div>
                   )}
@@ -444,11 +446,11 @@ console.log('Data:', kycDataResponse,);
                 <>
                   <Button
                     variant="success"
-                   onClick={() =>{ handleApproval("COMPLETED"); setOptions("companyDetails")}}
+                    onClick={() => { handleApproval("COMPLETED"); setOptions("companyDetails") }}
                   >
                     Approve
                   </Button>
-                  <Button color="danger" onClick={()=>handleRejection("companyDetails")} style={{ marginLeft: "4px" }}>
+                  <Button color="danger" onClick={() => handleRejection("companyDetails")} style={{ marginLeft: "4px" }}>
                     Reject
                   </Button>
                 </>
@@ -465,12 +467,12 @@ console.log('Data:', kycDataResponse,);
             </CardTitle>
             <CardText>
               <div>
-              <p>
-                <strong>Brand Name : </strong>
-                {kycData?.sellingProduct?.brand}
-              </p>
+                <p>
+                  <strong>Brand Name : </strong>
+                  {kycData?.sellingProduct?.brand}
+                </p>
               </div>
-             
+
               <div className="truncate-text">
                 {/* ... (unchanged) */}
                 {kycData?.sellingProduct && (
@@ -486,7 +488,7 @@ console.log('Data:', kycDataResponse,);
                         kycData?.sellingProduct?.sellingProductImage?.fileURL
                       }
                       alt="Selling Product Image"
-                      style={{ maxWidth: "50%" ,height:"50%", cursor: "pointer" }}
+                      style={{ maxWidth: "50%", height: "50%", cursor: "pointer" }}
                     />
                   </div>
                 )}
@@ -504,22 +506,22 @@ console.log('Data:', kycDataResponse,);
                 </CardText>
               )}
               <div>
-              <p>
-                <strong>Status : </strong>
-                {kycData?.sellingProduct?.status}{" "}
-              </p>
+                <p>
+                  <strong>Status : </strong>
+                  {kycData?.sellingProduct?.status}{" "}
+                </p>
               </div>
-             
+
             </CardText>
             {!(kycData?.sellingProduct?.status === "COMPLETED") ? (
               <>
                 <Button
                   variant="success"
-                  onClick={() =>{ handleApproval("COMPLETED"); setOptions("sellingProduct")}}
+                  onClick={() => { handleApproval("COMPLETED"); setOptions("sellingProduct") }}
                 >
                   Approve
                 </Button>
-                <Button onClick={()=>handleRejection("sellingProduct")} color="danger" style={{ marginLeft: "4px" }}>
+                <Button onClick={() => handleRejection("sellingProduct")} color="danger" style={{ marginLeft: "4px" }}>
                   Reject
                 </Button>
               </>
@@ -534,7 +536,7 @@ console.log('Data:', kycDataResponse,);
         </ModalHeader>
         <ModalBody>
           {selectedImage && (
-            <img src={selectedImage} alt="Popup" style={{ width: "50%", height:"50%" }} />
+            <img src={selectedImage} alt="Popup" style={{ width: "50%", height: "50%" }} />
           )}
         </ModalBody>
         <ModalFooter>
@@ -545,58 +547,58 @@ console.log('Data:', kycDataResponse,);
       </Modal>
 
 
-      
+
       <Modal show={showRejectModal} onHide={() => setShowRejectModal(false)}>
-  <ModalHeader >Add Remark </ModalHeader>
-  <Form>
-    <ModalBody>
-      <Label for="remark" style={{ marginBottom: '10px', display: 'block', fontWeight: 'bold' }}>
-        Remarks:
-      </Label>
-      {remarks.map((remark:any, index:any) => (
-        <FormGroup key={index} style={{ marginBottom: '10px' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }} >
-            <Input
-              type="text"
-              id={`remark-${index}`}
-              name={`remark-${index}`}
-              value={remark}
-              onChange={(e) => {
-                const updatedRemarks = [...remarks];
-                updatedRemarks[index] = e.target.value;
-                setRemarks(updatedRemarks);
-              }}
-              required
-              style={{ marginRight: '10px' }}
-            />
-            {index === remarks.length - 1 && (
-              <Button color="primary" onClick={handleAddRemark}>
-                + {/* Plus icon */}
-              </Button> 
-            )}{" "}
-            {index !== 0 && (
-              <Button style={{ marginLeft: '5px', marginRight: '5px' }} color="danger" onClick={() => handleRemoveRemark(index)}>
-                - {/* Minus icon */}
-              </Button>
-            )}
-          </div>
-        </FormGroup>
-      ))}
-    </ModalBody>
-    <ModalFooter>
-      <Button color="primary" type="submit" onClick={(event) => handleApproval("REJECTED", event)}>
-        Submit
-      </Button>{' '}
-      <Button color="secondary" onClick={() =>{ setShowRejectModal(false); setRemarks([''])}}>
-        Cancel
-      </Button>
-    </ModalFooter>
-  </Form>
-</Modal>
+        <ModalHeader >Add Remark </ModalHeader>
+        <Form>
+          <ModalBody>
+            <Label for="remark" style={{ marginBottom: '10px', display: 'block', fontWeight: 'bold' }}>
+              Remarks:
+            </Label>
+            {remarks.map((remark: any, index: any) => (
+              <FormGroup key={index} style={{ marginBottom: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center' }} >
+                  <Input
+                    type="text"
+                    id={`remark-${index}`}
+                    name={`remark-${index}`}
+                    value={remark}
+                    onChange={(e) => {
+                      const updatedRemarks = [...remarks];
+                      updatedRemarks[index] = e.target.value;
+                      setRemarks(updatedRemarks);
+                    }}
+                    required
+                    style={{ marginRight: '10px' }}
+                  />
+                  {index === remarks.length - 1 && (
+                    <Button color="primary" onClick={handleAddRemark}>
+                      + {/* Plus icon */}
+                    </Button>
+                  )}{" "}
+                  {index !== 0 && (
+                    <Button style={{ marginLeft: '5px', marginRight: '5px' }} color="danger" onClick={() => handleRemoveRemark(index)}>
+                      - {/* Minus icon */}
+                    </Button>
+                  )}
+                </div>
+              </FormGroup>
+            ))}
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" type="submit" onClick={(event) => handleApproval("REJECTED", event)}>
+              Submit
+            </Button>{' '}
+            <Button color="secondary" onClick={() => { setShowRejectModal(false); setRemarks(['']) }}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </Form>
+      </Modal>
 
 
 
-      
+
     </div>
   );
 }

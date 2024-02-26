@@ -1,6 +1,6 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import {
   Container,
@@ -91,7 +91,8 @@ const PUT_VENDOR_PROFILE = gql`
 `;
 
 function ViewVenders() {
-  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id")
   const [vendorData, setVendorData] = useState<IVendor>();
   const [activeTab, setActiveTab] = useState("Vendor");
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -164,155 +165,161 @@ function ViewVenders() {
     }
   };
 
+  const items = [
+    { text: "Dashboard", link: `/` },
+    { text: "Vendors", link: `/vendors` },
+  ];
+
   return (
-    <Container fluid={true} style={{ marginTop: "100px" }}>
-      <ToastContainer />
-      <Breadcrumb title="Dashboard" breadcrumbItem="Vendor" link="/" />
+    <div className="page-content">
+      <Container fluid={true} >
+        <Breadcrumb items={items} currentPage="Vendor Details" />
 
-      <Nav tabs>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: activeTab === "Vendor" })}
-            onClick={() => handleTabChange("Vendor")}
-          >
-            Vendor
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: activeTab === "companydetails" })}
-            onClick={() => handleTabChange("companydetails")}
-          >
-            Company Details
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: activeTab === "businessoutlet" })}
-            onClick={() => handleTabChange("businessoutlet")}
-          >
-            Business Outlet
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: activeTab === "category" })}
-            onClick={() => handleTabChange("category")}
-          >
-            Category
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: activeTab === "brands" })}
-            onClick={() => handleTabChange("brands")}
-          >
-            Brands
-          </NavLink>
-        </NavItem>
-      </Nav>
+        <Nav tabs>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: activeTab === "Vendor" })}
+              onClick={() => handleTabChange("Vendor")}
+            >
+              Vendor
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: activeTab === "companydetails" })}
+              onClick={() => handleTabChange("companydetails")}
+            >
+              Company Details
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: activeTab === "businessoutlet" })}
+              onClick={() => handleTabChange("businessoutlet")}
+            >
+              Business Outlet
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: activeTab === "category" })}
+              onClick={() => handleTabChange("category")}
+            >
+              Category
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: activeTab === "brands" })}
+              onClick={() => handleTabChange("brands")}
+            >
+              Brands
+            </NavLink>
+          </NavItem>
+        </Nav>
 
-      <TabContent activeTab={activeTab}>
-        <TabPane tabId="Vendor">
-          <Card
-            style={{
-              width: "100rem",
-              boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-              marginTop: "5rem",
-            }}
-          >
-            <CardImg
+        <TabContent activeTab={activeTab}>
+          <TabPane tabId="Vendor">
+            <Card
               style={{
-                height: "200px",
-                width: "200px",
-                objectFit: "cover",
-                borderRadius: "50%",
-                margin: "20px",
-                border: "5px solid #fff",
+                width: "100rem",
+                boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+                marginTop: "5rem",
               }}
-              variant="top"
-              src={vendorData?.profilePic?.fileURL || user1}
-              alt="Profile"
-            />
-            <CardBody>
-              <CardTitle>
-                <strong> {vendorData?.fullName} </strong>
-              </CardTitle>
-              <CardText>
-                <Row>
-                  <Col md={3}>
-                    <p className="mt-5">
-                      <strong>Email:</strong> {vendorData?.email}
-                    </p>
-                    <p className="mt-5">
-                      <strong>Mobile Number:</strong> {vendorData?.mobileNumber}
-                    </p>
-                  </Col>
-                  <Col md={3}>
-                    <p className="mt-5">
-                      <strong>Status:</strong>
-                      <span
-                        style={{
-                          display: "inline-block",
-                          padding: "5px 10px",
-                          borderRadius: "15px",
-                          background: getStatusColor(
-                            vendorData?.isBlocked == true ? "BLOCKED" : "ACTIVE"
-                          ),
-                          color: "#fff",
-                          marginLeft: "10px",
-                        }}
-                      >
-                        {vendorData?.isBlocked == true ? "BLOCKED" : "ACTIVE"}
-                      </span>
-                    </p>
-                  </Col>
-                </Row>
-              </CardText>
-
-              <div>
-                {vendorData?.isKycCompleted ? (
-                  <>{null}</>
-                ) : (
-                  <Button
-                    style={{ backgroundColor: "#000000" }}
-                    onClick={() => setShowConfirmationModal(true)}
-                  >
-                    Verify Vendor
-                  </Button>
-                )}
-              </div>
-              <ConfirmationModal
-                isOpen={showConfirmationModal}
-                onConfirm={handleConfirmation}
-                onCancel={handleCancel}
+            >
+              <CardImg
+                style={{
+                  height: "200px",
+                  width: "200px",
+                  objectFit: "cover",
+                  borderRadius: "50%",
+                  margin: "20px",
+                  border: "5px solid #fff",
+                }}
+                variant="top"
+                src={vendorData?.profilePic?.fileURL || user1}
+                alt="Profile"
               />
-            </CardBody>
-          </Card>
-        </TabPane>
-        <TabPane tabId="companydetails">
-          <ViewCard
-            option={"companydetails"}
-            IdCompany={vendorData?.companyId}
-          />
-        </TabPane>
-        <TabPane tabId="businessoutlet">
-          <ViewCard
-            option={"businessoutlet"}
-            IdBusiness={vendorData?.outletId}
-          />
-        </TabPane>
-        <TabPane tabId="category">
-          <CategoryList />
-        </TabPane>
-        <TabPane tabId="brands">
-          {/* <CategoryList    />
+              <CardBody>
+                <CardTitle>
+                  <strong> {vendorData?.fullName} </strong>
+                </CardTitle>
+                <CardText>
+                  <Row>
+                    <Col md={3}>
+                      <p className="mt-5">
+                        <strong>Email:</strong> {vendorData?.email}
+                      </p>
+                      <p className="mt-5">
+                        <strong>Mobile Number:</strong> {vendorData?.mobileNumber}
+                      </p>
+                    </Col>
+                    <Col md={3}>
+                      <p className="mt-5">
+                        <strong>Status:</strong>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            padding: "5px 10px",
+                            borderRadius: "15px",
+                            background: getStatusColor(
+                              vendorData?.isBlocked == true ? "BLOCKED" : "ACTIVE"
+                            ),
+                            color: "#fff",
+                            marginLeft: "10px",
+                          }}
+                        >
+                          {vendorData?.isBlocked == true ? "BLOCKED" : "ACTIVE"}
+                        </span>
+                      </p>
+                    </Col>
+                  </Row>
+                </CardText>
+
+                <div>
+                  {vendorData?.isKycCompleted ? (
+                    <>{null}</>
+                  ) : (
+                    <Button
+                      style={{ backgroundColor: "#000000" }}
+                      onClick={() => setShowConfirmationModal(true)}
+                    >
+                      Verify Vendor
+                    </Button>
+                  )}
+                </div>
+                <ConfirmationModal
+                  isOpen={showConfirmationModal}
+                  onConfirm={handleConfirmation}
+                  onCancel={handleCancel}
+                />
+              </CardBody>
+            </Card>
+          </TabPane>
+          <TabPane tabId="companydetails">
+            <ViewCard
+              option={"companydetails"}
+              IdCompany={vendorData?.companyId}
+            />
+          </TabPane>
+          <TabPane tabId="businessoutlet">
+            <ViewCard
+              option={"businessoutlet"}
+              IdBusiness={vendorData?.outletId}
+            />
+          </TabPane>
+          <TabPane tabId="category">
+            <CategoryList />
+          </TabPane>
+          <TabPane tabId="brands">
+            {/* <CategoryList    />
            */}
 
-          <AssignedBrandList />
-        </TabPane>
-      </TabContent>
-    </Container>
+            <AssignedBrandList />
+          </TabPane>
+        </TabContent>
+      </Container>
+    </div>
   );
 }
 

@@ -19,7 +19,7 @@ const ResponsiveTables = () => {
     <React.Fragment>
       <div className="page-content">
         <div className="container-fluid">
-          <Breadcrumbs title="Tables" breadcrumbItem="Responsive Table" />
+          {/* <Breadcrumbs title="Tables" breadcrumbItem="Responsive Table" /> */}
 
           <Row>
             <Col>

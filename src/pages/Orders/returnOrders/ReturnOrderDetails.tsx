@@ -258,7 +258,7 @@ const ReturnOrderDetails = () => {
 
       <div className="page-content">
         <Container fluid={true}>
-          {/* <Breadcrumbs items={items} currentPage="Details" /> */}
+          <Breadcrumbs items={items} currentPage="Details" />
           <Row>
             <Col lg={12}>
               <Card>

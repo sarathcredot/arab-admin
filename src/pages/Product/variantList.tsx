@@ -6,6 +6,7 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { Link, useSearchParams } from "react-router-dom";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { ToastContainer, toast } from "react-toastify";
+import Breadcrumb from "../../components/Common/Breadcrumb";
 
 const GET_VARIANTS = gql`
 query GetVariantsTableByAdmin($input: ProductVariantsByAdminFilter!) {
@@ -68,8 +69,6 @@ interface Product {
 }
 
 const VariantListing = () => {
-  // document.title =
-  "Responsive Table | Arab Deals ";
 
   const pageSize = 10; // Number of items per page
   const [currentPage, setCurrentPage] = useState(0);
@@ -163,12 +162,18 @@ const VariantListing = () => {
       console.log(error.message);
     }
   };
+
+  const items = [
+    { text: "Dashboard", link: `/` },
+    { text: "Products", link: `/product` },
+  ];
+
   return (
     <React.Fragment>
       <ToastContainer />
       <div className="page-content">
         <div className="container-fluid">
-          <Breadcrumbs title="Dashboard" breadcrumbItem="Product" link="/dashboard" />
+          <Breadcrumb items={items} currentPage="Variants" />
           {/* <Row>
             <Col lg={12}>
              
@@ -195,18 +200,15 @@ const VariantListing = () => {
             <Col>
               <Card>
                 <CardHeader>
-                  <h4 className="card-title">Variants</h4>
-
-
-                  {/* <Col xs={5} style={{marginTop:"20px"}}>
-                      <Input
-                        type="text"
-                        placeholder="Search Product"
-                        value={searchTerm}
-                        onChange={handleSearch}
-                        style={{ width: "50%" }}
-                      />
-                    </Col> */}
+                  <Col xs={5} >
+                    <Input
+                      type="text"
+                      placeholder="Search Product"
+                      value={searchTerm}
+                      onChange={handleSearch}
+                      style={{ width: "80%" }}
+                    />
+                  </Col>
                 </CardHeader>
 
 
@@ -256,12 +258,8 @@ const VariantListing = () => {
                               </Td>
                               <Td>
                                 <Button
-                                  color="white"
-                                  style={{
-                                    backgroundColor: "black",
-                                    alignItems: "center",
-                                    color: "white",
-                                  }}
+                                  color="primary"
+                                  size="sm"
                                   tag={Link}
                                   to={{
                                     pathname: "/product/details/",

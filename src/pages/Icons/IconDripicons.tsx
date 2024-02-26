@@ -12,7 +12,7 @@ const IconDripicons = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title="Icons" breadcrumbItem="Dripicons" />
+          {/* <Breadcrumbs title="Icons" breadcrumbItem="Dripicons" /> */}
 
           <Row>
             <Col xs="12">

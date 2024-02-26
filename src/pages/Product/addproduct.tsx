@@ -299,7 +299,7 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
       });
 
       toast.success(`Product ${Edit ? "updated" : "added"} successfully!`);
-    } catch (error:any) {
+    } catch (error: any) {
       if (error instanceof Error) {
         console.log(
           `Error ${Edit ? "updating" : "creating"} product:`,
@@ -320,11 +320,11 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs
+          {/* <Breadcrumbs
             title="product"
             breadcrumbItem={Edit ? "Edit Product" : "Add Product"}
             link="/product"
-          />
+          /> */}
 
           <Row>
             <Col lg={12}>
@@ -492,28 +492,28 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                             </>
                           )}
                         </FormGroup>
-                    <FormGroup>
-                      <Label for="shortDescription">Short Description:</Label>
-                      <Controller
-                        control={control}
-                        name="shortDescription"
-                        rules={{ required: "Short Description is required" }}
-                        render={({ field }) => (
-                          <>
-                            <Input
-                              type="textarea"
-                              id="shortdescription"
-                              {...field}
-                            />
-                            {errors.shortDescription && (
-                              <p className="text-danger">
-                                {errors.shortDescription.message}
-                              </p>
+                        <FormGroup>
+                          <Label for="shortDescription">Short Description:</Label>
+                          <Controller
+                            control={control}
+                            name="shortDescription"
+                            rules={{ required: "Short Description is required" }}
+                            render={({ field }) => (
+                              <>
+                                <Input
+                                  type="textarea"
+                                  id="shortdescription"
+                                  {...field}
+                                />
+                                {errors.shortDescription && (
+                                  <p className="text-danger">
+                                    {errors.shortDescription.message}
+                                  </p>
+                                )}
+                              </>
                             )}
-                          </>
-                        )}
-                      />
-                    </FormGroup>
+                          />
+                        </FormGroup>
                       </>
                     )}
 
@@ -548,10 +548,10 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                             control={control}
                             name="price"
                             rules={{ required: "Price is required" }}
-                         
+
                             render={({ field }) => (
                               <>
-                                <Input type="number"  id="price" {...field} />
+                                <Input type="number" id="price" {...field} />
                                 {errors.price && (
                                   <p className="text-danger">
                                     {errors.price.message}
@@ -598,7 +598,7 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                             rules={{ required: "mrp is required" }}
                             render={({ field }) => (
                               <>
-                                <Input   type="number" id="price" {...field} />
+                                <Input type="number" id="price" {...field} />
                                 {errors.mrp && (
                                   <p className="text-danger">
                                     {errors.mrp.message}

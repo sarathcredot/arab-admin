@@ -143,7 +143,7 @@ const FormVender: React.FC<Props> = ({
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              {formik.touched.email && formik.errors.email && (
+              {formik.touched.name && formik.errors.name && (
                 <div className="text-danger">{formik.errors.name}</div>
               )}
             </FormGroup>

@@ -61,7 +61,7 @@ const IconFontawesome = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Icons" breadcrumbItem="Font Awesome" />
+          {/* <Breadcrumbs title="Icons" breadcrumbItem="Font Awesome" /> */}
 
           <Row>
             <Col xs="12">

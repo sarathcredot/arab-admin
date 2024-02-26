@@ -89,7 +89,7 @@ const PagePricing = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Pages" breadcrumbItem="Pricing" />
+          {/* <Breadcrumbs title="Pages" breadcrumbItem="Pricing" /> */}
           <Row>
             <Col lg={12}>
               <Card>

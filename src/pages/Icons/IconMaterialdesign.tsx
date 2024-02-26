@@ -7813,7 +7813,7 @@ const IconMaterialdesign = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title="Icons" breadcrumbItem="Material Design Icons" />
+          {/* <Breadcrumbs title="Icons" breadcrumbItem="Material Design Icons" /> */}
 
           <Row className="icons-demo-content">
             <Col xs="12">

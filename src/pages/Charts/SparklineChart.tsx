@@ -19,7 +19,7 @@ const SparklineChart = () => {
       <div className="page-content">
         <div className="container-fluid">
           {/* Render Breadcrumb */}
-          <Breadcrumbs title="Charts" breadcrumbItem="Sparkline" />
+          {/* <Breadcrumbs title="Charts" breadcrumbItem="Sparkline" /> */}
 
           <Row>
             <Col sm={4}>

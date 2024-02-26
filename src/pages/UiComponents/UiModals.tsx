@@ -100,7 +100,7 @@ const UiModal = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Components" breadcrumbItem="Modals" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Modals" /> */}
 
           <Row>
             <Col xs={12}>

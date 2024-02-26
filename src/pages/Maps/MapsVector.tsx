@@ -20,7 +20,7 @@ const MapsVector = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Maps" breadcrumbItem="Vector Maps" />
+          {/* <Breadcrumbs title="Maps" breadcrumbItem="Vector Maps" /> */}
 
           <Row>
             <Col lg={6}>

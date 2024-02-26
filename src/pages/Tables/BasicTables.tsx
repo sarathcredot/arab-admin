@@ -18,7 +18,7 @@ const BasicTable = () => {
     <React.Fragment>
       <div className="page-content">
         <div className="container-fluid">
-          <Breadcrumbs title="Tables" breadcrumbItem="Basic Tables" />
+          {/* <Breadcrumbs title="Tables" breadcrumbItem="Basic Tables" /> */}
 
           <Row>
             <Col md={6}>

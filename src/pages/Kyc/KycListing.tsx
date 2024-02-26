@@ -48,12 +48,15 @@ function KycListing() {
     setActiveTab(newTab);
   };
 
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
 
   return (
     <>
       <div className="page-content">
-        <Breadcrumb title="Dashboard" breadcrumbItem="Kyc Listing" link="/" />
         <Container fluid={true}>
+          <Breadcrumb items={items} currentPage="KYC Listing" />
           <Nav tabs>
             <NavItem>
               <NavLink

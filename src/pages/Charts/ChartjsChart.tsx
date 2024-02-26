@@ -25,7 +25,7 @@ const ChartjsChart = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Charts" breadcrumbItem="Chartjs Charts" />
+          {/* <Breadcrumbs title="Charts" breadcrumbItem="Chartjs Charts" /> */}
           <Row>
             <Col xl={6}>
               <Card>

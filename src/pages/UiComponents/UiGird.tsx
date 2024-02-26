@@ -12,7 +12,7 @@ const UiGrid = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Components" breadcrumbItem="Grid" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Grid" /> */}
           <Row>
             <Col xs={12}>
               <Card>

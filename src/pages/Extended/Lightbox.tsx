@@ -45,7 +45,7 @@ const UiLightbox = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Extended" breadcrumbItem="Lightbox" />
+          {/* <Breadcrumbs title="Extended" breadcrumbItem="Lightbox" /> */}
 
           {isFits ? (
             <Lightbox

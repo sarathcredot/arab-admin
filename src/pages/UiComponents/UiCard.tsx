@@ -22,7 +22,7 @@ const UiCard = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Components" breadcrumbItem="Cards" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Cards" /> */}
           <Row>
             <Col md={6} xl={3}>
               <Card>

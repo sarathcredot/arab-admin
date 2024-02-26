@@ -36,7 +36,7 @@ const ShippingOrders = () => {
     <>
       <div className="page-content">
         <Container fluid={true}>
-          {/* <Breadcrumb items={items} currentPage="Shipping Orders" /> */}
+          <Breadcrumb items={items} currentPage="Shipping Orders" />
 
           <Row>
             <Col lg={12}>

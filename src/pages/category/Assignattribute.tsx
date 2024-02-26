@@ -224,7 +224,7 @@ function Assignattribute() {
   }
 
   const handleAssignAttribute = async () => {
-   
+
     if (setectedAttributes.length > 0) {
       const attributeIds = setectedAttributes.map(
         (attribute) => attribute.value
@@ -257,14 +257,15 @@ function Assignattribute() {
     setSelectedAttributes(selectedOptions);
   };
 
-  console.log(assignAttributeDatas);
-
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
   return (
     <>
       <div className="page-content">
-        <ToastContainer/>
+        <ToastContainer />
         <Container fluid={true}>
-          <Breadcrumb title="Dashboard" link="/" breadcrumbItem="Assign-Attribute" />
+          <Breadcrumb items={items} currentPage="Assign-Attribute" />
           <Row>
             <Col lg={12}>
               <Card>
@@ -383,8 +384,8 @@ function Assignattribute() {
                               ...styles,
                               marginRight: "10px",
                               // width: "200px",
-                            
-                              
+
+
                             }),
                           }}
                         />

@@ -103,25 +103,25 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
   >([{ buttonText: null, redirectionURL: null }]);
   useEffect(() => {
     if (Edit && editedcms) {
-    
+
 
       setValue("pageName", editedcms.pageName);
       setValue("sectionName", editedcms.sectionName);
       setValue("title", editedcms.title);
       setValue("subTitle", editedcms.subTitle);
       const updatedButtons = editedcms?.buttons?.map(button => ({
-      buttonText: button.buttonText || null,
-      redirectionURL: button.redirectionURL || null,
-    }));
-    setButtons(updatedButtons);
-   
-    const imageValues :any= editedcms?.images?.map((image, index) => ({
-      fileURL: image.fileURL || null,
-    }));
-    
-    setValue("images", imageValues);
-   
-  }
+        buttonText: button.buttonText || null,
+        redirectionURL: button.redirectionURL || null,
+      }));
+      setButtons(updatedButtons);
+
+      const imageValues: any = editedcms?.images?.map((image, index) => ({
+        fileURL: image.fileURL || null,
+      }));
+
+      setValue("images", imageValues);
+
+    }
   }, [Edit, editedcms, setValue]);
 
   const { dirtyFields } = useFormState({
@@ -134,7 +134,7 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
 
   const [addCmsSection] = useMutation(ADD_CMS_SECTION);
   const [updateCmsRecord] = useMutation(UPDATE_CMS_SECTION);
-  const handleDeleteImage = (indexToDelete:any) => {
+  const handleDeleteImage = (indexToDelete: any) => {
     const currentImages = getValues("images");
     const updatedImages = currentImages.filter((_, index) => index !== indexToDelete);
     setValue("images", updatedImages);
@@ -150,8 +150,8 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
       if (Edit) {
         // For update operation
         mutation = updateCmsRecord;
-        
-        
+
+
         variables = {
           input: {
             _id: editedcms?._id,
@@ -164,10 +164,10 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
               redirectionURL: redirectionURL || null,
             })),
 
-           
+
 
           },
-        
+
           images: acceptedFiles,
         };
       } else {
@@ -218,10 +218,10 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs
+          {/* <Breadcrumbs
             title="Cms"
             breadcrumbItem={Edit ? "Edit Cms" : "Add cms"}
-          />
+          /> */}
           <Row>
             <Col lg={12}>
               <Card>
@@ -377,12 +377,12 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
                         {acceptedFiles?.map((file, index) => (
                           <li key={index}>
                             {file.name} - {file.size} bytes
-                           
+
                           </li>
                         ))}
                       </ul>
- 
-     
+
+
                     </FormGroup>
                     <Button
                       type="submit"
@@ -394,7 +394,7 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
                         borderRadius: "10px",
                       }}
                     >
-                    {Edit?"Edit CMS Section":"Add cms section"}
+                      {Edit ? "Edit CMS Section" : "Add cms section"}
                     </Button>
                   </Form>
                 </CardBody>

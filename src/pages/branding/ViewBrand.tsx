@@ -79,9 +79,13 @@ function ViewBrands() {
     setShowAddModal(!showAddModal);
   };
 
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
+
   return (
     <Container fluid={true} style={{ marginTop: "100px" }}>
-      <Breadcrumb title="Dashboard" breadcrumbItem="Brand" link="/" />
+      <Breadcrumb items={items} currentPage="Brand" />
       <Card style={{ width: "50rem", boxShadow: "0 0 10px rgba(0,0,0,0.1)" }}>
         <CardImg
           style={{
@@ -109,7 +113,7 @@ function ViewBrands() {
             </div>
           </CardText>
           <div className="pt-3">
-            <Button style={{backgroundColor: "#000000"}}  onClick={() => toggleAddModal()}>
+            <Button style={{ backgroundColor: "#000000" }} onClick={() => toggleAddModal()}>
               Edit
             </Button>{" "}
             {/* <Button variant="success">Delete</Button> */}

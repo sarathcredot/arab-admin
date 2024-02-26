@@ -19,7 +19,7 @@ const FormElements = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Forms" breadcrumbItem="Basic Elements" />
+          {/* <Breadcrumbs title="Forms" breadcrumbItem="Basic Elements" /> */}
 
           <Row>
             <Col xs={12}>

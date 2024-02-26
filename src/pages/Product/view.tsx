@@ -12,6 +12,8 @@ import { Link } from "react-router-dom";
 import { boolean } from "yup";
 import AddProduct from "./addproduct";
 import { ToastContainer, toast } from "react-toastify";
+import { formatCurrency } from "src/utils/formatCurrency";
+import Breadcrumb from "../../components/Common/Breadcrumb";
 
 interface IAttribute {
   attributeId: string;
@@ -149,7 +151,7 @@ const ProductDetails = () => {
   `;
 
 
-const [UpdateProductStatus]=useMutation(PUT_STATUS)
+  const [UpdateProductStatus] = useMutation(PUT_STATUS)
 
 
   const {
@@ -178,7 +180,7 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
     },
     skip: !_id,
   });
-  console.log("data------------", data);
+
 
   // useEffect(() => {
   //   if (data && data.getProductByAdmin && data.getProductByAdmin.product) {
@@ -370,15 +372,15 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
     setEdit(true);
   };
 
-  const handleStatusChange = async (status:any,e:any) => {
-  e.preventDefault();
+  const handleStatusChange = async (status: any, e: any) => {
+    e.preventDefault();
     try {
       let input: any = {
         _id: _id,
         status: status,
       };
-      const response = await UpdateProductStatus({variables:{input: input}});
-      if (response ) {
+      const response = await UpdateProductStatus({ variables: { input: input } });
+      if (response) {
         console.log(response);
         toast.success(response.data.updateProductStatus.message)
         refetch()
@@ -389,8 +391,12 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
       console.log(error.message);
     }
   };
-  
 
+  const items = [
+    { text: "Dashboard", link: `/` },
+    { text: "Products", link: `/product` },
+    { text: "Variants", link: `/product/variant?_id=${_id}` },
+  ];
 
   return (
     <React.Fragment>
@@ -400,12 +406,7 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
       ) : (
         <div className="page-content">
           <Container fluid={true}>
-            <ToastContainer/>
-            <Breadcrumbs
-              title="Product"
-              breadcrumbItem="Product Details"
-              link="/product"
-            />
+            <Breadcrumb items={items} currentPage="View Product" />
             {/* <div className="d-flex justify-content-end mb-3" style={{gap:"20px"}}>
               <Link
                 to={`/add-variant?productCode=${product?.productCode}&productId=${product?._id}&category=${product?.categoryId}`}
@@ -638,7 +639,7 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
                                 Price:
                               </label>
                               <p className="form-control-static">
-                                {product?.price}
+                                {formatCurrency(product?.price)}
                               </p>
                             </div>
                           </Col>
@@ -655,7 +656,7 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
                                 Selling Price:
                               </label>
                               <p className="form-control-static">
-                                {product?.sellingPrice}
+                                {formatCurrency(product?.sellingPrice)}
                               </p>
                             </div>
                           </Col>
@@ -672,11 +673,11 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
                                 mrp:
                               </label>
                               <p className="form-control-static">
-                                {product?.mrp}
+                                {formatCurrency(product?.mrp)}
                               </p>
                             </div>
 
-                            
+
                           </Col>
                           <Col xl={6}>
                             <div
@@ -695,8 +696,8 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
                               </p>
                             </div>
 
-                      
-                            
+
+
                           </Col>
                           <Col xl={6}>
                             <div
@@ -714,51 +715,51 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
                                 {product?.tags}
                               </p>
 
-            
+
                             </div>
 
-                            
+
                           </Col>
 
-                          {product?.status==="APPROVED" ?<>
-                          {null}
-                          </>:<>
-                          <Col xl={6}>
-                            <div
-                              className="mb-3"
-                              style={{ display: "flex", gap: "4px" }}
-                            >
-                              <button
-                                onClick={(e)=>handleStatusChange("APPROVED",e)}
-                                style={{
-                                  backgroundColor: "black",
-                                  color: "white",
-                                  width: "100px",
-                                  height: "40px",
-                                  borderColor: "black",
-                                }}
+                          {product?.status === "APPROVED" ? <>
+                            {null}
+                          </> : <>
+                            <Col xl={6}>
+                              <div
+                                className="mb-3"
+                                style={{ display: "flex", gap: "4px" }}
                               >
-                                Approve
-                              </button>
+                                <button
+                                  onClick={(e) => handleStatusChange("APPROVED", e)}
+                                  style={{
+                                    backgroundColor: "black",
+                                    color: "white",
+                                    width: "100px",
+                                    height: "40px",
+                                    borderColor: "black",
+                                  }}
+                                >
+                                  Approve
+                                </button>
 
-                              <button
-                                onClick={(e)=>handleStatusChange("REJECTED",e)}
-                                style={{
-                                  backgroundColor: "red",
-                                  color: "white",
-                                  width: "100px",
-                                  height: "40px",
-                                  borderColor: "red",
-                                }}
-                              >
-                                Reject
-                              </button>
-                            </div>
-                          </Col>
-                          
+                                <button
+                                  onClick={(e) => handleStatusChange("REJECTED", e)}
+                                  style={{
+                                    backgroundColor: "red",
+                                    color: "white",
+                                    width: "100px",
+                                    height: "40px",
+                                    borderColor: "red",
+                                  }}
+                                >
+                                  Reject
+                                </button>
+                              </div>
+                            </Col>
+
                           </>}
 
-                          
+
                         </Row>
                       </div>
                     </form>

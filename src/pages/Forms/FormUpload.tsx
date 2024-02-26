@@ -47,7 +47,7 @@ const FormUpload = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Forms" breadcrumbItem="File Upload" />
+          {/* <Breadcrumbs title="Forms" breadcrumbItem="File Upload" /> */}
 
           <Row>
             <Col className="col-12">

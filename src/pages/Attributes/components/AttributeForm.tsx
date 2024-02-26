@@ -13,7 +13,7 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
-    AttributeValidation,
+  AttributeValidation,
   brandValidation,
   categoryValidation,
   vendoreValidation,
@@ -36,8 +36,8 @@ interface IBrand {
   logo: ILogo;
   isBlocked: boolean;
   isPopular: boolean;
-  priority:number;
-  normal:string;
+  priority: number;
+  normal: string;
 }
 
 interface Props {
@@ -45,7 +45,7 @@ interface Props {
   toggle: () => void;
   isEdit?: IBrand | null | undefined;
   refetch: () => void;
-  
+
 }
 
 const AttributeForm: React.FC<Props> = ({
@@ -53,7 +53,7 @@ const AttributeForm: React.FC<Props> = ({
   toggle,
   isEdit,
   refetch,
- 
+
 }) => {
   const navigate = useNavigate();
 
@@ -93,19 +93,19 @@ mutation CreateAttribute($input: CreateAttributeInput!) {
   // when clicking the add category
   const onSubmit = async (values: any, { resetForm }: any) => {
     try {
-      
+
 
       let variables: any = {
         input: {
-            attributeType: selectedNormal=== "Normal" ?"NORMAL" : "COLOR" ,
-            description: values.description,
-            isBlocked: null,
-            name: values.attributeName
-          
+          attributeType: selectedNormal === "Normal" ? "NORMAL" : "COLOR",
+          description: values.description,
+          isBlocked: null,
+          name: values.attributeName
+
 
         },
       };
-      
+
 
       const response = await CreateAttribute({
         variables,
@@ -126,8 +126,8 @@ mutation CreateAttribute($input: CreateAttributeInput!) {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-        attributeName: "",
-        description: "",
+      attributeName: "",
+      description: "",
     },
     validationSchema: AttributeValidation,
     onSubmit: async (values, { resetForm }) => {
@@ -135,14 +135,14 @@ mutation CreateAttribute($input: CreateAttributeInput!) {
     },
   });
 
-  
 
- 
+
+
   const checkingBlockCategory = () => {
     setIsBlockCategoryChecked((prev) => !prev);
   };
 
-  
+
 
   return (
     <>
@@ -152,20 +152,20 @@ mutation CreateAttribute($input: CreateAttributeInput!) {
         <ModalBody>
           <Form onSubmit={formik.handleSubmit}>
 
-          <FormGroup>
-          <Label for="attributetype">Attribute Type</Label>
-          <Input
-            type="select"
-            id="attributetype"
-            name="attributetype"
-            value={selectedNormal}
-            onChange={(e) => setSelectedNormal(e.target.value)}
-          >
-            <option value="Normal">Normal</option>
-            <option value="AnotherOption">Color</option>
-          </Input>
-        </FormGroup>
-          
+            <FormGroup>
+              <Label for="attributetype">Attribute Type</Label>
+              <Input
+                type="select"
+                id="attributetype"
+                name="attributetype"
+                value={selectedNormal}
+                onChange={(e) => setSelectedNormal(e.target.value)}
+              >
+                <option value="Normal">Normal</option>
+                <option value="AnotherOption">Color</option>
+              </Input>
+            </FormGroup>
+
             <FormGroup>
               <Label for="attributeName">Attribute Name</Label>
               <Input
@@ -197,10 +197,10 @@ mutation CreateAttribute($input: CreateAttributeInput!) {
                 <div className="text-danger">{formik.errors.description}</div>
               )}
             </FormGroup>
- 
 
 
-         
+
+
 
             {isEdit ? (
               <div>
@@ -221,22 +221,17 @@ mutation CreateAttribute($input: CreateAttributeInput!) {
               </div>
             ) : null}
 
-
-              
-
             <ModalFooter style={{ marginTop: "20px" }}>
-              <Button style={{ backgroundColor: "rgba(0, 0, 0, 1)" }}>
-                submit
+              <Button color="primary">
+                Submit
               </Button>
               <Button
-                style={{ backgroundColor: "rgba(177, 35, 73, 1)" }}
                 onClick={toggle}
               >
                 Cancel
               </Button>
             </ModalFooter>
 
-           
           </Form>
         </ModalBody>
       </Modal>

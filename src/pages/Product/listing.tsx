@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Card, CardBody, CardHeader, Button, Input } from "reactstrap";
+import { Row, Col, Card, CardBody, CardHeader, Button, Input, Container } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { Link } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
+import Breadcrumb from "../../components/Common/Breadcrumb";
 
 const GET_PRODUCTS = gql`
  query GetProductsByAdmin($input: ProductFilters) {
@@ -140,13 +141,16 @@ const ProductListing = () => {
 
   const handleSearch = (event: any) => {
     setSearchTerm(event.target.value);
-    console.log(event.target.value);
   };
+
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
   return (
     <React.Fragment>
       <div className="page-content">
-        <div className="container-fluid">
-          <Breadcrumbs title="Dashboard" breadcrumbItem="Product" link="/dashboard" />
+        <Container fluid={true}>
+          <Breadcrumb items={items} currentPage="Products" />
           <Row>
             {/* <Col lg={12}>
              
@@ -173,23 +177,16 @@ const ProductListing = () => {
             <Col>
               <Card>
                 <CardHeader>
-                  <h4 className="card-title">Products</h4>
-
-
-                  <Col xs={5} style={{ marginTop: "20px" }}>
+                  <Col xs={6} >
                     <Input
                       type="text"
                       placeholder="Search Product"
                       value={searchTerm}
                       onChange={handleSearch}
-                      style={{ width: "50%" }}
+                      style={{ width: "70%" }}
                     />
                   </Col>
                 </CardHeader>
-
-
-
-
 
                 <CardBody>
                   <div className="table-rep-plugin">
@@ -203,8 +200,9 @@ const ProductListing = () => {
                       >
                         <Thead>
                           <Tr>
-                            <Th>ProductCode</Th>
+                            <Th data-priority="1">Sl.No</Th>
                             <Th data-priority="1">Name</Th>
+                            <Th>ProductCode</Th>
                             <Th data-priority="3">Short Description</Th>
                             <Th data-priority="3">Category</Th>
                             <Th data-priority="1">Image</Th>
@@ -214,15 +212,16 @@ const ProductListing = () => {
                           </Tr>
                         </Thead>
                         <Tbody>
-                          {products.map((product: Product, index: number) => (
+                          {products?.map((product: Product, index: number) => (
                             <Tr key={index}>
-                              <Td>{product.productCode}</Td>
-                              <Td>{product.productName}</Td>
-                              <Td>{product.shortDescription}</Td>
+                              <Td>{currentPage * pageSize + index + 1}</Td>
+                              <Td>{product?.productName}</Td>
+                              <Td>{product?.productCode}</Td>
+                              <Td>{product?.shortDescription}</Td>
                               <Td>{product?.categoryNamePath}</Td>
                               <Td>
                                 <img
-                                  src={product.images[0]?.fileURL}
+                                  src={product?.images[0]?.fileURL}
                                   alt={product?.productName}
                                   width={80}
                                   height={80}
@@ -232,20 +231,16 @@ const ProductListing = () => {
                                 {product?.status}
                               </Td>
                               <Td>
-                                {product.isBlocked ? "Blocked" : "Active"}
+                                {product?.isBlocked ? "Blocked" : "Active"}
                               </Td>
                               <Td>
                                 <Button
-                                  color="white"
-                                  style={{
-                                    backgroundColor: "black",
-                                    alignItems: "center",
-                                    color: "white",
-                                  }}
+                                  color="primary"
+                                  size="sm"
                                   tag={Link}
                                   to={{
                                     pathname: "/product/variant/",
-                                    search: `?_id=${product._id}`,
+                                    search: `?_id=${product?._id}`,
                                   }}
                                 >
                                   View
@@ -311,7 +306,7 @@ const ProductListing = () => {
               </Card>
             </Col>
           </Row>
-        </div>
+        </Container>
       </div>
     </React.Fragment>
   );

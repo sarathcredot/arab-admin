@@ -19,7 +19,7 @@ const blogDetails = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title="Blog" breadcrumbItem="Blog Details" />
+          {/* <Breadcrumbs title="Blog" breadcrumbItem="Blog Details" /> */}
           <Row>
             <Col lg={8}>
               <Card>

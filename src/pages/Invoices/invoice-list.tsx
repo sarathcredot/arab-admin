@@ -289,7 +289,7 @@ const InvoiceList = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Invoices" breadcrumbItem="Invoice List" />
+          {/* <Breadcrumbs title="Invoices" breadcrumbItem="Invoice List" /> */}
           <Row className="mt-0">
             <Col lg="12">
               <Card>

@@ -29,7 +29,7 @@ const Apexchart = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title="Charts" breadcrumbItem="Apex Charts" />
+          {/* <Breadcrumbs title="Charts" breadcrumbItem="Apex Charts" /> */}
 
           <Row>
             <Col xl={6}>

@@ -31,7 +31,7 @@ const FormEditors = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Forms" breadcrumbItem="Form Editors" />
+          {/* <Breadcrumbs title="Forms" breadcrumbItem="Form Editors" /> */}
           <Row>
             <Col lg={12}>
               <Card>

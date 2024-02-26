@@ -11,7 +11,7 @@ const UiVideo = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Components" breadcrumbItem="Video" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Video" /> */}
 
           <Row>
             <Col lg={6}>

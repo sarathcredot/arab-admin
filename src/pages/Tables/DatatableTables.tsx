@@ -369,7 +369,7 @@ function DatatableTables() {
   return (
     <div className="page-content">
       <Container fluid>
-        <Breadcrumbs title="Tables" breadcrumbItem="Data Tables" />
+        {/* <Breadcrumbs title="Tables" breadcrumbItem="Data Tables" /> */}
         <Row>
           <Col className="col-12">
             <Card>

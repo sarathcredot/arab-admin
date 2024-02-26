@@ -35,7 +35,7 @@ interface IBrand {
   logo: ILogo;
   isBlocked: boolean;
   isPopular: boolean;
-  priority:number
+  priority: number
 }
 
 interface Props {
@@ -95,7 +95,7 @@ const BrandForm: React.FC<Props> = ({
             brandName: values.brandName,
             isBlocked: isBlockCategoryChecked,
             priority: values.priority,
-            isPopular:isPopularChecked  
+            isPopular: isPopularChecked
           },
         };
         if (values.image) {
@@ -123,7 +123,7 @@ const BrandForm: React.FC<Props> = ({
           brandName: values.brandName,
           isBlocked: null,
           priority: values.priority,
-          isPopular:isPopularChecked  
+          isPopular: isPopularChecked
 
         },
       };
@@ -154,7 +154,7 @@ const BrandForm: React.FC<Props> = ({
     enableReinitialize: true,
     initialValues: {
       brandName: isEdit ? isEdit.brandName : "",
-      priority: isEdit ? isEdit.priority:"",
+      priority: isEdit ? isEdit.priority : "",
       image: null,
     },
     validationSchema: brandValidation,
@@ -175,7 +175,7 @@ const BrandForm: React.FC<Props> = ({
     setIsBlockCategoryChecked((prev) => !prev);
   };
 
-  const checkingpolpularity=()=>{
+  const checkingpolpularity = () => {
     setIsPopularChecked((prev) => !prev);
   }
 
@@ -277,28 +277,28 @@ const BrandForm: React.FC<Props> = ({
             ) : null}
 
 
-<FormGroup check style={{ marginTop: "10px" }}>
-                  <Label check>
-                    <Input
-                      type="checkbox"
-                      id="ispopular"
-                      name="ispopular"
-                      defaultChecked={isEdit?.isPopular}
-                      onChange={() => {
-                        checkingpolpularity()
-                      }}
-                    />{" "}
-                    Popularity
-                  </Label>
-                </FormGroup>
-              
+            <FormGroup check style={{ marginTop: "10px" }}>
+              <Label check>
+                <Input
+                  type="checkbox"
+                  id="ispopular"
+                  name="ispopular"
+                  defaultChecked={isEdit?.isPopular}
+                  onChange={() => {
+                    checkingpolpularity()
+                  }}
+                />{" "}
+                Popularity
+              </Label>
+            </FormGroup>
+
 
             <ModalFooter style={{ marginTop: "20px" }}>
-              <Button style={{ backgroundColor: "rgba(0, 0, 0, 1)" }}>
+              <Button color="primary">
                 Add
               </Button>
               <Button
-                style={{ backgroundColor: "rgba(177, 35, 73, 1)" }}
+
                 onClick={toggle}
               >
                 Cancel

@@ -19,7 +19,7 @@ const MapsLeaflet = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title="Maps" breadcrumbItem="Leaflet Maps" />
+          {/* <Breadcrumbs title="Maps" breadcrumbItem="Leaflet Maps" /> */}
           <Row>
             <Col lg="6">
               <Card>

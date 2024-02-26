@@ -49,7 +49,7 @@ const AllOrders = () => {
 
       <div className="page-content">
         <Container fluid={true} >
-          {/* <Breadcrumb items={items} currentPage="All Orders" /> */}
+          <Breadcrumb items={items} currentPage="All Orders" />
           <Row>
             <Col xs={12} style={{ display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}>
               <ExportExcelList name={"ORDER_EXPORT"} />

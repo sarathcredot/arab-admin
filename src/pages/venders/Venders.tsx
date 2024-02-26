@@ -13,9 +13,12 @@ import {
   Nav,
   NavItem,
   NavLink,
+  CardHeader,
 } from "reactstrap";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import FormVender from "./FormVender";
+import Loader from "src/components/Common/Loader";
+import CustomButton from "src/components/Common/CustomButton";
 
 
 interface IVendor {
@@ -70,6 +73,7 @@ const VendorList: React.FC = () => {
     data: vendorDataResponse,
     refetch: refetchVendore
   } = useQuery(GET_VENDOR, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         page: currentPage,
@@ -115,11 +119,15 @@ const VendorList: React.FC = () => {
     setShowAddModal(!showAddModal);
   };
 
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
+
   return (
     <>
       <div className="page-content">
-        <Breadcrumb title="Dashboard" breadcrumbItem="Vendors" link="/" />
         <Container fluid={true}>
+          <Breadcrumb items={items} currentPage="Vendors" />
           <Nav tabs>
             <NavItem>
               <NavLink
@@ -148,75 +156,92 @@ const VendorList: React.FC = () => {
 
           </Nav>
 
-          <Row>
+          <Row style={{ marginTop: "20px" }}>
             <Col lg={12}>
               <Card>
-                <CardBody>
-                  <Input
-                    type="text"
-                    placeholder="Search by name"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{ width: "50%", marginBottom: "20px" }}
-                  />
+                <CardHeader>
+                  <Row>
+                    <Col xs={6}>
 
-                  <div className="d-flex justify-content-end mb-3">
-                    <Button onClick={() => toggleAddModal()} style={{ backgroundColor: "#000000" }}>Add Vendor</Button>
-                  </div>
+                      <Input
+                        type="text"
+                        placeholder="Search by name"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{ width: "70%", }}
+                      />
+                    </Col>
+                    <Col xs={6} style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                      <CustomButton onClick={() => toggleAddModal()} name="Add Vendor" icon="material-symbols:add" />
+                    </Col>
+
+                  </Row>
+                </CardHeader>
+                <CardBody>
 
                   <FormVender isOpen={showAddModal} toggle={toggleAddModal} refetch={refetchVendore} />
 
-                  <Table
-                    id="tech-companies-1"
-                    className="table table-striped table-bordered"
-                  >
-                    <thead>
-                      <tr>
-                        <th>No</th>
-                        <th>Full Name</th>
-                        <th>Mobile Number</th>
-                        <th>Email</th>
-                        <th>Company Name</th>
-                        <th>Kyc Status</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {vendorData
-                        .filter((vendor) =>
-                          vendor.fullName
-                            .toLowerCase()
-                            .includes(searchTerm.toLowerCase())
-                        )
-                        .map((vendor, index) => (
-                          <tr key={vendor._id}>
-                            <td>{index + 1}</td>
-                            <td>{vendor.fullName}</td>
-                            <td>{vendor.mobileNumber}</td>
-                            <td>{vendor.email}</td>
-                            <td>{vendor.companyName}</td>
-                            <td style={{
-                              color: vendor.isKycCompleted === true ? "#5cb85c" : "#FFA500",
-                            }}>{vendor.isKycCompleted === true ? "Approve" : "Pending"}</td>
-                            <td
-                              style={{
-                                color: vendor.isBlocked === true ? "red" : "#5cb85c",
-                              }}
-                            >
-                              {vendor.isBlocked === true ? "Blocked" : "Active"}
-                            </td>
-                            <td>
-                              <Link to={`/vendors/${vendor._id}`}>
-                                <Button style={{ marginLeft: "20px", backgroundColor: "#000000" }}>
-                                  View
-                                </Button>
-                              </Link>
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </Table>
+                  <Row>
+                    {
+                      vendorLoading ?
+                        <Loader />
+                        :
+
+                        <Table
+                          id="tech-companies-1"
+                          className="table table-striped table-bordered"
+                        >
+                          <thead>
+                            <tr>
+                              <th>Sl.No</th>
+                              <th>Full Name</th>
+                              <th>Mobile Number</th>
+                              <th>Email</th>
+                              <th>Company Name</th>
+                              <th>Kyc Status</th>
+                              <th>Status</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {vendorData
+                              .filter((vendor) =>
+                                vendor.fullName
+                                  .toLowerCase()
+                                  .includes(searchTerm.toLowerCase())
+                              )
+                              .map((vendor, index) => (
+                                <tr key={vendor._id}>
+                                  <td>{currentPage * pageSize + index + 1}</td>
+                                  <td>{vendor.fullName}</td>
+                                  <td>{vendor.mobileNumber}</td>
+                                  <td>{vendor.email}</td>
+                                  <td>{vendor.companyName}</td>
+                                  <td style={{
+                                    color: vendor.isKycCompleted === true ? "#5cb85c" : "#FFA500",
+                                  }}>{vendor.isKycCompleted === true ? "Completed" : "Pending"}</td>
+                                  <td
+                                    style={{
+                                      color: vendor.isBlocked === true ? "red" : "#5cb85c",
+                                    }}
+                                  >
+                                    {vendor.isBlocked === true ? "Blocked" : "Active"}
+                                  </td>
+                                  <td>
+                                    <Link to={`/vendors/view?id=${vendor._id}`}>
+                                      <Button
+                                        color="primary"
+                                        size="sm">
+                                        View
+                                      </Button>
+                                    </Link>
+                                  </td>
+                                </tr>
+                              ))}
+                          </tbody>
+                        </Table>
+                    }
+                  </Row>
                 </CardBody>
 
                 <Row style={{ marginRight: "10px" }}>

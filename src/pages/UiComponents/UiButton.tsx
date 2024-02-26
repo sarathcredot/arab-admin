@@ -25,7 +25,7 @@ const UiButton = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Components" breadcrumbItem="Buttons" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Buttons" /> */}
           <Row>
             <Col xl={6}>
               <Card>

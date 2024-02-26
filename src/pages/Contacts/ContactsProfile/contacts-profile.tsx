@@ -14,7 +14,7 @@ const ContactsProfile = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Contacts" breadcrumbItem="Profile" />
+          {/* <Breadcrumbs title="Contacts" breadcrumbItem="Profile" /> */}
 
           {/* Render profilemenu */}
           <ProfileTab />

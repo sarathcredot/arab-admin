@@ -159,6 +159,7 @@ const adminRoutes: Array<RouteProps> = [
   { path: "/profile", component: <AdminProfile /> },
 
   //dashboard
+  { path: "/", exact: true, component: <Navigate to="/dashboard" /> },
   { path: "/dashboard", component: <Dashboard /> },
 
 
@@ -182,9 +183,8 @@ const adminRoutes: Array<RouteProps> = [
   { path: "/size", component: <SizeList /> },
 
 
-  { path: "/", exact: true, component: <Navigate to="/dashboard" /> },
   { path: "/vendors", exact: true, component: <VendorList /> },
-  { path: "/vendors/:id", exact: true, component: <ViewVenders /> },
+  { path: "/vendors/view", exact: true, component: <ViewVenders /> },
 
   { path: "/kyc", exact: true, component: <KycListing /> },
   { path: "/kyc/:id", exact: true, component: <ViewKyc /> },

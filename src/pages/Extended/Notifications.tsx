@@ -55,7 +55,7 @@ const Notifications = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Extended" breadcrumbItem="Notifications" />
+          {/* <Breadcrumbs title="Extended" breadcrumbItem="Notifications" /> */}
           <Row>
             <Col xl={12}>
               <Card>

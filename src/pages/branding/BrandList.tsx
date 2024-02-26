@@ -13,11 +13,13 @@ import {
   Nav,
   NavItem,
   NavLink,
+  CardHeader,
 } from "reactstrap";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import FormVender from "../venders/FormVender";
 import { bR } from "@fullcalendar/core/internal-common";
 import BrandForm from "./BrandForm";
+import CustomButton from "src/components/Common/CustomButton";
 
 interface IBrandRecord {
   _id: string;
@@ -89,12 +91,14 @@ const BrandList: React.FC = () => {
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
   };
-
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
   return (
     <>
       <div className="page-content">
-        <Breadcrumb title="Dashboard" breadcrumbItem="Brands" link="/" />
         <Container fluid={true}>
+          <Breadcrumb items={items} currentPage="Brands" />
           <Nav tabs>
             <NavItem>
               <NavLink
@@ -125,23 +129,25 @@ const BrandList: React.FC = () => {
           <Row>
             <Col lg={12}>
               <Card>
+                <CardHeader>
+                  <Row>
+                    <Col xs={6}>
+                      <Input
+                        type="text"
+                        placeholder="Search by name"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{ width: "60%", }}
+                      />
+                    </Col>
+                    <Col xs={6} style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                      <CustomButton
+                        onClick={() => toggleAddModal()} name="Add New Brand" icon="material-symbols:add" /
+                      >
+                    </Col>
+                  </Row>
+                </CardHeader>
                 <CardBody>
-                  <Input
-                    type="text"
-                    placeholder="Search by name"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{ width: "50%", marginBottom: "20px" }}
-                  />
-
-                  <div className="d-flex justify-content-end mb-3">
-                    <Button
-                      onClick={() => toggleAddModal()}
-                      style={{ backgroundColor: "#000000" }}
-                    >
-                      Add New Brand
-                    </Button>
-                  </div>
 
                   <BrandForm
                     isOpen={showAddModal}
@@ -149,10 +155,7 @@ const BrandList: React.FC = () => {
                     refetch={brandRefetch}
                   />
 
-                  <Table
-                    responsive
-                    className="table table-bordered table-centered mb-0"
-                  >
+                  <Table id="tech-companies-1" className="table table-striped table-bordered">
                     <thead>
                       <tr>
                         <th>No</th>
@@ -193,10 +196,8 @@ const BrandList: React.FC = () => {
                             <td>
                               <Link to={`/brands/${brand._id}`}>
                                 <Button
-                                  style={{
-                                    marginLeft: "20px",
-                                    backgroundColor: "#000000",
-                                  }}
+                                  size="sm"
+                                  color="primary"
                                 >
                                   View
                                 </Button>

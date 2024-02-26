@@ -36,7 +36,7 @@ const blogGrid = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title="Blog" breadcrumbItem="Blog Grid" />
+          {/* <Breadcrumbs title="Blog" breadcrumbItem="Blog Grid" /> */}
           <Row className="align-items-center">
             <Col md={6}>
               <div className="mb-3">

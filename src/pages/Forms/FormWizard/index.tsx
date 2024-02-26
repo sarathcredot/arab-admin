@@ -14,7 +14,7 @@ const FormWizard = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Forms" breadcrumbItem="Form Wizard" />
+          {/* <Breadcrumbs title="Forms" breadcrumbItem="Form Wizard" /> */}
 
           <Row>
             <Col lg={12}>

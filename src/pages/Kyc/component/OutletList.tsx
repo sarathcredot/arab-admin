@@ -20,14 +20,14 @@ interface IStatus {
 }
 
 interface IOutlet {
-  vendorId:string;
-  fullName:string;
-  isKycCompleted:boolean;
-  _id:string;
-  outletName:string;
+  vendorId: string;
+  fullName: string;
+  isKycCompleted: boolean;
+  _id: string;
+  outletName: string;
   status: string;
-  companyId:string;
-  companyName:string;
+  companyId: string;
+  companyName: string;
   companyStatus: string;
 }
 
@@ -58,7 +58,7 @@ function OutletListing() {
 }
   `;
 
-  
+
   const {
     loading: kycLoading,
     error: kycError,
@@ -69,7 +69,7 @@ function OutletListing() {
       input: {
         page: currentPage,
         size: pageSize,
-        status:activeTab
+        status: activeTab
       },
     },
   });
@@ -78,7 +78,7 @@ function OutletListing() {
     if (kycDataResponse) {
       setOutletData(kycDataResponse.getAllVendorOutletRecordsByAdmin?.records || []);
     }
-  }, [kycDataResponse,currentPage]);
+  }, [kycDataResponse, currentPage]);
 
   const toggleTab = (tab: string) => {
     console.log("Active Tab:", tab);
@@ -150,17 +150,14 @@ function OutletListing() {
                     onChange={handleSearch}
                     style={{ width: "50%", marginBottom: "20px" }}
                   />
-                  <Table
-                    responsive
-                    className="table table-bordered table-centered mb-0"
-                  >
+                  <Table id="tech-companies-1" className="table table-striped table-bordered">
                     <thead>
                       <tr>
                         <th>No</th>
                         <th>Full Name</th>
                         <th>Outlet Name</th>
                         <th>Kyc Status</th>
-                       <th>Status</th>
+                        <th>Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -180,13 +177,13 @@ function OutletListing() {
                               style={{
                                 color: outlet.isKycCompleted ? "#5cb85c" : "red",
                               }}
-                              >
-                              {outlet.isKycCompleted  ? "COMPLETED" : "PENDING"}
+                            >
+                              {outlet.isKycCompleted ? "COMPLETED" : "PENDING"}
                             </td>
-                              <td>{outlet.status}</td>
+                            <td>{outlet.status}</td>
                             <td>
                               <Link to={`/vendors/${outlet.vendorId}`}>
-                                <Button style={{ marginLeft: "20px" , backgroundColor: "#000000"}}>
+                                <Button style={{ marginLeft: "20px", backgroundColor: "#000000" }}>
                                   View
                                 </Button>
                               </Link>
@@ -197,14 +194,13 @@ function OutletListing() {
                   </Table>
                 </CardBody>
 
-                <Row style={{marginRight:"10px"}}>
+                <Row style={{ marginRight: "10px" }}>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">
                         <li
-                          className={`page-item ${
-                            currentPage === 0 ? "disabled" : ""
-                          }`}
+                          className={`page-item ${currentPage === 0 ? "disabled" : ""
+                            }`}
                         >
                           <button
                             className="page-link"
@@ -218,9 +214,8 @@ function OutletListing() {
                         {Array.from({ length: totalPages }, (_, index) => (
                           <li
                             key={`page-${index + 1}`}
-                            className={`page-item ${
-                              currentPage === index ? "active" : ""
-                            }`}
+                            className={`page-item ${currentPage === index ? "active" : ""
+                              }`}
                           >
                             <button
                               className="page-link"
@@ -233,9 +228,8 @@ function OutletListing() {
 
                         {currentPage < totalPages - 1 && (
                           <li
-                            className={`page-item ${
-                              currentPage === totalPages - 1 ? "disabled" : ""
-                            }`}
+                            className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                              }`}
                           >
                             <button
                               className="page-link"

@@ -285,7 +285,7 @@ const Calender = ({ className }: CalendarProps) => {
       <div className="page-content">
         <Container fluid={true}>
           {/* Render Breadcrumb */}
-          <Breadcrumbs title="Apps" breadcrumbItem="Calendar" />
+          {/* <Breadcrumbs title="Apps" breadcrumbItem="Calendar" /> */}
           <Row>
             <Col xs={12}>
               <Row>

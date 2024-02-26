@@ -28,7 +28,7 @@ const EChart = () => {
       <div className="page-content">
         <Container fluid={true}>
           {/* Render Breadcrumb */}
-          <Breadcrumbs title="Charts" breadcrumbItem="Echarts" />
+          {/* <Breadcrumbs title="Charts" breadcrumbItem="Echarts" /> */}
           <Row>
             <Col xl="6">
               <Card>

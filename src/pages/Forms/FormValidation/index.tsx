@@ -129,7 +129,7 @@ const FormValidation = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Forms" breadcrumbItem="Form Validation" />
+          {/* <Breadcrumbs title="Forms" breadcrumbItem="Form Validation" /> */}
 
           <Row>
             {/* import NormalValidation */}

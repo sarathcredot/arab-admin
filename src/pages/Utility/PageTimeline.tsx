@@ -23,7 +23,7 @@ const PageTimeline = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Pages" breadcrumbItem="Timeline" />
+          {/* <Breadcrumbs title="Pages" breadcrumbItem="Timeline" /> */}
           <Row>
             <Col lg={12}>
               <Card>
