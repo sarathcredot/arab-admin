@@ -20,6 +20,9 @@ import { useMutation, gql } from "@apollo/client";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { isLeafType } from "graphql";
+import Iconify from "src/components/iconify/Iconify";
+
+
 
 interface IVendore {
   _id: string;
@@ -50,12 +53,14 @@ const FormVender: React.FC<Props> = ({
     isEdit?.isBlocked !== undefined ? isEdit.isBlocked : false
   );
 
+  const [selectedCountry, setSelectedCountry] = useState('qa');
+
+
   const POST_VENDORE = gql`
     mutation CreateVendorByAdmin($input: VendorSignUpByAdminInput!) {
       createVendorByAdmin(input: $input) {
         _id
         message
-        token
       }
     }
   `;
@@ -68,6 +73,8 @@ const FormVender: React.FC<Props> = ({
       name: "",
       email: "",
       phone: "",
+      countryCode: "+974",
+      image: "",
     },
 
     validationSchema: vendoreValidation,
@@ -76,23 +83,24 @@ const FormVender: React.FC<Props> = ({
     },
   });
 
-
-  // when clicking the add category
   const onSubmit = async (values: any, { resetForm }: any) => {
-    console.log(values, "VAUEMONEEEEEEEEEEEEEEEEEEEEEEEEEE")
     try {
       let variables: any = {
         input: {
           email: values?.email,
           fullName: values?.name,
           mobileNumber: values?.phone.toString(),
-          isBlocked: null,
-          isKycCompleted: null,
+          countryCode: values?.countryCode,
         },
       };
 
 
-      console.log(variables, "variables")
+      if (values.image) {
+        variables = {
+          ...variables,
+          image: values?.image,
+        };
+      }
 
       const response = await createAvendore({
         variables,
@@ -101,13 +109,15 @@ const FormVender: React.FC<Props> = ({
       if (response) {
         refetch();
 
-        toast.success("Successfully Created A vendor");
-        navigate("/vendors");
+        toast.success("Successfully created a vendor");
+        toggle();
         resetForm();
       }
 
       return toggle();
     } catch (error: any) {
+      toast.error(error.message);
+
       console.log(error.message);
     }
   };
@@ -138,7 +148,7 @@ const FormVender: React.FC<Props> = ({
                 type="text"
                 id="name"
                 name="name"
-                placeholder="Please enter Name"
+                placeholder="Please enter name"
                 value={formik.values?.name}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -148,12 +158,12 @@ const FormVender: React.FC<Props> = ({
               )}
             </FormGroup>
             <FormGroup>
-              <Label for="categoryName">email</Label>
+              <Label for="categoryName">Email</Label>
               <Input
                 type="text"
                 id="email"
                 name="email"
-                placeholder="Please enter your email Address"
+                placeholder="Please enter your email address"
                 value={formik.values?.email}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -162,13 +172,40 @@ const FormVender: React.FC<Props> = ({
                 <div className="text-danger">{formik.errors.email}</div>
               )}
             </FormGroup>
+
             <FormGroup>
-              <Label for="categoryDescription">Phone Number</Label>
+              <Label>Country code</Label>
+              <div className="input-group">
+                <div className="input-group">
+                  <div className="input-group-prepend">
+                    <span className="input-group-text"><Iconify icon="openmoji:flag-qatar" /></span>
+                  </div>
+
+                  <Input
+                    type="text"
+                    id="countryCode"
+                    name="countryCode"
+                    placeholder="Please enter your country code"
+                    value={formik.values?.countryCode}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    disabled
+                  />
+                </div>
+              </div>
+
+              {formik.touched.countryCode && formik.errors.countryCode && (
+                <div className="text-danger">{formik.errors.countryCode}</div>
+              )}
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="categoryDescription">Phone number</Label>
               <Input
                 type="number"
                 id="phone"
                 name="phone"
-                placeholder="Please Enter Your Mobile Number"
+                placeholder="Please enter your mobile number"
                 value={formik.values?.phone}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -176,6 +213,26 @@ const FormVender: React.FC<Props> = ({
               {formik.touched.phone && formik.errors.phone && (
                 <div className="text-danger">{formik.errors.phone}</div>
               )}
+            </FormGroup>
+
+
+
+            <FormGroup>
+              <Label for="profileImage " className="pt-2">
+                Image
+              </Label>
+              <Input
+                type="file"
+                id="profileImage"
+                accept="image/*"
+                name="image"
+                onChange={(event) => {
+                  formik.setFieldValue(
+                    "image",
+                    event.currentTarget.files?.[0] || []
+                  );
+                }}
+              />
             </FormGroup>
 
             {isEdit ? (

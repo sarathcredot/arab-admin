@@ -186,7 +186,6 @@ const VendorList: React.FC = () => {
                       vendorLoading ?
                         <Loader />
                         :
-
                         <Table
                           id="tech-companies-1"
                           className="table table-striped table-bordered"

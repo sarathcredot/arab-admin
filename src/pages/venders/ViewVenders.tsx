@@ -19,13 +19,14 @@ import {
   Col,
 } from "reactstrap";
 import classnames from "classnames";
-import ViewCard from "./components/Outlate";
-import CategoryList from "./components/Categorey";
+import ViewCard from "./components/Outlet";
+import CategoryList from "./components/Category";
 import BrandList from "../branding/BrandList";
 import AssignedBrandList from "./components/LIstBrands";
 import user1 from "src/assets/images/users/avatar-1.jpg";
 import ConfirmationModal from "./ConfirmationModal";
 import { ToastContainer, toast } from "react-toastify";
+import { capitalCase } from "change-case";
 
 interface IcontactPerson {
   phoneNumber: string;
@@ -59,23 +60,26 @@ const GET_AVENDOR = gql`
       message
       record {
         _id
-        fullName
-        email
-        mobileNumber
-        isBlocked
-        isKycCompleted
-        outletId
-        outletName
-        outletStatus
-        companyId
-        companyName
-        companyStatus
-        profilePic {
-          fileType
-          fileURL
-          mimeType
-          originalName
-        }
+      fullName
+      email
+      countryCode
+      mobileNumber
+      profilePic {
+        fileType
+        fileURL
+        mimeType
+        originalName
+      }
+      isBlocked
+      isKycCompleted
+      outletId
+      outletName
+      outletStatus
+      companyId
+      companyName
+      companyStatus
+      brands
+      categories
       }
     }
   }
@@ -137,7 +141,6 @@ function ViewVenders() {
     setShowConfirmationModal(!showConfirmationModal);
   };
   const handleCancel = () => {
-    // If the user cancels, close the modal
     toggleConfirmationModal();
   };
 
@@ -151,15 +154,12 @@ function ViewVenders() {
           },
         },
       });
-
       vendorRefetch();
       toggleConfirmationModal();
-      setTimeout(() => {
-        if (data) {
-          toast.success(data.message);
-          vendorRefetch();
-        }
-      }, 3000);
+
+      toast.success(data.message);
+      vendorRefetch();
+
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -178,7 +178,7 @@ function ViewVenders() {
         <Nav tabs>
           <NavItem>
             <NavLink
-              className={classnames({ active: activeTab === "Vendor" })}
+              className={activeTab === "Vendor" ? "tab-button active" : "tab-button"}
               onClick={() => handleTabChange("Vendor")}
             >
               Vendor
@@ -186,7 +186,7 @@ function ViewVenders() {
           </NavItem>
           <NavItem>
             <NavLink
-              className={classnames({ active: activeTab === "companydetails" })}
+              className={activeTab === "companydetails" ? "tab-button active" : "tab-button"}
               onClick={() => handleTabChange("companydetails")}
             >
               Company Details
@@ -194,7 +194,7 @@ function ViewVenders() {
           </NavItem>
           <NavItem>
             <NavLink
-              className={classnames({ active: activeTab === "businessoutlet" })}
+              className={activeTab === "businessoutlet" ? "tab-button active" : "tab-button"}
               onClick={() => handleTabChange("businessoutlet")}
             >
               Business Outlet
@@ -202,7 +202,7 @@ function ViewVenders() {
           </NavItem>
           <NavItem>
             <NavLink
-              className={classnames({ active: activeTab === "category" })}
+              className={activeTab === "category" ? "tab-button active" : "tab-button"}
               onClick={() => handleTabChange("category")}
             >
               Category
@@ -210,7 +210,7 @@ function ViewVenders() {
           </NavItem>
           <NavItem>
             <NavLink
-              className={classnames({ active: activeTab === "brands" })}
+              className={activeTab === "brands" ? "tab-button active" : "tab-button"}
               onClick={() => handleTabChange("brands")}
             >
               Brands
@@ -224,7 +224,7 @@ function ViewVenders() {
               style={{
                 width: "100rem",
                 boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-                marginTop: "5rem",
+                marginTop: "20px",
               }}
             >
               <CardImg
@@ -237,12 +237,12 @@ function ViewVenders() {
                   border: "5px solid #fff",
                 }}
                 variant="top"
-                src={vendorData?.profilePic?.fileURL || user1}
+                src={vendorData?.profilePic?.fileURL || ""}
                 alt="Profile"
               />
               <CardBody>
                 <CardTitle>
-                  <strong> {vendorData?.fullName} </strong>
+                  <strong> {vendorData?.fullName && capitalCase(vendorData?.fullName)} </strong>
                 </CardTitle>
                 <CardText>
                   <Row>
@@ -312,9 +312,6 @@ function ViewVenders() {
             <CategoryList />
           </TabPane>
           <TabPane tabId="brands">
-            {/* <CategoryList    />
-           */}
-
             <AssignedBrandList />
           </TabPane>
         </TabContent>

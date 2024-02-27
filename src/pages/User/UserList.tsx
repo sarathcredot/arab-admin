@@ -76,7 +76,6 @@ const UserList = () => {
     maxRecords
     records {
       _id
-      age
       name
       email
       gender

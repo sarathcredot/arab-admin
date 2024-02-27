@@ -1,5 +1,5 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Form,
   FormGroup,
@@ -8,26 +8,18 @@ import {
   ModalHeader,
   ModalTitle,
 } from "react-bootstrap";
-import { useParams } from "react-router";
-import { Link } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import {
-  AccordionBody,
   Button,
   Card,
   CardBody,
-  CardImg,
   CardText,
-  CardTitle,
   Col,
-  Container,
   Input,
   Label,
   ModalBody,
-  Row,
+  Row
 } from "reactstrap";
-import Breadcrumb from "src/components/Common/Breadcrumb";
-import { Id } from "src/pages/Invoices/invoicelistCol";
 
 interface IKycRecord {
   _id: string;
@@ -243,6 +235,7 @@ function ViewCard({ option, IdBusiness, IdCompany }: IPropes) {
     data: companyDataResponse,
     refetch: companyRefetch,
   } = useQuery(GET_COMPANY_DATA, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         _id: IdCompany,
@@ -256,6 +249,7 @@ function ViewCard({ option, IdBusiness, IdCompany }: IPropes) {
     data: outletDataResponse,
     refetch: outletRefetch,
   } = useQuery(GET_BUSINESS_OUTLET, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         _id: IdBusiness,
@@ -264,14 +258,17 @@ function ViewCard({ option, IdBusiness, IdCompany }: IPropes) {
   });
 
   useEffect(() => {
+    if (outletDataResponse?.getVendorOutletRecordByAdmin) {
+      setOutletData(outletDataResponse.getVendorOutletRecordByAdmin.record);
+    }
+  }, [outletDataResponse, IdBusiness])
+
+  useEffect(() => {
     if (companyDataResponse?.getVendorCompanyRecordByAdmin) {
       setCompanyData(companyDataResponse.getVendorCompanyRecordByAdmin.record);
     }
 
-    if (outletDataResponse?.getVendorOutletRecordByAdmin) {
-      setOutletData(outletDataResponse.getVendorOutletRecordByAdmin.record);
-    }
-  }, [companyDataResponse, outletDataResponse]);
+  }, [companyDataResponse, , IdCompany]);
 
   // const handleImageClick = (fileURL: string) => {
   //   setSelectedImage(fileURL);
@@ -367,179 +364,35 @@ function ViewCard({ option, IdBusiness, IdCompany }: IPropes) {
 
   return (
     <div>
-      {/* <ToastContainer /> */}
-      <Container fluid={true} style={{ marginTop: "100px" }}>
-        {option == "businessoutlet" ? (
-          <>
-            {/* <ToastContainer /> */}
-            <Card style={{
-              boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-              marginTop: "5rem",
-            }}>
-              <CardBody>
-                {/* <CardTitle>
-                  <strong>Business Outlet Data</strong>
-                </CardTitle> */}
-                <CardText>
-                  <Row>
-                    <Col md={3}>
-
-                      <div>
-                        <p className="mt-5">
-                          <strong>Business Name :</strong> {outletData?.outletName}
-                        </p>
-                        <p className="mt-5">
-                          <strong>Address : </strong>
-                          {outletData?.address}
-                        </p>
-                      </div>
-
-
+      {option == "businessoutlet" ? (
+        <>
+          <Card style={{
+            boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+            marginTop: "20px",
+          }}>
+            <CardBody>
+              <CardText>
+                <Row>
+                  <Col md={3}>
+                    <div>
                       <p className="mt-5">
-                        <div className="truncate-text">
-                          {outletData?.exteriorImage && (
-                            <div style={{ display: "flex", alignItems: "center" }}>
-                              <span
-                                onClick={() =>
-                                  handleImageClick(
-                                    outletData?.exteriorImage?.fileURL
-                                  )
-                                }
-                                style={{
-                                  cursor: "pointer",
-                                  border: "1px solid #ccc",
-                                  padding: "8px",
-                                  borderRadius: "5px",
-                                  transition: "background-color 0.3s",
-                                  marginRight: "10px", // Adjust spacing between the spans
-                                }}
-                              >
-                                Exterior Image
-                                <i className="fas fa-external-link-alt"></i>
-                              </span>
-
-                              <span
-                                onClick={() =>
-                                  handleImageClick(
-                                    outletData?.interiorImage?.fileURL
-                                  )
-                                }
-                                style={{
-                                  cursor: "pointer",
-                                  border: "1px solid #ccc",
-                                  padding: "8px",
-                                  borderRadius: "5px",
-                                  transition: "background-color 0.3s",
-                                }}
-                              >
-                                Interior Image
-                                <i className="fas fa-external-link-alt"></i>
-                              </span>
-                            </div>
-                          )}
-                        </div>
+                        <strong>Business Name :</strong> {outletData?.outletName}
                       </p>
-                    </Col>
-
-                    <Col md={3}>
                       <p className="mt-5">
-                        <strong>Status:</strong>
-                        <span
-                          style={{
-                            display: "inline-block",
-                            padding: "5px 10px",
-                            borderRadius: "15px",
-                            background: getStatusColor(outletData?.status),
-                            color: "#fff",
-                            marginLeft: "10px",
-                          }}
-                        >
-                          {outletData?.status}
-                        </span>
+                        <strong>Address : </strong>
+                        {outletData?.address}
                       </p>
-
-                      <p className="mt-5">
-                        {outletData && (
-                          <CardText>
-                            <strong>Remarks:</strong>
-                            <ul>
-                              {outletData?.remarks.map(
-                                (remark: any, index: any) => (
-                                  <li key={index}>{remark}</li>
-                                )
-                              )}
-                            </ul>
-                          </CardText>
-                        )}
-                      </p>
-                    </Col>
-                  </Row>
+                    </div>
 
 
-                </CardText>
-                {!(outletData?.status === "COMPLETED") ? (
-                  <>
-                    <Button
-                      color="primary"
-                      onClick={() => {
-                        handleApproval("COMPLETED");
-                        setOptions("businessOutlet");
-                      }}
-                    >
-                      Approve
-                    </Button>
-                    <Button
-                      onClick={() => handleRejection("businessOutlet")}
-                      style={{ marginLeft: "10px" }}
-                    >
-                      Reject
-                    </Button>
-                  </>
-                ) : null}
-              </CardBody>
-            </Card>
-          </>
-        ) : (
-          ""
-        )}
-
-        {option === "companydetails" ? (
-          <>
-            {/* <ToastContainer /> */}
-            <Card style={{
-              boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-              marginTop: "5rem",
-            }}>
-              <CardBody>
-                {/* <CardTitle>
-                  <strong>Company Details</strong>
-                </CardTitle> */}
-                <CardText>
-                  <Row>
-                    <Col md={3}>
-                      <div>
-                        <p className="mt-5">
-                          <strong>Company Name : </strong>
-                          {companyData?.companyName}
-                        </p>
-                        <p className="mt-5">
-                          <strong>Address : </strong>
-                          {companyData?.address}
-                        </p>
-
-                        <p className="mt-5">
-                          <strong>CR Number : </strong>
-                          {companyData?.crNumber}{" "}
-                        </p>
-                      </div>
-
-                      <div className="truncate-text mt-5">
-                        {companyData?.cooCertificate && (
+                    <p className="mt-5">
+                      <div className="truncate-text">
+                        {outletData?.exteriorImage && (
                           <div style={{ display: "flex", alignItems: "center" }}>
                             <span
                               onClick={() =>
                                 handleImageClick(
-                                  companyData?.cooCertificate?.fileURL
+                                  outletData?.exteriorImage?.fileURL
                                 )
                               }
                               style={{
@@ -548,81 +401,217 @@ function ViewCard({ option, IdBusiness, IdCompany }: IPropes) {
                                 padding: "8px",
                                 borderRadius: "5px",
                                 transition: "background-color 0.3s",
-                                marginRight: "10px",
+                                marginRight: "10px", // Adjust spacing between the spans
                               }}
                             >
-                              cooCertificate
+                              Exterior Image
+                              <i className="fas fa-external-link-alt"></i>
+                            </span>
+
+                            <span
+                              onClick={() =>
+                                handleImageClick(
+                                  outletData?.interiorImage?.fileURL
+                                )
+                              }
+                              style={{
+                                cursor: "pointer",
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                                borderRadius: "5px",
+                                transition: "background-color 0.3s",
+                              }}
+                            >
+                              Interior Image
                               <i className="fas fa-external-link-alt"></i>
                             </span>
                           </div>
                         )}
                       </div>
+                    </p>
+                  </Col>
+
+                  <Col md={3}>
+                    <p className="mt-5">
+                      <strong>Status:</strong>
+                      <span
+                        style={{
+                          display: "inline-block",
+                          padding: "5px 10px",
+                          borderRadius: "15px",
+                          background: getStatusColor(outletData?.status),
+                          color: "#fff",
+                          marginLeft: "10px",
+                        }}
+                      >
+                        {outletData?.status}
+                      </span>
+                    </p>
+
+                    <p className="mt-5">
+                      {outletData && (
+                        <CardText>
+                          <strong>Remarks:</strong>
+                          <ul>
+                            {outletData?.remarks.map(
+                              (remark: any, index: any) => (
+                                <li key={index}>{remark}</li>
+                              )
+                            )}
+                          </ul>
+                        </CardText>
+                      )}
+                    </p>
+                  </Col>
+                </Row>
 
 
-                    </Col>
-                    <Col md={3}>
+              </CardText>
+              {!(outletData?.status === "COMPLETED") ? (
+                <>
+                  <Button
+                    color="primary"
+                    onClick={() => {
+                      handleApproval("COMPLETED");
+                      setOptions("businessOutlet");
+                    }}
+                  >
+                    Approve
+                  </Button>
+                  <Button
+                    onClick={() => handleRejection("businessOutlet")}
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Reject
+                  </Button>
+                </>
+              ) : null}
+            </CardBody>
+          </Card>
+        </>
+      ) : (
+        ""
+      )}
 
+      {option === "companydetails" ? (
+        <>
+          {/* <ToastContainer /> */}
+          <Card style={{
+            boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+            marginTop: "20px",
+          }}>
+            <CardBody>
+              {/* <CardTitle>
+                  <strong>Company Details</strong>
+                </CardTitle> */}
+              <CardText>
+                <Row>
+                  <Col md={3}>
+                    <div>
                       <p className="mt-5">
-                        <strong>Status:</strong>
-                        <span
-                          style={{
-                            display: "inline-block",
-                            padding: "5px 10px",
-                            borderRadius: "15px",
-                            background: getStatusColor(companyData?.status),
-                            color: "#fff",
-                            marginLeft: "10px",
-                          }}
-                        >
-                          {companyData?.status}
-                        </span>
+                        <strong>Company Name : </strong>
+                        {companyData?.companyName}
+                      </p>
+                      <p className="mt-5">
+                        <strong>Address : </strong>
+                        {companyData?.address}
                       </p>
 
                       <p className="mt-5">
-                        {companyData && (
-                          <CardText>
-                            <strong>Remarks:</strong>
-                            <ul>
-                              {companyData?.remarks.map(
-                                (remark: any, index: any) => (
-                                  <li key={index}>{remark}</li>
-                                )
-                              )}
-                            </ul>
-                          </CardText>
-                        )}
+                        <strong>CR Number : </strong>
+                        {companyData?.crNumber}{" "}
                       </p>
+                    </div>
+
+                    <div className="truncate-text mt-5">
+                      {companyData?.cooCertificate && (
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <span
+                            onClick={() =>
+                              handleImageClick(
+                                companyData?.cooCertificate?.fileURL
+                              )
+                            }
+                            style={{
+                              cursor: "pointer",
+                              border: "1px solid #ccc",
+                              padding: "8px",
+                              borderRadius: "5px",
+                              transition: "background-color 0.3s",
+                              marginRight: "10px",
+                            }}
+                          >
+                            cooCertificate
+                            <i className="fas fa-external-link-alt"></i>
+                          </span>
+                        </div>
+                      )}
+                    </div>
 
 
-                    </Col>
-                  </Row>
-                </CardText>
-                {!(companyData?.status === "COMPLETED") ? (
-                  <>
-                    <Button
-                      color="primary"
-                      onClick={() => {
-                        handleApproval("COMPLETED");
-                        setOptions("companyDetails");
-                      }}
-                    >
-                      Approve
-                    </Button>
-                    <Button
-                      onClick={() => handleRejection("companyDetails")}
-                      style={{ marginLeft: "10px" }}
-                    >
-                      Reject
-                    </Button>
-                  </>
-                ) : null}
-              </CardBody>
-            </Card>
-          </>
-        ) : (
-          ""
-        )}
-      </Container>
+                  </Col>
+                  <Col md={3}>
+
+                    <p className="mt-5">
+                      <strong>Status:</strong>
+                      <span
+                        style={{
+                          display: "inline-block",
+                          padding: "5px 10px",
+                          borderRadius: "15px",
+                          background: getStatusColor(companyData?.status),
+                          color: "#fff",
+                          marginLeft: "10px",
+                        }}
+                      >
+                        {companyData?.status}
+                      </span>
+                    </p>
+
+                    <p className="mt-5">
+                      {companyData && (
+                        <CardText>
+                          <strong>Remarks:</strong>
+                          <ul>
+                            {companyData?.remarks.map(
+                              (remark: any, index: any) => (
+                                <li key={index}>{remark}</li>
+                              )
+                            )}
+                          </ul>
+                        </CardText>
+                      )}
+                    </p>
+
+
+                  </Col>
+                </Row>
+              </CardText>
+              {!(companyData?.status === "COMPLETED") ? (
+                <>
+                  <Button
+                    color="primary"
+                    onClick={() => {
+                      handleApproval("COMPLETED");
+                      setOptions("companyDetails");
+                    }}
+                  >
+                    Approve
+                  </Button>
+                  <Button
+                    onClick={() => handleRejection("companyDetails")}
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Reject
+                  </Button>
+                </>
+              ) : null}
+            </CardBody>
+          </Card>
+        </>
+      ) : (
+        ""
+      )}
 
       <Modal show={showImageModal} onHide={() => setShowImageModal(false)}>
         <ModalHeader closeButton>
