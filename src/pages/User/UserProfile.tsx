@@ -50,15 +50,16 @@ import CustomButton from "src/components/Common/CustomButton";
 
 
 interface UserData {
-  email: string;
-  name: string;
   _id: string;
-  phoneNumber: string;
-  age: string;
-  gender: string;
+  email: string;
   isBlocked: boolean;
   createdAt: string;
+  firstName: string;
+  lastName: string;
+  displayName: string;
+  mobileNumber: string;
 }
+
 
 interface Order {
   _id: string;
@@ -107,7 +108,7 @@ interface Order {
 const UserProfile = () => {
 
   const [searchParams] = useSearchParams();
-  const userId = searchParams.get("userId")
+  const userId = searchParams.get("userId");
   const navigate = useNavigate();
 
   const [data, setData] = useState<UserData>();
@@ -118,16 +119,17 @@ const UserProfile = () => {
   const [maxRecords, setMaxRecords] = useState<number>(0);
 
   const GET_USER = gql`
-    query GetUserProfileByAdmin($input: GetUserProfileByAdminInput!) {
-  getUserProfileByAdmin(input: $input) {
-    _id
-    phoneNumber
-    email
-    gender
-    age
-    name
-    isBlocked
-    createdAt
+query GetUserRecordByAdmin($input: userInput!) {
+  getUserRecordByAdmin(input: $input) {
+    record {
+      _id
+      email
+      firstName
+      lastName
+      displayName
+      mobileNumber
+      isBlocked
+    }
   }
 }
   `;
@@ -237,7 +239,7 @@ const UserProfile = () => {
   } = useQuery(GET_USER, {
     variables: {
       input: {
-        userId: userId
+        _id: userId
       }
     }
   });
@@ -248,15 +250,20 @@ const UserProfile = () => {
 
     initialValues: {
       email: "",
-      name: "",
-      phoneNumber: "",
+      firstName: "",
+      lastName: "",
+      displayName: "",
+      mobileNumber: "",
       isBlocked: false
     },
     validationSchema: Yup.object({
-      email: Yup.string().email("Invalid email format").required(),
-      name: Yup.string().required("Name is required"),
-      phoneNumber: Yup.string().required("phoneNumber is required"),
-      isBlocked: Yup.string().required("Status is required"),
+      email: Yup.string().email("Invalid email format").required("Email is required"),
+      firstName: Yup.string().required("First Name is required"),
+      lastName: Yup.string().required("Last Name is required"),
+      displayName: Yup.string().required("Display Name is required"),
+      mobileNumber: Yup.string().required("Mobile Number is required"),
+      isBlocked: Yup.boolean().required("Status is required"),
+
 
 
     }),
@@ -266,12 +273,13 @@ const UserProfile = () => {
           input: {
             userId: userId,
             email: values?.email,
-            name: values?.name,
-            phoneNumber: values?.phoneNumber,
-            isBlocked: values?.isBlocked?.toString() === 'true' ? true : false,
-            gender: data?.gender && sentenceCase(data?.gender),
-            age: data?.age
-          },
+            firstName: values?.firstName,
+            lastName: values?.lastName,
+            displayName: values?.displayName,
+            mobileNumber: values?.mobileNumber,
+            isBlocked: values?.isBlocked
+          }
+
         };
 
         const response = await updateProfile({
@@ -295,10 +303,10 @@ const UserProfile = () => {
   useEffect(() => {
     if (
       userData &&
-      userData.getUserProfileByAdmin
+      userData.getUserRecordByAdmin
     ) {
-      setData(userData.getUserProfileByAdmin);
-      formik.setValues(userData.getUserProfileByAdmin);
+      setData(userData.getUserRecordByAdmin.record);
+      formik.setValues(userData.getUserRecordByAdmin.record);
     }
   }, [userData, userRefetch]);
 
@@ -407,7 +415,7 @@ const UserProfile = () => {
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                          <h5 style={{ margin: "0" }}>{data?.name && capitalCase(data?.name)}</h5>
+                          <h5 style={{ margin: "0" }}>{data?.displayName && capitalCase(data?.displayName)}</h5>
                           <div style={{ width: "80px", height: '20px', border: `1px solid ${data?.isBlocked ? "#dc4016" : "green"}`, borderRadius: "18px", display: "flex", alignItems: "center", justifyContent: "center", color: `${data?.isBlocked ? "#dc4016" : "green"}` }}>
                             <p style={{ margin: "0" }}>  {data?.isBlocked == false ? "Active" : "Blocked"}</p>
                           </div>
@@ -417,16 +425,16 @@ const UserProfile = () => {
                       <div style={{ display: "flex" }}>
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "5px", width: "80px" }}>
+                          <p className="mb-0">Fullname :</p>
+                          <p className="mb-0">Id :</p>
                           <p className="mb-0">Email :</p>
-                          <p className="mb-0">Name : </p>
                           <p className="mb-0">Phone : </p>
-                          <p className="mb-0">Gender : </p>
                         </div>
                         <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+                          <p className="mb-0"> {data?.displayName && capitalCase(data?.displayName)}</p>
+                          <p className="mb-0"> {data?._id}</p>
                           <p className="mb-0"> {data?.email}</p>
-                          <p className="mb-0"> {data?.name && capitalCase(data?.name)}</p>
-                          <p className="mb-0"> {data?.phoneNumber}</p>
-                          <p className="mb-0"> {data?.gender}</p>
+                          <p className="mb-0"> {data?.mobileNumber}</p>
                         </div>
 
                       </div>
@@ -519,7 +527,7 @@ const UserProfile = () => {
                     className="form-group pt-2"
                     style={{ display: "flex", flexDirection: "column", gap: "15px" }}
                   >
-                    <div>
+                    {/* <div>
                       <Label className="form-label">Name</Label>
                       <Input
                         name="name"
@@ -534,7 +542,7 @@ const UserProfile = () => {
                       {formik.touched.name && formik.errors.name && (
                         <div className="text-danger">{formik.errors.name}</div>
                       )}
-                    </div>
+                    </div> */}
                     <div>
 
                       <Label className="form-label">Email</Label>
@@ -552,7 +560,7 @@ const UserProfile = () => {
                         <div className="text-danger">{formik.errors.email}</div>
                       )}
                     </div>
-                    <div>
+                    {/* <div>
 
                       <Label className="form-label pt-2">Phone Number</Label>
                       <Input
@@ -570,7 +578,7 @@ const UserProfile = () => {
                           {formik.errors.phoneNumber}
                         </div>
                       )}
-                    </div>
+                    </div> */}
                     <div>
 
                       <Label className="form-label pt-2">Status</Label>

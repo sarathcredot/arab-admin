@@ -365,8 +365,8 @@ const All = () => {
                                                             <img width={"50px"} src={order.image?.fileURL} />
                                                         </div>
 
-                                                        <div>
-                                                            {order.productName}
+                                                        <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '5px', width: '180px' }}>
+                                                            {order?.productName}
                                                         </div>
                                                     </div>
                                                 </td>

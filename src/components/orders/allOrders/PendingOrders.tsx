@@ -22,22 +22,24 @@ import Iconify from "src/components/iconify";
 import Loader from "src/components/Common/Loader";
 import { toast } from "react-toastify";
 import AllOrderFilters from "../AllOrderFilters";
+import CustomButton from "src/components/Common/CustomButton";
 
 
 interface ShippingAddress {
     _id: string;
-    fullname: string;
+    firstname: string;
     email: string;
     mobile: string;
-    country: string;
-    state: string;
+    streetName: string;
     city: string;
-    address: string;
-    address2: string;
+    houseNumber: string;
+    country: string;
     postCode: string;
-    landmark: string;
-    alternateMobile: string;
+    apartment?: string;
+    suite?: string;
+    unit?: string;
 }
+
 
 interface OrderPriceInfo {
     totalMRP: number;
@@ -50,6 +52,7 @@ interface Order {
     _id: string;
     orderId: string;
     userId: string;
+    vendorId: string; // Added vendorId
     paymentMode: string;
     orderDate: string;
     orderStatus: string;
@@ -110,29 +113,30 @@ const PendingOrders = () => {
 
     const GET_ORDERS = gql`
     query GetAdminOrders($input: GetAdminOrdersInput!) {
-    getAdminOrders(input: $input) {
-    maxRecords,
+  getAdminOrders(input: $input) {
+    maxRecords
     records {
       _id
       orderId
       userId
+      vendorId
       paymentMode
       orderDate
       orderStatus
       username
       shippingAddress {
         _id
-        fullname
+        firstname
         email
         mobile
-        country
-        state
+        streetName
         city
-        address
-        address2
+        houseNumber
+        country
         postCode
-        landmark
-        alternateMobile
+        apartment
+        suite
+        unit
       }
       orderPriceInfo {
         totalMRP
@@ -260,6 +264,18 @@ const PendingOrders = () => {
     }
 
 
+    const [copiedIndex, setCopiedIndex] = useState(null);
+    const [copiedPage, setCopiedPage] = useState(0);
+    const copyToClipboard = (text: any, index: any) => {
+
+        navigator.clipboard.writeText(text);
+        setCopiedIndex(index);
+        setCopiedPage(currentPage);
+    }
+    const items = [
+        { text: "Dashboard", link: `/` },
+    ];
+
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: "30px", marginTop: "30px" }}>
             <Row style={{ display: "flex", alignItems: "center", }}>
@@ -318,7 +334,31 @@ const PendingOrders = () => {
                                                 <td> {currentPage * pageSize + index + 1}</td>
                                                 <td>{moment(order.orderDate).format("ll")}</td>
                                                 <td>{order.orderId}</td>
-                                                <td>{order.username && capitalCase(order.username)}</td>
+                                                <td>
+                                                    {
+                                                        order?.username &&
+                                                        <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent: "space-between" }}>
+                                                            {order?.username && capitalCase(order?.username)}
+                                                            <CustomButton outline disabled={copiedPage === currentPage && copiedIndex === index}
+                                                                name=""
+                                                                onClick={() => copyToClipboard(order.userId, index)}
+                                                                icon="mingcute:copy-line" style={{
+                                                                    display: "flex",
+                                                                    flexDirection: "row",
+                                                                    alignItems: "center",
+                                                                    justifyContent: "center",
+                                                                    backgroundColor: "black",
+                                                                    color: "white",
+                                                                    width: "30px",
+                                                                    height: "30px",
+                                                                    borderRadius: "50%    ",
+                                                                    gap: "5px",
+                                                                    fontSize: "10px",
+                                                                    border: "none",
+                                                                }} />
+                                                        </div>
+                                                    }
+                                                </td>
                                                 <td>{order.paymentMode}</td>
                                                 <td>
                                                     <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
@@ -329,7 +369,7 @@ const PendingOrders = () => {
                                                         {order.orderStatus.replace("_", " ")}
                                                     </div>
                                                 </td>
-                                                <td>  {`${order.shippingAddress["city"]},  ${order.shippingAddress["state"]}`}</td>
+                                                <td>  {`${order.shippingAddress["streetName"]},  ${order.shippingAddress["city"]}`}</td>
                                                 <td>
                                                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                                                         <div>
@@ -348,16 +388,16 @@ const PendingOrders = () => {
                                                         </div>
                                                         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
                                                             <div>
-                                                                {formatCurrency(order.orderPriceInfo.totalMRP)}
+                                                                {order.orderPriceInfo?.totalMRP && formatCurrency(order?.orderPriceInfo?.totalMRP)}
                                                             </div>
                                                             <div>
-                                                                {formatCurrency(order.orderPriceInfo.totalSellingPrice)}
+                                                                {formatCurrency(order?.orderPriceInfo?.totalSellingPrice)}
                                                             </div>
                                                             <div>
-                                                                {formatCurrency(order.orderPriceInfo.totalRefundAmount)}
+                                                                {formatCurrency(order?.orderPriceInfo?.totalRefundAmount)}
                                                             </div>
                                                             <div>
-                                                                {formatCurrency(order.orderPriceInfo.totalShippingCharge)}
+                                                                {formatCurrency(order?.orderPriceInfo?.totalShippingCharge)}
                                                             </div>
                                                         </div>
                                                     </div>

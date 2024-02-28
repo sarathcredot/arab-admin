@@ -36,7 +36,7 @@ function OrderShippingAddress({ order }: any) {
                                 Fullname:
                             </p>
                             <p className="form-control-static" style={{ fontWeight: 500, margin: 0 }}>
-                                {order?.username && capitalCase(order?.username)}
+                                {order?.shippingAddress.firstname && capitalCase(order?.shippingAddress.firstname)}
                             </p>
                         </div>
 
@@ -66,33 +66,37 @@ function OrderShippingAddress({ order }: any) {
 
                     </div>
 
-                    <div >
-                        <div style={{ display: "flex", flexDirection: "row", }}>
+                    <div>
+                        <div style={{ display: "flex", flexDirection: "row" }}>
                             <div style={{ width: "200px" }}>
-                                <p className="form-control-static">email</p>
+                                <p className="form-control-static">First Name</p>
+                                <p className="form-control-static">Email</p>
                                 <p className="form-control-static">Mobile</p>
-                                <p className="form-control-static">AddressType</p>
-                                <p className="form-control-static">Address</p>
-                                <p className="form-control-static">Address2</p>
-                                <p className="form-control-static" >City</p>
-                                <p className="form-control-static" >Landmark</p>
-                                <p className="form-control-static" >Postcode</p>
-                                <p className="form-control-static" >Country</p>
+                                <p className="form-control-static">Street Name</p>
+                                <p className="form-control-static">City</p>
+                                <p className="form-control-static">House Number</p>
+                                <p className="form-control-static">Country</p>
+                                <p className="form-control-static">Postcode</p>
+                                <p className="form-control-static">Apartment</p>
+                                <p className="form-control-static">Suite</p>
+                                <p className="form-control-static">Unit</p>
                             </div>
-                            <div >
-                                <p className="form-control-static">{order?.shippingAddress["email"] || "nill"}</p>
-                                <p className="form-control-static">{order?.shippingAddress["mobile"] || "nill"}</p>
-                                <p className="form-control-static">{order?.shippingAddress["addressType"] && sentenceCase(order?.shippingAddress["addressType"]) || "nill"} </p>
-                                <p className="form-control-static">{order?.shippingAddress["address"] && sentenceCase(order?.shippingAddress["address"]) || "nill"} </p>
-                                <p className="form-control-static">{order?.shippingAddress["address2"] && sentenceCase(order?.shippingAddress["address2"]) || "nill"}  </p>
-                                <p className="form-control-static">{order?.shippingAddress["city"] && sentenceCase(order?.shippingAddress["city"]) || "nill"} </p>
-                                <p className="form-control-static">{order?.shippingAddress["landmark"] ? sentenceCase(order?.shippingAddress["landmark"]) : "nill"} </p>
-                                <p className="form-control-static">{order?.shippingAddress["postCode"] || "nill"}</p>
-                                <p className="form-control-static">{order?.shippingAddress["country"] || "nill"}</p>
+                            <div>
+                                <p className="form-control-static">{order?.shippingAddress?.firstname || "nill"}</p>
+                                <p className="form-control-static">{order?.shippingAddress?.email || "nill"}</p>
+                                <p className="form-control-static">{order?.shippingAddress?.mobile || "nill"}</p>
+                                <p className="form-control-static">{order?.shippingAddress?.streetName || "nill"}</p>
+                                <p className="form-control-static">{order?.shippingAddress?.city || "nill"}</p>
+                                <p className="form-control-static">{order?.shippingAddress?.houseNumber || "nill"}</p>
+                                <p className="form-control-static">{order?.shippingAddress?.country || "nill"}</p>
+                                <p className="form-control-static">{order?.shippingAddress?.postCode || "nill"}</p>
+                                <p className="form-control-static">{order?.shippingAddress?.apartment || "nill"}</p>
+                                <p className="form-control-static">{order?.shippingAddress?.suite || "nill"}</p>
+                                <p className="form-control-static">{order?.shippingAddress?.unit || "nill"}</p>
                             </div>
-
                         </div>
                     </div>
+
                 </Col>
             </Row>
         </div>

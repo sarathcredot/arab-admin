@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import Iconify from "src/components/iconify";
 import Loader from "src/components/Common/Loader";
 import RefundOrdersFilters from "../RefundOrdersFilters";
+import CustomButton from "src/components/Common/CustomButton";
 
 
 
@@ -284,6 +285,15 @@ const PendingRefundOrders = () => {
         setCurrentPage(0);
     };
 
+    const [copiedIndex, setCopiedIndex] = useState(null);
+    const [copiedPage, setCopiedPage] = useState(0);
+    const copyToClipboard = (text: any, index: any) => {
+
+        navigator.clipboard.writeText(text);
+        setCopiedIndex(index);
+        setCopiedPage(currentPage);
+    }
+
     return (
         <div>
             <Row style={{ display: "flex", alignItems: "center", margin: "20px 0px" }}>
@@ -358,7 +368,31 @@ const PendingRefundOrders = () => {
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td>{order?.username && capitalCase(order?.username)}</td>
+                                                <td>
+                                                    {
+                                                        order?.username &&
+                                                        <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent: "space-between" }}>
+                                                            {order?.username && capitalCase(order?.username)}
+                                                            <CustomButton outline disabled={copiedPage === currentPage && copiedIndex === index}
+                                                                name=""
+                                                                onClick={() => copyToClipboard(order.userId, index)}
+                                                                icon="mingcute:copy-line" style={{
+                                                                    display: "flex",
+                                                                    flexDirection: "row",
+                                                                    alignItems: "center",
+                                                                    justifyContent: "center",
+                                                                    backgroundColor: "black",
+                                                                    color: "white",
+                                                                    width: "30px",
+                                                                    height: "30px",
+                                                                    borderRadius: "50%    ",
+                                                                    gap: "5px",
+                                                                    fontSize: "10px",
+                                                                    border: "none",
+                                                                }} />
+                                                        </div>
+                                                    }
+                                                </td>
 
                                                 <td>
                                                     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -367,7 +401,9 @@ const PendingRefundOrders = () => {
                                                         </div>
 
                                                         <div>
-                                                            {order?.productName}
+                                                            <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '5px', width: '100px' }}>
+                                                                {order?.productName}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </td>

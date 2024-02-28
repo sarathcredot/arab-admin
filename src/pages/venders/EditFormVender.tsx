@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Form,
@@ -38,34 +38,34 @@ interface Props {
   isEdit?: IVendore | null | undefined;
   refetch: () => void;
   childrefetch?: () => void;
+  data?: any
 }
 
-const FormVender: React.FC<Props> = ({
+const EditFormVender: React.FC<Props> = ({
   isOpen,
   toggle,
   isEdit,
   refetch,
   childrefetch,
+  data
 }) => {
+
+
   const navigate = useNavigate();
 
-  const [isBlockCategoryChecked, setIsBlockCategoryChecked] = useState<boolean>(
-    isEdit?.isBlocked !== undefined ? isEdit.isBlocked : false
-  );
-
-  const [selectedCountry, setSelectedCountry] = useState('qa');
+  const [isBlockCategoryChecked, setIsBlockCategoryChecked] = useState<boolean>(false);
 
 
-  const POST_VENDORE = gql`
-    mutation CreateVendorByAdmin($input: VendorSignUpByAdminInput!, $image: Upload) {
-  createVendorByAdmin(input: $input, image: $image) {
+  const PUT_VENDOR = gql`
+ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
+  updateVendorProfileByAdmin(input: $input) {
     _id
     message
   }
 }
   `;
 
-  const [createAvendore] = useMutation(POST_VENDORE);
+  const [UpdateVendor] = useMutation(PUT_VENDOR);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -82,15 +82,30 @@ const FormVender: React.FC<Props> = ({
       await onSubmit(values, { resetForm });
     },
   });
+
+
+  useEffect(() => {
+    formik.setValues({
+      name: data?.fullName || '',
+      email: data?.email || '',
+      phone: data?.mobileNumber || '',
+      countryCode: data?.countryCode || '+974',
+      image: data?.image || '',
+    });
+    setIsBlockCategoryChecked(data?.isBlocked)
+  }, [isOpen, refetch]);
+
+
   const onSubmit = async (values: any, { resetForm }: any) => {
     try {
       let variables: any = {
         input: {
+          _id: data?._id,
           email: values?.email,
           fullName: values?.name,
           mobileNumber: values?.phone.toString(),
           countryCode: values?.countryCode,
-          isBlocked: isBlockCategoryChecked
+          // isBlocked: isBlockCategoryChecked
         },
       };
 
@@ -102,14 +117,14 @@ const FormVender: React.FC<Props> = ({
         };
       }
 
-      const response = await createAvendore({
+      const response = await UpdateVendor({
         variables,
       });
 
       if (response) {
         refetch();
 
-        toast.success("Successfully created a vendor");
+        toast.success("Successfully updated vendor");
         toggle();
         resetForm();
       }
@@ -125,11 +140,6 @@ const FormVender: React.FC<Props> = ({
   const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState<string>("");
 
-  const openImageModal = (imageUrl: any) => {
-    setSelectedImageUrl(imageUrl);
-    setIsImageModalOpen(true);
-  };
-
   const checkingBlockCategory = () => {
     setIsBlockCategoryChecked((prev) => !prev);
   };
@@ -137,7 +147,7 @@ const FormVender: React.FC<Props> = ({
   return (
     <>
       <Modal isOpen={isOpen} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Add Vendor</ModalHeader>
+        <ModalHeader toggle={toggle}>Update Vendor</ModalHeader>
         <ModalBody>
           <Form onSubmit={formik.handleSubmit}>
             <FormGroup>
@@ -216,12 +226,12 @@ const FormVender: React.FC<Props> = ({
 
 
             <FormGroup>
-              <Label for="profileImage " className="pt-2">
+              <Label for="image " className="pt-2">
                 Image
               </Label>
               <Input
                 type="file"
-                id="profileImage"
+                id="image"
                 accept="image/*"
                 name="image"
                 onChange={(event) => {
@@ -233,24 +243,23 @@ const FormVender: React.FC<Props> = ({
               />
             </FormGroup>
 
-            {isEdit ? (
-              <div>
-                <FormGroup check style={{ marginTop: "10px" }}>
-                  <Label check>
-                    <Input
-                      type="checkbox"
-                      id="blockCategory"
-                      name="blockCategory"
-                      defaultChecked={isEdit?.isBlocked}
-                      onChange={() => {
-                        checkingBlockCategory();
-                      }}
-                    />{" "}
-                    Block category
-                  </Label>
-                </FormGroup>
-              </div>
-            ) : null}
+
+            <div>
+              <FormGroup check style={{ marginTop: "10px" }}>
+                <Label check>
+                  <Input
+                    type="checkbox"
+                    id="blockCategory"
+                    name="blockCategory"
+                    checked={isBlockCategoryChecked}
+                    onChange={() => {
+                      checkingBlockCategory();
+                    }}
+                  />{" "}
+                  Block Vendor
+                </Label>
+              </FormGroup>
+            </div>
 
             <ModalFooter style={{ marginTop: "20px" }}>
               <Button color="primary">
@@ -264,16 +273,6 @@ const FormVender: React.FC<Props> = ({
               </Button>
             </ModalFooter>
 
-            <Modal
-              isOpen={isImageModalOpen}
-              toggle={() => setIsImageModalOpen(!isImageModalOpen)}
-            >
-              <img
-                src={selectedImageUrl}
-                alt="Full Size Chart"
-                style={{ width: "100%" }}
-              />
-            </Modal>
           </Form>
         </ModalBody>
       </Modal>
@@ -281,4 +280,4 @@ const FormVender: React.FC<Props> = ({
   );
 };
 
-export default FormVender;
+export default EditFormVender;

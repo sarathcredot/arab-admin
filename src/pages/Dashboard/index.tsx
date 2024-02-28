@@ -26,6 +26,7 @@ import OrdersOverview from "./OrdersOverview";
 import ReturnOrdersOverview from "./ReturnOrdersOverview";
 import RefundOrdersOverview from "./RefundOrdersOverview";
 import OrdersAmountOverview from "./OrdersAmountOverview";
+import VendorsOverview from "./VendorsOverview";
 
 
 
@@ -72,6 +73,13 @@ const Dashboard = () => {
             <div>
               <h4 style={{ margin: "10px 0 20px  0" }}>Users</h4>
               <UsersOverview />
+            </div>
+
+            <div style={{ borderTop: '1px solid #ccc', width: '100%' }} />
+
+            <div>
+              <h4 style={{ margin: "10px 0 20px  0" }}>Vendors</h4>
+              <VendorsOverview />
             </div>
 
 

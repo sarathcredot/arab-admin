@@ -1,7 +1,7 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { sentenceCase } from "change-case";
+import { capitalCase, sentenceCase } from "change-case";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Table, Tbody, Td, Th, Thead, Tr } from "react-super-responsive-table";
@@ -27,19 +27,20 @@ import Breadcrumb from "../../components/Common/Breadcrumb";
 import CustomButton from "../../components/Common/CustomButton";
 import Loader from "../../components/Common/Loader";
 
-interface users {
+interface User {
   _id: string;
-  age: string;
-  name: string;
   email: string;
-  gender: string;
-  isBlocked: Boolean;
-  phoneNumber: string
+  firstName: string;
+  lastName: string;
+  displayName: string;
+  mobileNumber: string;
+  isBlocked: boolean;
 }
 
+
 interface UserFilter {
-  phoneNumber: string;
-  name: string;
+  mobileNumber: string;
+  firstName: string;
   id: string;
 }
 
@@ -48,17 +49,17 @@ const UserList = () => {
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [userToBlock, setUserToBlock] = useState<users | null>(null);
+  const [userToBlock, setUserToBlock] = useState<User | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [users, setUsers] = useState<users[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<{
     value: string;
     label: string;
     pass: boolean | null
   } | null>(null);
   const [userFilter, setUserFilter] = useState<UserFilter>({
-    phoneNumber: '',
-    name: '',
+    mobileNumber: '',
+    firstName: '',
     id: ''
   });
 
@@ -71,16 +72,17 @@ const UserList = () => {
   const [maxRecords, setMaxRecords] = useState<number>(0);
 
   const GET_USERS = gql`
-    query GetUsersByAdmin($input: userFilters) {
-  getUsersByAdmin(input: $input) {
+    query GetUsersByAdmin {
+  getUsersByAdmin {
     maxRecords
     records {
       _id
-      name
       email
-      gender
+      firstName
+      lastName
+      displayName
+      mobileNumber
       isBlocked
-      phoneNumber
     }
   }
 }
@@ -143,8 +145,8 @@ const UserList = () => {
           page: currentPage,
           size: pageSize,
           isBlocked: selectedStatus?.value,
-          phoneNumber: userFilter.phoneNumber,
-          name: userFilter.name,
+          phoneNumber: userFilter.mobileNumber,
+          name: userFilter.firstName,
           ...((userFilter.id) && { _id: userFilter.id }),
         },
       });
@@ -210,7 +212,7 @@ const UserList = () => {
                       <Input
                         type="text"
                         placeholder="Search by username"
-                        value={userFilter.name}
+                        value={userFilter.firstName}
                         name="name"
                         onChange={handleSearch}
                         style={{ width: "50%" }}
@@ -219,7 +221,7 @@ const UserList = () => {
                         type="text"
                         name="phoneNumber"
                         placeholder="Search by phone number"
-                        value={userFilter.phoneNumber}
+                        value={userFilter.mobileNumber}
                         onChange={handleSearch}
                         style={{ width: "50%" }}
                       />
@@ -268,8 +270,6 @@ const UserList = () => {
                           <Th>Fullname</Th>
                           <Th>Phone Number</Th>
                           <Th>Email</Th>
-                          <Th>Age</Th>
-                          <Th>Gender</Th>
                           <Th>Status</Th>
                           <Th>Actions</Th>
                         </Tr>
@@ -279,30 +279,28 @@ const UserList = () => {
                           <Tr key={user._id}>
                             <Td>{currentPage * pageSize + index + 1}</Td>
                             <Td>
-                              <div style={{ display: "flex", gap: "15px", alignItems: "center", justifyContent: "space-evenly" }}>
-                                <p style={{ margin: "0", width: "140px" }}>  {user.name}</p>
-                                <CustomButton outline disabled={copiedPage === currentPage && copiedIndex === index} name={(copiedPage === currentPage && copiedIndex === index) ? 'Copied!' : 'Copy ID'}
+                              <div style={{ display: "flex", gap: "15px", alignItems: "center", justifyContent: "space-between" }}>
+                                <p style={{ margin: "0", width: "140px" }}>  {capitalCase(`${user.firstName} ${user.lastName}`)}</p>
+                                <CustomButton outline disabled={copiedPage === currentPage && copiedIndex === index} name=""
                                   onClick={() => copyToClipboard(user._id, index)}
-                                  icon="clarity:copy-to-clipboard-line" style={{
+                                  icon="mingcute:copy-line" style={{
                                     display: "flex",
                                     flexDirection: "row",
                                     alignItems: "center",
                                     justifyContent: "center",
                                     backgroundColor: "black",
                                     color: "white",
-                                    width: "auto",
+                                    width: "30px",
                                     height: "30px",
-                                    borderRadius: "10px",
+                                    borderRadius: "50%",
                                     gap: "5px",
                                     fontSize: "10px",
                                     border: "none",
                                   }} />
                               </div>
                             </Td>
-                            <Td>{user.phoneNumber}</Td>
+                            <Td>{user.mobileNumber}</Td>
                             <Td>{user.email}</Td>
-                            <Td>{user.age}</Td>
-                            <Td>{user.gender}</Td>
                             <Td>
                               <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                                 <div

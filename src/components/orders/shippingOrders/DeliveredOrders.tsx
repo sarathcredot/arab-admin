@@ -21,6 +21,7 @@ import Iconify from "src/components/iconify";
 import { toast } from "react-toastify";
 import ProductOrdersFilters from "../ShippingOrdersFilters";
 import Loader from "src/components/Common/Loader";
+import CustomButton from "src/components/Common/CustomButton";
 
 
 
@@ -53,6 +54,8 @@ interface Order {
     deliveryDate?: Date;
     refundAmount?: number;
     invoiceNumber?: string;
+    vendorId: string;
+    vendorName: string;
     image?: FileData;
     invoice?: FileData;
 }
@@ -144,12 +147,14 @@ const DeliveredOrders = () => {
 
     const GET_ORDERS = gql`
     query GetAdminShippingProducts($input: GetAdminShippingProductsInput!) {
-    getAdminShippingProducts(input: $input) {
-    maxRecords,
-     records {
-        _id
+  getAdminShippingProducts(input: $input) {
+    maxRecords
+    records {
+      _id
       userId
       productId
+      vendorId
+      vendorName
       orderId
       itemId
       productName
@@ -333,6 +338,21 @@ message
         setCurrentPage(0);
     };
 
+    const [copiedItems, setCopiedItems] = useState<(string | null)[]>(new Array(pageSize).fill(null));
+
+    const copyToClipboard = (text: any, index: any) => {
+        navigator.clipboard.writeText(text);
+        const newCopiedItems = [...copiedItems];
+        newCopiedItems[index] = text;
+        setCopiedItems(newCopiedItems);
+
+        setTimeout(() => {
+            const resetCopiedItems = [...copiedItems];
+            resetCopiedItems[index] = null;
+            setCopiedItems([]);
+        }, 5000);
+    };
+
     return (
         <div>
             <Row style={{ display: "flex", alignItems: "center", margin: "20px 0px" }}>
@@ -386,6 +406,7 @@ message
                                             <th>Date</th>
                                             <th>Id</th>
                                             <th>Username</th>
+                                            <th>Vendor</th>
                                             <th>Product</th>
                                             <th>Payment Mode</th>
                                             <th>Payment Status</th>
@@ -425,7 +446,63 @@ message
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td>{order?.username && capitalCase(order?.username)}</td>
+                                                <td>
+                                                    {order?.username && (
+                                                        <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent: "space-between" }}>
+                                                            {capitalCase(order.username)}
+                                                            <CustomButton
+                                                                outline
+                                                                name=""
+                                                                onClick={() => copyToClipboard(order.userId, index)}
+                                                                icon="mingcute:copy-line"
+                                                                style={{
+                                                                    display: "flex",
+                                                                    flexDirection: "row",
+                                                                    alignItems: "center",
+                                                                    justifyContent: "center",
+                                                                    backgroundColor: "black",
+                                                                    color: "white",
+                                                                    width: "30px",
+                                                                    height: "30px",
+                                                                    borderRadius: "50%",
+                                                                    gap: "5px",
+                                                                    fontSize: "10px",
+                                                                    border: "none",
+                                                                }}
+                                                                disabled={copiedItems[index] === order.userId}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </td>
+
+                                                <td>
+                                                    {order?.vendorName && (
+                                                        <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent: "space-between" }}>
+                                                            {capitalCase(order.vendorName)}
+                                                            <CustomButton
+                                                                outline
+                                                                name=""
+                                                                onClick={() => copyToClipboard(order.vendorId, index)}
+                                                                icon="mingcute:copy-line"
+                                                                style={{
+                                                                    display: "flex",
+                                                                    flexDirection: "row",
+                                                                    alignItems: "center",
+                                                                    justifyContent: "center",
+                                                                    backgroundColor: "black",
+                                                                    color: "white",
+                                                                    width: "30px",
+                                                                    height: "30px",
+                                                                    borderRadius: "50%",
+                                                                    gap: "5px",
+                                                                    fontSize: "10px",
+                                                                    border: "none",
+                                                                }}
+                                                                disabled={copiedItems[index] === order.vendorId}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </td>
 
                                                 <td>
                                                     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -434,7 +511,9 @@ message
                                                         </div>
 
                                                         <div>
-                                                            {order?.productName}
+                                                            <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '5px', width: '100px' }}>
+                                                                {order?.productName}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </td>

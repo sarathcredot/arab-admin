@@ -8,13 +8,13 @@ import { ApexOptions } from 'apexcharts';
 import moment from 'moment';
 
 interface UserData {
-    totalUsers: number;
-    activeUsers: number;
-    blockedUsers: number;
-    todayUsers: number;
-    weekUsers: number;
-    monthUsers: number;
-    yearUsers: number;
+    totalVendors: number;
+    activeVendors: number;
+    blockedVendors: number;
+    todayVendors: number;
+    weekVendors: number;
+    monthVendors: number;
+    yearVendors: number;
 }
 
 interface DashboardUsersGraphResponse {
@@ -23,15 +23,15 @@ interface DashboardUsersGraphResponse {
 }
 
 
-function UsersOverview() {
+function VendorsOverview() {
     const [usersCounts, setUsersCounts] = useState<UserData>({
-        totalUsers: 0,
-        activeUsers: 0,
-        blockedUsers: 0,
-        todayUsers: 0,
-        weekUsers: 0,
-        monthUsers: 0,
-        yearUsers: 0,
+        totalVendors: 0,
+        activeVendors: 0,
+        blockedVendors: 0,
+        todayVendors: 0,
+        weekVendors: 0,
+        monthVendors: 0,
+        yearVendors: 0,
     });
 
     const [usersGraph, setUsersGraph] = useState<DashboardUsersGraphResponse>({
@@ -142,15 +142,15 @@ function UsersOverview() {
 
 
     const GET_USERS_COUNTS = gql` 
-    query GetDashboardUsersSummary {
-    getDashboardUsersSummary {
-    totalUsers
-    activeUsers
-    blockedUsers
-    todayUsers
-    weekUsers
-    monthUsers
-    yearUsers
+  query GetDashboardVendorsSummary {
+  getDashboardVendorsSummary {
+    totalVendors
+    activeVendors
+    blockedVendors
+    todayVendors
+    weekVendors
+    monthVendors
+    yearVendors
   }
 }
     `;
@@ -158,16 +158,16 @@ function UsersOverview() {
     const { data: usersCountsData, refetch: usersCountRefetch } = useQuery(GET_USERS_COUNTS)
 
     useEffect(() => {
-        if (usersCountsData && usersCountsData?.getDashboardUsersSummary) {
-            setUsersCounts(usersCountsData?.getDashboardUsersSummary)
+        if (usersCountsData && usersCountsData?.getDashboardVendorsSummary) {
+            setUsersCounts(usersCountsData?.getDashboardVendorsSummary)
         }
     }, [usersCountsData, usersCountRefetch]);
 
 
 
     const GET_USERS_GRAPH = gql` 
-    query GetDashboardUsersGraph($input: GetDashboardUsersGraphInput!) {
-    getDashboardUsersGraph(input: $input) {
+  query GetDashboardVendorsGraph($input: GetDashboardVendorsGraphInput!) {
+  getDashboardVendorsGraph(input: $input) {
     y1
     x
   }
@@ -185,8 +185,8 @@ function UsersOverview() {
     })
 
     useEffect(() => {
-        if (usersGraphData && usersGraphData?.getDashboardUsersGraph) {
-            setUsersGraph(usersGraphData?.getDashboardUsersGraph)
+        if (usersGraphData && usersGraphData?.getDashboardVendorsGraph) {
+            setUsersGraph(usersGraphData?.getDashboardVendorsGraph)
         }
     }, [usersGraphData, usersGraphRefetch, selectedType]);
 
@@ -196,22 +196,22 @@ function UsersOverview() {
         <>
             <Row>
                 <Col xs={12} sm={4} xl={2}>
-                    <SummaryCard title="Active Users" icon="mdi:user" total={usersCounts?.activeUsers ?? 0} />
+                    <SummaryCard title="Active Vendors" icon="mdi:user" total={usersCounts?.activeVendors ?? 0} />
                 </Col>
                 <Col xs={12} sm={4} xl={2}>
-                    <SummaryCard title="Blocked Users" icon="mdi:user-block" total={usersCounts?.blockedUsers ?? 0} />
+                    <SummaryCard title="Blocked Vendors" icon="mdi:user-block" total={usersCounts?.blockedVendors ?? 0} />
                 </Col>
                 <Col xs={12} sm={4} xl={2}>
-                    <SummaryCard title="Joined Today" icon="vaadin:calendar-user" total={usersCounts?.todayUsers ?? 0} />
+                    <SummaryCard title="Joined Today" icon="vaadin:calendar-user" total={usersCounts?.todayVendors ?? 0} />
                 </Col>
                 <Col xs={12} sm={4} xl={2}>
-                    <SummaryCard title="Joined This Week" icon="vaadin:calendar-user" total={usersCounts?.weekUsers ?? 0} />
+                    <SummaryCard title="Joined This Week" icon="vaadin:calendar-user" total={usersCounts?.weekVendors ?? 0} />
                 </Col>
                 <Col xs={12} sm={4} xl={2}>
-                    <SummaryCard title="Joined This Month" icon="vaadin:calendar-user" total={usersCounts?.monthUsers ?? 0} />
+                    <SummaryCard title="Joined This Month" icon="vaadin:calendar-user" total={usersCounts?.monthVendors ?? 0} />
                 </Col>
                 <Col xs={12} sm={4} xl={2}>
-                    <SummaryCard title="Total Users" icon="fa-solid:users" total={usersCounts?.totalUsers ?? 0} />
+                    <SummaryCard title="Total Vendors" icon="fa-solid:users" total={usersCounts?.totalVendors ?? 0} />
                 </Col>
             </Row>
 
@@ -220,7 +220,7 @@ function UsersOverview() {
                     <Card className="card-h-100" style={{ height: "400px", width: "100%", borderRadius: "7px", borderColor: "1px solid #F9F9F9", boxShadow: "1px solid #F9F9F9" }}>
                         <CardHeader>
                             <h5>
-                                Users
+                                Vendors
                             </h5>
                         </CardHeader>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: '10px 20px 10px 20px' }}>
@@ -267,4 +267,4 @@ function UsersOverview() {
     )
 }
 
-export default UsersOverview
+export default VendorsOverview

@@ -16,18 +16,17 @@ import OrderShippingAddress from "src/components/orders/OrderShippingAddress";
 
 interface ShippingAddress {
     _id: string;
-    fullname: string;
+    firstname: string;
     email: string;
     mobile: string;
-    country: string;
-    state: string;
+    streetName: string;
     city: string;
-    address: string;
-    address2: string;
+    houseNumber: string;
+    country: string;
     postCode: string;
-    landmark: string;
-    alternateMobile: string;
-    addressType: string;
+    apartment?: string;
+    suite?: string;
+    unit?: string;
 }
 
 interface OrderPriceInfo {
@@ -40,6 +39,7 @@ interface OrderPriceInfo {
 interface OrderData {
     _id: string;
     orderId: string;
+    vendorId?: string; // Assuming vendorId is optional based on the response
     userId: string;
     paymentMode: string;
     orderDate: Date;
@@ -112,8 +112,8 @@ const ALlOrderDetails = () => {
 
     const GET_ORDER = gql`
     query GetAdminOrderDetails($input: GetAdminOrderDetailsInput!) {
-    getAdminOrderDetails(input: $input) {
-     _id
+  getAdminOrderDetails(input: $input) {
+    _id
     orderId
     userId
     paymentMode
@@ -122,18 +122,17 @@ const ALlOrderDetails = () => {
     username
     shippingAddress {
       _id
-      fullname
+      firstname
       email
       mobile
-      country
-      state
+      streetName
       city
-      addressType
-      address
-      address2
+      houseNumber
+      country
       postCode
-      landmark
-      alternateMobile
+      apartment
+      suite
+      unit
     }
     orderPriceInfo {
       totalMRP
@@ -141,8 +140,8 @@ const ALlOrderDetails = () => {
       totalShippingCharge
       totalRefundAmount
     }
-      }
-    }
+  }
+}
   `;
 
     const GET_ORDER_PRODUCTS = gql`

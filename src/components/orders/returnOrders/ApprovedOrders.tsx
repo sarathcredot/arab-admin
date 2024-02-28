@@ -365,7 +365,9 @@ const ApprovedOrders = () => {
                                                         </div>
 
                                                         <div>
-                                                            {order?.productName}
+                                                            <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '5px', width: '100px' }}>
+                                                                {order?.productName}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </td>
