@@ -48,3 +48,12 @@ export const subAttributeVAlidation = yup.object().shape({
   colorCode: yup.string().min(1, 'color code required'),
   priority: yup.number().required("Priority is required").min(1)
 });
+
+export const vendorCompanyValidation = yup.object().shape({
+  companyName: yup.string().required('Company name is required').nullable(),
+  companyType: yup.string().required('Company type is required').nullable(),
+  crNumber: yup.string().required('crNumber  is required').nullable(),
+  status: yup.string().required('Status is required').nullable(),
+  remarks: yup.string()
+
+});

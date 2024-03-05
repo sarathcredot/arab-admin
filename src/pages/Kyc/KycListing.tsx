@@ -17,7 +17,7 @@ import {
   Table,
 } from "reactstrap";
 import Breadcrumb from "src/components/Common/Breadcrumb";
-import ViewCard from "../venders/components/Outlet";
+import ViewCard from "../venders/components/ViewCardCompany";
 import classnames from "classnames";
 import { Tabs } from "react-bootstrap";
 import OutletListing from "./component/OutletList";

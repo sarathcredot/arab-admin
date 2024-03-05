@@ -24,7 +24,7 @@ import {
   DropdownItem,
 } from "reactstrap";
 import classnames from "classnames";
-import ViewCard from "./components/Outlet";
+import ViewCardCompany from "./components/ViewCardCompany";
 import CategoryList from "./components/Category";
 import BrandList from "../branding/BrandList";
 import AssignedBrandList from "./components/LIstBrands";
@@ -36,6 +36,7 @@ import CustomButton from "src/components/Common/CustomButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import EditFormVender from "./EditFormVender";
+import ViewCardBusiness from "./components/ViewCardBusiness";
 
 interface IcontactPerson {
   phoneNumber: string;
@@ -354,14 +355,12 @@ function ViewVenders() {
 
           </TabPane>
           <TabPane tabId="companydetails">
-            <ViewCard
-              option={"companydetails"}
+            <ViewCardCompany
               IdCompany={vendorData?.companyId}
             />
           </TabPane>
           <TabPane tabId="businessoutlet">
-            <ViewCard
-              option={"businessoutlet"}
+            <ViewCardBusiness
               IdBusiness={vendorData?.outletId}
             />
           </TabPane>

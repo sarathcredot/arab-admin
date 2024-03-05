@@ -105,7 +105,7 @@ const EditFormVender: React.FC<Props> = ({
           fullName: values?.name,
           mobileNumber: values?.phone.toString(),
           countryCode: values?.countryCode,
-          // isBlocked: isBlockCategoryChecked
+          isBlocked: isBlockCategoryChecked
         },
       };
 
@@ -135,10 +135,6 @@ const EditFormVender: React.FC<Props> = ({
       console.log(error.message);
     }
   };
-
-
-  const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
-  const [selectedImageUrl, setSelectedImageUrl] = useState<string>("");
 
   const checkingBlockCategory = () => {
     setIsBlockCategoryChecked((prev) => !prev);
