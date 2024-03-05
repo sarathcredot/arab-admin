@@ -221,10 +221,9 @@ query GetUserRecordByAdmin($input: userInput!) {
   }, [currentPage, ordersRefetch, ordersLoading]);
 
   const UPDATAE_PROFILE = gql`
-  mutation EditUserByAdmin($input: UserEditByAdminInput! ) {
-  editUserByAdmin(input: $input) {
-    _id
-    
+  mutation UpdateUserProfileByAdmin($input: UpdateUserProfileByAdminInput!) {
+  updateUserProfileByAdmin(input: $input) {
+    message
   }
 }
   `;
@@ -247,40 +246,37 @@ query GetUserRecordByAdmin($input: userInput!) {
 
   const formik = useFormik({
     enableReinitialize: true,
-
     initialValues: {
       email: "",
       firstName: "",
       lastName: "",
-      displayName: "",
       mobileNumber: "",
-      isBlocked: false
+      isBlocked: 'false'
     },
     validationSchema: Yup.object({
-      email: Yup.string().email("Invalid email format").required("Email is required"),
-      firstName: Yup.string().required("First Name is required"),
-      lastName: Yup.string().required("Last Name is required"),
-      displayName: Yup.string().required("Display Name is required"),
+      email: Yup.string().email("Invalid email format").nullable(),
+      firstName: Yup.string().nullable(),
+      lastName: Yup.string().nullable(),
       mobileNumber: Yup.string().required("Mobile Number is required"),
       isBlocked: Yup.boolean().required("Status is required"),
-
-
-
     }),
+
+
     onSubmit: async (values) => {
       try {
         let variables: any = {
           input: {
-            userId: userId,
+            _id: userId,
             email: values?.email,
             firstName: values?.firstName,
             lastName: values?.lastName,
-            displayName: values?.displayName,
+            displayName: values?.lastName + " " + values?.lastName,
             mobileNumber: values?.mobileNumber,
-            isBlocked: values?.isBlocked
+            isBlocked: values.isBlocked === 'true' ? true : false
           }
 
         };
+
 
         const response = await updateProfile({
           variables,
@@ -298,6 +294,7 @@ query GetUserRecordByAdmin($input: userInput!) {
       }
     },
   });
+
 
 
   useEffect(() => {
@@ -431,10 +428,10 @@ query GetUserRecordByAdmin($input: userInput!) {
                           <p className="mb-0">Phone : </p>
                         </div>
                         <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                          <p className="mb-0"> {data?.displayName && capitalCase(data?.displayName)}</p>
-                          <p className="mb-0"> {data?._id}</p>
-                          <p className="mb-0"> {data?.email}</p>
-                          <p className="mb-0"> {data?.mobileNumber}</p>
+                          <p className="mb-0"> {data?.displayName && capitalCase(data?.displayName) || "nill"}</p>
+                          <p className="mb-0"> {data?._id || "nill"}</p>
+                          <p className="mb-0"> {data?.email || "nill"}</p>
+                          <p className="mb-0"> {data?.mobileNumber || "nill"}</p>
                         </div>
 
                       </div>
@@ -527,29 +524,47 @@ query GetUserRecordByAdmin($input: userInput!) {
                     className="form-group pt-2"
                     style={{ display: "flex", flexDirection: "column", gap: "15px" }}
                   >
-                    {/* <div>
-                      <Label className="form-label">Name</Label>
+                    <div>
+                      <Label className="form-label">Firstname</Label>
                       <Input
-                        name="name"
+                        name="firstName"
                         className="form-control"
-                        placeholder="Enter new Name"
+                        placeholder="Enter firstname"
                         type="text"
-                        value={formik.values?.name}
+                        value={formik.values?.firstName}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                       />
 
-                      {formik.touched.name && formik.errors.name && (
-                        <div className="text-danger">{formik.errors.name}</div>
+                      {formik.touched.firstName && formik.errors.firstName && (
+                        <div className="text-danger">{formik.errors.firstName}</div>
                       )}
-                    </div> */}
-                    <div>
+                    </div>
 
+
+                    <div>
+                      <Label className="form-label">Lastname</Label>
+                      <Input
+                        name="lastName"
+                        className="form-control"
+                        placeholder="Enter lastname"
+                        type="text"
+                        value={formik.values?.lastName}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      />
+
+                      {formik.touched.lastName && formik.errors.lastName && (
+                        <div className="text-danger">{formik.errors.lastName}</div>
+                      )}
+                    </div>
+
+                    <div>
                       <Label className="form-label">Email</Label>
                       <Input
                         name="email"
                         className="form-control"
-                        placeholder="Enter new email"
+                        placeholder="Enter  email"
                         type="text"
                         value={formik.values?.email}
                         onChange={formik.handleChange}
@@ -560,25 +575,26 @@ query GetUserRecordByAdmin($input: userInput!) {
                         <div className="text-danger">{formik.errors.email}</div>
                       )}
                     </div>
-                    {/* <div>
 
+                    <div>
                       <Label className="form-label pt-2">Phone Number</Label>
                       <Input
-                        name="phoneNumber"
+                        name="mobileNumber"
                         className="form-control"
-                        placeholder="Enter New Phone Number"
+                        placeholder="Enter mobile number"
                         type="text"
-                        value={formik.values?.phoneNumber}
+                        value={formik.values?.mobileNumber}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                       />
 
-                      {formik.touched.phoneNumber && formik.errors.phoneNumber && (
+                      {formik.touched.mobileNumber && formik.errors.mobileNumber && (
                         <div className="text-danger">
-                          {formik.errors.phoneNumber}
+                          {formik.errors.mobileNumber}
                         </div>
                       )}
-                    </div> */}
+                    </div>
+
                     <div>
 
                       <Label className="form-label pt-2">Status</Label>
@@ -593,7 +609,7 @@ query GetUserRecordByAdmin($input: userInput!) {
                         <option disabled>
                           Select Status
                         </option>
-                        <option value="false">
+                        <option value={'false'}>
                           Active
                         </option>
                         <option value="true">
