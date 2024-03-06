@@ -54,8 +54,8 @@ const EditFormVender: React.FC<Props> = ({
   const [isBlockCategoryChecked, setIsBlockCategoryChecked] = useState<boolean>(false);
 
   const PUT_VENDOR = gql`
- mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
-  updateVendorProfileByAdmin(input: $input) {
+  mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!, $image: Upload) {
+  updateVendorProfileByAdmin(input: $input, image: $image) {
     _id
     message
   }
@@ -92,6 +92,7 @@ const EditFormVender: React.FC<Props> = ({
       isKycCompleted: data?.isKycCompleted
     });
   }, [isOpen, refetch]);
+
 
 
   const onSubmit = async (values: any, { resetForm }: any) => {

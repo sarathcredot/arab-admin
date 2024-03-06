@@ -266,9 +266,9 @@ const UserList = () => {
                     <Table id="tech-companies-1" className="table table-striped table-bordered">
                       <Thead>
                         <Tr>
-                          <Th>No</Th>
-                          <Th>Fullname</Th>
+                          <Th>Sl.No</Th>
                           <Th>Phone Number</Th>
+                          <Th>Fullname</Th>
                           <Th>Email</Th>
                           <Th>Status</Th>
                           <Th>Actions</Th>
@@ -278,9 +278,10 @@ const UserList = () => {
                         {users.map((user, index) => (
                           <Tr key={user._id}>
                             <Td>{currentPage * pageSize + index + 1}</Td>
+                            <Td>{user.mobileNumber}</Td>
                             <Td>
                               <div style={{ display: "flex", gap: "15px", alignItems: "center", justifyContent: "space-between" }}>
-                                <p style={{ margin: "0", width: "140px" }}>  {capitalCase(`${user.firstName} ${user.lastName}`)}</p>
+                                <p style={{ margin: "0", width: "140px" }}>  {capitalCase(`${user.firstName || ""} ${user.lastName || ""}`)}</p>
                                 <CustomButton outline disabled={copiedPage === currentPage && copiedIndex === index} name=""
                                   onClick={() => copyToClipboard(user._id, index)}
                                   icon="mingcute:copy-line" style={{
@@ -299,7 +300,6 @@ const UserList = () => {
                                   }} />
                               </div>
                             </Td>
-                            <Td>{user.mobileNumber}</Td>
                             <Td>{user.email}</Td>
                             <Td>
                               <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
