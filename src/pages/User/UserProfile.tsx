@@ -381,7 +381,7 @@ query GetUserRecordByAdmin($input: userInput!) {
           <div >
             <h6>{formatCurrency(sellingPrice + shippingCharge)}</h6>
           </div>
-          <div >
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}>
             <Button color="primary" size="sm">View</Button>
           </div>
         </div>

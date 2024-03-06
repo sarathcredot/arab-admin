@@ -39,21 +39,26 @@ function OutletListing() {
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState(0);
 
-  const GET_ALL_KYC = gql`query GetAllVendorOutletRecordsByAdmin($input: VendorOutletRecordsByAdminFilter) {
+  const GET_ALL_KYC = gql`
+  query GetAllVendorOutletRecordsByAdmin($input: VendorOutletRecordsByAdminFilter) {
   getAllVendorOutletRecordsByAdmin(input: $input) {
-    maxRecords
+    message
     records {
+      outletName
       vendorId
       fullName
       isKycCompleted
       _id
-      outletName
       status
-      companyId
-      companyName
-      companyStatus
+      country
+      district
+      village
+      address
+      contactPersonName
+      contactPersonNumber
+      contactPersonDesignation
+      remarks
     }
-    message
   }
 }
   `;
@@ -115,7 +120,7 @@ function OutletListing() {
           <Nav tabs>
             <NavItem>
               <NavLink
-                className={activeTab === "UNDER_VERIFICATION" ? "active" : ""}
+                className={activeTab === "UNDER_VERIFICATION" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("UNDER_VERIFICATION")}
               >
                 Verify
@@ -123,7 +128,7 @@ function OutletListing() {
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === "PENDING" ? "active" : ""}
+                className={activeTab === "PENDING" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("PENDING")}
               >
                 Pending
@@ -131,12 +136,22 @@ function OutletListing() {
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === "COMPLETED" ? "active" : ""}
+                className={activeTab === "COMPLETED" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("COMPLETED")}
               >
                 Completed
               </NavLink>
             </NavItem>
+
+            <NavItem>
+              <NavLink
+                className={activeTab === "REJECTED" ? "tab-button active" : "tab-button"}
+                onClick={() => toggleTab("REJECTED")}
+              >
+                Rejected
+              </NavLink>
+            </NavItem>
+
           </Nav>
 
           <Row>
@@ -170,7 +185,7 @@ function OutletListing() {
 
                         .map((outlet, index) => (
                           <tr key={outlet._id}>
-                            <td>{index + 1}</td>
+                            <td>{currentPage * pageSize + index + 1}</td>
                             <td>{outlet.fullName}</td>
                             <td>{outlet.outletName}</td>
                             <td
@@ -182,8 +197,8 @@ function OutletListing() {
                             </td>
                             <td>{outlet.status}</td>
                             <td>
-                              <Link to={`/vendors/${outlet.vendorId}`}>
-                                <Button style={{ marginLeft: "20px", backgroundColor: "#000000" }}>
+                              <Link to={`/vendors/view?id=${outlet.vendorId}`}>
+                                <Button size="sm" color="primary">
                                   View
                                 </Button>
                               </Link>

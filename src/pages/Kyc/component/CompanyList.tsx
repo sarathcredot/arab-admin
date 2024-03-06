@@ -39,23 +39,23 @@ function CompanyListing() {
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState(0);
 
-  const GET_ALL_COMPANY_DATA = gql`query GetAllVendorCompanyRecordsByAdmin($input: VendorCompanyRecordsByAdminFilter) {
-  getAllVendorCompanyRecordsByAdmin(input: $input) {
-    maxRecords
-    message
-    records {
-      vendorId
-      _id
-      fullName
-      isKycCompleted
-      companyName
-      status
-      outletId
-      outletName
-      outletStatus
+  const GET_ALL_COMPANY_DATA = gql`
+  query GetAllVendorCompanyRecordsByAdmin($input: VendorCompanyRecordsByAdminFilter) {
+    getAllVendorCompanyRecordsByAdmin(input: $input) {
+      maxRecords
+      records {
+        status
+        vendorId
+        _id
+        fullName
+        isKycCompleted
+        companyName
+        companyType
+        crNumber
+      }
+      message
     }
-  }
-}`;
+  }`;
 
 
   const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
@@ -76,10 +76,8 @@ function CompanyListing() {
 
   }, [kycDataResponse, activeTab, currentPage]);
 
-  console.log(companyData)
 
   const toggleTab = (tab: string) => {
-    console.log("Active Tab:", tab);
     setActiveTab(tab);
   };
 
@@ -136,6 +134,14 @@ function CompanyListing() {
                 Completed
               </NavLink>
             </NavItem>
+            <NavItem>
+              <NavLink
+                className={activeTab === "REJECTED" ? "tab-button active" : "tab-button"}
+                onClick={() => toggleTab("REJECTED")}
+              >
+                Rejected
+              </NavLink>
+            </NavItem>
           </Nav>
 
           <Row>
@@ -179,7 +185,7 @@ function CompanyListing() {
                               {company?.status}
                             </td>
                             <td>
-                              <Link to={`/vendors/${company.vendorId}`}>
+                              <Link to={`/vendors/view?id=${company.vendorId}`}>
                                 <Button size="sm" color="primary">
                                   View
                                 </Button>

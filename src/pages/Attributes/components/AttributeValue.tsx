@@ -125,9 +125,6 @@ const ValueAttributeList: React.FC = () => {
     }
   };
 
-
-  console.log(attributeData, "wertyui")
-
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
   };
@@ -164,6 +161,7 @@ const ValueAttributeList: React.FC = () => {
 
   const items = [
     { text: "Dashboard", link: `/` },
+    { text: "Attributes", link: `/attributes` },
   ];
 
   return (
@@ -225,10 +223,7 @@ const ValueAttributeList: React.FC = () => {
 
 
                   <div className="d-flex justify-content-end mb-3">
-
-
-
-                    <SubAttributeForm isOpen={showAddModal} toggle={toggleAddModal} refetch={attributeRefetch} Id={id} />
+                    <SubAttributeForm isOpen={showAddModal} toggle={toggleAddModal} refetch={attributeRefetch} Id={id} attributData={attributeData} />
                   </div>
 
                   <Table id="tech-companies-1" className="table table-striped table-bordered">

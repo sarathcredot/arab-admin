@@ -69,7 +69,7 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
 
 
   const PUT_KYC_APPROVE_BUSINESS_DETAILS = gql`
-  mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $outletLicense: Upload, $interiorImage: Upload, $exteriorImage: Upload) {
+mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $outletLicense: Upload, $interiorImage: Upload, $exteriorImage: Upload) {
   updateVendorOutletByAdmin(input: $input, outletLicense: $outletLicense, interiorImage: $interiorImage, exteriorImage: $exteriorImage) {
     message
   }
@@ -156,7 +156,10 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
       contactPersonNumber: "",
       contactPersonDesignation: "",
       status: "",
-      remarks: ""
+      remarks: "",
+      exteriorImage: '',
+      interiorImage: '',
+      outletLicense: '',
     },
     validationSchema: vendorBusinessOutletValidation,
     onSubmit: async (values) => {
@@ -174,6 +177,9 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
       contactPersonName: outletData?.contactPersonName || '',
       contactPersonNumber: outletData?.contactPersonNumber || '',
       contactPersonDesignation: outletData?.contactPersonDesignation || '',
+      interiorImage: outletData?.interiorImage?.fileURL || "",
+      exteriorImage: outletData?.exteriorImage?.fileURL || "",
+      outletLicense: outletData?.outletLicense?.fileURL || "",
       status: outletData?.status || '',
       remarks: Array.isArray(outletData?.remarks) ? outletData?.remarks.join(', ') : outletData?.remarks || '',
     });
@@ -183,7 +189,7 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
 
   const onSubmit = async (values: any) => {
     try {
-      const variables: any = {
+      let variables: any = {
         input: {
           _id: IdBusiness,
           outletName: values?.outletName || '',
@@ -197,8 +203,26 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
           status: values?.status || '',
           remarks: Array.isArray(values?.remarks) ? values.remarks : (values?.remarks ? values.remarks.split(',').map((item: any) => item.trim()) : []),
         },
-
       };
+
+      if (values.outletLicense) {
+        variables = {
+          ...variables,
+          outletLicense: values.outletLicense
+        }
+      }
+      if (values.exteriorImage) {
+        variables = {
+          ...variables,
+          exteriorImage: values.exteriorImage
+        }
+      }
+      if (values.interiorImage) {
+        variables = {
+          ...variables,
+          interiorImage: values.interiorImage
+        }
+      }
 
       const response = await UpdateVendorOutletByAdmin({ variables });
 
@@ -309,6 +333,18 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
                             }
                           />
                         )}
+                        {outletData?.outletLicense && (
+                          <CustomButton
+                            name="Outlet License"
+                            icon="mingcute:upload-line"
+                            onClick={() =>
+                              handleImageClick(
+                                outletData?.outletLicense?.fileURL,
+                                outletData?.outletLicense?.mimeType
+                              )
+                            }
+                          />
+                        )}
                       </div>
                     </div>
                   </p>
@@ -363,7 +399,7 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
       </>
 
 
-      <Modal isOpen={modal} toggle={toggle}>
+      <Modal isOpen={modal} toggle={toggle} style={{ minWidth: "700px" }}>
         <ModalHeader >Edit Outlet Details</ModalHeader>
         <ModalBody>
           <Form onSubmit={formik.handleSubmit}>
@@ -448,7 +484,7 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
             </FormGroup>
 
             <Row>
-              <Col xs={6}>
+              <Col xs={4}>
                 <FormGroup>
                   <Label >Contact person name</Label>
                   <Input
@@ -463,12 +499,12 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
                   )}
                 </FormGroup>
               </Col>
-              <Col xs={6}>
+              <Col xs={4}>
                 <FormGroup>
                   <Label >Contact person number</Label>
                   <Input
                     name="contactPersonNumber"
-                    placeholder="Please enter contact person number "
+                    placeholder=" enter contact person number "
                     value={formik.values?.contactPersonNumber}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -478,20 +514,23 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
                   )}
                 </FormGroup>
               </Col>
+              <Col xs={4}>
+                <FormGroup>
+                  <Label >Contact person designation</Label>
+                  <Input
+                    name="contactPersonDesignation"
+                    placeholder=" enter person designation "
+                    value={formik.values?.contactPersonDesignation}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched.contactPersonDesignation && formik.errors.contactPersonDesignation && (
+                    <div className="text-danger">{formik.errors.contactPersonDesignation}</div>
+                  )}
+                </FormGroup>
+              </Col>
             </Row>
-            <FormGroup>
-              <Label >Contact person designation</Label>
-              <Input
-                name="contactPersonDesignation"
-                placeholder="Please enter contact person designation "
-                value={formik.values?.contactPersonDesignation}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
-              {formik.touched.contactPersonDesignation && formik.errors.contactPersonDesignation && (
-                <div className="text-danger">{formik.errors.contactPersonDesignation}</div>
-              )}
-            </FormGroup>
+
 
             <FormGroup>
               <Label >Status</Label>
@@ -528,6 +567,66 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
                 <div className="text-danger">{formik.errors.remarks}</div>
               )}
             </FormGroup>
+
+            <Row>
+              <Col xs={4}>
+                <FormGroup>
+                  <Label className="pt-2">
+                    Exterior Image
+                  </Label>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    name="exteriorImage"
+                    onChange={(event) => {
+                      formik.setFieldValue(
+                        "exteriorImage",
+                        event.currentTarget.files?.[0] || []
+                      );
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+              <Col xs={4}>
+                <FormGroup>
+                  <Label for="image " className="pt-2">
+                    Interior Image
+                  </Label>
+                  <Input
+                    type="file"
+                    id="image"
+                    accept="image/*"
+                    name="interiorImage"
+                    onChange={(event) => {
+                      formik.setFieldValue(
+                        "interiorImage",
+                        event.currentTarget.files?.[0] || []
+                      );
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+              <Col xs={4}>
+                <FormGroup>
+                  <Label for="image " className="pt-2">
+                    Outlet License
+                  </Label>
+                  <Input
+                    type="file"
+                    id="image"
+                    accept="image/*"
+                    name="outletLicense"
+                    onChange={(event) => {
+                      formik.setFieldValue(
+                        "outletLicense",
+                        event.currentTarget.files?.[0] || []
+                      );
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
+
 
 
 

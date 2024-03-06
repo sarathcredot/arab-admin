@@ -132,7 +132,9 @@ function ViewCardCompany({ IdCompany }: IPropes) {
       companyType: "",
       crNumber: "",
       status: "",
-      remarks: []
+      remarks: [],
+      cooCertificate: "",
+      crLicense: "",
     },
 
     validationSchema: vendorCompanyValidation,
@@ -147,6 +149,8 @@ function ViewCardCompany({ IdCompany }: IPropes) {
       companyType: companyData?.companyType || '',
       crNumber: companyData?.crNumber || '',
       status: companyData?.status || "",
+      cooCertificate: companyData?.status || "",
+      crLicense: companyData?.status || "",
       remarks: Array.isArray(companyData?.remarks) ? companyData?.remarks.join(', ') : companyData?.remarks,
     });
   }, [modal, companyRefetch]);
@@ -154,7 +158,7 @@ function ViewCardCompany({ IdCompany }: IPropes) {
 
   const onSubmit = async (values: any) => {
     try {
-      const variables: any = {
+      let variables: any = {
         input: {
           _id: IdCompany,
           companyName: values?.companyName || '',
@@ -164,6 +168,22 @@ function ViewCardCompany({ IdCompany }: IPropes) {
           remarks: Array.isArray(values?.remarks) ? values.remarks : (values?.remarks ? values.remarks.split(',').map((item: any) => item.trim()) : []),
         },
       };
+
+      if (values.crLicense) {
+        variables = {
+          ...variables,
+          crLicense: values.crLicense
+
+        }
+      }
+      if (values.cooCertificate) {
+        variables = {
+          ...variables,
+          cooCertificate: values.cooCertificate
+
+        }
+      }
+
 
       const response = await UpdateVendorCompanyByAdmin({ variables });
 
@@ -303,7 +323,7 @@ function ViewCardCompany({ IdCompany }: IPropes) {
         </CardBody>
       </Card>
 
-      <Modal isOpen={modal} toggle={toggle}>
+      <Modal isOpen={modal} toggle={toggle} style={{ minWidth: "700px" }}>
         <ModalHeader toggle={toggle}>Edit Company Details</ModalHeader>
         <ModalBody>
           <Form onSubmit={formik.handleSubmit}>
@@ -322,19 +342,41 @@ function ViewCardCompany({ IdCompany }: IPropes) {
                 <div className="text-danger">{formik.errors.companyName}</div>
               )}
             </FormGroup>
-            <FormGroup>
-              <Label >Company Type</Label>
-              <Input
-                name="companyType"
-                placeholder="Please enter company type "
-                value={formik.values?.companyType}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
-              {formik.touched.companyType && formik.errors.companyType && (
-                <div className="text-danger">{formik.errors.companyType}</div>
-              )}
-            </FormGroup>
+
+            <Row>
+              <Col xs={6}>
+                <FormGroup>
+                  <Label >Company Type</Label>
+                  <Input
+                    name="companyType"
+                    placeholder="Please enter company type "
+                    value={formik.values?.companyType}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched.companyType && formik.errors.companyType && (
+                    <div className="text-danger">{formik.errors.companyType}</div>
+                  )}
+                </FormGroup>
+              </Col>
+              <Col xs={6}>
+                <FormGroup>
+                  <Label >CR number</Label>
+                  <Input
+                    name="crNumber"
+                    placeholder="Please enter company type "
+                    value={formik.values?.crNumber}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched.crNumber && formik.errors.crNumber && (
+                    <div className="text-danger">{formik.errors.crNumber}</div>
+                  )}
+                </FormGroup>
+              </Col>
+            </Row>
+
+
 
             <FormGroup>
               <Label >Status</Label>
@@ -371,6 +413,48 @@ function ViewCardCompany({ IdCompany }: IPropes) {
                 <div className="text-danger">{formik.errors.remarks}</div>
               )}
             </FormGroup>
+            <Row>
+              <Col xs={6}>
+                <FormGroup>
+                  <Label for="image " className="pt-2">
+                    Coo Certificate
+                  </Label>
+                  <Input
+                    type="file"
+                    id="image"
+                    accept="image/*"
+                    name="cooCertificate"
+                    onChange={(event) => {
+                      formik.setFieldValue(
+                        "cooCertificate",
+                        event.currentTarget.files?.[0] || []
+                      );
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+              <Col xs={6}>
+                <FormGroup>
+                  <Label for="image " className="pt-2">
+                    CR License
+                  </Label>
+                  <Input
+                    type="file"
+                    id="image"
+                    accept="image/*"
+                    name="crLicense"
+                    onChange={(event) => {
+                      formik.setFieldValue(
+                        "crLicense",
+                        event.currentTarget.files?.[0] || []
+                      );
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
+
+
 
 
 

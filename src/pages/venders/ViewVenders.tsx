@@ -182,7 +182,10 @@ function ViewVenders() {
       <Container fluid={true} >
         <Breadcrumb items={items} currentPage="Vendor Details" />
 
-        <Nav tabs>
+        <VendorCards id={id} />
+
+
+        <Nav tabs style={{ marginTop: "20px" }}>
           <NavItem>
             <NavLink
               className={activeTab === "Vendor" ? "tab-button active" : "tab-button"}
@@ -308,7 +311,6 @@ function ViewVenders() {
               </div>
 
 
-              <VendorCards id={id} />
             </div>
 
           </TabPane>

@@ -41,12 +41,20 @@ interface IBrand {
   normal: string;
 }
 
+interface IAttribute {
+  _id: string;
+  attributeType: string;
+  name: string;
+  description: string;
+  isBlocked: boolean;
+}
 interface Props {
   isOpen: boolean;
   toggle: () => void;
   isEdit?: IBrand | null | undefined;
   refetch: () => void;
   Id?: String | null;
+  attributData?: IAttribute | null;
 }
 
 const SubAttributeForm: React.FC<Props> = ({
@@ -55,6 +63,7 @@ const SubAttributeForm: React.FC<Props> = ({
   isEdit,
   refetch,
   Id,
+  attributData,
 }) => {
   const navigate = useNavigate();
 
@@ -93,7 +102,7 @@ const SubAttributeForm: React.FC<Props> = ({
       let variables: any = {
         input: {
           attributeId: Id,
-          colorCode: values.colorCode,
+          colorCode: values.colorCode || "",
           isBlocked: isBlockCategoryChecked,
           priority: parseInt(values.priority),
           value: values.attributeValue,
@@ -158,22 +167,24 @@ const SubAttributeForm: React.FC<Props> = ({
                   </div>
                 )}
             </FormGroup>
-
-            <FormGroup>
-              <Label for="attributeName">Color Code</Label>
-              <Input
-                type="text"
-                id="colorCode"
-                name="colorCode"
-                placeholder="Please Enter The color code"
-                value={formik.values?.colorCode}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
-              {formik.touched.colorCode && formik.errors.colorCode && (
-                <div className="text-danger">{formik.errors.colorCode}</div>
-              )}
-            </FormGroup>
+            {
+              attributData?.attributeType === "COLOR" &&
+              <FormGroup FormGroup >
+                <Label for="attributeName">Color Code</Label>
+                <Input
+                  type="text"
+                  id="colorCode"
+                  name="colorCode"
+                  placeholder="Please Enter The color code"
+                  value={formik.values?.colorCode}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+                {formik.touched.colorCode && formik.errors.colorCode && (
+                  <div className="text-danger">{formik.errors.colorCode}</div>
+                )}
+              </FormGroup>
+            }
 
             <FormGroup>
               <Label for="categoryName">priority</Label>
@@ -223,7 +234,7 @@ const SubAttributeForm: React.FC<Props> = ({
             </ModalFooter>
           </Form>
         </ModalBody>
-      </Modal>
+      </Modal >
     </>
   );
 };
