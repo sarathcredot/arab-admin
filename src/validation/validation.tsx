@@ -57,3 +57,17 @@ export const vendorCompanyValidation = yup.object().shape({
   remarks: yup.string()
 
 });
+
+
+export const vendorBusinessOutletValidation = yup.object().shape({
+  outletName: yup.string().nullable(),
+  country: yup.string().nullable(),
+  district: yup.string().nullable(),
+  village: yup.string().nullable(),
+  address: yup.string().nullable(),
+  contactPersonName: yup.string().nullable(),
+  contactPersonNumber: yup.string().nullable(),
+  contactPersonDesignation: yup.string().nullable(),
+  status: yup.string().nullable(),
+  remarks: yup.string().nullable(),
+});

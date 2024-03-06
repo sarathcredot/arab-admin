@@ -16,7 +16,7 @@ import {
     Table
 } from "reactstrap";
 import { formatCurrency } from "src/utils/formatCurrency";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Iconify from "src/components/iconify";
 import Loader from "src/components/Common/Loader";
 import ReturnOrdersFilters from "../ReturnOrdersFilters";
@@ -96,6 +96,9 @@ interface FilterData {
 
 
 const PendingOrders = () => {
+
+    const [searchParams] = useSearchParams();
+    const vendorId = searchParams.get("vendorId")
 
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [currentPage, setCurrentPage] = useState<number>(0);
@@ -212,6 +215,8 @@ const PendingOrders = () => {
                 size: pageSize,
                 orderId: searchTerm,
                 returnStatus: "PENDING",
+                vendorId: vendorId ? vendorId : null,
+
                 sort: "Pending",
                 ...((filterData._id) && { _id: filterData._id }),
                 ...((filterData.itemId) && { itemId: filterData.itemId }),
@@ -233,6 +238,8 @@ const PendingOrders = () => {
                 input: {
                     page: currentPage,
                     size: pageSize,
+                    vendorId: vendorId ? vendorId : null,
+
                     orderId: searchTerm || filterData.orderId,
                     returnStatus: "PENDING",
                     sort: "Pending",

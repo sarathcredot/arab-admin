@@ -16,7 +16,7 @@ import {
     Table
 } from "reactstrap";
 import { formatCurrency } from "src/utils/formatCurrency";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Iconify from "src/components/iconify";
 import RefundOrdersFilters from "../RefundOrdersFilters";
 import Loader from "src/components/Common/Loader";
@@ -97,6 +97,9 @@ interface FilterData {
 
 
 const PaidRefundOrders = () => {
+
+    const [searchParams] = useSearchParams();
+    const vendorId = searchParams.get("vendorId")
 
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [currentPage, setCurrentPage] = useState<number>(0);
@@ -212,6 +215,8 @@ const PaidRefundOrders = () => {
                 page: currentPage,
                 size: pageSize,
                 orderId: searchTerm,
+                vendorId: vendorId ? vendorId : null,
+
                 returnStatus: "PAID",
                 sort: "Paid",
                 ...((filterData._id) && { _id: filterData._id }),
@@ -234,6 +239,8 @@ const PaidRefundOrders = () => {
                 input: {
                     page: currentPage,
                     size: pageSize,
+                    vendorId: vendorId ? vendorId : null,
+
                     orderId: searchTerm || filterData.orderId,
                     refundStatus: "PAID",
                     sort: "Paid",

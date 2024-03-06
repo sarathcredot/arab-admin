@@ -28,7 +28,7 @@ interface DashboardOrdersGraphResponse {
     x: string[];
 }
 
-function OrdersOverview() {
+function OrdersOverview({ vendorId }: any) {
 
     const [orderCounts, setOrderCounts] = useState<OrderData>({
         pendingOrders: 0,
@@ -198,8 +198,8 @@ function OrdersOverview() {
 
 
     const GET_ORDER_COUNTS = gql` 
-    query GetDashboardOrderSummary {
-    getDashboardOrderSummary {
+ query GetDashboardOrderSummary($input: GetDashboardOrderSummaryInput!) {
+  getDashboardOrderSummary(input: $input) {
     pendingOrders
     progressOrders
     shippedOrders
@@ -211,7 +211,13 @@ function OrdersOverview() {
     `;
 
 
-    const { data: ordersCountsData, refetch: usersCountRefetch } = useQuery(GET_ORDER_COUNTS)
+    const { data: ordersCountsData, refetch: usersCountRefetch } = useQuery(GET_ORDER_COUNTS, {
+        variables: {
+            input: {
+                vendorId: vendorId ? vendorId : null
+            }
+        }
+    })
 
     useEffect(() => {
         if (ordersCountsData && ordersCountsData?.getDashboardOrderSummary) {
@@ -220,8 +226,8 @@ function OrdersOverview() {
     }, [usersCountRefetch, ordersCountsData]);
 
     const GET_ORDERS_GRAPH = gql` 
-    query GetDashboardOrdersGraph($input: GetDashboardOrdersGraphInput!) {
-    getDashboardOrdersGraph(input: $input) {
+  query GetDashboardOrdersGraph($input: GetDashboardOrdersGraphInput!) {
+  getDashboardOrdersGraph(input: $input) {
     y1
     x
   }
@@ -233,7 +239,8 @@ function OrdersOverview() {
             input: {
                 "startDate": startDate,
                 "endDate": endDate,
-                "graphType": selectedType
+                "graphType": selectedType,
+                vendorId: vendorId ? vendorId : ""
             }
         }
     })
@@ -246,8 +253,8 @@ function OrdersOverview() {
 
 
     const GET_ORDERS_PIE = gql` 
-    query GetDashboardOrdersPieChartData($input: GetDashboardOrdersPieChartDataInput!) {
-     getDashboardOrdersPieChartData(input: $input) {
+query GetDashboardOrdersPieChartData($input: GetDashboardOrdersPieChartDataInput!) {
+  getDashboardOrdersPieChartData(input: $input) {
     deliveredOrders
     cancelledOrders
     returnedOrders
@@ -260,6 +267,7 @@ function OrdersOverview() {
             input: {
                 "startDate": pieStartDate,
                 "endDate": pieEndDate,
+                vendorId: vendorId ? vendorId : ""
             }
         }
     }

@@ -16,7 +16,7 @@ import {
     Table
 } from "reactstrap";
 import { formatCurrency } from "src/utils/formatCurrency";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Iconify from "src/components/iconify";
 import { toast } from "react-toastify";
 import ProductOrdersFilters from "../ShippingOrdersFilters";
@@ -107,6 +107,9 @@ const PackageInProgressOrders = () => {
     const pageSize = 10;
     const [maxRecords, setMaxRecords] = useState<number>(0);
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [searchParams] = useSearchParams();
+    const vendorId = searchParams.get("vendorId")
+
 
     const [formData, setFormData] = useState<FormState>({
         _id: "",
@@ -219,6 +222,8 @@ const PackageInProgressOrders = () => {
                 size: pageSize,
                 shippingStatus: "PACKAGE_IN_PROGRESS",
                 orderId: searchTerm,
+                vendorId: vendorId ? vendorId : null,
+
                 ...((filterData._id) && { _id: filterData._id }),
                 ...((filterData.itemId) && { itemId: filterData.itemId }),
                 ...((filterData.productId) && { productId: filterData.productId }),
@@ -241,6 +246,8 @@ const PackageInProgressOrders = () => {
                     page: currentPage,
                     size: pageSize,
                     shippingStatus: "PACKAGE_IN_PROGRESS",
+                    vendorId: vendorId ? vendorId : null,
+
                     orderId: searchTerm || filterData.orderId,
                     ...((filterData._id) && { _id: filterData._id }),
                     ...((filterData.itemId) && { itemId: filterData.itemId }),

@@ -37,6 +37,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import EditFormVender from "./EditFormVender";
 import ViewCardBusiness from "./components/ViewCardBusiness";
+import VendorCards from "./components/VendorCards";
 
 interface IcontactPerson {
   phoneNumber: string;
@@ -136,7 +137,6 @@ function ViewVenders() {
   useEffect(() => {
     if (vendorDataResponse && vendorDataResponse.getVendorRecordByAdmin) {
       setVendorData(vendorDataResponse.getVendorRecordByAdmin?.record);
-      setSelectedStatus({ value: vendorDataResponse.getVendorRecordByAdmin?.record?.isKycCompleted ? "true" : "false", label: vendorDataResponse.getVendorRecordByAdmin?.record?.isKycCompleted ? "Completed" : "Pending", pass: vendorDataResponse.getVendorRecordByAdmin?.record?.isKycCompleted },);
     }
   }, [id, vendorDataResponse]);
 
@@ -173,39 +173,8 @@ function ViewVenders() {
   ];
 
 
-  const [selectedStatus, setSelectedStatus] = useState<{
-    value: string;
-    label: string;
-    pass: boolean | null
-  } | null>(null);
-  const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
-  const statusOptions = [
-    { value: "false", label: "Pending", pass: false, color: "orange" },
-    { value: "true", label: "Completed", pass: true, color: "green" },
-  ];
-  const toggleStatusDropdown = () => {
-    setStatusDropdownOpen(!statusDropdownOpen);
-  };
 
-  const handleStatusSelect = async (selectedOption: any) => {
-    setSelectedStatus(selectedOption);
-    try {
-      const { data } = await updateVendorProfile({
-        variables: {
-          input: {
-            _id: id,
-            isKycCompleted: selectedOption.pass,
-          },
-        },
-      });
-      vendorRefetch();
-      setStatusDropdownOpen(false);
-      toast.success(data.message);
 
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
 
 
   return (
@@ -258,99 +227,88 @@ function ViewVenders() {
 
         <TabContent activeTab={activeTab}>
           <TabPane tabId="Vendor">
-            <div style={{ display: "flex", marginTop: "20px", gap: "20px" }}>
-              <Card style={{ flex: 3, padding: "20px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px", flexDirection: "column" }}>
-                  <CardImg
-                    style={{
-                      height: "100px",
-                      width: "100px",
-                      objectFit: "contain",
-                      borderRadius: "50%",
-                      margin: "20px",
-                      border: "5px solid #fff",
-                    }}
-                    variant="top"
-                    src={vendorData?.profilePic?.fileURL || ""}
-                    alt="Profile"
-                  />
-                  <div>
-                    <CardTitle >
-                      <strong style={{ fontSize: "20px" }}> {vendorData?.fullName && capitalCase(vendorData?.fullName)} </strong>
-                    </CardTitle>
+            <div>
+
+              <div style={{ display: "flex", marginTop: "20px", gap: "20px" }}>
+                <Card style={{ flex: 3, padding: "20px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px", flexDirection: "column" }}>
+                    <CardImg
+                      style={{
+                        height: "100px",
+                        width: "100px",
+                        objectFit: "contain",
+                        borderRadius: "50%",
+                        margin: "20px",
+                        border: "5px solid #fff",
+                      }}
+                      variant="top"
+                      src={vendorData?.profilePic?.fileURL || ""}
+                      alt="Profile"
+                    />
+                    <div>
+                      <CardTitle >
+                        <strong style={{ fontSize: "20px" }}> {vendorData?.fullName && capitalCase(vendorData?.fullName)} </strong>
+                      </CardTitle>
+                    </div>
+
+                    <div style={{ border: "1px solid #e9e9ef", borderRadius: "9px", width: "100%", display: "flex", alignItems: "center", gap: "3px", flexDirection: "column", padding: "5px 0px" }}>
+                      <span style={{ fontSize: "10px" }}>Email Address</span>
+                      <h6>{vendorData?.email}</h6>
+                    </div>
                   </div>
+                </Card>
 
-                  <div style={{ border: "1px solid #e9e9ef", borderRadius: "9px", width: "100%", display: "flex", alignItems: "center", gap: "3px", flexDirection: "column", padding: "5px 0px" }}>
-                    <span style={{ fontSize: "10px" }}>Email Address</span>
-                    <h6>{vendorData?.email}</h6>
-                  </div>
-                </div>
-              </Card>
+                <Card style={{ flex: 8, }}>
+                  <CardHeader style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: "17px", fontWeight: "500" }}>Details</span>
+                    <CustomButton name="Update" icon="ic:baseline-edit" onClick={editFormToggle} />
+                    <EditFormVender isOpen={editFormOpen} refetch={vendorRefetch} toggle={editFormToggle} data={vendorData} />
 
-              <Card style={{ flex: 8, }}>
-                <CardHeader style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <span style={{ fontSize: "17px", fontWeight: "500" }}>Details</span>
-                  <CustomButton name="Update" icon="ic:baseline-edit" onClick={editFormToggle} />
-                  <EditFormVender isOpen={editFormOpen} refetch={vendorRefetch} toggle={editFormToggle} data={vendorData} />
+                  </CardHeader>
+                  <CardBody>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
 
-                </CardHeader>
-                <CardBody>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-
-                    <div style={{ display: 'flex', alignItems: "center" }}>
-                      <div style={{ width: "100px" }}>Fullname : </div>
-                      <strong>{vendorData?.fullName && capitalCase(vendorData?.fullName)}</strong>
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: "center" }}>
-                      <div style={{ width: "100px" }}>Email : </div>
-                      <strong>{vendorData?.email}</strong>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: "center" }}>
-                      <div style={{ width: "100px" }}>ID : </div>
-                      <strong>{vendorData?._id}</strong>
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: "center" }}>
-                      <div style={{ width: "100px" }}>Phone  : </div>
-                      <strong>{`${vendorData?.countryCode} ${vendorData?.mobileNumber}`}</strong>
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: "center" }}>
-                      <div style={{ width: "100px" }}>Status : </div>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "1px", border: `1px solid ${vendorData?.isBlocked == true ? "red" : "green"}`, width: "100px", borderRadius: "20px", color: ` ${vendorData?.isBlocked == true ? "red" : "green"}` }}>
-                        {vendorData?.isBlocked == true ? "Blocked" : "Active"}
+                      <div style={{ display: 'flex', alignItems: "center" }}>
+                        <div style={{ width: "100px" }}>Fullname : </div>
+                        <strong>{vendorData?.fullName && capitalCase(vendorData?.fullName)}</strong>
                       </div>
-                    </div>
 
-                    <div style={{ display: 'flex', alignItems: "center" }}>
-                      <div style={{ width: "100px" }}>Kyc Status : </div>
-                      <Dropdown
-                        isOpen={statusDropdownOpen}
-                        toggle={toggleStatusDropdown}
-                      >
-                        <DropdownToggle caret>
-                          {selectedStatus
-                            && selectedStatus?.label}{" "}
-                          <FontAwesomeIcon icon={faAngleDown} />
-                        </DropdownToggle>
-                        <DropdownMenu>
-                          {statusOptions.map((option) => (
-                            <DropdownItem
-                              style={{ color: option.color }}
-                              key={option.value}
-                              onClick={() => handleStatusSelect(option)}
-                            >
-                              {option.label}
-                            </DropdownItem>
-                          ))}
-                        </DropdownMenu>
-                      </Dropdown>
-                    </div>
+                      <div style={{ display: 'flex', alignItems: "center" }}>
+                        <div style={{ width: "100px" }}>Email : </div>
+                        <strong>{vendorData?.email}</strong>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: "center" }}>
+                        <div style={{ width: "100px" }}>ID : </div>
+                        <strong>{vendorData?._id}</strong>
+                      </div>
 
-                  </div>
-                </CardBody>
-              </Card>
+                      <div style={{ display: 'flex', alignItems: "center" }}>
+                        <div style={{ width: "100px" }}>Phone  : </div>
+                        <strong>{`${vendorData?.countryCode} ${vendorData?.mobileNumber}`}</strong>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: "center" }}>
+                        <div style={{ width: "100px" }}>Status : </div>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "1px", border: `1px solid ${vendorData?.isBlocked == true ? "red" : "green"}`, width: "100px", borderRadius: "20px", color: ` ${vendorData?.isBlocked == true ? "red" : "green"}` }}>
+                          {vendorData?.isBlocked == true ? "Blocked" : "Active"}
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: "center" }}>
+                        <div style={{ width: "100px" }}>KYC Status : </div>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "1px", border: `1px solid ${vendorData?.isKycCompleted !== true ? "orange" : "green"}`, width: "100px", borderRadius: "20px", color: ` ${vendorData?.isKycCompleted !== true ? "orange" : "green"}` }}>
+                          {vendorData?.isKycCompleted == true ? "Completed" : "Pending"}
+                        </div>
+                      </div>
+
+                    </div>
+                  </CardBody>
+                </Card>
+
+
+              </div>
+
+
+              <VendorCards id={id} />
             </div>
 
           </TabPane>

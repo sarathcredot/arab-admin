@@ -148,6 +148,7 @@ import RefundOrders from "src/pages/Orders/refundOrders/RefundOrders";
 import RefundOrderDetails from "src/pages/Orders/refundOrders/RefundOrderDetails";
 import Settings from "src/pages/settings/Settings";
 import UserProfile from "src/pages/User/UserProfile";
+import VendorAnalyticsPage from "src/pages/venders/VendorAnalyticsPage";
 interface RouteProps {
   path: string;
   component: any;
@@ -185,6 +186,7 @@ const adminRoutes: Array<RouteProps> = [
 
   { path: "/vendors", exact: true, component: <VendorList /> },
   { path: "/vendors/view", exact: true, component: <ViewVenders /> },
+  { path: "/vendors/view/analytics", exact: true, component: <VendorAnalyticsPage /> },
 
   { path: "/kyc", exact: true, component: <KycListing /> },
   { path: "/kyc/:id", exact: true, component: <ViewKyc /> },

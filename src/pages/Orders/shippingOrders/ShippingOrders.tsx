@@ -42,8 +42,6 @@ const ShippingOrders = () => {
             <Col lg={12}>
 
               <Row>
-
-
                 <Col xs={12} style={{ display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}>
                   <ExportExcelList name={"SHIPPING_EXPORT"} />
                 </Col>

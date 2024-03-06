@@ -19,7 +19,6 @@ import {
 import { useMutation, gql } from "@apollo/client";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { isLeafType } from "graphql";
 import Iconify from "src/components/iconify/Iconify";
 
 
@@ -50,11 +49,9 @@ const EditFormVender: React.FC<Props> = ({
   data
 }) => {
 
-
   const navigate = useNavigate();
 
   const [isBlockCategoryChecked, setIsBlockCategoryChecked] = useState<boolean>(false);
-
 
   const PUT_VENDOR = gql`
  mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
@@ -75,6 +72,7 @@ const EditFormVender: React.FC<Props> = ({
       phone: "",
       countryCode: "+974",
       image: "",
+      isKycCompleted: "false"
     },
 
     validationSchema: vendoreValidation,
@@ -91,8 +89,8 @@ const EditFormVender: React.FC<Props> = ({
       phone: data?.mobileNumber || '',
       countryCode: data?.countryCode || '+974',
       image: data?.image || '',
+      isKycCompleted: data?.isKycCompleted
     });
-    setIsBlockCategoryChecked(data?.isBlocked)
   }, [isOpen, refetch]);
 
 
@@ -105,7 +103,7 @@ const EditFormVender: React.FC<Props> = ({
           fullName: values?.name,
           mobileNumber: values?.phone.toString(),
           countryCode: values?.countryCode,
-          isBlocked: isBlockCategoryChecked
+          isKycCompleted: values?.isKycCompleted == "true" ? true : false,
         },
       };
 
@@ -136,9 +134,6 @@ const EditFormVender: React.FC<Props> = ({
     }
   };
 
-  const checkingBlockCategory = () => {
-    setIsBlockCategoryChecked((prev) => !prev);
-  };
 
   return (
     <>
@@ -219,6 +214,25 @@ const EditFormVender: React.FC<Props> = ({
               )}
             </FormGroup>
 
+            <FormGroup>
+              <Label >KYC Status</Label>
+              <Input
+                type="select"
+                name="isKycCompleted"
+                placeholder="Select KYC status"
+                value={formik.values?.isKycCompleted}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              >
+                <option value="" disabled>Select  kyc status</option>
+                <option value="false">Pending</option>
+                <option value="true">Completed</option>
+              </Input>
+              {formik.touched.isKycCompleted && formik.errors.isKycCompleted && (
+                <div className="text-danger">{formik.errors.isKycCompleted}</div>
+              )}
+            </FormGroup>
+
 
 
             <FormGroup>
@@ -240,7 +254,7 @@ const EditFormVender: React.FC<Props> = ({
             </FormGroup>
 
 
-            <div>
+            {/* <div>
               <FormGroup check style={{ marginTop: "10px" }}>
                 <Label check>
                   <Input
@@ -255,7 +269,7 @@ const EditFormVender: React.FC<Props> = ({
                   Block Vendor
                 </Label>
               </FormGroup>
-            </div>
+            </div> */}
 
             <ModalFooter style={{ marginTop: "20px" }}>
               <Button color="primary">

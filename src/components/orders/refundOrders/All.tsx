@@ -16,7 +16,7 @@ import {
     Table
 } from "reactstrap";
 import { formatCurrency } from "src/utils/formatCurrency";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Iconify from "src/components/iconify";
 import RefundOrdersFilters from "../RefundOrdersFilters";
 import CustomButton from "src/components/Common/CustomButton";
@@ -96,6 +96,9 @@ interface FilterData {
 
 
 const All = () => {
+
+    const [searchParams] = useSearchParams();
+    const vendorId = searchParams.get("vendorId")
 
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [currentPage, setCurrentPage] = useState<number>(0);
@@ -210,6 +213,8 @@ const All = () => {
             input: {
                 page: currentPage,
                 size: pageSize,
+                vendorId: vendorId ? vendorId : null,
+
                 orderId: searchTerm,
                 ...((filterData._id) && { _id: filterData._id }),
                 ...((filterData.itemId) && { itemId: filterData.itemId }),
@@ -231,6 +236,8 @@ const All = () => {
                 input: {
                     page: currentPage,
                     size: pageSize,
+                    vendorId: vendorId ? vendorId : null,
+
                     orderId: searchTerm || filterData.orderId,
                     ...((filterData._id) && { _id: filterData._id }),
                     ...((filterData.itemId) && { itemId: filterData.itemId }),

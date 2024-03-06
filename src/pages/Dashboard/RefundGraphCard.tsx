@@ -9,7 +9,7 @@ import { formatCurrency } from 'src/utils/formatCurrency'; interface OrdersPie {
 }
 
 
-const RefundGraphCard = () => {
+const RefundGraphCard = ({ vendorId }: any) => {
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -80,6 +80,7 @@ query GetDashboardRefundOrdersPieChartData($input: GetDashboardRefundOrdersPieCh
       input: {
         "startDate": startDate,
         "endDate": endDate,
+        vendorId: vendorId ? vendorId : ""
       }
     }
   }

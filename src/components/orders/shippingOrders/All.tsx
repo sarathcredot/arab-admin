@@ -16,7 +16,7 @@ import {
     Table
 } from "reactstrap";
 import { formatCurrency } from "src/utils/formatCurrency";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Iconify from "src/components/iconify";
 import { toast } from "react-toastify";
 import ProductOrdersFilters from "../ShippingOrdersFilters";
@@ -99,7 +99,8 @@ interface FilterData {
 
 
 const All = () => {
-
+    const [searchParams] = useSearchParams();
+    const vendorId = searchParams.get("vendorId")
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [orders, setOrders] = useState<Order[]>([]);
@@ -217,6 +218,8 @@ const All = () => {
                 page: currentPage,
                 size: pageSize,
                 orderId: searchTerm,
+                vendorId: vendorId ? vendorId : null,
+
                 ...((filterData._id) && { _id: filterData._id }),
                 ...((filterData.itemId) && { itemId: filterData.itemId }),
                 ...((filterData.productId) && { productId: filterData.productId }),
@@ -239,6 +242,8 @@ const All = () => {
                     page: currentPage,
                     size: pageSize,
                     orderId: searchTerm || filterData.orderId,
+                    vendorId: vendorId ? vendorId : null,
+
                     ...((filterData._id) && { _id: filterData._id }),
                     ...((filterData.itemId) && { itemId: filterData.itemId }),
                     ...((filterData.productId) && { productId: filterData.productId }),

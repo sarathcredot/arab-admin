@@ -5,16 +5,16 @@ import RefundTransactions from './RefundTransactions';
 import OrderAmountGraphCard from './OrderAmountGraphCard';
 import ShippingChargeGraphCard from './ShippingChargeGraphCard';
 
-function OrdersAmountOverview() {
+function OrdersAmountOverview({ vendorId }: any) {
 
     return (
         <>
             <Row>
                 <Col xs={12} sm={12} xl={6}>
-                    <OrderAmountGraphCard />
+                    <OrderAmountGraphCard vendorId={vendorId} />
                 </Col>
                 <Col xs={12} sm={12} xl={6}>
-                    <ShippingChargeGraphCard />
+                    <ShippingChargeGraphCard vendorId={vendorId} />
                 </Col>
 
 

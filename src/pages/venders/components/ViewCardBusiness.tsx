@@ -1,13 +1,7 @@
+import React from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
+import { useFormik } from "formik";
 import { useEffect, useState } from "react";
-import {
-  Form,
-  FormGroup,
-  Modal,
-  ModalFooter,
-  ModalHeader,
-  ModalTitle,
-} from "react-bootstrap";
 import { toast } from "react-toastify";
 import {
   Button,
@@ -15,80 +9,20 @@ import {
   CardBody,
   CardText,
   Col,
+  FormGroup,
   Input,
   Label,
+  Modal,
   ModalBody,
-  Row
+  ModalFooter,
+  ModalHeader,
+  Row,
+  Form
 } from "reactstrap";
+import CustomButton from "src/components/Common/CustomButton";
 import { fetchSignedUrl, useFetchSignedUrl } from "src/utils/fetchSignedUrl";
+import { vendorBusinessOutletValidation } from "src/validation/validation";
 
-interface IKycRecord {
-  _id: string;
-  businessOutlet: {
-    _id: string;
-    address: string;
-    exteriorImage: {
-      fileURL: string;
-    };
-    interiorImage: {
-      fileURL: string;
-    };
-    name: string;
-    remarks: string[];
-    sectionName: string;
-    status: string;
-  };
-  companyDetails: {
-    _id: string;
-    companyLicenceImage: {
-      fileURL: string;
-    };
-    crLicence: string;
-    crNumber: string;
-    name: string;
-    remarks: string[];
-    sectionName: string;
-    status: string;
-    type: string;
-  };
-  isKycCompleted: boolean;
-  fullName: string;
-  sellingProduct: {
-    _id: string;
-    sectionName: string;
-    discription: string;
-    brand: string;
-    status: string;
-    remarks: string[];
-    sellingProductImage: {
-      fileURL: string;
-    };
-  };
-  vendorId: string;
-}
-
-interface ICompany {
-  _id: string;
-  vendorId: string;
-  companyName: string;
-  companyType: string;
-  crNumber: string;
-  status: string;
-  crLicense: {
-    fileType: string;
-    fileURL: string;
-    mimeType: string;
-    originalName: string;
-  };
-  cooCertificate: {
-    fileType: string;
-    fileURL: string;
-    mimeType: string;
-    originalName: string;
-  };
-  address: string;
-  remarks: string[];
-}
 
 interface IOutletRecord {
   _id: string;
@@ -128,64 +62,18 @@ interface IPropes {
 }
 
 function ViewCardBusiness({ IdBusiness }: IPropes) {
-  const [showImageModal, setShowImageModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [showRejectModal, setShowRejectModal] = useState(false);
-  const [modal, setModal] = useState(false);
-  const [companyData, setCompanyData] = useState<ICompany>();
   const [outletData, setOutletData] = useState<IOutletRecord>();
-  const toggle: any = () => setModal(!modal);
+  const [modal, setModal] = useState(false);
+
+  const toggle = () => setModal(!modal);
+
 
   const PUT_KYC_APPROVE_BUSINESS_DETAILS = gql`
-    mutation VendorOutletStatusUpdation(
-      $input: VendorOutletStatusUpdationInput!
-    ) {
-      vendorOutletStatusUpdation(input: $input) {
-        _id
-        message
-        status
-      }
-    }
-  `;
-
-  const PUT_KYC_APPROVE_COMPANY_DETAILS = gql`
-    mutation VendorCompanyStatusUpdation(
-      $input: VendorCompanyStatusUpdationInput!
-    ) {
-      vendorCompanyStatusUpdation(input: $input) {
-        _id
-        message
-      }
-    }
-  `;
-
-  const GET_COMPANY_DATA = gql`
-    query GetVendorCompanyRecordByAdmin($input: VendorCompanyIdInput!) {
-      getVendorCompanyRecordByAdmin(input: $input) {
-        message
-        record {
-          _id
-          vendorId
-          companyName
-          companyType
-          crNumber
-          status
-          crLicense {
-            fileType
-            fileURL
-            mimeType
-            originalName
-          }
-          cooCertificate {
-            fileType
-            fileURL
-            mimeType
-            originalName
-          }
-          remarks
-        }
-      }
-    }
+  mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $outletLicense: Upload, $interiorImage: Upload, $exteriorImage: Upload) {
+  updateVendorOutletByAdmin(input: $input, outletLicense: $outletLicense, interiorImage: $interiorImage, exteriorImage: $exteriorImage) {
+    message
+  }
+}
   `;
 
   const GET_BUSINESS_OUTLET = gql`
@@ -251,71 +139,81 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
   }, [outletDataResponse, IdBusiness])
 
 
-  const [VendorOutletStatusUpdation] = useMutation(
+  const [UpdateVendorOutletByAdmin] = useMutation(
     PUT_KYC_APPROVE_BUSINESS_DETAILS
   );
-  const [VendorCompanyStatusUpdation] = useMutation(
-    PUT_KYC_APPROVE_COMPANY_DETAILS
-  );
 
-  const [options, setOptions] = useState("");
 
-  const [remarks, setRemarks] = useState<any>([""]);
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      outletName: "",
+      country: "",
+      district: "",
+      village: "",
+      address: "",
+      contactPersonName: "",
+      contactPersonNumber: "",
+      contactPersonDesignation: "",
+      status: "",
+      remarks: ""
+    },
+    validationSchema: vendorBusinessOutletValidation,
+    onSubmit: async (values) => {
+      await onSubmit(values);
+    },
+  });
 
-  const handleAddRemark = () => {
-    setRemarks([...remarks, ""]);
-  };
+  useEffect(() => {
+    formik.setValues({
+      outletName: outletData?.outletName || '',
+      country: outletData?.country || '',
+      district: outletData?.district || '',
+      village: outletData?.village || '',
+      address: outletData?.address || '',
+      contactPersonName: outletData?.contactPersonName || '',
+      contactPersonNumber: outletData?.contactPersonNumber || '',
+      contactPersonDesignation: outletData?.contactPersonDesignation || '',
+      status: outletData?.status || '',
+      remarks: Array.isArray(outletData?.remarks) ? outletData?.remarks.join(', ') : outletData?.remarks || '',
+    });
 
-  const handleRemoveRemark = (index: any) => {
-    const updatedRemarks = [...remarks];
-    updatedRemarks.splice(index, 1);
-    setRemarks(updatedRemarks);
-  };
-  const handleApproval = async (statusValue?: any, event?: any) => {
+  }, [modal, outletRefetch]);
+
+
+  const onSubmit = async (values: any) => {
     try {
-      if (event) {
-        event.preventDefault();
-      }
-
-      let mutation, inputKey, id;
-
-      switch (options) {
-        case "businessOutlet":
-          mutation = VendorOutletStatusUpdation;
-          inputKey = "businessOutlet";
-          id = IdBusiness;
-          break;
-
-        default:
-          return;
-      }
-
       const variables: any = {
         input: {
-          remarks: remarks ? remarks : [],
-          status: statusValue.toString(),
-          _id: id,
+          _id: IdBusiness,
+          outletName: values?.outletName || '',
+          country: values?.country || '',
+          district: values?.district || '',
+          village: values?.village || '',
+          address: values?.address || '',
+          contactPersonName: values?.contactPersonName || '',
+          contactPersonNumber: values?.contactPersonNumber || '',
+          contactPersonDesignation: values?.contactPersonDesignation || '',
+          status: values?.status || '',
+          remarks: Array.isArray(values?.remarks) ? values.remarks : (values?.remarks ? values.remarks.split(',').map((item: any) => item.trim()) : []),
         },
+
       };
 
-      const response = await mutation({ variables });
+      const response = await UpdateVendorOutletByAdmin({ variables });
 
       if (response) {
-        setRemarks([""]);
-        setOptions("");
-        setShowRejectModal(false);
-        toast.success("Successfully updated Kyc Status");
+        toast.success("Successfully updated Company Details");
         outletRefetch();
+        setModal(false)
       }
     } catch (error: any) {
-      console.log(error.message);
+      console.log(error)
+      toast.error(error.message)
     }
   };
 
-  const handleRejection = (clickedData: string) => {
-    setShowRejectModal(true);
-    setOptions(clickedData);
-  };
+
 
 
 
@@ -339,7 +237,7 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
     try {
       const signedUrl = await fetchSignedUrl(getSignedUrlMutation, fileURL, mimeType);
       if (signedUrl) {
-        window.open(signedUrl)
+        window.open(signedUrl, "_blank")
       } else {
         console.error('Failed to get signed URL.');
       }
@@ -357,67 +255,66 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
         }}>
           <CardBody>
             <CardText>
+
+              <Row>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                  <CustomButton name="Edit Business" icon="ic:baseline-edit" onClick={toggle} />
+                </div>
+              </Row>
               <Row>
                 <Col md={6}>
                   <div>
-                    <p className="mt-5">
+                    <p className="mt-3">
                       <strong>Business Name :</strong> {outletData?.outletName || " nill"}
                     </p>
-                    <p className="mt-5">
+                    <p className="mt-3">
                       <strong>Address : </strong>
                       {outletData?.address || " nill"}
                     </p>
+                    <p className="mt-3">
+                      <strong>Country :</strong> {outletData?.country || " nill"}
+                    </p>
+                    <p className="mt-3">
+                      <strong>District :</strong> {outletData?.district || " nill"}
+                    </p>
+                    <p className="mt-3">
+                      <strong>Village :</strong> {outletData?.village || " nill"}
+                    </p>
+
                   </div>
-
-
-                  <p className="mt-5">
+                  <p className="mt-3">
                     <div className="truncate-text">
-                      {outletData?.exteriorImage && (
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <span
+                      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                        {outletData?.exteriorImage && (
+                          <CustomButton
+                            name="Exterior Image"
+                            icon="mingcute:upload-line"
                             onClick={() =>
                               handleImageClick(
-                                outletData?.exteriorImage?.fileURL, outletData?.exteriorImage?.mimeType
+                                outletData?.exteriorImage?.fileURL,
+                                outletData?.exteriorImage?.mimeType
                               )
                             }
-                            style={{
-                              cursor: "pointer",
-                              border: "1px solid #ccc",
-                              padding: "8px",
-                              borderRadius: "5px",
-                              transition: "background-color 0.3s",
-                              marginRight: "10px", // Adjust spacing between the spans
-                            }}
-                          >
-                            Exterior Image
-                            <i className="fas fa-external-link-alt"></i>
-                          </span>
-
-                          <span
+                          />
+                        )}
+                        {outletData?.interiorImage && (
+                          <CustomButton
+                            name="Interior Image"
+                            icon="mingcute:upload-line"
                             onClick={() =>
                               handleImageClick(
-                                outletData?.exteriorImage?.fileURL, outletData?.exteriorImage?.mimeType
+                                outletData?.interiorImage?.fileURL,
+                                outletData?.interiorImage?.mimeType
                               )
                             }
-                            style={{
-                              cursor: "pointer",
-                              border: "1px solid #ccc",
-                              padding: "8px",
-                              borderRadius: "5px",
-                              transition: "background-color 0.3s",
-                            }}
-                          >
-                            Interior Image
-                            <i className="fas fa-external-link-alt"></i>
-                          </span>
-                        </div>
-                      )}
+                          />
+                        )}
+                      </div>
                     </div>
                   </p>
                 </Col>
-
                 <Col md={6}>
-                  <p className="mt-5">
+                  <p className="mt-3">
                     <strong>Status:</strong>
                     <span
                       style={{
@@ -434,138 +331,224 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
                     </span>
                   </p>
 
-                  <p className="mt-5">
+                  <p className="mt-3">
+                    <strong>Contact Person Name :</strong> {outletData?.contactPersonName || " nill"}
+                  </p>
+                  <p className="mt-3">
+                    <strong>Contact Person Number :</strong> {outletData?.contactPersonNumber || " nill"}
+                  </p>
+                  <p className="mt-3">
+                    <strong>Contact Person Designation :</strong> {outletData?.contactPersonDesignation || " nill"}
+                  </p>
+                  <p className="mt-3">
                     {outletData && (
                       <CardText>
                         <strong>Remarks:</strong>
                         <ul>
-                          {outletData?.remarks.map(
-                            (remark: any, index: any) => (
-                              <li key={index}>{remark}</li>
-                            )
-                          )}
+                          {outletData?.remarks.map((remark: any, index: any) => (
+                            <li key={index}>{remark}</li>
+                          ))}
                         </ul>
                       </CardText>
                     )}
                   </p>
+
                 </Col>
               </Row>
 
 
             </CardText>
-            {!(outletData?.status === "COMPLETED") ? (
-              <>
-                <Button
-                  color="primary"
-                  onClick={() => {
-                    handleApproval("COMPLETED");
-                    setOptions("businessOutlet");
-                  }}
-                >
-                  Approve
-                </Button>
-                <Button
-                  onClick={() => handleRejection("businessOutlet")}
-                  style={{ marginLeft: "10px" }}
-                >
-                  Reject
-                </Button>
-              </>
-            ) : null}
           </CardBody>
         </Card>
       </>
 
 
-
-      <Modal show={showImageModal} onHide={() => setShowImageModal(false)}>
-        <ModalHeader closeButton>
-          <ModalTitle>Image Popup</ModalTitle>
-        </ModalHeader>
+      <Modal isOpen={modal} toggle={toggle}>
+        <ModalHeader >Edit Outlet Details</ModalHeader>
         <ModalBody>
-          {selectedImage && (
-            <img
-              src={selectedImage}
-              alt="Popup"
-              style={{ width: "50%", height: "50%" }}
-            />
-          )}
+          <Form onSubmit={formik.handleSubmit}>
+            <FormGroup>
+              <Label >Outlet name</Label>
+              <Input
+                type="text"
+                id="name"
+                name="outletName"
+                placeholder="Please enter outlet name"
+                value={formik.values?.outletName}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.outletName && formik.errors.outletName && (
+                <div className="text-danger">{formik.errors.outletName}</div>
+              )}
+            </FormGroup>
+            <Row>
+              <Col xs={4}>
+                <FormGroup>
+                  <Label >Country</Label>
+                  <Input
+                    name="country"
+                    placeholder="Please enter country "
+                    value={formik.values?.country}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched.country && formik.errors.country && (
+                    <div className="text-danger">{formik.errors.country}</div>
+                  )}
+                </FormGroup>
+
+              </Col>
+              <Col xs={4}>
+                <FormGroup>
+                  <Label >District</Label>
+                  <Input
+                    name="district"
+                    placeholder="Please enter district "
+                    value={formik.values?.district}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched.district && formik.errors.district && (
+                    <div className="text-danger">{formik.errors.district}</div>
+                  )}
+                </FormGroup>
+
+              </Col>
+              <Col xs={4}>
+                <FormGroup>
+                  <Label >Village</Label>
+                  <Input
+                    name="village"
+                    placeholder="Please enter village "
+                    value={formik.values?.village}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched.village && formik.errors.village && (
+                    <div className="text-danger">{formik.errors.village}</div>
+                  )}
+                </FormGroup>
+
+              </Col>
+            </Row>
+
+            <FormGroup>
+              <Label >Address</Label>
+              <Input
+                name="address"
+                placeholder="Please enter address "
+                value={formik.values?.address}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.address && formik.errors.address && (
+                <div className="text-danger">{formik.errors.address}</div>
+              )}
+            </FormGroup>
+
+            <Row>
+              <Col xs={6}>
+                <FormGroup>
+                  <Label >Contact person name</Label>
+                  <Input
+                    name="contactPersonName"
+                    placeholder="Enter contact person name "
+                    value={formik.values?.contactPersonName}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched.contactPersonName && formik.errors.contactPersonName && (
+                    <div className="text-danger">{formik.errors.contactPersonName}</div>
+                  )}
+                </FormGroup>
+              </Col>
+              <Col xs={6}>
+                <FormGroup>
+                  <Label >Contact person number</Label>
+                  <Input
+                    name="contactPersonNumber"
+                    placeholder="Please enter contact person number "
+                    value={formik.values?.contactPersonNumber}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched.contactPersonNumber && formik.errors.contactPersonNumber && (
+                    <div className="text-danger">{formik.errors.contactPersonNumber}</div>
+                  )}
+                </FormGroup>
+              </Col>
+            </Row>
+            <FormGroup>
+              <Label >Contact person designation</Label>
+              <Input
+                name="contactPersonDesignation"
+                placeholder="Please enter contact person designation "
+                value={formik.values?.contactPersonDesignation}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.contactPersonDesignation && formik.errors.contactPersonDesignation && (
+                <div className="text-danger">{formik.errors.contactPersonDesignation}</div>
+              )}
+            </FormGroup>
+
+            <FormGroup>
+              <Label >Status</Label>
+              <Input
+                type="select"
+                name="status"
+                placeholder="Select status"
+                value={formik.values?.status}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              >
+                <option value="" disabled>Select  status</option>
+                <option value="PENDING">Pending</option>
+                <option value="UNDER_VERIFICATION">Under Verification</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="REJECTED">Rejected</option>
+              </Input>
+              {formik.touched.status && formik.errors.status && (
+                <div className="text-danger">{formik.errors.status}</div>
+              )}
+            </FormGroup>
+
+
+            <FormGroup>
+              <Label >remarks</Label>
+              <Input
+                name="remarks"
+                placeholder="Please enter remarks  (separate with commas)"
+                value={formik.values?.remarks}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.remarks && formik.errors.remarks && (
+                <div className="text-danger">{formik.errors.remarks}</div>
+              )}
+            </FormGroup>
+
+
+
+            <ModalFooter style={{ marginTop: "20px" }}>
+              <Button color="primary" type="submit">
+                Submit
+              </Button>
+              <Button
+                color="secondary"
+                onClick={toggle}
+              >
+                Cancel
+              </Button>
+            </ModalFooter>
+
+          </Form>
         </ModalBody>
-        <ModalFooter>
-          <Button variant="secondary" onClick={() => setShowImageModal(false)}>
-            Close
-          </Button>
-        </ModalFooter>
+
       </Modal>
 
-      <Modal show={showRejectModal} onHide={() => setShowRejectModal(false)}>
-        <ModalHeader>Add Remark</ModalHeader>
-        <Form>
-          <ModalBody>
-            <Label
-              for="remark"
-              style={{
-                marginBottom: "10px",
-                display: "block",
-                fontWeight: "bold",
-              }}
-            >
-              Remarks:
-            </Label>
-            {remarks.map((remark: any, index: any) => (
-              <FormGroup key={index} style={{ marginBottom: "10px" }}>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <Input
-                    type="text"
-                    id={`remark-${index}`}
-                    name={`remark-${index}`}
-                    value={remark}
-                    onChange={(e) => {
-                      const updatedRemarks = [...remarks];
-                      updatedRemarks[index] = e.target.value;
-                      setRemarks(updatedRemarks);
-                    }}
-                    required
-                    style={{ marginRight: "10px" }}
-                  />
-                  {index === remarks.length - 1 && (
-                    <Button color="primary" onClick={handleAddRemark}>
-                      + {/* Plus icon */}
-                    </Button>
-                  )}{" "}
-                  {index !== 0 && (
-                    <Button
-                      style={{ marginLeft: "5px", marginRight: "5px" }}
-                      color="danger"
-                      onClick={() => handleRemoveRemark(index)}
-                    >
-                      - {/* Minus icon */}
-                    </Button>
-                  )}
-                </div>
-              </FormGroup>
-            ))}
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              color="primary"
-              type="submit"
-              onClick={(event) => handleApproval("REJECTED", event)}
-            >
-              Submit
-            </Button>{" "}
-            <Button
-              color="secondary"
-              onClick={() => {
-                setShowRejectModal(false);
-                setRemarks([""]);
-              }}
-            >
-              Cancel
-            </Button>
-          </ModalFooter>
-        </Form>
-      </Modal>
+
     </div >
   );
 }

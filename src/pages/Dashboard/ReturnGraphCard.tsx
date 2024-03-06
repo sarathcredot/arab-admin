@@ -10,7 +10,7 @@ import { formatCurrency } from 'src/utils/formatCurrency'; interface OrdersPie {
 }
 
 
-const ReturnGraphCard = () => {
+const ReturnGraphCard = ({ vendorId }: any) => {
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -84,6 +84,7 @@ query GetDashboardReturnedOrdersPieChartData($input: GetDashboardReturnedOrdersP
       input: {
         "startDate": startDate,
         "endDate": endDate,
+        vendorId: vendorId ? vendorId : ""
       }
     }
   }

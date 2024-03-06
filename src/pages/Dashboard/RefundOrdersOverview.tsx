@@ -3,16 +3,16 @@ import { Col, Row } from 'reactstrap';
 import RefundGraphCard from './RefundGraphCard';
 import RefundTransactions from './RefundTransactions';
 
-function RefundOrdersOverview() {
+function RefundOrdersOverview({ vendorId }: any) {
 
     return (
         <>
             <Row>
                 <Col xs={12} sm={12} xl={6}>
-                    <RefundTransactions />
+                    <RefundTransactions vendorId={vendorId} />
                 </Col>
                 <Col xs={12} sm={12} xl={6}>
-                    <RefundGraphCard />
+                    <RefundGraphCard vendorId={vendorId} />
                 </Col>
 
 

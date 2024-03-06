@@ -161,7 +161,7 @@ function ViewCardCompany({ IdCompany }: IPropes) {
           companyType: values?.companyType || '',
           crNumber: values?.crNumber || '',
           status: values?.status || "",
-          remarks: Array.isArray(values?.remarks) ? values.remarks : [values?.remarks],
+          remarks: Array.isArray(values?.remarks) ? values.remarks : (values?.remarks ? values.remarks.split(',').map((item: any) => item.trim()) : []),
         },
       };
 
@@ -245,17 +245,28 @@ function ViewCardCompany({ IdCompany }: IPropes) {
                 </div>
 
                 <div className="truncate-text mt-4">
-                  {companyData?.cooCertificate && (
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                    {companyData?.cooCertificate && (
                       <CustomButton
-                        name="cooCertificate"
+                        name="COO Certificate"
                         icon="mingcute:upload-line"
                         onClick={() =>
                           handleImageClick(companyData?.cooCertificate?.fileURL, companyData?.cooCertificate.mimeType)
                         }
                       />
-                    </div>
-                  )}
+                    )}
+                    {companyData?.crLicense && (
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <CustomButton
+                          name="CR License"
+                          icon="mingcute:upload-line"
+                          onClick={() =>
+                            handleImageClick(companyData?.crLicense?.fileURL, companyData?.crLicense.mimeType)
+                          }
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </Col>
 

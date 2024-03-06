@@ -9,7 +9,7 @@ import { formatCurrency } from 'src/utils/formatCurrency'; interface OrdersPie {
 }
 
 
-const ShippingChargeGraphCard = () => {
+const ShippingChargeGraphCard = ({ vendorId }: any) => {
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -81,6 +81,7 @@ query GetDashboardShippingChargePieChartData($input: GetDashboardShippingChargeP
       input: {
         "startDate": startDate,
         "endDate": endDate,
+        vendorId: vendorId ? vendorId : "",
       }
     }
   }
