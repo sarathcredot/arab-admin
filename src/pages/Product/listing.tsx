@@ -246,8 +246,8 @@ const ProductListing = () => {
                               size="sm"
                               tag={Link}
                               to={{
-                                pathname: "/product/variant/",
-                                search: `?_id=${product?._id}`,
+                                pathname: "/product/variant",
+                                search: `?productCode=${product?.productCode}`,
                               }}
                             >
                               View

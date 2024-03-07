@@ -431,7 +431,7 @@ query GetUserRecordByAdmin($input: userInput!) {
                           <p className="mb-0"> {data?.displayName && capitalCase(data?.displayName) || "nill"}</p>
                           <p className="mb-0"> {data?._id || "nill"}</p>
                           <p className="mb-0"> {data?.email || "nill"}</p>
-                          <p className="mb-0"> {data?.mobileNumber || "nill"}</p>
+                          <p className="mb-0">  {` +968 ${data?.mobileNumber}` || "nill"}</p>
                         </div>
 
                       </div>

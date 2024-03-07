@@ -85,8 +85,8 @@ const CategoryList: React.FC<Props> = () => {
 
 
   const GET_ASSIGNED_CATEGORY = gql`
-  query Records($input: vendorIdInput!) {
-  getAllCategoriesOfVendor(input: $input) {
+query GetAllCategoriesOfVendorByAdmin($input: vendorIdInput!) {
+  getAllCategoriesOfVendorByAdmin(input: $input) {
     records {
       categoryName
       _id
@@ -137,7 +137,7 @@ const CategoryList: React.FC<Props> = () => {
 
   useEffect(() => {
     if (assignCategoryDataResponse) {
-      setAssignedCategryData(assignCategoryDataResponse?.getAllCategoriesOfVendor?.records || [])
+      setAssignedCategryData(assignCategoryDataResponse?.getAllCategoriesOfVendorByAdmin?.records || [])
     }
   }, [assignCategoryDataResponse]);
 
@@ -257,7 +257,7 @@ const CategoryList: React.FC<Props> = () => {
           <Table id="tech-companies-1" className="table table-striped table-bordered">
             <thead>
               <tr>
-                <th>No</th>
+                <th>Sl.No</th>
                 <th>Name</th>
                 <th>Category full Name</th>
 
@@ -267,7 +267,7 @@ const CategoryList: React.FC<Props> = () => {
             <tbody>
               {assignedCategryData?.map((category, index) => (
                 <tr key={category._id}>
-                  <td> {currentPage + index + 1}</td>
+                  <td> {index + 1}</td>
                   <td>{category.categoryName}</td>
                   <td>{category.fullCategoryName}</td>
 

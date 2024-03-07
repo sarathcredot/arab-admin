@@ -238,7 +238,7 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
   };
 
 
-
+  console.log(formik.values)
 
 
   function getStatusColor(status: any) {
@@ -581,7 +581,7 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
                     onChange={(event) => {
                       formik.setFieldValue(
                         "exteriorImage",
-                        event.currentTarget.files?.[0] || []
+                        event.currentTarget.files?.[0]
                       );
                     }}
                   />
@@ -600,7 +600,7 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
                     onChange={(event) => {
                       formik.setFieldValue(
                         "interiorImage",
-                        event.currentTarget.files?.[0] || []
+                        event.currentTarget.files?.[0]
                       );
                     }}
                   />
@@ -619,7 +619,7 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
                     onChange={(event) => {
                       formik.setFieldValue(
                         "outletLicense",
-                        event.currentTarget.files?.[0] || []
+                        event.currentTarget.files?.[0]
                       );
                     }}
                   />

@@ -12,7 +12,6 @@ const GET_VARIANTS = gql`
 query GetVariantsTableByAdmin($input: ProductVariantsByAdminFilter!) {
   getVariantsTableByAdmin(input: $input) {
     maxRecords
-    message
     records {
       _id
       productName
@@ -33,6 +32,7 @@ query GetVariantsTableByAdmin($input: ProductVariantsByAdminFilter!) {
       status
       isBlocked
     }
+    message
   }
 }
 
@@ -79,19 +79,12 @@ const VariantListing = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [params] = useSearchParams();
-  const _id = params.get("_id");
+  const productCode = params.get("productCode");
 
   const { data, refetch } = useQuery(GET_VARIANTS, {
     variables: {
       input: {
-        page: currentPage,
-        size: pageSize,
-        _id: _id
-
-        // parentCategory: searchTerm,
-        // categories:[searchTerm],
-        // color: [searchTerm],
-        // productSize:[searchTerm]
+        productCode: Number(productCode),
       },
     },
   });
@@ -108,10 +101,7 @@ const VariantListing = () => {
       setLoading(true);
       const result = await refetch({
         input: {
-          page: currentPage,
-          size: pageSize,
-          // query: searchTerm,
-          _id: _id,
+          productCode: Number(productCode),
         },
       });
       setProducts(result.data.getVariantsTableByAdmin.records);

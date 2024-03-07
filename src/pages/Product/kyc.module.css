@@ -1,0 +1,32 @@
+.inputfield{
+    /* height: 50px; */
+    border: 1px solid #CDCDCD !important;
+    background-color: white!important;
+    border-radius: 0 !important;
+}
+.edit{
+   width: 100%;
+   display: flex;
+   justify-content: end;
+}
+.circle{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #e9e9e9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.labeldiv{
+    width: 18%;
+}
+.status{
+    padding: 10px;
+    background-color: #f7f4f4;
+    font-weight: 600;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.errmsg{
+    color: red;
+}

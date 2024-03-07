@@ -367,6 +367,7 @@ const ProductDetails = () => {
   // };
 
   const [edit, setEdit] = useState(false);
+
   const handleEditProduct = () => {
     setEditedProduct(product);
     setEdit(true);
@@ -395,14 +396,13 @@ const ProductDetails = () => {
   const items = [
     { text: "Dashboard", link: `/` },
     { text: "Products", link: `/product` },
-    { text: "Variants", link: `/product/variant?_id=${_id}` },
+    { text: "Variants", link: `/product/variant?productCode=${product?.productCode}` },
   ];
 
   return (
     <React.Fragment>
       {edit ? (
-        // <AddProduct Edit={true} editedProduct={editedProduct} />
-        <>""</>
+        <AddProduct Edit={true} editedProduct={editedProduct} />
       ) : (
         <div className="page-content">
           <Container fluid={true}>
@@ -440,7 +440,7 @@ const ProductDetails = () => {
                 Edit Product
               </button>
             </div> */}
-            {/* <div className="d-flex justify-content-end mb-3">
+            <div className="d-flex justify-content-end mb-3">
               <button
                 onClick={handleEditProduct}
                 style={{
@@ -453,7 +453,7 @@ const ProductDetails = () => {
               >
                 Edit Product
               </button>
-            </div> */}
+            </div>
             <Row>
               <Col lg={12}>
                 <Card>

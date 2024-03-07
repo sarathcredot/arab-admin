@@ -229,7 +229,7 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
           <Table id="tech-companies-1" className="table table-striped table-bordered">
             <thead>
               <tr>
-                <th>No</th>
+                <th>Sl.No</th>
                 <th>Brand Name</th>
                 <th>Logo</th>
                 <th>Status</th>
@@ -245,7 +245,7 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
                 )
                 .map((brand, index) => (
                   <tr key={brand._id}>
-                    <td>{index + 1}</td>
+                    <td>{currentPage * pageSize + index + 1}</td>
                     <td>{brand.brandName}</td>
 
                     <td>
