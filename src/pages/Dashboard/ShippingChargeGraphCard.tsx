@@ -81,7 +81,7 @@ query GetDashboardShippingChargePieChartData($input: GetDashboardShippingChargeP
       input: {
         "startDate": startDate,
         "endDate": endDate,
-        vendorId: vendorId ? vendorId : "",
+        ...(vendorId && { vendorId })
       }
     }
   }

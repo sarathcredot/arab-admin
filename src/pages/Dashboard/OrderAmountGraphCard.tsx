@@ -81,7 +81,7 @@ query GetDashboardOrdersAmountPieChartData($input: GetDashboardOrdersAmountPieCh
       input: {
         "startDate": startDate,
         "endDate": endDate,
-        vendorId: vendorId ? vendorId : null,
+        ...(vendorId && { vendorId })
       }
     }
   }

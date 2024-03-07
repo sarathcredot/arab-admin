@@ -27,13 +27,13 @@ import { gql, useQuery } from "@apollo/client";
 import { addInvoice } from "src/helpers/fakebackend_helper";
 
 
-interface profilePic{
-  fileURL:string
- }
-interface AdminData{
-  email:string;
-  fullName:string;
-  profilePic:profilePic
+interface profilePic {
+  fileURL: string
+}
+interface AdminData {
+  email: string;
+  fullName: string;
+  profilePic: profilePic
 }
 
 const ProfileMenu = (props: any) => {
@@ -43,21 +43,21 @@ const ProfileMenu = (props: any) => {
 
   const profiledata = createSelector(
 
-    (state : any) => state.profile,
+    (state: any) => state.profile,
     (state) => ({
       success: state.success,
     })
   );
-// Inside your component
-const { success} = useSelector(profiledata);
+  // Inside your component
+  const { success } = useSelector(profiledata);
 
   // Declare a new state variable, which we'll call "menu"
   const [menu, setMenu] = useState<boolean>(false);
-  const [data,setData] = useState<AdminData>()
+  const [data, setData] = useState<AdminData>()
 
   const [username, setusername] = useState("Admin");
   const [logoutModal, setLogoutModal] = useState(false);
-  const navigate=useNavigate()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const getAuthUser = localStorage.getItem("authUser");
@@ -76,40 +76,47 @@ const { success} = useSelector(profiledata);
   }, [success]);
 
   const toggleLogoutModal = () => setLogoutModal(!logoutModal);
-  const handleLogout= async () => {
+  const handleLogout = async () => {
 
     localStorage.removeItem("admin_token")
     navigate("/login")
-  
+
   }
 
-  const GET_ADMIN=gql`
-  query Record {
-    getAdminRecord {
-      record {
-        email
-        fullName
-        profilePic {
-          fileURL
-        }
+  const GET_ADMIN = gql`
+ query GetAdminRecord {
+  getAdminRecord {
+    record {
+      _id
+      email
+      password
+      accType
+      isBlocked
+      fullName
+      profilePic {
+        fileType
+        fileURL
+        mimeType
+        originalName
       }
     }
   }
+}
   `
 
-const {
-  loading: adminLoading,
-  error: adminError,
-  data: adminData,
-  refetch: adminRefetch,
-} = useQuery(GET_ADMIN);
-const token = localStorage.getItem("admin_token");
-const adminImage = localStorage.getItem("adminData");
-useEffect(() => {
-  if (adminData && adminData.getAdminRecord && adminData.getAdminRecord.record) {
-    setData(adminData.getAdminRecord.record);
-  }
-}, [token, adminImage,adminData]);
+  const {
+    loading: adminLoading,
+    error: adminError,
+    data: adminData,
+    refetch: adminRefetch,
+  } = useQuery(GET_ADMIN);
+  const token = localStorage.getItem("admin_token");
+  const adminImage = localStorage.getItem("adminData");
+  useEffect(() => {
+    if (adminData && adminData.getAdminRecord && adminData.getAdminRecord.record) {
+      setData(adminData.getAdminRecord.record);
+    }
+  }, [token, adminImage, adminData]);
 
 
 
@@ -125,20 +132,20 @@ useEffect(() => {
           id="page-header-user-dropdown"
           tag="button"
         >
-          {data?.profilePic?
-          (
-            <img
-            className="rounded-circle header-profile-user"
-            src={data?.profilePic?.fileURL}
-            alt="Header Avatar"
-          />
-          ):   <img
-          className="rounded-circle header-profile-user"
-          src={user1}
-          alt="Header Avatar"
-        />
-        }
-         
+          {data?.profilePic ?
+            (
+              <img
+                className="rounded-circle header-profile-user"
+                src={data?.profilePic?.fileURL}
+                alt="Header Avatar"
+              />
+            ) : <img
+              className="rounded-circle header-profile-user"
+              src={user1}
+              alt="Header Avatar"
+            />
+          }
+
           <span className="d-none d-xl-inline-block ms-1 fw-medium">{data?.fullName}</span>
           <i className="mdi mdi-chevron-down d-none d-xl-inline-block" />
         </DropdownToggle>
@@ -165,7 +172,7 @@ useEffect(() => {
             <i className="bx bx-power-off font-size-16 align-middle me-1 text-danger" />
             <span>{props.t("Logout")}</span>
           </Link>
-          
+
         </DropdownMenu>
       </Dropdown>
 
@@ -175,10 +182,10 @@ useEffect(() => {
           Are you sure you want to logout?
         </ModalBody>
         <ModalFooter>
-          <Button style={{backgroundColor:"rgba(0, 0, 0, 1)"}} onClick={toggleLogoutModal}>
+          <Button style={{ backgroundColor: "rgba(0, 0, 0, 1)" }} onClick={toggleLogoutModal}>
             Cancel
           </Button>
-          <Button  style={{backgroundColor:"rgba(177, 35, 73, 1)"}}  onClick={handleLogout}>
+          <Button style={{ backgroundColor: "rgba(177, 35, 73, 1)" }} onClick={handleLogout}>
             Logout
           </Button>
         </ModalFooter>

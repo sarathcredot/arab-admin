@@ -214,7 +214,7 @@ function OrdersOverview({ vendorId }: any) {
     const { data: ordersCountsData, refetch: usersCountRefetch } = useQuery(GET_ORDER_COUNTS, {
         variables: {
             input: {
-                vendorId: vendorId ? vendorId : null
+                ...(vendorId && { vendorId })
             }
         }
     })
@@ -240,7 +240,7 @@ function OrdersOverview({ vendorId }: any) {
                 "startDate": startDate,
                 "endDate": endDate,
                 "graphType": selectedType,
-                vendorId: vendorId ? vendorId : ""
+                ...(vendorId && { vendorId })
             }
         }
     })
@@ -267,7 +267,7 @@ query GetDashboardOrdersPieChartData($input: GetDashboardOrdersPieChartDataInput
             input: {
                 "startDate": pieStartDate,
                 "endDate": pieEndDate,
-                vendorId: vendorId ? vendorId : ""
+                ...(vendorId && { vendorId })
             }
         }
     }

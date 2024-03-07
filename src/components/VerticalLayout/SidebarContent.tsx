@@ -235,7 +235,8 @@ const SidebarContent = (props: any) => {
                 </div>
               </Link>
               {openMenus.includes("/category") && (
-                <ul className={`sub-menu ${openMenus.includes("/category") ? "mm-show" : ""}`}>
+                <ul className={`sub-menu ${openMenus.includes("/category") ? "mm-show" : ""}`}
+                >
                   <li>
                     <Link to="/category">
                       <FeatherIcon icon="chevron-right" />{" "}

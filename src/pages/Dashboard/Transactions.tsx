@@ -37,7 +37,7 @@ query GetDashboardReturnedOrderSummary($input: GetDashboardReturnedOrderSummaryI
   const { data: orderSummaryData, refetch: orderSummaryRefetch } = useQuery(GET_ORDERS_SUMMARY, {
     variables: {
       input: {
-        vendorId: vendorId ? vendorId : ""
+        ...(vendorId && { vendorId })
       }
     }
   });

@@ -80,7 +80,7 @@ query GetDashboardRefundOrdersPieChartData($input: GetDashboardRefundOrdersPieCh
       input: {
         "startDate": startDate,
         "endDate": endDate,
-        vendorId: vendorId ? vendorId : ""
+        ...(vendorId && { vendorId })
       }
     }
   }
