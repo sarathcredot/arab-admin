@@ -15,6 +15,7 @@ import {
   Table,
 } from "reactstrap";
 import Breadcrumb from "src/components/Common/Breadcrumb";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 interface IStatus {
   status: boolean;
 }
@@ -195,9 +196,10 @@ function OutletListing() {
                             >
                               {outlet.isKycCompleted ? "COMPLETED" : "PENDING"}
                             </td>
-                            <td>{outlet.status}</td>
+                            <td> 
+                               <StatusIndicator status={outlet?.status} /></td>
                             <td>
-                              <Link to={`/vendors/view?id=${outlet.vendorId}`}>
+                              <Link to={`/vendors/view?id=${outlet.vendorId}&&tab=businessoutlet`}>
                                 <Button size="sm" color="primary">
                                   View
                                 </Button>

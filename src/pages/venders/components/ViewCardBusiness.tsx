@@ -17,12 +17,11 @@ import {
   ModalFooter,
   ModalHeader,
   Row,
-  Form
+  Form,
 } from "reactstrap";
 import CustomButton from "src/components/Common/CustomButton";
 import { fetchSignedUrl, useFetchSignedUrl } from "src/utils/fetchSignedUrl";
 import { vendorBusinessOutletValidation } from "src/validation/validation";
-
 
 interface IOutletRecord {
   _id: string;
@@ -67,56 +66,63 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
 
   const toggle = () => setModal(!modal);
 
-
   const PUT_KYC_APPROVE_BUSINESS_DETAILS = gql`
-mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $outletLicense: Upload, $interiorImage: Upload, $exteriorImage: Upload) {
-  updateVendorOutletByAdmin(input: $input, outletLicense: $outletLicense, interiorImage: $interiorImage, exteriorImage: $exteriorImage) {
-    message
-  }
-}
+    mutation UpdateVendorOutletByAdmin(
+      $input: UpdateVendorOutletByAdminInput!
+      $outletLicense: Upload
+      $interiorImage: Upload
+      $exteriorImage: Upload
+    ) {
+      updateVendorOutletByAdmin(
+        input: $input
+        outletLicense: $outletLicense
+        interiorImage: $interiorImage
+        exteriorImage: $exteriorImage
+      ) {
+        message
+      }
+    }
   `;
 
   const GET_BUSINESS_OUTLET = gql`
-   query GetVendorOutletRecordByAdmin($input: VendorOutletRecordByAdminInput!) {
-  getVendorOutletRecordByAdmin(input: $input) {
-    record {
-      _id
-      vendorId
-      outletName
-      country
-      district
-      village
-      address
-      contactPersonName
-      contactPersonNumber
-      contactPersonDesignation
-      status
-      remarks
-      outletLicense {
-        fileType
-        fileURL
-        mimeType
-        originalName
-      }
-      interiorImage {
-        fileType
-        fileURL
-        mimeType
-        originalName
-      }
-      exteriorImage {
-        fileType
-        fileURL
-        mimeType
-        originalName
+    query GetVendorOutletRecordByAdmin($input: VendorOutletRecordByAdminInput!) {
+      getVendorOutletRecordByAdmin(input: $input) {
+        record {
+          _id
+          vendorId
+          outletName
+          country
+          district
+          village
+          address
+          contactPersonName
+          contactPersonNumber
+          contactPersonDesignation
+          status
+          remarks
+          outletLicense {
+            fileType
+            fileURL
+            mimeType
+            originalName
+          }
+          interiorImage {
+            fileType
+            fileURL
+            mimeType
+            originalName
+          }
+          exteriorImage {
+            fileType
+            fileURL
+            mimeType
+            originalName
+          }
+        }
+        message
       }
     }
-    message
-  }
-}
   `;
-
-
 
   const {
     loading: outletLoding,
@@ -136,13 +142,9 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
     if (outletDataResponse?.getVendorOutletRecordByAdmin) {
       setOutletData(outletDataResponse.getVendorOutletRecordByAdmin.record);
     }
-  }, [outletDataResponse, IdBusiness])
+  }, [outletDataResponse, IdBusiness]);
 
-
-  const [UpdateVendorOutletByAdmin] = useMutation(
-    PUT_KYC_APPROVE_BUSINESS_DETAILS
-  );
-
+  const [UpdateVendorOutletByAdmin] = useMutation(PUT_KYC_APPROVE_BUSINESS_DETAILS);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -157,9 +159,9 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
       contactPersonDesignation: "",
       status: "",
       remarks: "",
-      exteriorImage: '',
-      interiorImage: '',
-      outletLicense: '',
+      exteriorImage: "",
+      interiorImage: "",
+      outletLicense: "",
     },
     validationSchema: vendorBusinessOutletValidation,
     onSubmit: async (values) => {
@@ -169,59 +171,63 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
 
   useEffect(() => {
     formik.setValues({
-      outletName: outletData?.outletName || '',
-      country: outletData?.country || '',
-      district: outletData?.district || '',
-      village: outletData?.village || '',
-      address: outletData?.address || '',
-      contactPersonName: outletData?.contactPersonName || '',
-      contactPersonNumber: outletData?.contactPersonNumber || '',
-      contactPersonDesignation: outletData?.contactPersonDesignation || '',
-      interiorImage: outletData?.interiorImage?.fileURL || "",
-      exteriorImage: outletData?.exteriorImage?.fileURL || "",
-      outletLicense: outletData?.outletLicense?.fileURL || "",
-      status: outletData?.status || '',
-      remarks: Array.isArray(outletData?.remarks) ? outletData?.remarks.join(', ') : outletData?.remarks || '',
+      outletName: outletData?.outletName || "",
+      country: outletData?.country || "",
+      district: outletData?.district || "",
+      village: outletData?.village || "",
+      address: outletData?.address || "",
+      contactPersonName: outletData?.contactPersonName || "",
+      contactPersonNumber: outletData?.contactPersonNumber || "",
+      contactPersonDesignation: outletData?.contactPersonDesignation || "",
+      interiorImage: "",
+      exteriorImage: "",
+      outletLicense: "",
+      status: outletData?.status || "",
+      remarks: Array.isArray(outletData?.remarks)
+        ? outletData?.remarks.join(", ")
+        : outletData?.remarks || "",
     });
-
   }, [modal, outletRefetch]);
-
 
   const onSubmit = async (values: any) => {
     try {
       let variables: any = {
         input: {
           _id: IdBusiness,
-          outletName: values?.outletName || '',
-          country: values?.country || '',
-          district: values?.district || '',
-          village: values?.village || '',
-          address: values?.address || '',
-          contactPersonName: values?.contactPersonName || '',
-          contactPersonNumber: values?.contactPersonNumber || '',
-          contactPersonDesignation: values?.contactPersonDesignation || '',
-          status: values?.status || '',
-          remarks: Array.isArray(values?.remarks) ? values.remarks : (values?.remarks ? values.remarks.split(',').map((item: any) => item.trim()) : []),
+          outletName: values?.outletName || "",
+          country: values?.country || "",
+          district: values?.district || "",
+          village: values?.village || "",
+          address: values?.address || "",
+          contactPersonName: values?.contactPersonName || "",
+          contactPersonNumber: values?.contactPersonNumber || "",
+          contactPersonDesignation: values?.contactPersonDesignation || "",
+          status: values?.status || "",
+          remarks: Array.isArray(values?.remarks)
+            ? values.remarks
+            : values?.remarks
+            ? values.remarks.split(",").map((item: any) => item.trim())
+            : [],
         },
       };
 
       if (values.outletLicense) {
         variables = {
           ...variables,
-          outletLicense: values.outletLicense
-        }
+          outletLicense: values.outletLicense,
+        };
       }
       if (values.exteriorImage) {
         variables = {
           ...variables,
-          exteriorImage: values.exteriorImage
-        }
+          exteriorImage: values.exteriorImage,
+        };
       }
       if (values.interiorImage) {
         variables = {
           ...variables,
-          interiorImage: values.interiorImage
-        }
+          interiorImage: values.interiorImage,
+        };
       }
 
       const response = await UpdateVendorOutletByAdmin({ variables });
@@ -229,17 +235,15 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
       if (response) {
         toast.success("Successfully updated Company Details");
         outletRefetch();
-        setModal(false)
+        setModal(false);
       }
     } catch (error: any) {
-      console.log(error)
-      toast.error(error.message)
+      console.log(error);
+      toast.error(error.message);
     }
   };
 
-
-  console.log(formik.values)
-
+  console.log(formik.values);
 
   function getStatusColor(status: any) {
     switch (status) {
@@ -254,32 +258,32 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
     }
   }
 
-
   const getSignedUrlMutation = useFetchSignedUrl();
 
   const handleImageClick = async (fileURL: string, mimeType: string) => {
     try {
       const signedUrl = await fetchSignedUrl(getSignedUrlMutation, fileURL, mimeType);
       if (signedUrl) {
-        window.open(signedUrl, "_blank")
+        window.open(signedUrl, "_blank");
       } else {
-        console.error('Failed to get signed URL.');
+        console.error("Failed to get signed URL.");
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
 
   return (
     <div>
       <>
-        <Card style={{
-          boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-          marginTop: "20px",
-        }}>
+        <Card
+          style={{
+            boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+            marginTop: "20px",
+          }}
+        >
           <CardBody>
             <CardText>
-
               <Row>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
                   <CustomButton name="Edit Business" icon="ic:baseline-edit" onClick={toggle} />
@@ -304,7 +308,6 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
                     <p className="mt-3">
                       <strong>Village :</strong> {outletData?.village || " nill"}
                     </p>
-
                   </div>
                   <p className="mt-3">
                     <div className="truncate-text">
@@ -360,7 +363,7 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
                         border: `2px solid ${getStatusColor(outletData?.status)}`,
                         color: getStatusColor(outletData?.status),
                         marginLeft: "10px",
-                        fontSize: "13px"
+                        fontSize: "13px",
                       }}
                     >
                       {outletData?.status?.replace("_", " ")}
@@ -368,13 +371,16 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
                   </p>
 
                   <p className="mt-3">
-                    <strong>Contact Person Name :</strong> {outletData?.contactPersonName || " nill"}
+                    <strong>Contact Person Name :</strong>{" "}
+                    {outletData?.contactPersonName || " nill"}
                   </p>
                   <p className="mt-3">
-                    <strong>Contact Person Number :</strong> {outletData?.contactPersonNumber || " nill"}
+                    <strong>Contact Person Number :</strong>{" "}
+                    {outletData?.contactPersonNumber || " nill"}
                   </p>
                   <p className="mt-3">
-                    <strong>Contact Person Designation :</strong> {outletData?.contactPersonDesignation || " nill"}
+                    <strong>Contact Person Designation :</strong>{" "}
+                    {outletData?.contactPersonDesignation || " nill"}
                   </p>
                   <p className="mt-3">
                     {outletData && (
@@ -388,23 +394,19 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
                       </CardText>
                     )}
                   </p>
-
                 </Col>
               </Row>
-
-
             </CardText>
           </CardBody>
         </Card>
       </>
 
-
       <Modal isOpen={modal} toggle={toggle} style={{ minWidth: "700px" }}>
-        <ModalHeader >Edit Outlet Details</ModalHeader>
+        <ModalHeader>Edit Outlet Details</ModalHeader>
         <ModalBody>
           <Form onSubmit={formik.handleSubmit}>
             <FormGroup>
-              <Label >Outlet name</Label>
+              <Label>Outlet name</Label>
               <Input
                 type="text"
                 id="name"
@@ -421,7 +423,7 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
             <Row>
               <Col xs={4}>
                 <FormGroup>
-                  <Label >Country</Label>
+                  <Label>Country</Label>
                   <Input
                     name="country"
                     placeholder="Please enter country "
@@ -433,11 +435,10 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
                     <div className="text-danger">{formik.errors.country}</div>
                   )}
                 </FormGroup>
-
               </Col>
               <Col xs={4}>
                 <FormGroup>
-                  <Label >District</Label>
+                  <Label>District</Label>
                   <Input
                     name="district"
                     placeholder="Please enter district "
@@ -449,11 +450,10 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
                     <div className="text-danger">{formik.errors.district}</div>
                   )}
                 </FormGroup>
-
               </Col>
               <Col xs={4}>
                 <FormGroup>
-                  <Label >Village</Label>
+                  <Label>Village</Label>
                   <Input
                     name="village"
                     placeholder="Please enter village "
@@ -465,12 +465,11 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
                     <div className="text-danger">{formik.errors.village}</div>
                   )}
                 </FormGroup>
-
               </Col>
             </Row>
 
             <FormGroup>
-              <Label >Address</Label>
+              <Label>Address</Label>
               <Input
                 name="address"
                 placeholder="Please enter address "
@@ -486,7 +485,7 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
             <Row>
               <Col xs={4}>
                 <FormGroup>
-                  <Label >Contact person name</Label>
+                  <Label>Contact person name</Label>
                   <Input
                     name="contactPersonName"
                     placeholder="Enter contact person name "
@@ -501,7 +500,7 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
               </Col>
               <Col xs={4}>
                 <FormGroup>
-                  <Label >Contact person number</Label>
+                  <Label>Contact person number</Label>
                   <Input
                     name="contactPersonNumber"
                     placeholder=" enter contact person number "
@@ -516,7 +515,7 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
               </Col>
               <Col xs={4}>
                 <FormGroup>
-                  <Label >Contact person designation</Label>
+                  <Label>Contact person designation</Label>
                   <Input
                     name="contactPersonDesignation"
                     placeholder=" enter person designation "
@@ -524,16 +523,16 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   />
-                  {formik.touched.contactPersonDesignation && formik.errors.contactPersonDesignation && (
-                    <div className="text-danger">{formik.errors.contactPersonDesignation}</div>
-                  )}
+                  {formik.touched.contactPersonDesignation &&
+                    formik.errors.contactPersonDesignation && (
+                      <div className="text-danger">{formik.errors.contactPersonDesignation}</div>
+                    )}
                 </FormGroup>
               </Col>
             </Row>
 
-
             <FormGroup>
-              <Label >Status</Label>
+              <Label>Status</Label>
               <Input
                 type="select"
                 name="status"
@@ -542,7 +541,9 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               >
-                <option value="" disabled>Select  status</option>
+                <option value="" disabled>
+                  Select status
+                </option>
                 <option value="PENDING">Pending</option>
                 <option value="UNDER_VERIFICATION">Under Verification</option>
                 <option value="COMPLETED">Completed</option>
@@ -553,9 +554,8 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
               )}
             </FormGroup>
 
-
             <FormGroup>
-              <Label >remarks</Label>
+              <Label>remarks</Label>
               <Input
                 name="remarks"
                 placeholder="Please enter remarks  (separate with commas)"
@@ -571,18 +571,13 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
             <Row>
               <Col xs={4}>
                 <FormGroup>
-                  <Label className="pt-2">
-                    Exterior Image
-                  </Label>
+                  <Label className="pt-2">Exterior Image</Label>
                   <Input
                     type="file"
                     accept="image/*"
                     name="exteriorImage"
                     onChange={(event) => {
-                      formik.setFieldValue(
-                        "exteriorImage",
-                        event.currentTarget.files?.[0]
-                      );
+                      formik.setFieldValue("exteriorImage", event.currentTarget.files?.[0]);
                     }}
                   />
                 </FormGroup>
@@ -598,10 +593,7 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
                     accept="image/*"
                     name="interiorImage"
                     onChange={(event) => {
-                      formik.setFieldValue(
-                        "interiorImage",
-                        event.currentTarget.files?.[0]
-                      );
+                      formik.setFieldValue("interiorImage", event.currentTarget.files?.[0]);
                     }}
                   />
                 </FormGroup>
@@ -617,38 +609,25 @@ mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $out
                     accept="image/*"
                     name="outletLicense"
                     onChange={(event) => {
-                      formik.setFieldValue(
-                        "outletLicense",
-                        event.currentTarget.files?.[0]
-                      );
+                      formik.setFieldValue("outletLicense", event.currentTarget.files?.[0]);
                     }}
                   />
                 </FormGroup>
               </Col>
             </Row>
 
-
-
-
             <ModalFooter style={{ marginTop: "20px" }}>
               <Button color="primary" type="submit">
                 Submit
               </Button>
-              <Button
-                color="secondary"
-                onClick={toggle}
-              >
+              <Button color="secondary" onClick={toggle}>
                 Cancel
               </Button>
             </ModalFooter>
-
           </Form>
         </ModalBody>
-
       </Modal>
-
-
-    </div >
+    </div>
   );
 }
 

@@ -1,5 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Card, CardBody, CardHeader, Button, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Label, FormGroup } from "reactstrap";
+import {
+  Row,
+  Col,
+  Card,
+  CardBody,
+  CardHeader,
+  Button,
+  Input,
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  Label,
+  FormGroup,
+} from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
@@ -12,47 +26,47 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
 const GET_VARIANTS = gql`
-query GetVariantsTableByAdmin($input: ProductVariantsByAdminFilter!) {
-  getVariantsTableByAdmin(input: $input) {
-    maxRecords
-    records {
-      _id
-      productName
-      images {
-        fileType
-        fileURL
-        mimeType
-        originalName
+  query GetVariantsTableByAdmin($input: ProductVariantsByAdminFilter!) {
+    getVariantsTableByAdmin(input: $input) {
+      maxRecords
+      records {
+        _id
+        productName
+        images {
+          fileType
+          fileURL
+          mimeType
+          originalName
+        }
+        attributes {
+          attributeId
+          attributeName
+          attributeValueId
+          attributeValue
+          attributeDescription
+        }
+        stock
+        status
+        isBlocked
+        categoryNamePath
+        categoryId
+        warehouseSkuId
+        skuId
+        productCode
+        brandName
       }
-      attributes {
-        attributeId
-        attributeName
-        attributeValueId
-        attributeValue
-        attributeDescription
-      }
-      stock
-      status
-      isBlocked
-      categoryNamePath
-      categoryId
-      warehouseSkuId
-      skuId
-      productCode
+      message
     }
-    message
   }
-}
-
 `;
 
 const PUT_STATUS = gql`
-mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
-  updateProductByAdmin(input: $input) {
-    _id
-    message
+  mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
+    updateProductByAdmin(input: $input) {
+      _id
+      message
+    }
   }
-}
 `;
 interface Product {
   _id: string;
@@ -74,11 +88,11 @@ interface Product {
   stock: number;
   status: string;
   isBlocked: boolean;
-
+  skuId: string;
+  warehouseSkuId: string;
 }
 
 const VariantListing = () => {
-
   const pageSize = 10; // Number of items per page
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -89,7 +103,8 @@ const VariantListing = () => {
   const [error, setError] = useState<string | null>(null);
   const [cardHeaderData, setCardHeaderData] = useState({
     productCode: "",
-    category: ""
+    category: "",
+    brandName: "",
   });
 
   const [params] = useSearchParams();
@@ -104,19 +119,13 @@ const VariantListing = () => {
     },
   });
 
-
-
-
-
-  const [UpdateProductStatus] = useMutation(PUT_STATUS)
-
-
+  const [UpdateProductStatus] = useMutation(PUT_STATUS);
 
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<{
     value: string;
     label: string;
-    pass: boolean | null
+    pass: boolean | null;
   } | null>(null);
 
   const [statusDropdownOpen2, setStatusDropdownOpen2] = useState(false);
@@ -134,15 +143,11 @@ const VariantListing = () => {
     { value: "nonBlocked", label: "Active", pass: false },
   ];
   const statusOptions2 = [
-    { value: "all", label: "All", },
-    { value: "UNDER_VERIFICATION", label: "Pending", },
-    { value: "APPROVED", label: "Approved", },
-    { value: "REJECTED", label: "Rejected", },
+    { value: "all", label: "All" },
+    { value: "UNDER_VERIFICATION", label: "Pending" },
+    { value: "APPROVED", label: "Approved" },
+    { value: "REJECTED", label: "Rejected" },
   ];
-
-
-
-
 
   const fetchData = async () => {
     try {
@@ -155,9 +160,9 @@ const VariantListing = () => {
       setProducts(result.data.getVariantsTableByAdmin.records);
       setCardHeaderData({
         category: result.data.getVariantsTableByAdmin.records[0].categoryNamePath,
-        productCode: result.data.getVariantsTableByAdmin.records[0].productCode || "nill"
-      }
-      )
+        productCode: result.data.getVariantsTableByAdmin.records[0].productCode || "nill",
+        brandName: result.data.getVariantsTableByAdmin.records[0].brandName || "",
+      });
       setMaxRecords(result.data.getVariantsTableByAdmin.maxRecords);
     } catch (error: any) {
       setError(error.message);
@@ -165,7 +170,6 @@ const VariantListing = () => {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchData();
@@ -179,10 +183,9 @@ const VariantListing = () => {
       };
       const response = await UpdateProductStatus({ variables: { input: input } });
 
-      console.log(response)
-      toast.success(response.data.updateProductByAdmin.message)
-      fetchData()
-
+      console.log(response);
+      toast.success(response.data.updateProductByAdmin.message);
+      fetchData();
     } catch (error: any) {
       console.log(error.message);
     }
@@ -200,14 +203,17 @@ const VariantListing = () => {
     setFilteredProducts(
       products.filter(
         (item) =>
-          ((selectedStatus === null || selectedStatus.value === "all" || selectedStatus.pass === null || item.isBlocked === selectedStatus.pass)) &&
-          (!selectedStatus2 || selectedStatus2.value === "all" || item.status === selectedStatus2.value) &&
+          (selectedStatus === null ||
+            selectedStatus.value === "all" ||
+            selectedStatus.pass === null ||
+            item.isBlocked === selectedStatus.pass) &&
+          (!selectedStatus2 ||
+            selectedStatus2.value === "all" ||
+            item.status === selectedStatus2.value) &&
           (!outOfStockChecked || item.stock < 10)
       )
     );
   }, [products, selectedStatus, outOfStockChecked, selectedStatus2]);
-
-
 
   const handleStatusSelect = (selectedOption: any) => {
     setSelectedStatus(selectedOption);
@@ -238,7 +244,14 @@ const VariantListing = () => {
               <Card>
                 <CardHeader>
                   <Row>
-                    <Col xs={12} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <Col
+                      xs={12}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
                       <div style={{ display: "flex", alignItems: "center", gap: "30px" }}>
                         <h5 style={{ margin: "0" }}>Filters : </h5>
                         <Dropdown isOpen={statusDropdownOpen} toggle={toggleStatusDropdown}>
@@ -276,11 +289,16 @@ const VariantListing = () => {
                         </Dropdown>
 
                         <div style={{ display: "flex", alignItems: "center" }}>
-                          <Label style={{ marginTop: "3px", marginLeft: "10px", width: "100px" }} check>Low Stock :</Label>
+                          <Label
+                            style={{ marginTop: "3px", marginLeft: "10px", width: "100px" }}
+                            check
+                          >
+                            Low Stock :
+                          </Label>
                           <FormGroup switch>
                             <Input
                               type="checkbox"
-                              style={{ width: '40px', height: "20px" }}
+                              style={{ width: "40px", height: "20px" }}
                               checked={outOfStockChecked}
                               onChange={handleOutOfStockToggle}
                             />
@@ -289,33 +307,35 @@ const VariantListing = () => {
                       </div>
 
                       <div style={{ width: "auto" }}>
-                        <p style={{ margin: 0, fontWeight: 500, display: "flex", }}><p style={{ margin: 0, fontWeight: 500, width: "100px" }}>Category : </p>{cardHeaderData?.category}</p>
-                        <p style={{ margin: 0, fontWeight: 500, display: "flex", }}><p style={{ margin: 0, fontWeight: 500, width: "100px" }}>Product Code : </p>{cardHeaderData?.productCode}</p>
+                        <p style={{ margin: 0, fontWeight: 500, display: "flex" }}>
+                          <p style={{ margin: 0, fontWeight: 500, width: "100px" }}>Category : </p>
+                          {cardHeaderData?.category}
+                        </p>
+                        <p style={{ margin: 0, fontWeight: 500, display: "flex" }}>
+                          <p style={{ margin: 0, fontWeight: 500, width: "100px" }}>Brand : </p>
+                          {cardHeaderData?.brandName}
+                        </p>
+                        <p style={{ margin: 0, fontWeight: 500, display: "flex" }}>
+                          <p style={{ margin: 0, fontWeight: 500, width: "100px" }}>
+                            Product Code :{" "}
+                          </p>
+                          {cardHeaderData?.productCode}
+                        </p>
                       </div>
                     </Col>
-
                   </Row>
                 </CardHeader>
 
-
-
-
-
                 <CardBody>
                   <div className="table-rep-plugin">
-                    <div
-                      className="table-responsive mb-0"
-                      data-pattern="priority-columns"
-                    >
-                      <Table
-                        id="tech-companies-1"
-                        className="table table-striped table-bordered"
-                      >
+                    <div className="table-responsive mb-0" data-pattern="priority-columns">
+                      <Table id="tech-companies-1" className="table table-striped table-bordered">
                         <Thead>
                           <Tr>
                             <Th data-priority="1">Sl.No</Th>
                             <Th data-priority="1">Name</Th>
-                            <Th data-priority="1">Product Code</Th>
+                            <Th data-priority="1">Warehouse SKU</Th>
+                            <Th data-priority="1">SKU</Th>
                             <Th data-priority="3">Attributes</Th>
                             <Th data-priority="3">Stock</Th>
                             <Th data-priority="1">Image</Th>
@@ -328,9 +348,24 @@ const VariantListing = () => {
                           {filteredProducts.map((product: Product, index: number) => (
                             <Tr key={index}>
                               <Td>{index + 1}</Td>
-                              <Td><p style={{ maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product?.productName}</p></Td>
-                              <Td>{product.productCode}</Td>
-                              <Td>{product.attributes[0]?.attributeDescription}: {product.attributes[0]?.attributeValue}</Td>
+                              <Td>
+                                <p
+                                  style={{
+                                    maxWidth: "200px",
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                  }}
+                                >
+                                  {product?.productName}
+                                </p>
+                              </Td>
+                              <Td>{product.warehouseSkuId}</Td>
+                              <Td>{product.skuId}</Td>
+                              <Td>
+                                {product.attributes[0]?.attributeDescription}:{" "}
+                                {product.attributes[0]?.attributeValue}
+                              </Td>
 
                               <Td>{product.stock}</Td>
 
@@ -346,8 +381,9 @@ const VariantListing = () => {
                                 <StatusIndicator status={product?.status} />
                               </Td>
                               <Td>
-                                <StatusIndicator status={product.isBlocked ? "BLOCKED" : "ACTIVE"} />
-
+                                <StatusIndicator
+                                  status={product.isBlocked ? "BLOCKED" : "ACTIVE"}
+                                />
                               </Td>
                               <Td>
                                 <Button
@@ -362,19 +398,21 @@ const VariantListing = () => {
                                   View
                                 </Button>
 
-                                {product?.status === "APPROVED" ? <>
-                                  {null}
-                                </> : <>
-                                  <Button
-                                    style={{ marginLeft: "10px" }}
-                                    size="sm"
-                                    onClick={(e) => handleStatusChange("APPROVED", e, product?._id)}
-                                  >
-                                    Approve
-                                  </Button>
-                                </>}
-
-
+                                {product?.status === "APPROVED" ? (
+                                  <>{null}</>
+                                ) : (
+                                  <>
+                                    <Button
+                                      style={{ marginLeft: "10px" }}
+                                      size="sm"
+                                      onClick={(e) =>
+                                        handleStatusChange("APPROVED", e, product?._id)
+                                      }
+                                    >
+                                      Approve
+                                    </Button>
+                                  </>
+                                )}
                               </Td>
                             </Tr>
                           ))}
@@ -382,7 +420,6 @@ const VariantListing = () => {
                       </Table>
                     </div>
                   </div>
-
                 </CardBody>
               </Card>
             </Col>

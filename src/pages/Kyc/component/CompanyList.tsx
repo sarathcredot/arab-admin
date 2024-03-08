@@ -187,7 +187,7 @@ function CompanyListing() {
 
                             </td>
                             <td>
-                              <Link to={`/vendors/view?id=${company.vendorId}`}>
+                              <Link to={`/vendors/view?id=${company.vendorId}&&tab=companydetails`}>
                                 <Button size="sm" color="primary">
                                   View
                                 </Button>

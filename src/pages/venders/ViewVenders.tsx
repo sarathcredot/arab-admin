@@ -72,26 +72,26 @@ const GET_AVENDOR = gql`
       message
       record {
         _id
-      fullName
-      email
-      countryCode
-      mobileNumber
-      profilePic {
-        fileType
-        fileURL
-        mimeType
-        originalName
-      }
-      isBlocked
-      isKycCompleted
-      outletId
-      outletName
-      outletStatus
-      companyId
-      companyName
-      companyStatus
-      brands
-      categories
+        fullName
+        email
+        countryCode
+        mobileNumber
+        profilePic {
+          fileType
+          fileURL
+          mimeType
+          originalName
+        }
+        isBlocked
+        isKycCompleted
+        outletId
+        outletName
+        outletStatus
+        companyId
+        companyName
+        companyStatus
+        brands
+        categories
       }
     }
   }
@@ -108,17 +108,16 @@ const PUT_VENDOR_PROFILE = gql`
 
 function ViewVenders() {
   const [searchParams] = useSearchParams();
-  const id = searchParams.get("id")
+  const id = searchParams.get("id");
+  const tab = searchParams.get("tab");
   const [vendorData, setVendorData] = useState<IVendor>();
-  const [activeTab, setActiveTab] = useState("Vendor");
+  const [activeTab, setActiveTab] = useState(tab || "Vendor");
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [editFormOpen, setEditFormOpen] = useState(false);
 
-
-
   const editFormToggle = () => {
-    setEditFormOpen(!editFormOpen)
-  }
+    setEditFormOpen(!editFormOpen);
+  };
 
   const [updateVendorProfile] = useMutation(PUT_VENDOR_PROFILE);
   const {
@@ -163,27 +162,19 @@ function ViewVenders() {
     toggleConfirmationModal();
   };
 
-  const handleConfirmation = async () => {
-
-  };
+  const handleConfirmation = async () => {};
 
   const items = [
     { text: "Dashboard", link: `/` },
     { text: "Vendors", link: `/vendors` },
   ];
 
-
-
-
-
-
   return (
     <div className="page-content">
-      <Container fluid={true} >
+      <Container fluid={true}>
         <Breadcrumb items={items} currentPage="Vendor Details" />
 
         <VendorCards id={id} />
-
 
         <Nav tabs style={{ marginTop: "20px" }}>
           <NavItem>
@@ -231,10 +222,16 @@ function ViewVenders() {
         <TabContent activeTab={activeTab}>
           <TabPane tabId="Vendor">
             <div>
-
               <div style={{ display: "flex", marginTop: "20px", gap: "20px" }}>
                 <Card style={{ flex: 3, padding: "20px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px", flexDirection: "column" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      flexDirection: "column",
+                    }}
+                  >
                     <CardImg
                       style={{
                         height: "100px",
@@ -249,80 +246,117 @@ function ViewVenders() {
                       alt="Profile"
                     />
                     <div>
-                      <CardTitle >
-                        <strong style={{ fontSize: "20px" }}> {vendorData?.fullName && capitalCase(vendorData?.fullName)} </strong>
+                      <CardTitle>
+                        <strong style={{ fontSize: "20px" }}>
+                          {" "}
+                          {vendorData?.fullName && capitalCase(vendorData?.fullName)}{" "}
+                        </strong>
                       </CardTitle>
                     </div>
 
-                    <div style={{ border: "1px solid #e9e9ef", borderRadius: "9px", width: "100%", display: "flex", alignItems: "center", gap: "3px", flexDirection: "column", padding: "5px 0px" }}>
+                    <div
+                      style={{
+                        border: "1px solid #e9e9ef",
+                        borderRadius: "9px",
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "3px",
+                        flexDirection: "column",
+                        padding: "5px 0px",
+                      }}
+                    >
                       <span style={{ fontSize: "10px" }}>Email Address</span>
                       <h6>{vendorData?.email}</h6>
                     </div>
                   </div>
                 </Card>
 
-                <Card style={{ flex: 8, }}>
-                  <CardHeader style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <Card style={{ flex: 8 }}>
+                  <CardHeader
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <span style={{ fontSize: "17px", fontWeight: "500" }}>Details</span>
                     <CustomButton name="Update" icon="ic:baseline-edit" onClick={editFormToggle} />
-                    <EditFormVender isOpen={editFormOpen} refetch={vendorRefetch} toggle={editFormToggle} data={vendorData} />
-
+                    <EditFormVender
+                      isOpen={editFormOpen}
+                      refetch={vendorRefetch}
+                      toggle={editFormToggle}
+                      data={vendorData}
+                    />
                   </CardHeader>
                   <CardBody>
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-
-                      <div style={{ display: 'flex', alignItems: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
                         <div style={{ width: "100px" }}>Fullname : </div>
                         <strong>{vendorData?.fullName && capitalCase(vendorData?.fullName)}</strong>
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
                         <div style={{ width: "100px" }}>Email : </div>
                         <strong>{vendorData?.email}</strong>
                       </div>
-                      <div style={{ display: 'flex', alignItems: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
                         <div style={{ width: "100px" }}>ID : </div>
                         <strong>{vendorData?._id}</strong>
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: "center" }}>
-                        <div style={{ width: "100px" }}>Phone  : </div>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <div style={{ width: "100px" }}>Phone : </div>
                         <strong>{`${vendorData?.countryCode} ${vendorData?.mobileNumber}`}</strong>
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
                         <div style={{ width: "100px" }}>Status : </div>
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "1px", border: `1px solid ${vendorData?.isBlocked == true ? "red" : "green"}`, width: "100px", borderRadius: "20px", color: ` ${vendorData?.isBlocked == true ? "red" : "green"}` }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            padding: "1px",
+                            border: `1px solid ${vendorData?.isBlocked == true ? "red" : "green"}`,
+                            width: "100px",
+                            borderRadius: "20px",
+                            color: ` ${vendorData?.isBlocked == true ? "red" : "green"}`,
+                          }}
+                        >
                           {vendorData?.isBlocked == true ? "Blocked" : "Active"}
                         </div>
                       </div>
-                      <div style={{ display: 'flex', alignItems: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
                         <div style={{ width: "100px" }}>KYC Status : </div>
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "1px", border: `1px solid ${vendorData?.isKycCompleted !== true ? "orange" : "green"}`, width: "100px", borderRadius: "20px", color: ` ${vendorData?.isKycCompleted !== true ? "orange" : "green"}` }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            padding: "1px",
+                            border: `1px solid ${
+                              vendorData?.isKycCompleted !== true ? "orange" : "green"
+                            }`,
+                            width: "100px",
+                            borderRadius: "20px",
+                            color: ` ${vendorData?.isKycCompleted !== true ? "orange" : "green"}`,
+                          }}
+                        >
                           {vendorData?.isKycCompleted == true ? "Completed" : "Pending"}
                         </div>
                       </div>
-
                     </div>
                   </CardBody>
                 </Card>
-
-
               </div>
-
-
             </div>
-
           </TabPane>
           <TabPane tabId="companydetails">
-            <ViewCardCompany
-              IdCompany={vendorData?.companyId}
-            />
+            <ViewCardCompany IdCompany={vendorData?.companyId} />
           </TabPane>
           <TabPane tabId="businessoutlet">
-            <ViewCardBusiness
-              IdBusiness={vendorData?.outletId}
-            />
+            <ViewCardBusiness IdBusiness={vendorData?.outletId} />
           </TabPane>
           <TabPane tabId="category">
             <CategoryList />

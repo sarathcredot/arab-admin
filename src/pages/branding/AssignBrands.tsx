@@ -57,16 +57,14 @@ function AssignBrands({ brandId }: any) {
     value: string;
     label: string;
   } | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<
-    Array<{ label: string; value: string }>
-  >([]);
-  const [assignCategoryDatas, setAssignCategoryDatas] =
-    useState<IAssingCategory>();
-
+  const [selectedCategory, setSelectedCategory] = useState<Array<{ label: string; value: string }>>(
+    []
+  );
+  const [assignCategoryDatas, setAssignCategoryDatas] = useState<IAssingCategory>();
 
   useEffect(() => {
-    setSelectedBrand(brandId)
-  }, [brandId])
+    setSelectedBrand(brandId);
+  }, [brandId]);
 
   const PUT_BRAND = gql`
     mutation UpdateBrand($input: updateBrandInput!) {
@@ -105,9 +103,7 @@ function AssignBrands({ brandId }: any) {
   `;
 
   const GET_ASSIGNED_CATEGORY = gql`
-    query GetCategoryDetailsWithBrand(
-      $input: CategoriesDetailsWithBrandIdInput!
-    ) {
+    query GetCategoryDetailsWithBrand($input: CategoriesDetailsWithBrandIdInput!) {
       getCategoryDetailsWithBrand(input: $input) {
         records {
           categories {
@@ -126,8 +122,7 @@ function AssignBrands({ brandId }: any) {
   `;
 
   const [UpdateBrand] = useMutation(PUT_BRAND);
-  const { loading: categoriesLoading, data: categoriesData } =
-    useQuery(GET_LEAF_RECORDS);
+  const { loading: categoriesLoading, data: categoriesData } = useQuery(GET_LEAF_RECORDS);
 
   const {
     loading: assignCategoryLoading,
@@ -158,7 +153,7 @@ function AssignBrands({ brandId }: any) {
     if (brandDataResponse) {
       setBrands(brandDataResponse?.getAllBrandRecordsByAdmin?.records);
     }
-  }, [categoriesData, brandDataResponse]);
+  }, [categoriesData, brandDataResponse, assignCategoryData]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -167,14 +162,12 @@ function AssignBrands({ brandId }: any) {
           const result = await assignCategoryRefetch({
             input: { brandId: selectedBrand },
           });
-          setAssignCategoryDatas(
-            result.data?.getCategoryDetailsWithBrand?.records
-          );
+          setAssignCategoryDatas(result.data?.getCategoryDetailsWithBrand?.records);
         }
       } catch (error: any) {
-        console.log(error)
+        console.log(error);
       }
-    }
+    };
 
     fetchData();
   }, [selectedBrand, brandId]);
@@ -182,8 +175,6 @@ function AssignBrands({ brandId }: any) {
   const handleBrandSelected = (brand: IBrands) => {
     setSelectedBrand(brand);
   };
-
-
 
   const handleAssignBrand = async () => {
     if (selectedCategory.length > 0) {
@@ -199,11 +190,8 @@ function AssignBrands({ brandId }: any) {
           },
         });
         if (response) {
-
-          await assignCategoryRefetch();
-
+          assignCategoryRefetch();
         }
-
         toast.success("Successfully updated");
         setSelectedCategory([]);
       } catch (error: any) {
@@ -216,26 +204,17 @@ function AssignBrands({ brandId }: any) {
     }
   };
 
-  const handleCategorySelection = (
-    selectedOptions: Array<{ label: string; value: string }>
-  ) => {
+  const handleCategorySelection = (selectedOptions: Array<{ label: string; value: string }>) => {
     setSelectedCategory(selectedOptions);
   };
 
-
   return (
-
     <Row>
       <Col lg={12}>
         <Card>
           <CardHeader>
-
             <div className="d-flex gap-2">
-              <Label
-                className="mt-2 "
-              >
-                Assign Category:
-              </Label>
+              <Label className="mt-2 ">Assign Category:</Label>
               <Select
                 isMulti
                 options={categories.map((category) => ({
@@ -243,9 +222,7 @@ function AssignBrands({ brandId }: any) {
                   value: category._id,
                 }))}
                 value={selectedCategory}
-                onChange={(selectedOptions: any) =>
-                  handleCategorySelection(selectedOptions)
-                }
+                onChange={(selectedOptions: any) => handleCategorySelection(selectedOptions)}
                 placeholder="Select Category..."
                 styles={{
                   control: (styles: any) => ({
@@ -255,10 +232,7 @@ function AssignBrands({ brandId }: any) {
                   }),
                 }}
               />
-              <Button
-                style={{ backgroundColor: "#000000" }}
-                onClick={handleAssignBrand}
-              >
+              <Button style={{ backgroundColor: "#000000" }} onClick={handleAssignBrand}>
                 Assign Category
               </Button>
             </div>
@@ -279,15 +253,13 @@ function AssignBrands({ brandId }: any) {
               <tbody>
                 {selectedBrand ? (
                   <>
-                    {assignCategoryDatas?.categories?.map(
-                      (value: Category, index: any) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{value.categoryName}</td>
-                          <td>{value.fullCategoryName}</td>
-                        </tr>
-                      )
-                    )}
+                    {assignCategoryDatas?.categories?.map((value: Category, index: any) => (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{value.categoryName}</td>
+                        <td>{value.fullCategoryName}</td>
+                      </tr>
+                    ))}
                   </>
                 ) : (
                   <tr>
