@@ -80,7 +80,6 @@
     "react-csv": "^2.2.2",
     "react-dom": "^18.2.0",
     "react-draft-wysiwyg": "^1.15.0",
-    "react-drag-n-drop-image": "^1.2.5",
     "react-dropzone": "^14.2.3",
     "react-facebook-login": "^4.1.1",
     "react-flatpickr": "^3.10.13",
