@@ -73,7 +73,7 @@ const FormVender: React.FC<Props> = ({
       name: "",
       email: "",
       phone: "",
-      countryCode: "+974",
+      countryCode: "+968",
       image: "",
     },
 
@@ -176,7 +176,7 @@ const FormVender: React.FC<Props> = ({
               <div className="input-group">
                 <div className="input-group">
                   <div className="input-group-prepend">
-                    <span className="input-group-text"><Iconify icon="openmoji:flag-qatar" /></span>
+                    <span className="input-group-text"><Iconify icon="openmoji:flag-oman" /></span>
                   </div>
 
                   <Input

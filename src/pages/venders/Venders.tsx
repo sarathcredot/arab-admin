@@ -19,6 +19,7 @@ import Breadcrumb from "src/components/Common/Breadcrumb";
 import FormVender from "./FormVender";
 import Loader from "src/components/Common/Loader";
 import CustomButton from "src/components/Common/CustomButton";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
 
 interface IVendor {
@@ -216,15 +217,13 @@ const VendorList: React.FC = () => {
                                   <td>{vendor.mobileNumber}</td>
                                   <td>{vendor.email}</td>
                                   <td>{vendor.companyName}</td>
-                                  <td style={{
-                                    color: vendor.isKycCompleted === true ? "#5cb85c" : "#FFA500",
-                                  }}>{vendor.isKycCompleted === true ? "Completed" : "Pending"}</td>
+                                  <td >
+                                    <StatusIndicator status={vendor.isKycCompleted === true ? "COMPLETED" : "PENDING"} />
+                                  </td>
                                   <td
-                                    style={{
-                                      color: vendor.isBlocked === true ? "red" : "#5cb85c",
-                                    }}
                                   >
-                                    {vendor.isBlocked === true ? "Blocked" : "Active"}
+                                    <StatusIndicator status={vendor.isBlocked === true ? "BLOCKED" : "ACTIVE"} />
+
                                   </td>
                                   <td>
                                     <Link to={`/vendors/view?id=${vendor._id}`}>

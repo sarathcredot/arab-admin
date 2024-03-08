@@ -28,6 +28,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
 import Breadcrumbs from "../../components/Common/Breadcrumb";
+import Breadcrumb from "../../components/Common/Breadcrumb";
 
 interface CmsSectionForm {
   pageName: string;
@@ -64,11 +65,12 @@ interface AddCmsSectionProps {
 }
 
 const ADD_CMS_SECTION = gql`
-  mutation AddCmsSection($input: AddCmsInput!, $images: [Upload]) {
-    addCmsSection(input: $input, images: $images) {
-      _id
-    }
+ mutation AddCmsSection($input: AddCmsInput!, $images: [Upload]) {
+  addCmsSection(input: $input, images: $images) {
+    _id
+    message
   }
+}
 `;
 const UPDATE_CMS_SECTION = gql`
   mutation UpdateCmsRecord($input: UpdateCmsInput!, $images: [Upload]) {
@@ -163,9 +165,6 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
               buttonText: buttonText || null,
               redirectionURL: redirectionURL || null,
             })),
-
-
-
           },
 
           images: acceptedFiles,
@@ -177,8 +176,6 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
           input: {
             pageName: data.pageName,
             sectionName: data.sectionName,
-            title: data.title,
-            subTitle: data.subTitle,
             buttons: buttons?.map(({ buttonText, redirectionURL }) => ({
               buttonText: buttonText || null,
               redirectionURL: redirectionURL || null,
@@ -214,14 +211,19 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
   const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
     useDropzone();
 
+  const items = [
+    { text: "Dashboard", link: `/` },
+    { text: "Cms Pages", link: `/cmslisting` },
+
+  ];
+
+
+
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          {/* <Breadcrumbs
-            title="Cms"
-            breadcrumbItem={Edit ? "Edit Cms" : "Add cms"}
-          /> */}
+          <Breadcrumb items={items} currentPage={`${editedcms ? "Edit Cms" : "Add CMS"}`} />
           <Row>
             <Col lg={12}>
               <Card>
@@ -242,52 +244,6 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
                               </p>
                             )}
                           </>
-                        )}
-                      />
-                    </FormGroup>
-                    {/* <FormGroup>
-                      <Label for="sectionName">Section Name:</Label>
-                      <Controller
-                        control={control}
-                        name="sectionName"
-                        rules={{ required: "Section Name is required" }}
-                        render={({ field }) => (
-                          <>
-                            <Input type="text" id="sectionName" {...field} />
-                            {errors.sectionName && (
-                              <p className="text-danger">
-                                {errors.sectionName.message}
-                              </p>
-                            )}
-                          </>
-                        )}
-                      />
-                    </FormGroup> */}
-                    <FormGroup>
-                      <Label for="title">Title:</Label>
-                      <Controller
-                        control={control}
-                        name="title"
-                        rules={{ required: "Title is required" }}
-                        render={({ field }) => (
-                          <>
-                            <Input type="text" id="title" {...field} />
-                            {errors.title && (
-                              <p className="text-danger">
-                                {errors.title.message}
-                              </p>
-                            )}
-                          </>
-                        )}
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="subTitle">SubTitle:</Label>
-                      <Controller
-                        control={control}
-                        name="subTitle"
-                        render={({ field }) => (
-                          <Input type="text" id="subTitle" {...field} />
                         )}
                       />
                     </FormGroup>

@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect } from "react";
 import "cleave.js/dist/addons/cleave-phone.in";
 import FeatherIcon from "feather-icons-react";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Card, CardBody, CardImg, CardSubtitle, CardText, CardTitle, Col, Collapse, Modal, ModalBody, ModalFooter, ModalHeader, Row } from "reactstrap";
+import { Button, Card, CardBody, CardHeader, CardImg, CardSubtitle, CardText, CardTitle, Col, Collapse, Modal, ModalBody, ModalFooter, ModalHeader, Row } from "reactstrap";
 
 
 import { FormGroup, Input, Label } from "reactstrap";
@@ -519,11 +519,17 @@ function OrderProductDetails({ product, orderProdcutsRefetch, orderRefetch }: an
 
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            <Card className="my-2" style={{ boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.05)" }}>
+            <Card className="my-2" style={{ boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.05)" }}>
+                <CardHeader>
+                    <div style={{ width: "400px", cursor: "pointer", }} onClick={() => navigate(`/vendors/view?id=${product?.vendorId}`)} >
+                        <p style={{ margin: 0, fontWeight: 500, display: "flex", fontSize: "16px" }}><p style={{ margin: 0, fontWeight: 500, width: "120px", fontSize: "16px" }}>Vendor ID : </p>{product?.vendorId}</p>
+                        <p style={{ margin: 0, fontWeight: 500, display: "flex", fontSize: "16px" }}><p style={{ margin: 0, fontWeight: 500, width: "120px", fontSize: "16px" }}>Vendor name : </p>{product?.vendorName && capitalCase(product?.vendorName)}</p>
+                    </div>
+                </CardHeader>
                 <CardBody style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
 
                     <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "20px", width: "80%", cursor: "pointer" }} onClick={() => navigate(`/product/variants/details?_id=${product?.productId}`)}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "20px", width: "80%", cursor: "pointer" }} onClick={() => navigate(`/product/details?_id=${product?.productId}`)}>
                             <div style={{ width: "80px" }}>
                                 <CardImg
                                     alt="product"

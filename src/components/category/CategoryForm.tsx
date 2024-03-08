@@ -89,10 +89,8 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
     setIsChecked((prev) => !prev);
   };
 
-  // when clicking the add category
   const onSubmit = async (values: any, { resetForm }: any) => {
     try {
-      // values.preventDefault();
 
       let variables: any = {
         input: {
@@ -105,8 +103,6 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
         },
       };
       if (values.image) {
-
-        console.log("hduyydsuydsuyf", values.image);
         variables = {
           ...variables,
           image: values?.image,

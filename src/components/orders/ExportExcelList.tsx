@@ -14,6 +14,7 @@ import moment from "moment";
 import CustomButton from "src/components/Common/CustomButton";
 import Loader from "../Common/Loader";
 import Iconify from "../iconify/Iconify";
+import { useSearchParams } from "react-router-dom";
 
 interface Record {
     _id: string;
@@ -25,6 +26,9 @@ interface Record {
 
 
 function ExportExcelList({ name }: any) {
+    const [searchParams] = useSearchParams();
+    const vendorId = searchParams.get("vendorId")
+
     const [exportListOpen, setExportListOpen] = useState(false);
     const toggleExportList = () => setExportListOpen(!exportListOpen);
 
@@ -54,7 +58,8 @@ function ExportExcelList({ name }: any) {
             input: {
                 page: currentPage,
                 size: pageSize,
-                name: name
+                name: name,
+                ...(vendorId && { vendorId })
             }
         }
     });
@@ -65,7 +70,8 @@ function ExportExcelList({ name }: any) {
                 input: {
                     page: currentPage,
                     size: pageSize,
-                    name: name
+                    name: name,
+                    ...(vendorId && { vendorId })
                 }
             });
             setJobsQueueList(result.data.getJobsQueue.records);

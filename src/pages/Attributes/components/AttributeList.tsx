@@ -21,6 +21,7 @@ import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
 import AttributeForm from "./AttributeForm";
 import CustomButton from "src/components/Common/CustomButton";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
 interface IAttribute {
   _id: string;
@@ -238,11 +239,9 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
                             <td>{attribute?.attributeType}</td>
 
                             <td
-                              style={{
-                                color: attribute?.isBlocked ? "red" : "#5cb85c",
-                              }}
                             >
-                              {attribute?.isBlocked ? "Blocked" : "Active"}
+                              <StatusIndicator status={attribute?.isBlocked ? "BLOCKED" : "ACTIVE"} />
+
                             </td>
                             <td>
                               <Link to={`/attributes/${attribute?._id}`}>

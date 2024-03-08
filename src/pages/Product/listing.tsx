@@ -6,10 +6,11 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { Link } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
 import Breadcrumb from "../../components/Common/Breadcrumb";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
 
 const GET_PRODUCTS = gql`
- query GetProductsByAdmin($input: ProductFilters) {
+query GetProductsByAdmin($input: ProductFilters) {
   getProductsByAdmin(input: $input) {
     maxRecords
     records {
@@ -23,7 +24,6 @@ const GET_PRODUCTS = gql`
       description
       productInfo
       productShortInfo
-      material
       images {
         fileType
         fileURL
@@ -88,10 +88,11 @@ const ProductListing = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [activeTab, setActiveTab] = useState<string>("UNDER_VERIFICATION");
+  const [activeTab, setActiveTab] = useState<string>("ALL");
 
   const toggleTab = (tab: string) => {
     setActiveTab(tab);
+    setCurrentPage(0)
   };
 
   const { data, refetch } = useQuery(GET_PRODUCTS, {
@@ -100,6 +101,7 @@ const ProductListing = () => {
         page: currentPage,
         size: pageSize,
         query: searchTerm,
+        status: activeTab === "ALL" ? "" : activeTab,
       },
     },
   });
@@ -117,7 +119,8 @@ const ProductListing = () => {
             page: currentPage,
             size: pageSize,
             query: searchTerm,
-            status: activeTab,
+            status: activeTab === "ALL" ? "" : activeTab,
+
           },
         });
         setProducts(result.data.getProductsByAdmin.records);
@@ -157,6 +160,14 @@ const ProductListing = () => {
           <Nav tabs>
             <NavItem>
               <NavLink
+                className={activeTab === "ALL" ? "tab-button active" : "tab-button"}
+                onClick={() => toggleTab("ALL")}
+              >
+                All
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
                 className={activeTab === "UNDER_VERIFICATION" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("UNDER_VERIFICATION")}
               >
@@ -182,7 +193,7 @@ const ProductListing = () => {
           </Nav>
 
 
-          <Card>
+          <Card style={{ marginTop: "30px" }}>
             <CardHeader>
               <Col xs={6} >
                 <Input
@@ -214,7 +225,6 @@ const ProductListing = () => {
                         <Th data-priority="3">Category</Th>
                         <Th data-priority="1">Image</Th>
                         <Th data-priority="3"> Verify Status</Th>
-                        <Th data-priority="3">Status</Th>
                         <Th data-priority="3">View</Th>
                       </Tr>
                     </Thead>
@@ -222,24 +232,22 @@ const ProductListing = () => {
                       {products?.map((product: Product, index: number) => (
                         <Tr key={index}>
                           <Td>{currentPage * pageSize + index + 1}</Td>
-                          <Td>{product?.productName}</Td>
+                          <Td><p style={{ maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product?.productName}</p></Td>
                           <Td>{product?.productCode}</Td>
-                          <Td>{product?.shortDescription}</Td>
+                          <Td ><p style={{ maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product?.shortDescription}</p></Td>
                           <Td>{product?.categoryNamePath}</Td>
                           <Td>
                             <img
                               src={product?.images[0]?.fileURL}
                               alt={product?.productName}
                               width={80}
-                              height={80}
                             />
                           </Td>
                           <Td>
-                            {product?.status}
+                            <StatusIndicator status={product?.status} />
+
                           </Td>
-                          <Td>
-                            {product?.isBlocked ? "Blocked" : "Active"}
-                          </Td>
+
                           <Td>
                             <Button
                               color="primary"

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Card, CardBody, CardHeader, Button, Input } from "reactstrap";
+import { Row, Col, Card, CardBody, CardHeader, Button, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Label, FormGroup } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
@@ -7,6 +7,9 @@ import { Link, useSearchParams } from "react-router-dom";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { ToastContainer, toast } from "react-toastify";
 import Breadcrumb from "../../components/Common/Breadcrumb";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
 const GET_VARIANTS = gql`
 query GetVariantsTableByAdmin($input: ProductVariantsByAdminFilter!) {
@@ -31,6 +34,11 @@ query GetVariantsTableByAdmin($input: ProductVariantsByAdminFilter!) {
       stock
       status
       isBlocked
+      categoryNamePath
+      categoryId
+      warehouseSkuId
+      skuId
+      productCode
     }
     message
   }
@@ -49,6 +57,7 @@ mutation UpdateProductStatus($input: ProductStatusInput!) {
 interface Product {
   _id: string;
   productName: string;
+  productCode: number;
   images: {
     fileType: string;
     fileURL: string;
@@ -78,6 +87,11 @@ const VariantListing = () => {
   const [maxRecords, setMaxRecords] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [cardHeaderData, setCardHeaderData] = useState({
+    productCode: "",
+    category: ""
+  });
+
   const [params] = useSearchParams();
   const productCode = params.get("productCode");
 
@@ -96,6 +110,39 @@ const VariantListing = () => {
   const [UpdateProductStatus] = useMutation(PUT_STATUS)
 
 
+
+  const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState<{
+    value: string;
+    label: string;
+    pass: boolean | null
+  } | null>(null);
+
+  const [statusDropdownOpen2, setStatusDropdownOpen2] = useState(false);
+  const [selectedStatus2, setSelectedStatus2] = useState<{
+    value: string;
+    label: string;
+  } | null>(null);
+
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [outOfStockChecked, setOutOfStockChecked] = useState<boolean>(false);
+
+  const statusOptions = [
+    { value: "all", label: "All", pass: null },
+    { value: "blocked", label: "Blocked", pass: true },
+    { value: "nonBlocked", label: "Active", pass: false },
+  ];
+  const statusOptions2 = [
+    { value: "all", label: "All", },
+    { value: "UNDER_VERIFICATION", label: "Pending", },
+    { value: "APPROVED", label: "Approved", },
+    { value: "REJECTED", label: "Rejected", },
+  ];
+
+
+
+
+
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -105,6 +152,11 @@ const VariantListing = () => {
         },
       });
       setProducts(result.data.getVariantsTableByAdmin.records);
+      setCardHeaderData({
+        category: result.data.getVariantsTableByAdmin.records[0].categoryNamePath,
+        productCode: result.data.getVariantsTableByAdmin.records[0].productCode || "nill"
+      }
+      )
       setMaxRecords(result.data.getVariantsTableByAdmin.maxRecords);
     } catch (error: any) {
       setError(error.message);
@@ -116,21 +168,7 @@ const VariantListing = () => {
 
   useEffect(() => {
     fetchData();
-  }, [searchTerm, currentPage]);
-
-
-  const totalPages = Math.ceil(maxRecords / pageSize);
-
-  const handleNextPage = () => {
-    if (currentPage + 1 <= totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handleSearch = (event: any) => {
-    setSearchTerm(event.target.value);
-    console.log(event.target.value);
-  };
+  }, [searchTerm, currentPage, refetch]);
 
   const handleStatusChange = async (status: any, e: any, proId: string) => {
     e.preventDefault();
@@ -153,6 +191,40 @@ const VariantListing = () => {
     }
   };
 
+  const toggleStatusDropdown = () => {
+    setStatusDropdownOpen(!statusDropdownOpen);
+  };
+
+  const toggleStatusDropdown2 = () => {
+    setStatusDropdownOpen2(!statusDropdownOpen2);
+  };
+
+  useEffect(() => {
+    setFilteredProducts(
+      products.filter(
+        (item) =>
+          ((selectedStatus === null || selectedStatus.value === "all" || selectedStatus.pass === null || item.isBlocked === selectedStatus.pass)) &&
+          (!selectedStatus2 || selectedStatus2.value === "all" || item.status === selectedStatus2.value) &&
+          (!outOfStockChecked || item.stock < 10)
+      )
+    );
+  }, [products, selectedStatus, outOfStockChecked, selectedStatus2]);
+
+
+
+  const handleStatusSelect = (selectedOption: any) => {
+    setSelectedStatus(selectedOption);
+    setStatusDropdownOpen(false);
+  };
+  const handleStatusSelect2 = (selectedOption: any) => {
+    setSelectedStatus2(selectedOption);
+    setStatusDropdownOpen2(false);
+  };
+
+  const handleOutOfStockToggle = () => {
+    setOutOfStockChecked(!outOfStockChecked);
+  };
+
   const items = [
     { text: "Dashboard", link: `/` },
     { text: "Products", link: `/product` },
@@ -164,41 +236,69 @@ const VariantListing = () => {
       <div className="page-content">
         <div className="container-fluid">
           <Breadcrumb items={items} currentPage="Variants" />
-          {/* <Row>
-            <Col lg={12}>
-             
-                <div className="d-flex justify-content-end mb-3">
-                <Link to="/add-product">
-                  <button
-                    style={{
-                      backgroundColor: "black",
-                      color: "white",
-                      width: "100px",
-                      height: "40px",
-                      borderRadius: "10px",
-                    }}
-                  >
-                    Add Product
-                  </button>
-                  </Link>
-                </div>
-             
-            </Col>
-          </Row> */}
 
           <Row>
             <Col>
               <Card>
                 <CardHeader>
-                  <Col xs={5} >
-                    <Input
-                      type="text"
-                      placeholder="Search Product"
-                      value={searchTerm}
-                      onChange={handleSearch}
-                      style={{ width: "80%" }}
-                    />
-                  </Col>
+                  <Row>
+                    <Col xs={12} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "30px" }}>
+                        <h5 style={{ margin: "0" }}>Filters : </h5>
+                        <Dropdown isOpen={statusDropdownOpen} toggle={toggleStatusDropdown}>
+                          <DropdownToggle caret>
+                            {selectedStatus ? selectedStatus.label : "Select Status"}
+                            <FontAwesomeIcon icon={faAngleDown} />
+                          </DropdownToggle>
+                          <DropdownMenu>
+                            {statusOptions.map((option) => (
+                              <DropdownItem
+                                key={option.value}
+                                onClick={() => handleStatusSelect(option)}
+                              >
+                                {option.label}
+                              </DropdownItem>
+                            ))}
+                          </DropdownMenu>
+                        </Dropdown>
+
+                        <Dropdown isOpen={statusDropdownOpen2} toggle={toggleStatusDropdown2}>
+                          <DropdownToggle caret>
+                            {selectedStatus2 ? selectedStatus2.label : "Verification Status"}
+                            <FontAwesomeIcon icon={faAngleDown} />
+                          </DropdownToggle>
+                          <DropdownMenu>
+                            {statusOptions2.map((option) => (
+                              <DropdownItem
+                                key={option.value}
+                                onClick={() => handleStatusSelect2(option)}
+                              >
+                                {option.label}
+                              </DropdownItem>
+                            ))}
+                          </DropdownMenu>
+                        </Dropdown>
+
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <Label style={{ marginTop: "3px", marginLeft: "10px", width: "100px" }} check>Low Stock :</Label>
+                          <FormGroup switch>
+                            <Input
+                              type="checkbox"
+                              style={{ width: '40px', height: "20px" }}
+                              checked={outOfStockChecked}
+                              onChange={handleOutOfStockToggle}
+                            />
+                          </FormGroup>
+                        </div>
+                      </div>
+
+                      <div style={{ width: "auto" }}>
+                        <p style={{ margin: 0, fontWeight: 500, display: "flex", }}><p style={{ margin: 0, fontWeight: 500, width: "100px" }}>Category : </p>{cardHeaderData?.category}</p>
+                        <p style={{ margin: 0, fontWeight: 500, display: "flex", }}><p style={{ margin: 0, fontWeight: 500, width: "100px" }}>Product Code : </p>{cardHeaderData?.productCode}</p>
+                      </div>
+                    </Col>
+
+                  </Row>
                 </CardHeader>
 
 
@@ -217,7 +317,9 @@ const VariantListing = () => {
                       >
                         <Thead>
                           <Tr>
+                            <Th data-priority="1">Sl.No</Th>
                             <Th data-priority="1">Name</Th>
+                            <Th data-priority="1">Product Code</Th>
                             <Th data-priority="3">Attributes</Th>
                             <Th data-priority="3">Stock</Th>
                             <Th data-priority="1">Image</Th>
@@ -227,10 +329,12 @@ const VariantListing = () => {
                           </Tr>
                         </Thead>
                         <Tbody>
-                          {products.map((product: Product, index: number) => (
+                          {filteredProducts.map((product: Product, index: number) => (
                             <Tr key={index}>
-                              <Td>{product.productName}</Td>
-                              <Td>{product.attributes[0].attributeDescription}: {product.attributes[0].attributeValue}</Td>
+                              <Td>{index + 1}</Td>
+                              <Td><p style={{ maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product?.productName}</p></Td>
+                              <Td>{product.productCode}</Td>
+                              <Td>{product.attributes[0]?.attributeDescription}: {product.attributes[0]?.attributeValue}</Td>
 
                               <Td>{product.stock}</Td>
 
@@ -242,9 +346,12 @@ const VariantListing = () => {
                                   height={80}
                                 />
                               </Td>
-                              <Td>{product?.status}</Td>
                               <Td>
-                                {product.isBlocked ? "Blocked" : "Active"}
+                                <StatusIndicator status={product?.status} />
+                              </Td>
+                              <Td>
+                                <StatusIndicator status={product.isBlocked ? "BLOCKED" : "ACTIVE"} />
+
                               </Td>
                               <Td>
                                 <Button
@@ -256,21 +363,15 @@ const VariantListing = () => {
                                     search: `?_id=${product._id}`,
                                   }}
                                 >
-                                  view
+                                  View
                                 </Button>
 
                                 {product?.status === "APPROVED" ? <>
                                   {null}
                                 </> : <>
                                   <Button
-                                    color="white"
-                                    style={{
-                                      backgroundColor: "black",
-                                      alignItems: "center",
-                                      color: "white",
-                                      marginLeft: "10px"
-                                    }}
-
+                                    style={{ marginLeft: "10px" }}
+                                    size="sm"
                                     onClick={(e) => handleStatusChange("APPROVED", e, product?._id)}
                                   >
                                     Approve
@@ -285,56 +386,7 @@ const VariantListing = () => {
                       </Table>
                     </div>
                   </div>
-                  <Row>
-                    <Col>
-                      <div className="d-flex justify-content-end mt-0 ">
-                        <ul className="pagination">
-                          <li
-                            className={`page-item ${currentPage === 0 ? "disabled" : ""
-                              }`}
-                          >
-                            <button
-                              className="page-link"
-                              onClick={() => setCurrentPage(currentPage - 1)}
-                              disabled={currentPage === 0}
-                            >
-                              Previous
-                            </button>
-                          </li>
 
-                          {Array.from({ length: totalPages }, (_, index) => (
-                            <li
-                              key={index}
-                              className={`page-item ${currentPage === index ? "active" : ""
-                                }`}
-                            >
-                              <button
-                                className="page-link"
-                                onClick={() => setCurrentPage(index)}
-                              >
-                                {index}
-                              </button>
-                            </li>
-                          ))}
-
-                          {currentPage < totalPages - 1 && (
-                            <li
-                              className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
-                                }`}
-                            >
-                              <button
-                                className="page-link"
-                                onClick={() => setCurrentPage(currentPage + 1)}
-                                disabled={currentPage === totalPages - 1}
-                              >
-                                Next
-                              </button>
-                            </li>
-                          )}
-                        </ul>
-                      </div>
-                    </Col>
-                  </Row>
                 </CardBody>
               </Card>
             </Col>

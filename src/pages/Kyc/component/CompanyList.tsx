@@ -17,6 +17,7 @@ import {
   Table,
 } from "reactstrap";
 import Breadcrumb from "src/components/Common/Breadcrumb";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
 
 interface ICompanyData {
@@ -182,7 +183,8 @@ function CompanyListing() {
                               {company.isKycCompleted ? "COMPLETED" : "PENDING"}
                             </td>
                             <td >
-                              {company?.status}
+                              <StatusIndicator status={company?.status} />
+
                             </td>
                             <td>
                               <Link to={`/vendors/view?id=${company.vendorId}`}>

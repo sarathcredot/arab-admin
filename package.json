@@ -88,6 +88,7 @@
     "react-hook-form": "^7.45.4",
     "react-i18next": "^13.0.3",
     "react-image-lightbox": "^5.1.4",
+    "react-images-uploading": "^3.1.7",
     "react-jvectormap": "^0.0.16",
     "react-leaflet": "^4.2.1",
     "react-modal-video": "^2.0.1",

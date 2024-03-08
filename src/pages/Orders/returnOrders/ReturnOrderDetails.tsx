@@ -113,8 +113,8 @@ const ReturnOrderDetails = () => {
 
   const GET_ORDER = gql`
     query GetAdminOrderDetails($input: GetAdminOrderDetailsInput!) {
-    getAdminOrderDetails(input: $input) {
-     _id
+  getAdminOrderDetails(input: $input) {
+    _id
     orderId
     userId
     paymentMode
@@ -123,18 +123,17 @@ const ReturnOrderDetails = () => {
     username
     shippingAddress {
       _id
-      fullname
+      firstname
       email
       mobile
-      country
-      state
-      addressType
+      streetName
       city
-      address
-      address2
+      houseNumber
+      country
       postCode
-      landmark
-      alternateMobile
+      apartment
+      suite
+      unit
     }
     orderPriceInfo {
       totalMRP
@@ -142,10 +141,9 @@ const ReturnOrderDetails = () => {
       totalShippingCharge
       totalRefundAmount
     }
-      }
-    }
+  }
+}
   `;
-
 
 
 
@@ -178,6 +176,8 @@ const ReturnOrderDetails = () => {
    userId
    productId
    orderId
+   vendorId
+    vendorName
    itemId
    productName
    shortDescription

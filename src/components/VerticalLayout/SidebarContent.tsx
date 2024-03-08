@@ -254,19 +254,15 @@ const SidebarContent = (props: any) => {
             </li>
 
             <li className="mt-3 li-sideBar">
-              <Link to="/brandslist" className="">
+              <Link to="/brands" className="">
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <div style={{ display: "flex", alignItems: "center", }}>
                     <FeatherIcon icon="shopping-bag" />
                     <span>{props.t("Brands")}</span>
                   </div>
-                  <div
-                    className="arrow-down"
-                    style={{ position: "absolute", top: "30px", right: "25px" }}
-                  ></div>
                 </div>
               </Link>
-              <ul className="sub-menu">
+              {/* <ul className="sub-menu">
                 <li>
                   <Link to="/brands">
                     <FeatherIcon icon="chevron-right" />{" "}
@@ -279,7 +275,7 @@ const SidebarContent = (props: any) => {
                     <span>{props.t("Assign Category")}</span>
                   </Link>
                 </li>
-              </ul>
+              </ul> */}
             </li>
 
             <li className="mt-3 li-sideBar">
@@ -361,15 +357,15 @@ const SidebarContent = (props: any) => {
                   <li>
                     <Link to="/cmslisting">
                       <FeatherIcon icon="chevron-right" />{" "}
-                      <span>{props.t("Home Page")}</span>
+                      <span>{props.t("Pages")}</span>
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link to="/cmstwolisting">
                       <FeatherIcon icon="chevron-right" />{" "}
                       <span>{props.t("collections")}</span>
                     </Link>
-                  </li>
+                  </li> */}
                 </ul>
               )}
             </li>

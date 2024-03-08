@@ -47,6 +47,7 @@ import moment from "moment";
 import { formatCurrency } from "src/utils/formatCurrency";
 import "./UserProfile.css"
 import CustomButton from "src/components/Common/CustomButton";
+import Iconify from "src/components/iconify";
 
 
 interface UserData {
@@ -251,6 +252,7 @@ query GetUserRecordByAdmin($input: userInput!) {
       firstName: "",
       lastName: "",
       mobileNumber: "",
+      countryCode: "+968",
       isBlocked: 'false'
     },
     validationSchema: Yup.object({
@@ -303,7 +305,7 @@ query GetUserRecordByAdmin($input: userInput!) {
       userData.getUserRecordByAdmin
     ) {
       setData(userData.getUserRecordByAdmin.record);
-      formik.setValues(userData.getUserRecordByAdmin.record);
+      formik.setValues({ ...userData.getUserRecordByAdmin.record, countryCode: "+968" });
     }
   }, [userData, userRefetch]);
 
@@ -431,7 +433,7 @@ query GetUserRecordByAdmin($input: userInput!) {
                           <p className="mb-0"> {data?.displayName && capitalCase(data?.displayName) || "nill"}</p>
                           <p className="mb-0"> {data?._id || "nill"}</p>
                           <p className="mb-0"> {data?.email || "nill"}</p>
-                          <p className="mb-0">  {` +968 ${data?.mobileNumber}` || "nill"}</p>
+                          <p className="mb-0">  {`+968 ${data?.mobileNumber}` || "nill"}</p>
                         </div>
 
                       </div>
@@ -575,7 +577,28 @@ query GetUserRecordByAdmin($input: userInput!) {
                         <div className="text-danger">{formik.errors.email}</div>
                       )}
                     </div>
+                    <div>
+                      <Label>Country code</Label>
+                      <div className="input-group">
+                        <div className="input-group">
+                          <div className="input-group-prepend">
+                            <span className="input-group-text"><Iconify icon="openmoji:flag-oman" /></span>
+                          </div>
 
+                          <Input
+                            type="text"
+                            id="countryCode"
+                            name="countryCode"
+                            placeholder="Please enter your country code"
+                            value={formik.values?.countryCode}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            disabled
+                          />
+                        </div>
+                      </div>
+
+                    </div>
                     <div>
                       <Label className="form-label pt-2">Phone Number</Label>
                       <Input

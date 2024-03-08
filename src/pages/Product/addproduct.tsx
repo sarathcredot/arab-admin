@@ -1,41 +1,39 @@
 import React, { useEffect, useState } from "react";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { useDropzone, FileWithPath } from "react-dropzone";
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FileWithPath } from "react-dropzone";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
-import styles from "./kyc.module.css";
 import {
-  Row,
-  Col,
+  Button,
   Card,
   CardBody,
-  Container,
   CardHeader,
+  Col,
+  Container,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
   Form,
   FormGroup,
-  Label,
   Input,
-  Button,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Table,
-  ButtonToggle,
+  Label,
+  Row
 } from "reactstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import styles from "./kyc.module.css";
 
-import Breadcrumbs from "../../components/Common/Breadcrumb";
-import FileUpload from "react-drag-n-drop-image";
 import { Icon } from "@ailibs/feather-react-ts";
-import { Link, useNavigate } from "react-router-dom";
+import FileUpload from "react-drag-n-drop-image";
+import { useNavigate } from "react-router-dom";
+import Breadcrumb from "../../components/Common/Breadcrumb";
 
-interface ProductInfoInput {
-  [key: string]: string;
-}
+import ImageUploading, { ImageListType } from "react-images-uploading";
+import CustomButton from "src/components/Common/CustomButton";
+import Iconify from "src/components/iconify";
+
 interface ProductForm {
   productName: string;
   description: string;
@@ -47,9 +45,9 @@ interface ProductForm {
   image: FileWithPath[];
   stock: string;
   isBlocked: boolean;
-  // showFirst: boolean;
   rating: string;
   skuId: string;
+  warehouseSkuId: string;
   material: string;
   size: string;
   color: string;
@@ -63,35 +61,13 @@ interface ProductForm {
   media: any;
   images: any
 }
-interface ProductData {
-  _id: string;
-  color: string;
-  size: string;
-  description: string;
-  material: string;
-  shortDescription: string;
-  images: {
-    fileURL: string;
-  }[];
-  mrp: number;
-  productCode: string;
-  productName: string;
-  rating: number;
-  sellingPrice: number;
-  price: number;
-  tags: string;
-  stock: string;
-  skuId: number;
-  categoryNamePath: string;
-  isBlocked: boolean;
-  brandName: string;
-}
+
 
 interface AddProductProps {
   Edit?: boolean;
-  editedProduct?: any | undefined; // Add this line
-  // ... other properties
+  editedProduct?: any | undefined;
 }
+
 const CREATE_PRODUCT = gql`
   mutation CreateProduct($input: ProductInput!, $images: [Upload]) {
     createProduct(input: $input, images: $images) {
@@ -100,60 +76,24 @@ const CREATE_PRODUCT = gql`
   }
 `;
 const UPDATE_PRODUCT = gql`
-  mutation UpdateProduct($input: ProductUpdateInput!, $images: [Upload]) {
-    updateProduct(input: $input, images: $images) {
-      _id
-      message
-    }
+  mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!, $images: [Upload], $productDetailImages: [Upload]) {
+  updateProductByAdmin(input: $input, images: $images, productDetailImages: $productDetailImages) {
+    _id
+    message
   }
-`;
-const GET_CATEGORY = gql`
-  query GetAllCategoriesOfVendor($input: vendorIdInput!) {
-    getAllCategoriesOfVendor(input: $input) {
-      records {
-        _id
-        categoryName
-        fullCategoryName
-        isBlocked
-        isLeaf
-      }
-    }
-  }
-`;
-const GET_BRAND = gql`
-  query GetAllBrandRecordsWithVendorByVendor(
-    $input: getAllBrandRecordsWithVendorByVendorInput!
-  ) {
-    getAllBrandRecordsWithVendorByVendor(input: $input) {
-      maxRecords
-      message
-      records {
-        _id
-        brandName
-        isBlocked
-        logo {
-          fileType
-          fileURL
-          originalName
-        }
-        isPopular
-        priority
-      }
-    }
-  }
+}
 `;
 
+
 const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
-  document.title = "Product | Arab Deals ";
   const {
     control,
     handleSubmit,
     setValue,
     watch,
-    reset, // Add this line
+    reset,
     formState: { errors },
   } = useForm<ProductForm>({
-    // Add validation rules
     criteriaMode: "all",
     shouldFocusError: true,
     mode: "onBlur",
@@ -161,8 +101,6 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
   interface IAttribute {
     _id: string;
   }
-  console.log(Edit);
-  console.log(editedProduct);
 
   const navigate = useNavigate();
   const [createproduct] = useMutation(CREATE_PRODUCT);
@@ -170,63 +108,24 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
   const [categoryData, setCategoryData] = useState<any>([]);
   const [brandData, setBrandData] = useState<any>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [productInfo, setProductInfo] = useState<string[]>();
   const [remarks, setRemarks] = useState<any>([""]);
   const [attributeid, setattributeid] = useState<IAttribute[] | []>([]);
   const [selectedbrand, setselectedbrand] = useState<any>({});
-  const [fileError, setFileError] = useState<string | null>(null);
 
-  // get attributeid values
-  const handleAttributesSelectChange = (selectedValues: IAttribute[]) => {
-    console.log("Selected Values:", selectedValues);
-    setattributeid(selectedValues);
-    // You can do further processing with the selected values here
-  };
+
   const handleAddRemark = () => {
     setRemarks([...remarks, ""]);
   };
 
   const handleRemoveRemark = (index: any) => {
     const updatedRemarks = [...remarks];
-    updatedRemarks.splice(index, 1); // Remove the remark at the specified index
+    updatedRemarks.splice(index, 1);
     setRemarks(updatedRemarks);
   };
-  console.log(categoryData);
-  console.log("select", selectedCategory);
-
-  const id = localStorage?.getItem("vendorid");
-  const {
-    loading: categoryLoading,
-    error: categoryError,
-    data: categoryDataResponse,
-    refetch: categoryRefetch,
-  } = useQuery(GET_CATEGORY, {
-    variables: {
-      input: {
-        vendorId: id,
-      },
-    },
-  });
-
-  const {
-    loading: brandLoading,
-    error: brandError,
-    data: brandDataResponse,
-    refetch: brandRefetch,
-  } = useQuery(GET_BRAND, {
-    variables: {
-      input: {
-        vendorId: id,
-        page: null,
-        size: 10,
-      },
-    },
-  });
 
   useEffect(() => {
     if (editedProduct) {
       setValue("productName", editedProduct?.productName || "");
-
       setValue("description", editedProduct?.description || "");
       setValue("sellingPrice", editedProduct?.sellingPrice);
       setValue("price", editedProduct?.price || "");
@@ -243,25 +142,17 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
       setValue("categoryNamePath", editedProduct?.categoryNamePath || "");
       setValue("media", editedProduct?.images);
       setRemarks(editedProduct ? editedProduct?.productInfo : [""]);
-      setValue("images", editedProduct?.images)
+      setValue("images", editedProduct?.images);
+      setValue("isBlocked", editedProduct?.isBlocked)
+      setValue("warehouseSkuId", editedProduct?.warehouseSkuId)
     }
   }, [editedProduct]);
-  useEffect(() => {
-    setCategoryData(
-      categoryDataResponse?.getAllCategoriesOfVendor?.records || []
-    );
-    setBrandData(
-      brandDataResponse?.getAllBrandRecordsWithVendorByVendor?.records
-    );
-  }, [categoryDataResponse, brandDataResponse]);
+
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  // const [selectedCategory, setSelectedCategory] = useState<Category>();
-  const [showAddModal, setShowAddModal] = useState<boolean>(false);
 
   const toggleDropdown = () => setDropdownOpen((prevState) => !prevState);
   const getSelectedCategoryData = () => {
-    // Find the selected category in categoryData based on _id
     if (editedProduct) {
       const selectedCategoryData = editedProduct?.categoryId;
       console.log(selectedCategoryData);
@@ -298,9 +189,6 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
     media: {
       required: "media required"
     },
-    material: {
-      required: "material required"
-    },
     offerPrice: {
       required: "offerPrice required"
     },
@@ -336,73 +224,62 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
 
 
   const onSubmit: SubmitHandler<ProductForm> = async (data: any) => {
-    console.log("clickk");
-
-    data.attribute = attributeid;
-    console.log("data", data);
 
     const formdatas = {
       _id: editedProduct?._id,
-      isBlocked: editedProduct ? editedProduct?.isBlocked : data?.isBlocked,
+      isBlocked: data.isBlocked,
       brandId: selectedbrand?.id,
       brandName: selectedbrand?.name,
       categoryId: Edit ? editedProduct?.categoryId : selectedCategory,
       description: data?.description,
-      offerPrice: parseInt(data?.offerPrice),
-      vendorId: id,
-      material: data?.material,
       mrp: parseInt(data?.mrp),
       price: parseInt(data?.price),
-      productCode: parseInt(data?.productCode),
       productInfo: remarks && remarks?.length > 0 ? remarks : [""],
       productName: data?.productName,
       productShortInfo: data?.productShortInfo,
-      rating: parseInt(data?.rating),
+      // rating: parseInt(data?.rating),
       sellingPrice: parseInt(data?.sellingPrice),
       shortDescription: data?.shortDescription,
       skuId: data?.skuId,
       stock: parseInt(data?.stock),
-      tags: editedProduct ? (editedProduct?.tags).join(" ") : data?.tags,
-      attributes: attributeid,
+      warehouseSkuId: data?.warehouseSkuId
     };
-    console.log("formdatas", formdatas);
-
-    const file = data?.images?.map((image: any) => image.file);
-
-    // if (data && data?.images?.length < 0) {
-    //   console.log("errorclick");
-
-    //   setFileError("Please select at least one file.");
-    // }
-    //  else {
     try {
       if (Edit) {
-        formdatas.tags = (data?.tags).join(" ");
-        console.log("click");
-        // formdatas._id=editedProduct?._id,
-
-        const response = await updateproduct({
-          variables: { input: { ...formdatas }, images: file },
-        });
-        console.log(response);
-        if (response) {
-          toast.success(response?.data?.createProduct?.message);
-          navigate("/product");
-        }
-      } else {
-        const response = await createproduct({
-          variables: { input: { ...formdatas }, images: file },
-        });
-        console.log(response);
-        if (response) {
-          toast.success(response?.data?.createProduct?.message);
-          navigate("/product");
+        try {
+          const response = await updateproduct({
+            variables: { input: { ...formdatas }, images: selectedImages },
+          });
+          if (response) {
+            toast.success(response?.data?.createProduct?.message);
+            navigate("/product");
+          }
+        } catch (error: any) {
+          toast.error(error.message);
         }
       }
     } catch (error: any) {
       console.log(error);
     }
-    // }
+  };
+
+  const items = [
+    { text: "Dashboard", link: `/` },
+    { text: "Prodducts", link: `/product` },
+    { text: "Variants", link: `/product/variant?productCode=${editedProduct?.productCode}` },
+  ];
+
+
+  const [images, setImages] = useState([]);
+  const [selectedImages, setselectedImages] = useState([]);
+
+  const onImageChange = (
+    imageList: ImageListType,
+    addUpdateIndex: number[] | undefined
+  ) => {
+    setImages(imageList as never[]);
+    const transformedList = imageList.map(item => item.file);
+    setselectedImages(transformedList as never[]);
   };
 
 
@@ -410,12 +287,7 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          {/* <Breadcrumb
-            title="product"
-            breadcrumbItem={Edit ? "Edit Product" : "Add Product"}
-            link="/product"
-          /> */}
-
+          <Breadcrumb items={items} currentPage="Edit Product" />
           <Row>
             <Col lg={12}>
               <Card>
@@ -428,15 +300,13 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                       <Controller
                         control={control}
                         name="productName"
-                        // rules={{ required: "Name is required" }}
                         render={({ field: { value, onChange } }) => (
                           <>
                             <Input
                               type="text"
                               value={value}
                               onChange={onChange}
-                              // {...field}
-                              className={styles.inputfield}
+
                             />
 
                           </>
@@ -477,84 +347,8 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                         </DropdownMenu>
                       </Dropdown>
                     </FormGroup>
-                    {/* <Catattributes
-                      selectedCategoryData={getSelectedCategoryData()}
-                      onSelectChange={handleAttributesSelectChange}
-                      editedProduct={editedProduct}
-                    /> */}
-
-                    <FormGroup>
-                      <Label for="name">Brand:</Label>
-                      <Controller
-                        control={control}
-                        name="brandName"
-                        render={({ field: { value, onChange } }) => (
-                          <>
-                            <Input
-                              type="select"
-                              value={value}
-                              onChange={(event: any) => {
-                                const selectedBrand = brandData.find(
-                                  (brand: any) =>
-                                    brand.brandName === event.target.value
-                                );
-
-                                // Check if a brand is found before updating the state
-                                if (selectedBrand) {
-                                  setselectedbrand({
-                                    name: selectedBrand.brandName,
-                                    id: selectedBrand._id,
-                                  });
-                                }
-                                onChange(event);
-                              }}
-                              defaultValue={editedProduct?.brandName || "Select"}
-                            >
-                              <option value="">Select</option>
-                              {brandData?.map((brand: any, index: number) => {
-                                return (
-                                  <option key={index} value={brand?.brandName}>
-                                    {brand?.brandName}
-                                  </option>
-                                );
-                              })}
-                            </Input>
-                          </>
-                        )}
-                        rules={fieldRules.brand}
-                      />
-                      {errors?.brandName && (
-                        <div className={styles.errmsg}>{errors?.brandName?.message}</div>
-                      )}
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="description">Description:</Label>
-                      <Controller
-                        control={control}
-                        name="description"
-                        // rules={{ required: "Description is required" }}
-                        render={({ field: { value, onChange } }) => (
-                          <>
-                            <Input
-                              type="textarea"
-                              value={value}
-                              onChange={onChange}
-                              className={styles.inputfield}
-                            // {...field}
-                            />
-
-                          </>
-                        )}
-                        rules={fieldRules.description}
-                      />
-                      {errors?.description ? (
-                        <div className={styles.errmsg}>
-                          {errors?.description?.message}
-                        </div>
-                      ) : null}
-                    </FormGroup>
-
                     <Row>
+
                       <Col md={6}>
                         <FormGroup>
                           <Label for="productShortInfo">
@@ -572,8 +366,8 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                                   type="text"
                                   value={value}
                                   onChange={onChange}
-                                  // {...field}
-                                  className={styles.inputfield}
+                                // {...field}
+
                                 />
 
                               </>
@@ -605,7 +399,7 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                                   value={value}
                                   onChange={onChange}
 
-                                  className={styles.inputfield}
+
                                 />
 
                               </>
@@ -619,94 +413,38 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                           ) : null}
                         </FormGroup>
                       </Col>
-                      <Col md={6}>
+                    </Row>
+
+                    <FormGroup>
+                      <Label for="description">Description:</Label>
+                      <Controller
+                        control={control}
+                        name="description"
+                        render={({ field: { value, onChange } }) => (
+                          <>
+                            <Input
+                              style={{ minHeight: "100px" }}
+                              type="textarea"
+                              value={value}
+                              onChange={onChange}
+                            />
+
+                          </>
+                        )}
+                        rules={fieldRules.description}
+                      />
+                      {errors?.description ? (
+                        <div className={styles.errmsg}>
+                          {errors?.description?.message}
+                        </div>
+                      ) : null}
+                    </FormGroup>
+
+                    <Row>
+
+                      <Col md={4}>
                         <FormGroup>
-                          <Label for="price">Product Code:</Label>
-                          <Controller
-                            control={control}
-                            name="productCode"
-
-                            render={({ field: { value, onChange } }) => (
-                              <>
-                                <Input
-                                  type="number"
-                                  value={value}
-                                  onChange={onChange}
-
-                                  className={styles.inputfield}
-                                />
-
-                              </>
-                            )}
-                            rules={fieldRules.productCode}
-                          />
-                          {errors?.productCode ? (
-                            <div className={styles.errmsg}>
-                              {errors?.productCode?.message}
-                            </div>
-                          ) : null}
-                        </FormGroup>
-                      </Col>
-                      <Col md={6}>
-                        <FormGroup>
-                          <Label for="price">Price:</Label>
-                          <Controller
-                            control={control}
-                            name="price"
-                            // rules={{ required: "Price is required" }}
-                            render={({ field: { value, onChange } }) => (
-                              <>
-                                <Input
-                                  type="number"
-
-                                  value={value}
-                                  onChange={onChange}
-                                  className={styles.inputfield}
-                                />
-
-                              </>
-                            )}
-                            rules={fieldRules.price}
-                          />
-                          {errors?.price ? (
-                            <div className={styles.errmsg}>
-                              {errors?.price?.message}
-                            </div>
-                          ) : null}
-                        </FormGroup>
-                      </Col>
-                      <Col md={6}>
-                        <FormGroup>
-                          <Label for="sellingPrice">Selling Price:</Label>
-                          <Controller
-                            control={control}
-                            name="sellingPrice"
-                            render=
-                            {({ field: { value, onChange } }) => (
-                              <>
-                                <Input
-                                  type="number"
-                                  value={value}
-                                  onChange={onChange}
-
-                                  className={styles.inputfield}
-
-                                />
-
-                              </>
-                            )}
-                            rules={fieldRules.sellingPrice}
-                          />
-                          {errors?.sellingPrice ? (
-                            <div className={styles.errmsg}>
-                              {errors?.sellingPrice?.message}
-                            </div>
-                          ) : null}
-                        </FormGroup>
-                      </Col>
-                      <Col md={6}>
-                        <FormGroup>
-                          <Label for="mrp">mrp:</Label>
+                          <Label for="mrp">MRP :</Label>
                           <Controller
                             control={control}
                             name="mrp"
@@ -718,7 +456,7 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                                   value={value}
                                   onChange={onChange}
 
-                                  className={styles.inputfield}
+
                                 />
 
                               </>
@@ -732,59 +470,85 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                           ) : null}
                         </FormGroup>
                       </Col>
-                      <Col md={6}>
+
+                      <Col md={4}>
                         <FormGroup>
-                          <Label for="offerPrice">Offer Price:</Label>
+                          <Label for="price">Price:</Label>
                           <Controller
                             control={control}
-                            name="offerPrice"
-
+                            name="price"
+                            // rules={{ required: "Price is required" }}
                             render={({ field: { value, onChange } }) => (
                               <>
                                 <Input
                                   type="number"
 
-                                  className={styles.inputfield}
+                                  value={value}
+                                  onChange={onChange}
+
+                                />
+
+                              </>
+                            )}
+                            rules={fieldRules.price}
+                          />
+                          {errors?.price ? (
+                            <div className={styles.errmsg}>
+                              {errors?.price?.message}
+                            </div>
+                          ) : null}
+                        </FormGroup>
+                      </Col>
+                      <Col md={4}>
+                        <FormGroup>
+                          <Label for="sellingPrice">Selling Price:</Label>
+                          <Controller
+                            control={control}
+                            name="sellingPrice"
+                            render=
+                            {({ field: { value, onChange } }) => (
+                              <>
+                                <Input
+                                  type="number"
                                   value={value}
                                   onChange={onChange}
                                 />
 
                               </>
                             )}
-                            rules={fieldRules.offerPrice}
+                            rules={fieldRules.sellingPrice}
                           />
-                          {errors?.offerPrice ? (
+                          {errors?.sellingPrice ? (
                             <div className={styles.errmsg}>
-                              {errors?.offerPrice?.message}
+                              {errors?.sellingPrice?.message}
                             </div>
                           ) : null}
                         </FormGroup>
                       </Col>
+
                       <Col md={6}>
                         <FormGroup>
                           <Label for="isBlocked">Status</Label>
                           <Controller
                             control={control}
                             name="isBlocked"
-                            render={({ field }) => (
+                            render={({ field: { value, onChange } }) => (
                               <Input
                                 type="select"
                                 id="isBlocked"
-                                className={styles.inputfield}
+                                value={value == true ? "true" : "false"}
                                 onChange={(e) =>
-                                  field.onChange(e.target.value === "true")
+                                  onChange(e.target.value === "true")
                                 }
                               >
                                 <option value="">Select an option</option>
-                                <option value="true">Block</option>
-                                <option value="false">Activate</option>
+                                <option value="true">Blocked</option>
+                                <option value="false">Active</option>
                               </Input>
                             )}
                           />
                         </FormGroup>
                       </Col>
-                    </Row>
-                    <Row>
                       <Col md={6}>
                         <FormGroup>
                           <Label for="stock">Stock:</Label>
@@ -798,7 +562,6 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                                   type="text"
                                   value={value}
                                   onChange={onChange}
-                                  className={styles.inputfield}
                                 />
 
                               </>
@@ -812,59 +575,11 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                           ) : null}
                         </FormGroup>
                       </Col>
-                      <Col md={6}>
-                        <FormGroup>
-                          <Label for="tags">Tags:</Label>
-                          <Controller
-                            control={control}
-                            name="tags"
-                            rules={{ required: "Tags is required" }}
-                            render={({ field }) => (
-                              <>
-                                <Input
-                                  type="text"
-                                  id="tags"
-                                  {...field}
-                                  className={styles.inputfield}
-                                />
-                                {errors.tags && (
-                                  <p className="text-danger">
-                                    {errors.tags.message}
-                                  </p>
-                                )}
-                              </>
-                            )}
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col md={6}>
-                        <FormGroup>
-                          <Label for="rating">Rating:</Label>
-                          <Controller
-                            control={control}
-                            name="rating"
+                    </Row>
+                    <Row>
 
-                            render={({ field: { value, onChange } }) => (
-                              <>
-                                <Input
-                                  type="number"
 
-                                  value={value}
-                                  onChange={onChange}
-                                  className={styles.inputfield}
-                                />
 
-                              </>
-                            )}
-                            rules={fieldRules.rating}
-                          />
-                          {errors?.rating ? (
-                            <div className={styles.errmsg}>
-                              {errors?.rating?.message}
-                            </div>
-                          ) : null}
-                        </FormGroup>
-                      </Col>
                       <Col md={6}>
                         <FormGroup>
                           <Label for="skuid">SKU ID:</Label>
@@ -877,11 +592,35 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                                   type="text"
                                   id="skuid"
                                   {...field}
-                                  className={styles.inputfield}
+
                                 />
                                 {errors.skuId && (
                                   <p className="text-danger">
                                     {errors.skuId.message}
+                                  </p>
+                                )}
+                              </>
+                            )}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col md={6}>
+                        <FormGroup>
+                          <Label for="warehouseSkuId">Warehouse SKU ID:</Label>
+                          <Controller
+                            control={control}
+                            name="warehouseSkuId"
+                            render={({ field }) => (
+                              <>
+                                <Input
+                                  type="text"
+                                  id="warehouseSkuId"
+                                  {...field}
+
+                                />
+                                {errors.warehouseSkuId && (
+                                  <p className="text-danger">
+                                    {errors.warehouseSkuId.message}
                                   </p>
                                 )}
                               </>
@@ -918,7 +657,7 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                                   color="primary"
                                   onClick={handleAddRemark}
                                 >
-                                  + {/* Plus icon */}
+                                  +
                                 </Button>
                               )}{" "}
                               {index !== 0 && (
@@ -930,7 +669,7 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                                   color="danger"
                                   onClick={() => handleRemoveRemark(index)}
                                 >
-                                  - {/* Minus icon */}
+                                  -
                                 </Button>
                               )}
                             </div>
@@ -938,63 +677,65 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                         ))}
                       </FormGroup>
                     </Row>
-                    <FormGroup>
-                      <Label for="material">Material:</Label>
-                      <Controller
-                        control={control}
-                        name="material"
 
-                        render={({ field: { value, onChange } }) => (
-                          <>
-                            <Input
-                              type="text"
-                              value={value}
-                              onChange={onChange}
+                    <div style={{ padding: "0px 0px 0 0px" }}>
+                      <label>Images :</label>
+                      <ImageUploading
+                        multiple
+                        value={images}
+                        onChange={onImageChange}
+                        maxNumber={7}
+                      >
+                        {({
+                          imageList,
+                          onImageUpload,
+                          onImageRemoveAll,
+                          onImageUpdate,
+                          onImageRemove,
+                          isDragging,
+                          dragProps,
+                        }) => (
+                          // write your building UI
+                          <div className="upload__image-wrapper" style={{ display: "flex", flexDirection: "column", gap: "10px" }} >
+                            <div
+                              style={{ color: isDragging ? "red" : undefined, width: "100%", height: "100px", border: "1px dashed black", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}
+                              onClick={onImageUpload}
+                              {...dragProps} >
+                              Click or Drop here
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              {
+                                imageList.length ? <label>Selected Images :</label> : ""
+                              }
+                              {
+                                imageList.length ?
+                                  <CustomButton onClick={onImageRemoveAll} name="Remove all images" icon="mdi:remove" /> : ""
+                              }
+                            </div>
+                            <div style={{ display: 'flex', flexWrap: "wrap", gap: "20px" }}>
+                              {imageList.map((image, index) => (
+                                <div key={index} className="image-item">
+                                  <div style={{ position: 'relative' }}>
+                                    <img src={image.dataURL} alt="" style={{ width: "200px" }} />
+                                    <div className="image-item__btn-wrapper">
+                                      <Button onClick={() => onImageRemove(index)} style={{ position: 'absolute', top: 0, right: 0, margin: "4px", padding: "4px" }}><Iconify icon="mdi:close" /></Button>
+                                      <Button onClick={() => onImageUpdate(index)} style={{ position: 'absolute', top: 0, left: 0, margin: "4px", padding: "4px" }}><Iconify icon="ic:baseline-edit" /></Button>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
 
-                              className={styles.inputfield}
-                            />
-
-                          </>
+                          </div>
                         )}
-                        rules={fieldRules.material}
-                      />
-                      {errors?.material ? (
-                        <div className={styles.errmsg}>
-                          {errors?.material?.message}
-                        </div>
-                      ) : null}
-                    </FormGroup>
+                      </ImageUploading>
 
-                    <Card>
-                      <CardHeader>
-                        <label>Media</label>
-                      </CardHeader>
-                      <CardBody>
-                        <Controller
-                          control={control}
-                          name="images"
-                          render={({ field }) => (
-                            <>
-                              <MediaUpload
-                                setValue={setValue}
-                                watch={watch}
-                                control={control}
-                                editedProduct={editedProduct}
-                              />
-                            </>
-                          )}
-                          rules={fieldRules.images}
-                        />
-                        {errors?.images && (
-                          <div className={styles.errmsg}>{String(errors?.images?.message)}</div>
-                        )}
-
-                      </CardBody>
-                    </Card>
+                    </div>
 
                     <Button
                       type="submit"
                       style={{
+                        marginTop: "20px",
                         backgroundColor: "black",
                         color: "white",
                         width: "120px",
@@ -1002,17 +743,16 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                         borderRadius: "10px",
                       }}
                     >
-                      {Edit ? "Edit Product" : "Add product"}
+                      Submit
                     </Button>
                   </Form>
                 </CardBody>
               </Card>
-            </Col>
-          </Row>
-        </Container>
-      </div>
-      <ToastContainer />
-    </React.Fragment>
+            </Col >
+          </Row >
+        </Container >
+      </div >
+    </React.Fragment >
   );
 };
 
@@ -1031,8 +771,6 @@ const MediaUpload: React.FC<any> = ({
   const [files, setFiles] = useState([]);
   const images = watch("images", []);
   const media = watch("media", []);
-  console.log(editedProduct);
-  console.log(media);
 
   const onChange = (file: any) => {
     console.log(file);

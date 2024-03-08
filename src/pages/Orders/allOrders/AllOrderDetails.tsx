@@ -145,12 +145,14 @@ const ALlOrderDetails = () => {
   `;
 
     const GET_ORDER_PRODUCTS = gql`
-    query GetAdminOrderProducts ($input:GetAdminOrderProductsInput!){
-    getAdminOrderProducts (input : $input){
+    query GetAdminOrderProducts($input: GetAdminOrderProductsInput!) {
+  getAdminOrderProducts(input: $input) {
     products {
       _id
       userId
       productId
+      vendorId
+      vendorName
       orderId
       itemId
       productName
@@ -196,10 +198,9 @@ const ALlOrderDetails = () => {
         originalName
       }
       username
-      
-    }
     }
   }
+}
    `
 
 
@@ -354,7 +355,7 @@ const ALlOrderDetails = () => {
                                                                 Products:
                                                             </label>
                                                         </div>
-                                                        <div>
+                                                        <div style={{ display: "flex", flexDirection: "column", gap: "30px" }}>
                                                             {Array.isArray(orderProducts) && orderProducts.map((product: ProductsData, index: number) => (
                                                                 <OrderProductsDetails key={index} product={product} orderProdcutsRefetch={orderProdcutsRefetch} orderRefetch={orderRefetch} />
                                                             ))}

@@ -26,6 +26,7 @@ import {
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import CustomButton from "../../components/Common/CustomButton";
 import Loader from "../../components/Common/Loader";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
 interface User {
   _id: string;
@@ -302,7 +303,8 @@ const UserList = () => {
                             </Td>
                             <Td>{user.email}</Td>
                             <Td>
-                              <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                              <StatusIndicator status={user?.isBlocked ? "BLOCKED" : "ACTIVE"} variant={"default"} />
+                              {/* <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                                 <div
                                   style={{
                                     width: "8px",
@@ -312,7 +314,7 @@ const UserList = () => {
                                   }}
                                 />
                                 {user?.isBlocked == false ? "Active" : "Block"}
-                              </div>
+                              </div> */}
                             </Td>
                             <Td>
                               {"  "}
