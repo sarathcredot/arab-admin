@@ -20,6 +20,7 @@ import FormVender from "../venders/FormVender";
 import { bR } from "@fullcalendar/core/internal-common";
 import BrandForm from "./BrandForm";
 import CustomButton from "src/components/Common/CustomButton";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
 interface IBrandRecord {
   _id: string;
@@ -35,8 +36,10 @@ const BrandList: React.FC = () => {
   const [brandData, setBrandData] = useState<IBrandRecord[]>([]);
   const [activeTab, setActiveTab] = useState<boolean>();
   const [currentPage, setCurrentPage] = useState(0);
-  const pageSize = 10; // Number of items per page
+  const pageSize = 10;
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
+  const [maxRecords, setMaxRecords] = useState(0);
+
 
   const GET_BRAND = gql`
     query GetAllBrandRecordsByAdmin($input: BrandRecordsFilter) {
@@ -63,8 +66,8 @@ const BrandList: React.FC = () => {
   } = useQuery(GET_BRAND, {
     variables: {
       input: {
-        page: null,
-        size: 10,
+        page: currentPage,
+        size: pageSize,
       },
     },
   });
@@ -72,6 +75,7 @@ const BrandList: React.FC = () => {
   useEffect(() => {
     if (brandDataResponse && brandDataResponse.getAllBrandRecordsByAdmin) {
       setBrandData(brandDataResponse.getAllBrandRecordsByAdmin.records);
+      setMaxRecords(brandDataResponse.getAllBrandRecordsByAdmin.maxRecords);
     }
   }, [brandDataResponse, brandRefetch]);
 
@@ -80,7 +84,7 @@ const BrandList: React.FC = () => {
 
   }
 
-  const totalPages = Math.ceil(brandData.length / pageSize);
+  const totalPages = Math.ceil(maxRecords / pageSize);
 
   const handleNextPage = () => {
     if (currentPage + 1 < totalPages) {
@@ -174,7 +178,7 @@ const BrandList: React.FC = () => {
                         )
                         .map((brand, index) => (
                           <tr key={brand._id}>
-                            <td>{index + 1}</td>
+                            <td>{currentPage * pageSize + index + 1}</td>
                             <td>{brand.brandName}</td>
 
                             <td>
@@ -187,11 +191,9 @@ const BrandList: React.FC = () => {
                               )}
                             </td>
                             <td
-                              style={{
-                                color: brand.isBlocked ? "red" : "#5cb85c",
-                              }}
                             >
-                              {brand.isBlocked ? "Blocked" : "Active"}
+                              <StatusIndicator status={brand.isBlocked ? "BLOCKED" : "ACTIVE"} />
+
                             </td>
                             <td>
                               <Link to={`/brands/${brand._id}`}>

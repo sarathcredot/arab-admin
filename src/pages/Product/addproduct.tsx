@@ -60,6 +60,7 @@ interface ProductForm {
   _id: string;
   media: any;
   images: any
+  status: string;
 }
 
 
@@ -145,6 +146,7 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
       setValue("images", editedProduct?.images);
       setValue("isBlocked", editedProduct?.isBlocked)
       setValue("warehouseSkuId", editedProduct?.warehouseSkuId)
+      setValue("status", editedProduct?.status)
     }
   }, [editedProduct]);
 
@@ -242,7 +244,8 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
       shortDescription: data?.shortDescription,
       skuId: data?.skuId,
       stock: parseInt(data?.stock),
-      warehouseSkuId: data?.warehouseSkuId
+      warehouseSkuId: data?.warehouseSkuId,
+      status: data?.status
     };
     try {
       if (Edit) {
@@ -528,7 +531,32 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
 
                       <Col md={6}>
                         <FormGroup>
-                          <Label for="isBlocked">Status</Label>
+                          <Label for="status">Status</Label>
+                          <Controller
+                            control={control}
+                            name="status"
+                            render={({ field: { value, onChange } }) => (
+                              <Input
+                                type="select"
+                                id="status"
+                                value={value}
+                                onChange={(e) =>
+                                  onChange(e.target.value)
+                                }
+                              >
+                                <option value="">Select an option</option>
+                                <option value="PENDING">PENDING</option>
+                                <option value="UNDER_VERIFICATION">UNDER VERIFICATION</option>
+                                <option value="APPROVED">APPROVED</option>
+                                <option value="REJECTED">REJECTED</option>
+                              </Input>
+                            )}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col md={6}>
+                        <FormGroup>
+                          <Label for="isBlocked">Blocking Status</Label>
                           <Controller
                             control={control}
                             name="isBlocked"

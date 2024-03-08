@@ -36,13 +36,13 @@ interface ICompany {
     fileURL: string;
     mimeType: string;
     originalName: string;
-  };
+  } | undefined;
   cooCertificate: {
     fileType: string;
     fileURL: string;
     mimeType: string;
     originalName: string;
-  };
+  } | undefined;
   address: string;
   remarks: string[] | any;
 }
@@ -148,12 +148,13 @@ function ViewCardCompany({ IdCompany }: IPropes) {
       companyName: companyData?.companyName || '',
       companyType: companyData?.companyType || '',
       crNumber: companyData?.crNumber || '',
-      status: companyData?.status || "",
-      cooCertificate: companyData?.status || "",
-      crLicense: companyData?.status || "",
-      remarks: Array.isArray(companyData?.remarks) ? companyData?.remarks.join(', ') : companyData?.remarks,
+      status: companyData?.status || '',
+      remarks: Array.isArray(companyData?.remarks) ? companyData?.remarks.join(', ') : companyData?.remarks || [], // Ensure remarks is an array
+      cooCertificate: '',
+      crLicense: '',
     });
   }, [modal, companyRefetch]);
+
 
 
   const onSubmit = async (values: any) => {
@@ -271,7 +272,7 @@ function ViewCardCompany({ IdCompany }: IPropes) {
                         name="COO Certificate"
                         icon="mingcute:upload-line"
                         onClick={() =>
-                          handleImageClick(companyData?.cooCertificate?.fileURL, companyData?.cooCertificate.mimeType)
+                          handleImageClick(companyData?.cooCertificate?.fileURL || "", companyData?.cooCertificate?.mimeType || "")
                         }
                       />
                     )}
@@ -281,7 +282,7 @@ function ViewCardCompany({ IdCompany }: IPropes) {
                           name="CR License"
                           icon="mingcute:upload-line"
                           onClick={() =>
-                            handleImageClick(companyData?.crLicense?.fileURL, companyData?.crLicense.mimeType)
+                            handleImageClick(companyData?.crLicense?.fileURL || "", companyData?.crLicense?.mimeType || "")
                           }
                         />
                       </div>
@@ -427,7 +428,7 @@ function ViewCardCompany({ IdCompany }: IPropes) {
                     onChange={(event) => {
                       formik.setFieldValue(
                         "cooCertificate",
-                        event.currentTarget.files?.[0] || []
+                        event.currentTarget.files?.[0]
                       );
                     }}
                   />
@@ -446,7 +447,7 @@ function ViewCardCompany({ IdCompany }: IPropes) {
                     onChange={(event) => {
                       formik.setFieldValue(
                         "crLicense",
-                        event.currentTarget.files?.[0] || []
+                        event.currentTarget.files?.[0]
                       );
                     }}
                   />

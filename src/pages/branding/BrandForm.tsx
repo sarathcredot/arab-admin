@@ -183,7 +183,7 @@ const BrandForm: React.FC<Props> = ({
     <>
       <ToastContainer />
       <Modal isOpen={isOpen} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Add Brand</ModalHeader>
+        <ModalHeader toggle={toggle}>{isEdit ? "Edit Brand" : "Add Brand"}</ModalHeader>
         <ModalBody>
           <Form onSubmit={formik.handleSubmit}>
             <FormGroup>
@@ -295,7 +295,7 @@ const BrandForm: React.FC<Props> = ({
 
             <ModalFooter style={{ marginTop: "20px" }}>
               <Button color="primary">
-                Add
+                Submit
               </Button>
               <Button
 
