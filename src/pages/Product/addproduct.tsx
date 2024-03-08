@@ -26,7 +26,7 @@ import {
 import styles from "./kyc.module.css";
 
 import { Icon } from "@ailibs/feather-react-ts";
-import FileUpload from "react-drag-n-drop-image";
+// import FileUpload from "react-drag-n-drop-image";
 import { useNavigate } from "react-router-dom";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 
@@ -762,112 +762,112 @@ function CustomBody() {
   return <div>Select / Drag and drop Photos</div>;
 }
 
-const MediaUpload: React.FC<any> = ({
-  setValue,
-  watch,
-  control,
-  editedProduct,
-}) => {
-  const [files, setFiles] = useState([]);
-  const images = watch("images", []);
-  const media = watch("media", []);
+// const MediaUpload: React.FC<any> = ({
+//   setValue,
+//   watch,
+//   control,
+//   editedProduct,
+// }) => {
+//   const [files, setFiles] = useState([]);
+//   const images = watch("images", []);
+//   const media = watch("media", []);
 
-  const onChange = (file: any) => {
-    console.log(file);
-    setValue("images", file);
-    setFiles(file);
-  };
-  console.log(files);
+//   const onChange = (file: any) => {
+//     console.log(file);
+//     setValue("images", file);
+//     setFiles(file);
+//   };
+//   console.log(files);
 
-  useEffect(() => {
-    setFiles(images || []);
-  }, []);
+//   useEffect(() => {
+//     setFiles(images || []);
+//   }, []);
 
-  const onRemoveImage = (id: any) => {
-    setFiles((prev) => prev.filter((i: any) => i.id !== id));
-  };
-  const onError = (error: any) => {
-    console.error(error);
-  };
-  const removePrev = (n: any) => {
-    setValue("media", media.slice(0, n).concat(media.slice(n + 1)));
-  };
-  return (
-    <div>
-      <FileUpload
-        className="drop-section"
-        onError={onError}
-        body={<CustomBody />}
-        overlap={false}
-        fileValue={files}
-        onChange={onChange}
-      />
-      <div className="upload-image-box">
-        {media?.map((item: any, index: any) => {
-          return (
-            <div
-              aria-hidden
-              style={{
-                width: 80,
-                height: 80,
-                marginRight: 10,
-                position: "relative",
-                flexWrap: "wrap",
-              }}
-              key={item.id}
-            >
-              <img
-                style={{ width: 80, height: 80 }}
-                src={item.url || item.preview || item?.fileURL}
-                alt="images"
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  top: 3,
-                  right: 5,
-                  cursor: "pointer",
-                }}
-                onClick={() => removePrev(index)}
-              >
-                <Icon name="x" size={15} />
-              </div>
-            </div>
-          );
-        })}
-        {files?.map((item: any) => {
-          return (
-            <div
-              aria-hidden
-              style={{
-                width: 80,
-                height: 80,
-                marginRight: 10,
-                position: "relative",
-                flexWrap: "wrap",
-              }}
-              key={item.id}
-            >
-              <img
-                style={{ width: 80, height: 80 }}
-                src={item.preview}
-                alt="images"
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  top: 3,
-                  right: 5,
-                  cursor: "pointer",
-                }}
-                onClick={() => onRemoveImage(item.id)}
-              >
-                <Icon name="x" size={15} />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
+//   const onRemoveImage = (id: any) => {
+//     setFiles((prev) => prev.filter((i: any) => i.id !== id));
+//   };
+//   const onError = (error: any) => {
+//     console.error(error);
+//   };
+//   const removePrev = (n: any) => {
+//     setValue("media", media.slice(0, n).concat(media.slice(n + 1)));
+//   };
+//   return (
+//     <div>
+//       <FileUpload
+//         className="drop-section"
+//         onError={onError}
+//         body={<CustomBody />}
+//         overlap={false}
+//         fileValue={files}
+//         onChange={onChange}
+//       />
+//       <div className="upload-image-box">
+//         {media?.map((item: any, index: any) => {
+//           return (
+//             <div
+//               aria-hidden
+//               style={{
+//                 width: 80,
+//                 height: 80,
+//                 marginRight: 10,
+//                 position: "relative",
+//                 flexWrap: "wrap",
+//               }}
+//               key={item.id}
+//             >
+//               <img
+//                 style={{ width: 80, height: 80 }}
+//                 src={item.url || item.preview || item?.fileURL}
+//                 alt="images"
+//               />
+//               <div
+//                 style={{
+//                   position: "absolute",
+//                   top: 3,
+//                   right: 5,
+//                   cursor: "pointer",
+//                 }}
+//                 onClick={() => removePrev(index)}
+//               >
+//                 <Icon name="x" size={15} />
+//               </div>
+//             </div>
+//           );
+//         })}
+//         {files?.map((item: any) => {
+//           return (
+//             <div
+//               aria-hidden
+//               style={{
+//                 width: 80,
+//                 height: 80,
+//                 marginRight: 10,
+//                 position: "relative",
+//                 flexWrap: "wrap",
+//               }}
+//               key={item.id}
+//             >
+//               <img
+//                 style={{ width: 80, height: 80 }}
+//                 src={item.preview}
+//                 alt="images"
+//               />
+//               <div
+//                 style={{
+//                   position: "absolute",
+//                   top: 3,
+//                   right: 5,
+//                   cursor: "pointer",
+//                 }}
+//                 onClick={() => onRemoveImage(item.id)}
+//               >
+//                 <Icon name="x" size={15} />
+//               </div>
+//             </div>
+//           );
+//         })}
+//       </div>
+//     </div>
+//   );
+// };
