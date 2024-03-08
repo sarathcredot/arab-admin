@@ -7,14 +7,14 @@ import ChoicesInput from "./ChoicesInput";
 import Switcher from "./Switcher";
 
 const AdvancedPlugins = () => {
-  document.title = "Advanced Plugins | Minia - React Admin & Dashboard Template";
+  // document.title = "Advanced Plugins | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
-      <div className="page-content">        
+      <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Forms" breadcrumbItem="Forms Advanced Plugins" />
+          {/* <Breadcrumbs title="Forms" breadcrumbItem="Forms Advanced Plugins" /> */}
           <Row>
             <Col lg={12}>
               <Card>

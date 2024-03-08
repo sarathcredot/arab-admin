@@ -40,13 +40,13 @@ const columns = [
 ];
 
 const EditableTables = () => {
-  document.title = "Editable Table | Minia - React Admin & Dashboard Template";
+  // document.title = "Editable Table | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <div className="container-fluid">
-          <Breadcrumbs title="Tables" breadcrumbItem="Editable Table" />
+          {/* <Breadcrumbs title="Tables" breadcrumbItem="Editable Table" /> */}
 
           <Row>
             <Col>

@@ -1,34 +1,38 @@
 import React, { useEffect, useState } from "react";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { useDropzone, FileWithPath } from "react-dropzone";
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FileWithPath } from "react-dropzone";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
-
 import {
-  Row,
-  Col,
+  Button,
   Card,
   CardBody,
-  Container,
   CardHeader,
+  Col,
+  Container,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
   Form,
   FormGroup,
-  Label,
   Input,
-  Button,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Table,
-  ButtonToggle,
+  Label,
+  Row
 } from "reactstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import styles from "./kyc.module.css";
 
-import Breadcrumbs from "../../components/Common/Breadcrumb";
+import { Icon } from "@ailibs/feather-react-ts";
+import FileUpload from "react-drag-n-drop-image";
+import { useNavigate } from "react-router-dom";
+import Breadcrumb from "../../components/Common/Breadcrumb";
+
+import ImageUploading, { ImageListType } from "react-images-uploading";
+import CustomButton from "src/components/Common/CustomButton";
+import Iconify from "src/components/iconify";
 
 interface ProductForm {
   productName: string;
@@ -41,572 +45,484 @@ interface ProductForm {
   image: FileWithPath[];
   stock: string;
   isBlocked: boolean;
-  // showFirst: boolean;
   rating: string;
   skuId: string;
+  warehouseSkuId: string;
   material: string;
   size: string;
   color: string;
-}
-interface ProductData {
-  _id: string;
-  color: string;
-  size: string;
-  description: string;
-  material: string;
-  shortDescription: string;
-  images: {
-    fileURL: string;
-  }[];
-  mrp: number;
-  productCode: string;
-  productName: string;
-  rating: number;
-  sellingPrice: number;
-  price: number;
-  tags: string;
-  stock: string;
-  skuId: number;
+  offerPrice: number;
+  productCode: number;
+  productInfo: string[];
+  productShortInfo: string;
+  brandName: string;
   categoryNamePath: string;
-  isBlocked: boolean;
+  _id: string;
+  media: any;
+  images: any
 }
+
 
 interface AddProductProps {
   Edit?: boolean;
-  editedProduct?: ProductData | undefined; // Add this line
-  // ... other properties
+  editedProduct?: any | undefined;
 }
+
 const CREATE_PRODUCT = gql`
-  mutation Mutation($input: ProductInput!, $images: [Upload]) {
+  mutation CreateProduct($input: ProductInput!, $images: [Upload]) {
     createProduct(input: $input, images: $images) {
-      product {
-        _id
-      }
+      message
     }
   }
 `;
 const UPDATE_PRODUCT = gql`
-  mutation UpdateProduct($input: ProductUpdateInput!, $images: [Upload]) {
-    updateProduct(input: $input, images: $images) {
-      _id
-    }
+  mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!, $images: [Upload], $productDetailImages: [Upload]) {
+  updateProductByAdmin(input: $input, images: $images, productDetailImages: $productDetailImages) {
+    _id
+    message
   }
+}
 `;
+
+
 const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
   const {
     control,
     handleSubmit,
-    setValue, // Add this line
+    setValue,
+    watch,
+    reset,
     formState: { errors },
   } = useForm<ProductForm>({
-    // Add validation rules
     criteriaMode: "all",
     shouldFocusError: true,
     mode: "onBlur",
   });
-  interface Category {
+  interface IAttribute {
     _id: string;
-    categoryName: string;
-    fullCategoryName: string;
   }
 
-  interface ColorType {
-    categoryIdPath: string;
-    colorCode: string;
-    colorName: string;
-    isBlocked: boolean;
-  }
-  interface SizeType {
-    categoryIdPath: string;
-    isBlocked: string;
-    size: string;
-  }
+  const navigate = useNavigate();
+  const [createproduct] = useMutation(CREATE_PRODUCT);
+  const [updateproduct] = useMutation(UPDATE_PRODUCT);
+  const [categoryData, setCategoryData] = useState<any>([]);
+  const [brandData, setBrandData] = useState<any>([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [remarks, setRemarks] = useState<any>([""]);
+  const [attributeid, setattributeid] = useState<IAttribute[] | []>([]);
+  const [selectedbrand, setselectedbrand] = useState<any>({});
+
+
+  const handleAddRemark = () => {
+    setRemarks([...remarks, ""]);
+  };
+
+  const handleRemoveRemark = (index: any) => {
+    const updatedRemarks = [...remarks];
+    updatedRemarks.splice(index, 1);
+    setRemarks(updatedRemarks);
+  };
+
+  useEffect(() => {
+    if (editedProduct) {
+      setValue("productName", editedProduct?.productName || "");
+      setValue("description", editedProduct?.description || "");
+      setValue("sellingPrice", editedProduct?.sellingPrice);
+      setValue("price", editedProduct?.price || "");
+      setValue("rating", editedProduct?.rating);
+      setValue("offerPrice", editedProduct?.offerPrice);
+      setValue("productCode", editedProduct?.productCode);
+      setValue("mrp", editedProduct?.mrp);
+      setValue("productShortInfo", editedProduct?.productShortInfo || "");
+      setValue("shortDescription", editedProduct?.shortDescription || "");
+      setValue("skuId", editedProduct?.skuId || "");
+      setValue("stock", editedProduct?.stock);
+      setValue("tags", editedProduct?.tags);
+      setValue("brandName", editedProduct?.brandName || "");
+      setValue("categoryNamePath", editedProduct?.categoryNamePath || "");
+      setValue("media", editedProduct?.images);
+      setRemarks(editedProduct ? editedProduct?.productInfo : [""]);
+      setValue("images", editedProduct?.images);
+      setValue("isBlocked", editedProduct?.isBlocked)
+      setValue("warehouseSkuId", editedProduct?.warehouseSkuId)
+    }
+  }, [editedProduct]);
+
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category>();
-  const [showAddModal, setShowAddModal] = useState<boolean>(false);
-  const [colors, setColors] = useState([]);
-  const [size, setSize] = useState([]);
 
   const toggleDropdown = () => setDropdownOpen((prevState) => !prevState);
+  const getSelectedCategoryData = () => {
+    if (editedProduct) {
+      const selectedCategoryData = editedProduct?.categoryId;
+      console.log(selectedCategoryData);
 
-  const [categories, setCategoryData] = useState([]);
-
-  const GET_LEAF_RECORDS = gql`
-    query GetAllLeafRecords {
-      getAllLeafRecords {
-        records {
-          categoryName
-          _id
-          isBlocked
-          fullCategoryName
-        }
-      }
+      return selectedCategoryData;
+    } else {
+      const selectedCategoryData = categoryData.find(
+        (category: any) => category._id === selectedCategory
+      );
+      return selectedCategoryData?._id;
     }
-  `;
-
-  const GET_ALL_COLORES = gql`
-    query GetAllColorsWithCategoryId($input: CategoryIdInput) {
-      getAllColorsWithCategoryId(input: $input) {
-        records {
-          categoryIdPath
-          colorCode
-          colorName
-          isBlocked
-        }
-      }
-    }
-  `;
-  const GET_ALL_SIZE = gql`
-    query GetAllSizesWithCatgeoryId($input: CategoryIdInput) {
-      getAllSizesWithCatgeoryId(input: $input) {
-        records {
-          categoryIdPath
-          isBlocked
-          size
-        }
-      }
-    }
-  `;
-
-  const { loading: categoriesLoading, data: categoriesData } =
-    useQuery(GET_LEAF_RECORDS);
-
-  const {
-    loading: colorsLoading,
-    data: colorsData,
-    refetch: refetchColors,
-  } = useQuery(GET_ALL_COLORES, {
-    variables: { input: { categoryId: selectedCategory?._id } },
-    skip: !selectedCategory?._id, // Skip the query if categoryId is not available
-  });
-  const {
-    loading: sizeLoading,
-    data: sizeData,
-    refetch: refetchSize,
-  } = useQuery(GET_ALL_SIZE, {
-    variables: { input: { categoryId: selectedCategory?._id } },
-    skip: !selectedCategory?._id,
-  });
-
-  useEffect(() => {
-    if (selectedCategory) {
-      refetchSize({ input: { categoryId: selectedCategory._id } }).then(() => {
-        setSize(sizeData?.getAllSizesWithCatgeoryId?.records);
-      });
-    }
-  }, [selectedCategory, refetchSize, sizeData]);
-
-  useEffect(() => {
-    if (categoriesData) {
-      setCategoryData(categoriesData?.getAllLeafRecords?.records);
-    }
-  }, [categoriesData]);
-
-  useEffect(() => {
-    if (selectedCategory) {
-      refetchColors({ input: { categoryId: selectedCategory?._id } });
-    }
-  }, [selectedCategory, refetchColors]);
-
-  useEffect(() => {
-    if (colorsData) {
-      setColors(colorsData?.getAllColorsWithCategoryId?.records);
-    }
-  }, [colorsData]);
-
-  const handleCategorySelect = (category: Category) => {
-    setSelectedCategory(category);
   };
 
-  const toggleAddModal = () => {
-    setShowAddModal(!showAddModal);
-  };
 
-  const [createProduct] = useMutation(CREATE_PRODUCT);
-  const [updateProduct] = useMutation(UPDATE_PRODUCT);
+  const fieldRules = {
+    productName: {
+      required: "Name is required",
+    },
+    description: {
+      required: "Description is required",
+    },
+    shortDescription: {
+      required: "ShortDescription is required",
+    },
+    mrp: {
+      required: "Mrp is required",
+    },
+    sellingPrice: {
+      required: "SellingPrice is required",
+    },
+    tags: {
+      required: "mrp is required",
+    },
+    media: {
+      required: "media required"
+    },
+    offerPrice: {
+      required: "offerPrice required"
+    },
+    productCode: {
+      required: "productCode required"
+    },
+    productInfo: {
+      required: "This field is required.",
+    },
+    productShortInfo: {
+      required: "This field is required.",
+    },
+    price: {
+      required: "This field is required.",
+    },
+    stock: {
+      required: "This field is required.",
+    },
+    brand: {
+      required: "Brand is required",
+    },
+    rating: {
+      required: "Rating is required",
+      pattern: {
+        value: /^[0-4](\.\d{1,2})?$/, // Adjust the pattern as needed
+        message: "Invalid rating. Please enter a valid value less than 5.",
+      },
+    },
+    images: {
+      required: "Please select at least one image",
+    },
+  }
 
-  useEffect(() => {
-    if (Edit && editedProduct) {
-      // Set default values for each form field based on editedProduct
-      setValue("productName", editedProduct.productName);
-      setValue("description", editedProduct.description);
-      setValue("shortDescription", editedProduct.shortDescription);
-      // setValue("category",editedProduct.categoryNamePath);
-      setValue("price", editedProduct.price.toString());
-      setValue("mrp", editedProduct.mrp.toString());
-      setValue("sellingPrice", editedProduct.sellingPrice.toString());
-      setValue("tags", editedProduct.tags);
-      setValue("stock", editedProduct.stock);
-      setValue("skuId", editedProduct.skuId.toString());
-      setValue("rating", editedProduct.rating.toString());
-      setValue("isBlocked", editedProduct.isBlocked ? true : false);
-      setValue("material", editedProduct.material);
-      setValue("size", editedProduct.size);
-      setValue("color", editedProduct.color);
-    }
-  }, [Edit, editedProduct, setValue]);
 
-  const onSubmit: SubmitHandler<ProductForm> = async (data) => {
+  const onSubmit: SubmitHandler<ProductForm> = async (data: any) => {
+
+    const formdatas = {
+      _id: editedProduct?._id,
+      isBlocked: data.isBlocked,
+      brandId: selectedbrand?.id,
+      brandName: selectedbrand?.name,
+      categoryId: Edit ? editedProduct?.categoryId : selectedCategory,
+      description: data?.description,
+      mrp: parseInt(data?.mrp),
+      price: parseInt(data?.price),
+      productInfo: remarks && remarks?.length > 0 ? remarks : [""],
+      productName: data?.productName,
+      productShortInfo: data?.productShortInfo,
+      // rating: parseInt(data?.rating),
+      sellingPrice: parseInt(data?.sellingPrice),
+      shortDescription: data?.shortDescription,
+      skuId: data?.skuId,
+      stock: parseInt(data?.stock),
+      warehouseSkuId: data?.warehouseSkuId
+    };
     try {
-      // Add images to the FormData
-      // if (data.image) {
-      //   data.image.forEach((file) => formData.append("images", file));
-      // }
-
-      // Shared variables for mutation and input parameters
-      const mutation = Edit ? updateProduct : createProduct;
-      const inputParams = {
-        categoryId: selectedCategory?._id
-          ? selectedCategory._id.toString()
-          : null,
-        productName: data.productName,
-        description: data.description,
-        shortDescription: data.shortDescription || null,
-        price: parseFloat(data.price),
-        mrp: parseFloat(data.mrp),
-        sellingPrice: parseFloat(data.sellingPrice),
-        tags: data.tags,
-        stock: parseInt(data.stock, 10),
-        isBlocked: data.isBlocked,
-        rating: parseInt(data.rating, 10),
-        skuId: data.skuId,
-        material: data.material,
-        size: data.size,
-        color: data.color,
-      };
-
-      if (selectedCategory?._id) {
-        inputParams.categoryId = selectedCategory._id.toString();
+      if (Edit) {
+        try {
+          const response = await updateproduct({
+            variables: { input: { ...formdatas }, images: selectedImages },
+          });
+          if (response) {
+            toast.success(response?.data?.createProduct?.message);
+            navigate("/product");
+          }
+        } catch (error: any) {
+          toast.error(error.message);
+        }
       }
-
-      if (colorsData && selectedCategory) {
-        inputParams.color = data.color;
-      }
-
-      if (sizeData && selectedCategory) {
-        inputParams.size = data.size;
-      }
-
-      // Check if it's an edit or add operation
-      const response = await mutation({
-        variables: {
-          input: Edit
-            ? { ...inputParams, _id: editedProduct?._id }
-            : inputParams,
-          images: acceptedFiles ? acceptedFiles : [],
-        },
-      });
-
-      toast.success(`Product ${Edit ? "updated" : "added"} successfully!`);
-    } catch (error:any) {
-      if (error instanceof Error) {
-        console.log(
-          `Error ${Edit ? "updating" : "creating"} product:`,
-          error.message
-        );
-        toast.error(error.message);
-      } else {
-        console.log(`Error ${Edit ? "updating" : "creating"} product:`, error);
-        toast.error(error.message);
-      }
+    } catch (error: any) {
+      console.log(error);
     }
   };
 
-  const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
-    useDropzone();
+  const items = [
+    { text: "Dashboard", link: `/` },
+    { text: "Prodducts", link: `/product` },
+    { text: "Variants", link: `/product/variant?productCode=${editedProduct?.productCode}` },
+  ];
+
+
+  const [images, setImages] = useState([]);
+  const [selectedImages, setselectedImages] = useState([]);
+
+  const onImageChange = (
+    imageList: ImageListType,
+    addUpdateIndex: number[] | undefined
+  ) => {
+    setImages(imageList as never[]);
+    const transformedList = imageList.map(item => item.file);
+    setselectedImages(transformedList as never[]);
+  };
+
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs
-            title="product"
-            breadcrumbItem={Edit ? "Edit Product" : "Add Product"}
-            link="/product"
-          />
-
+          <Breadcrumb items={items} currentPage="Edit Product" />
           <Row>
             <Col lg={12}>
               <Card>
                 <CardBody>
-                  <Form onSubmit={handleSubmit(onSubmit)}>
+                  <Form
+                    onSubmit={handleSubmit(onSubmit)}
+                  >
                     <FormGroup>
                       <Label for="name">Name:</Label>
                       <Controller
                         control={control}
                         name="productName"
-                        rules={{ required: "Name is required" }}
-                        render={({ field }) => (
-                          <>
-                            <Input type="text" id="name" {...field} />
-                            {errors.productName && (
-                              <p className="text-danger">
-                                {errors.productName.message}
-                              </p>
-                            )}
-                          </>
-                        )}
-                      />
-                    </FormGroup>
-
-                    {editedProduct ? (
-                      <>
-                        <label>Category:</label>
-
-                        <Input
-                          type="text"
-                          defaultValue={editedProduct.categoryNamePath}
-                          disabled
-                        />
-
-                        <label>Size</label>
-
-                        <Input
-                          type="text"
-                          defaultValue={editedProduct.size}
-                          disabled
-                        />
-
-                        <label>Color</label>
-
-                        <Input
-                          type="text"
-                          defaultValue={editedProduct.color}
-                          disabled
-                        />
-                      </>
-                    ) : (
-                      <>
-                        <FormGroup>
-                          <label>Category:</label>
-                          <Dropdown
-                            isOpen={dropdownOpen}
-                            toggle={toggleDropdown}
-                          >
-                            <DropdownToggle caret disabled={Edit}>
-                              {selectedCategory
-                                ? selectedCategory.fullCategoryName
-                                : "Select Category"}
-                              {"  "}
-                              <FontAwesomeIcon
-                                icon={faAngleDown}
-                                style={{ marginRight: "5px" }}
-                              />
-                            </DropdownToggle>
-                            <DropdownMenu>
-                              {categories.map((category: Category, index) => (
-                                <DropdownItem
-                                  key={index}
-                                  onClick={() => handleCategorySelect(category)}
-                                >
-                                  {category.fullCategoryName}
-                                </DropdownItem>
-                              ))}
-                            </DropdownMenu>
-                          </Dropdown>
-                        </FormGroup>
-
-                        <FormGroup>
-                          <Label for="color">Color:</Label>
-                          {colorsLoading ? (
-                            <p>Loading colors...</p>
-                          ) : (
-                            <>
-                              {colorsData && selectedCategory ? (
-                                <Controller
-                                  control={control}
-                                  name="color"
-                                  rules={{ required: "Color is required" }}
-                                  render={({ field }) => (
-                                    <Input type="select" id="color" {...field}>
-                                      <option value="">Select Color</option>
-                                      {colors.map(
-                                        (colorOption: ColorType, index) => (
-                                          <option
-                                            key={index}
-                                            value={colorOption.colorName}
-                                          >
-                                            {colorOption.colorName}
-                                          </option>
-                                        )
-                                      )}
-                                    </Input>
-                                  )}
-                                />
-                              ) : (
-                                <Input
-                                  type="select"
-                                  name="color"
-                                  id="color"
-                                  disabled
-                                >
-                                  <option value="">
-                                    Please select a category
-                                  </option>
-                                </Input>
-                              )}
-                            </>
-                          )}
-                        </FormGroup>
-
-                        <FormGroup>
-                          <Label for="size">Size:</Label>
-                          {sizeLoading ? (
-                            <p>Loading sizes...</p>
-                          ) : (
-                            <>
-                              {sizeData && selectedCategory ? (
-                                <Controller
-                                  control={control}
-                                  name="size"
-                                  rules={{ required: "Size is required" }}
-                                  render={({ field }) => (
-                                    <Input type="select" id="size" {...field}>
-                                      <option value="">Select Size</option>
-                                      {size?.map(
-                                        (sizeOption: SizeType, index) => (
-                                          <option
-                                            key={index}
-                                            value={sizeOption.size}
-                                          >
-                                            {sizeOption.size}
-                                          </option>
-                                        )
-                                      )}
-                                    </Input>
-                                  )}
-                                />
-                              ) : (
-                                <Input
-                                  type="select"
-                                  name="size"
-                                  id="size"
-                                  disabled
-                                >
-                                  <option value="">
-                                    Please select a category
-                                  </option>
-                                </Input>
-                              )}
-                            </>
-                          )}
-                        </FormGroup>
-                    <FormGroup>
-                      <Label for="shortDescription">Short Description:</Label>
-                      <Controller
-                        control={control}
-                        name="shortDescription"
-                        rules={{ required: "Short Description is required" }}
-                        render={({ field }) => (
+                        render={({ field: { value, onChange } }) => (
                           <>
                             <Input
-                              type="textarea"
-                              id="shortdescription"
-                              {...field}
+                              type="text"
+                              value={value}
+                              onChange={onChange}
+
                             />
-                            {errors.shortDescription && (
-                              <p className="text-danger">
-                                {errors.shortDescription.message}
-                              </p>
-                            )}
+
                           </>
                         )}
+                        rules={fieldRules.productName}
                       />
+                      {errors?.productName ? (
+                        <div className={styles.errmsg}>
+                          {errors?.productName?.message}
+                        </div>
+                      ) : null}
                     </FormGroup>
-                      </>
-                    )}
+                    <FormGroup>
+                      <label>Category:</label>
+                      <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+                        <DropdownToggle caret disabled={Edit}>
+                          {editedProduct && editedProduct?.categoryNamePath}
+                          {selectedCategory
+                            ? categoryData.find(
+                              (category: any) =>
+                                category._id === getSelectedCategoryData()
+                            )?.fullCategoryName
+                            : "Select Category"}
+                          <FontAwesomeIcon
+                            icon={faAngleDown}
+                            style={{ marginRight: "5px" }}
+                          />
+                        </DropdownToggle>
+                        <DropdownMenu>
+                          {categoryData?.map((category: any) => (
+                            <DropdownItem
+                              key={category._id}
+                              onClick={() => setSelectedCategory(category._id)}
+                            >
+                              {category.fullCategoryName}
+                            </DropdownItem>
+                          ))}
+                        </DropdownMenu>
+                      </Dropdown>
+                    </FormGroup>
+                    <Row>
+
+                      <Col md={6}>
+                        <FormGroup>
+                          <Label for="productShortInfo">
+                            Product ShortInfo:
+                          </Label>
+                          <Controller
+                            control={control}
+                            name="productShortInfo"
+                            // rules={{
+                            //   required: "Product ShortInfo is required",
+                            // }}
+                            render={({ field: { value, onChange } }) => (
+                              <>
+                                <Input
+                                  type="text"
+                                  value={value}
+                                  onChange={onChange}
+                                // {...field}
+
+                                />
+
+                              </>
+                            )}
+                            rules={fieldRules.productShortInfo}
+                          />
+                          {errors?.productShortInfo ? (
+                            <div className={styles.errmsg}>
+                              {errors?.productShortInfo?.message}
+                            </div>
+                          ) : null}
+                        </FormGroup>
+                      </Col>
+                      <Col md={6}>
+                        <FormGroup>
+                          <Label for="shortDescription">
+                            Product Short Description:
+                          </Label>
+                          <Controller
+                            control={control}
+                            name="shortDescription"
+                            // rules={{
+                            //   required: "Short Description is required",
+                            // }}
+                            render={({ field: { value, onChange } }) => (
+                              <>
+                                <Input
+                                  type="text"
+                                  value={value}
+                                  onChange={onChange}
+
+
+                                />
+
+                              </>
+                            )}
+                            rules={fieldRules.productName}
+                          />
+                          {errors?.shortDescription ? (
+                            <div className={styles.errmsg}>
+                              {errors?.shortDescription?.message}
+                            </div>
+                          ) : null}
+                        </FormGroup>
+                      </Col>
+                    </Row>
 
                     <FormGroup>
                       <Label for="description">Description:</Label>
                       <Controller
                         control={control}
                         name="description"
-                        rules={{ required: "Description is required" }}
-                        render={({ field }) => (
+                        render={({ field: { value, onChange } }) => (
                           <>
                             <Input
+                              style={{ minHeight: "100px" }}
                               type="textarea"
-                              id="description"
-                              {...field}
+                              value={value}
+                              onChange={onChange}
                             />
-                            {errors.description && (
-                              <p className="text-danger">
-                                {errors.description.message}
-                              </p>
-                            )}
+
                           </>
                         )}
+                        rules={fieldRules.description}
                       />
+                      {errors?.description ? (
+                        <div className={styles.errmsg}>
+                          {errors?.description?.message}
+                        </div>
+                      ) : null}
                     </FormGroup>
 
                     <Row>
-                      <Col md={6}>
+
+                      <Col md={4}>
+                        <FormGroup>
+                          <Label for="mrp">MRP :</Label>
+                          <Controller
+                            control={control}
+                            name="mrp"
+
+                            render={({ field: { value, onChange } }) => (
+                              <>
+                                <Input
+                                  type="number"
+                                  value={value}
+                                  onChange={onChange}
+
+
+                                />
+
+                              </>
+                            )}
+                            rules={fieldRules.mrp}
+                          />
+                          {errors?.mrp ? (
+                            <div className={styles.errmsg}>
+                              {errors?.mrp?.message}
+                            </div>
+                          ) : null}
+                        </FormGroup>
+                      </Col>
+
+                      <Col md={4}>
                         <FormGroup>
                           <Label for="price">Price:</Label>
                           <Controller
                             control={control}
                             name="price"
-                            rules={{ required: "Price is required" }}
-                         
-                            render={({ field }) => (
-                              <>
-                                <Input type="number"  id="price" {...field} />
-                                {errors.price && (
-                                  <p className="text-danger">
-                                    {errors.price.message}
-                                  </p>
-                                )}
-                              </>
-                            )}
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col md={6}>
-                        <FormGroup>
-                          <Label for="price">Selling Price:</Label>
-                          <Controller
-                            control={control}
-                            name="sellingPrice"
-                            rules={{ required: "sellingPrice is required" }}
-                            render={({ field }) => (
+                            // rules={{ required: "Price is required" }}
+                            render={({ field: { value, onChange } }) => (
                               <>
                                 <Input
                                   type="number"
-                                  id="price"
-                                  onChange={(e) =>
-                                    field.onChange(Number(e.target.value))
-                                  }
-                                  value={field.value}
+
+                                  value={value}
+                                  onChange={onChange}
+
                                 />
-                                {errors.sellingPrice && (
-                                  <p className="text-danger">
-                                    {errors.sellingPrice.message}
-                                  </p>
-                                )}
+
                               </>
                             )}
+                            rules={fieldRules.price}
                           />
+                          {errors?.price ? (
+                            <div className={styles.errmsg}>
+                              {errors?.price?.message}
+                            </div>
+                          ) : null}
                         </FormGroup>
                       </Col>
-                      <Col md={6}>
+                      <Col md={4}>
                         <FormGroup>
-                          <Label for="price">mrp:</Label>
+                          <Label for="sellingPrice">Selling Price:</Label>
                           <Controller
                             control={control}
-                            name="mrp"
-                            rules={{ required: "mrp is required" }}
-                            render={({ field }) => (
+                            name="sellingPrice"
+                            render=
+                            {({ field: { value, onChange } }) => (
                               <>
-                                <Input   type="number" id="price" {...field} />
-                                {errors.mrp && (
-                                  <p className="text-danger">
-                                    {errors.mrp.message}
-                                  </p>
-                                )}
+                                <Input
+                                  type="number"
+                                  value={value}
+                                  onChange={onChange}
+                                />
+
                               </>
                             )}
+                            rules={fieldRules.sellingPrice}
                           />
+                          {errors?.sellingPrice ? (
+                            <div className={styles.errmsg}>
+                              {errors?.sellingPrice?.message}
+                            </div>
+                          ) : null}
                         </FormGroup>
                       </Col>
 
@@ -616,97 +532,54 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                           <Controller
                             control={control}
                             name="isBlocked"
-                            render={({ field }) => (
+                            render={({ field: { value, onChange } }) => (
                               <Input
                                 type="select"
                                 id="isBlocked"
+                                value={value == true ? "true" : "false"}
                                 onChange={(e) =>
-                                  field.onChange(e.target.value === "true")
+                                  onChange(e.target.value === "true")
                                 }
                               >
                                 <option value="">Select an option</option>
-                                <option value="true">Block</option>
-                                <option value="false">Activate</option>
+                                <option value="true">Blocked</option>
+                                <option value="false">Active</option>
                               </Input>
                             )}
                           />
                         </FormGroup>
-
-                        {/* <FormGroup>
-                          <Label for="showFirst">Show First:</Label>
-                          <Controller
-                            control={control}
-                            name="showFirst"
-                            render={({ field }) => (
-                              <Input
-                                type="checkbox"
-                                checked={field.value}
-                                onChange={() => field.onChange(!field.value)}
-                              />
-                            )}
-                          />
-                        </FormGroup> */}
                       </Col>
-                    </Row>
-                    <Row>
                       <Col md={6}>
                         <FormGroup>
                           <Label for="stock">Stock:</Label>
                           <Controller
                             control={control}
                             name="stock"
-                            rules={{ required: "Stock is required" }}
-                            render={({ field }) => (
+
+                            render={({ field: { value, onChange } }) => (
                               <>
-                                <Input type="text" id="stock" {...field} />
-                                {errors.stock && (
-                                  <p className="text-danger">
-                                    {errors.stock.message}
-                                  </p>
-                                )}
+                                <Input
+                                  type="text"
+                                  value={value}
+                                  onChange={onChange}
+                                />
+
                               </>
                             )}
+                            rules={fieldRules.stock}
                           />
+                          {errors?.stock ? (
+                            <div className={styles.errmsg}>
+                              {errors?.stock?.message}
+                            </div>
+                          ) : null}
                         </FormGroup>
                       </Col>
-                      <Col md={6}>
-                        <FormGroup>
-                          <Label for="tags">Tags:</Label>
-                          <Controller
-                            control={control}
-                            name="tags"
-                            render={({ field }) => (
-                              <>
-                                <Input type="text" id="tags" {...field} />
-                                {errors.tags && (
-                                  <p className="text-danger">
-                                    {errors.tags.message}
-                                  </p>
-                                )}
-                              </>
-                            )}
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col md={6}>
-                        <FormGroup>
-                          <Label for="rating">Rating:</Label>
-                          <Controller
-                            control={control}
-                            name="rating"
-                            render={({ field }) => (
-                              <>
-                                <Input type="number" id="rating" {...field} />
-                                {errors.rating && (
-                                  <p className="text-danger">
-                                    {errors.rating.message}
-                                  </p>
-                                )}
-                              </>
-                            )}
-                          />
-                        </FormGroup>
-                      </Col>
+                    </Row>
+                    <Row>
+
+
+
                       <Col md={6}>
                         <FormGroup>
                           <Label for="skuid">SKU ID:</Label>
@@ -715,7 +588,12 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                             name="skuId"
                             render={({ field }) => (
                               <>
-                                <Input type="text" id="skuid" {...field} />
+                                <Input
+                                  type="text"
+                                  id="skuid"
+                                  {...field}
+
+                                />
                                 {errors.skuId && (
                                   <p className="text-danger">
                                     {errors.skuId.message}
@@ -726,56 +604,138 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                           />
                         </FormGroup>
                       </Col>
-                    </Row>
-                    <FormGroup>
-                      <Label for="material">Material:</Label>
-                      <Controller
-                        control={control}
-                        name="material"
-                        render={({ field }) => (
-                          <>
-                            <Input type="text" id="material" {...field} />
-                            {errors.material && (
-                              <p className="text-danger">
-                                {errors.material.message}
-                              </p>
+                      <Col md={6}>
+                        <FormGroup>
+                          <Label for="warehouseSkuId">Warehouse SKU ID:</Label>
+                          <Controller
+                            control={control}
+                            name="warehouseSkuId"
+                            render={({ field }) => (
+                              <>
+                                <Input
+                                  type="text"
+                                  id="warehouseSkuId"
+                                  {...field}
+
+                                />
+                                {errors.warehouseSkuId && (
+                                  <p className="text-danger">
+                                    {errors.warehouseSkuId.message}
+                                  </p>
+                                )}
+                              </>
                             )}
-                          </>
-                        )}
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="image">Image:</Label>
-                      <Controller
-                        control={control}
-                        name="image"
-                        render={({ field }) => (
-                          <>
-                            <div {...getRootProps()} className="dropzone">
-                              <input {...getInputProps()} />
-                              {isDragActive ? (
-                                <p>Drop the files here ...</p>
-                              ) : (
-                                <p>
-                                  Drag 'n' drop some files here, or click to
-                                  select files
-                                </p>
+                          />
+                        </FormGroup>
+                      </Col>
+                      <FormGroup>
+                        <Label for="productInfo">Product Info:</Label>
+
+                        {remarks?.map((remark: any, index: any) => (
+                          <FormGroup
+                            key={index}
+                            style={{ marginBottom: "10px" }}
+                          >
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Input
+                                type="text"
+                                id={`remark-${index}`}
+                                name={`remark-${index}`}
+                                value={remark}
+                                onChange={(e) => {
+                                  const updatedRemarks = [...remarks];
+                                  updatedRemarks[index] = e.target.value;
+                                  setRemarks(updatedRemarks);
+                                }}
+                                required
+                                style={{ marginRight: "10px" }}
+                              />
+                              {index === remarks.length - 1 && (
+                                <Button
+                                  color="primary"
+                                  onClick={handleAddRemark}
+                                >
+                                  +
+                                </Button>
+                              )}{" "}
+                              {index !== 0 && (
+                                <Button
+                                  style={{
+                                    marginLeft: "5px",
+                                    marginRight: "5px",
+                                  }}
+                                  color="danger"
+                                  onClick={() => handleRemoveRemark(index)}
+                                >
+                                  -
+                                </Button>
                               )}
                             </div>
-                            <ul>
-                              {acceptedFiles.map((file, index) => (
-                                <li key={index}>
-                                  {file.name} - {file.size} bytes
-                                </li>
+                          </FormGroup>
+                        ))}
+                      </FormGroup>
+                    </Row>
+
+                    <div style={{ padding: "0px 0px 0 0px" }}>
+                      <label>Images :</label>
+                      <ImageUploading
+                        multiple
+                        value={images}
+                        onChange={onImageChange}
+                        maxNumber={7}
+                      >
+                        {({
+                          imageList,
+                          onImageUpload,
+                          onImageRemoveAll,
+                          onImageUpdate,
+                          onImageRemove,
+                          isDragging,
+                          dragProps,
+                        }) => (
+                          // write your building UI
+                          <div className="upload__image-wrapper" style={{ display: "flex", flexDirection: "column", gap: "10px" }} >
+                            <div
+                              style={{ color: isDragging ? "red" : undefined, width: "100%", height: "100px", border: "1px dashed black", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}
+                              onClick={onImageUpload}
+                              {...dragProps} >
+                              Click or Drop here
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              {
+                                imageList.length ? <label>Selected Images :</label> : ""
+                              }
+                              {
+                                imageList.length ?
+                                  <CustomButton onClick={onImageRemoveAll} name="Remove all images" icon="mdi:remove" /> : ""
+                              }
+                            </div>
+                            <div style={{ display: 'flex', flexWrap: "wrap", gap: "20px" }}>
+                              {imageList.map((image, index) => (
+                                <div key={index} className="image-item">
+                                  <div style={{ position: 'relative' }}>
+                                    <img src={image.dataURL} alt="" style={{ width: "200px" }} />
+                                    <div className="image-item__btn-wrapper">
+                                      <Button onClick={() => onImageRemove(index)} style={{ position: 'absolute', top: 0, right: 0, margin: "4px", padding: "4px" }}><Iconify icon="mdi:close" /></Button>
+                                      <Button onClick={() => onImageUpdate(index)} style={{ position: 'absolute', top: 0, left: 0, margin: "4px", padding: "4px" }}><Iconify icon="ic:baseline-edit" /></Button>
+                                    </div>
+                                  </div>
+                                </div>
                               ))}
-                            </ul>
-                          </>
+                            </div>
+
+                          </div>
                         )}
-                      />
-                    </FormGroup>
+                      </ImageUploading>
+
+                    </div>
+
                     <Button
                       type="submit"
                       style={{
+                        marginTop: "20px",
                         backgroundColor: "black",
                         color: "white",
                         width: "120px",
@@ -783,18 +743,131 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                         borderRadius: "10px",
                       }}
                     >
-                      {Edit ? "Edit Product" : "Add product "}
+                      Submit
                     </Button>
                   </Form>
                 </CardBody>
               </Card>
-            </Col>
-          </Row>
-        </Container>
-      </div>
-      <ToastContainer />
-    </React.Fragment>
+            </Col >
+          </Row >
+        </Container >
+      </div >
+    </React.Fragment >
   );
 };
 
 export default AddProduct;
+
+function CustomBody() {
+  return <div>Select / Drag and drop Photos</div>;
+}
+
+const MediaUpload: React.FC<any> = ({
+  setValue,
+  watch,
+  control,
+  editedProduct,
+}) => {
+  const [files, setFiles] = useState([]);
+  const images = watch("images", []);
+  const media = watch("media", []);
+
+  const onChange = (file: any) => {
+    console.log(file);
+    setValue("images", file);
+    setFiles(file);
+  };
+  console.log(files);
+
+  useEffect(() => {
+    setFiles(images || []);
+  }, []);
+
+  const onRemoveImage = (id: any) => {
+    setFiles((prev) => prev.filter((i: any) => i.id !== id));
+  };
+  const onError = (error: any) => {
+    console.error(error);
+  };
+  const removePrev = (n: any) => {
+    setValue("media", media.slice(0, n).concat(media.slice(n + 1)));
+  };
+  return (
+    <div>
+      <FileUpload
+        className="drop-section"
+        onError={onError}
+        body={<CustomBody />}
+        overlap={false}
+        fileValue={files}
+        onChange={onChange}
+      />
+      <div className="upload-image-box">
+        {media?.map((item: any, index: any) => {
+          return (
+            <div
+              aria-hidden
+              style={{
+                width: 80,
+                height: 80,
+                marginRight: 10,
+                position: "relative",
+                flexWrap: "wrap",
+              }}
+              key={item.id}
+            >
+              <img
+                style={{ width: 80, height: 80 }}
+                src={item.url || item.preview || item?.fileURL}
+                alt="images"
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  top: 3,
+                  right: 5,
+                  cursor: "pointer",
+                }}
+                onClick={() => removePrev(index)}
+              >
+                <Icon name="x" size={15} />
+              </div>
+            </div>
+          );
+        })}
+        {files?.map((item: any) => {
+          return (
+            <div
+              aria-hidden
+              style={{
+                width: 80,
+                height: 80,
+                marginRight: 10,
+                position: "relative",
+                flexWrap: "wrap",
+              }}
+              key={item.id}
+            >
+              <img
+                style={{ width: 80, height: 80 }}
+                src={item.preview}
+                alt="images"
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  top: 3,
+                  right: 5,
+                  cursor: "pointer",
+                }}
+                onClick={() => onRemoveImage(item.id)}
+              >
+                <Icon name="x" size={15} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};

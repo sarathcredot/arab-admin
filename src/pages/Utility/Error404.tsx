@@ -6,7 +6,7 @@ import error from "../../assets/images/error-img.png";
 
 const Error404 = () => {
 
-  document.title = "404 Error | Minia - React Admin & Dashboard Template";
+  // document.title = "404 Error | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

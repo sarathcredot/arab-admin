@@ -1,16 +1,11 @@
 import PropTypes from "prop-types";
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback, useState } from "react";
 
 //Import Icons
 import FeatherIcon from "feather-icons-react";
 
 // //Import Scrollbar
 import SimpleBar from "simplebar-react";
-
-//Import images
-import giftBox from "../../assets/images/giftbox.png";
-
-//i18n
 import { withTranslation } from "react-i18next";
 
 // MetisMenu
@@ -20,13 +15,15 @@ import { Link, useLocation } from "react-router-dom";
 import withRouter from "../../../src/components/Common/withRouter";
 
 const SidebarContent = (props: any) => {
-  const ref: any = useRef();
+  const ref = useRef<any>();
+  const [expandedItems, setExpandedItems] = useState<string[]>([]);
+
   const activateParentDropdown = useCallback((item: any) => {
     item.classList.add("active");
     const parent = item.parentElement;
-    const parent2El = parent.childNodes[1];
+    const parent2El = parent?.childNodes[1];
 
-    if (parent2El && parent2El.id !== "side-menu") {
+    if (parent2El && parent2El?.id !== "side-menu") {
       parent2El.classList.add("mm-show");
     }
 
@@ -65,7 +62,7 @@ const SidebarContent = (props: any) => {
       var item = items[i];
       const parent = items[i].parentElement;
 
-      if (item && item.classList.contains("active")) {
+      if (item && item?.classList?.contains("active")) {
         item.classList.remove("active");
       }
       if (parent) {
@@ -104,21 +101,22 @@ const SidebarContent = (props: any) => {
   };
 
   const path = useLocation();
+
   const activeMenu = useCallback(() => {
     const pathName = path.pathname;
-    let matchingMenuItem = null;
+
     const ul: any = document.getElementById("side-menu");
     const items = ul.getElementsByTagName("a");
+
     removeActivation(items);
 
     for (let i = 0; i < items.length; ++i) {
-      if (pathName === items[i].pathname) {
-        matchingMenuItem = items[i];
+      const itemPath = items[i].getAttribute("href");
+
+      if (itemPath && (pathName === itemPath || pathName.startsWith(itemPath))) {
+        activateParentDropdown(items[i]);
         break;
       }
-    }
-    if (matchingMenuItem) {
-      activateParentDropdown(matchingMenuItem);
     }
   }, [path.pathname, activateParentDropdown]);
 
@@ -136,7 +134,7 @@ const SidebarContent = (props: any) => {
     activeMenu();
   }, [activeMenu]);
 
-  function scrollElement(item: any) {
+  function scrollElement(item: HTMLAnchorElement) {
     if (item) {
       const currentPosition = item.offsetTop;
       if (currentPosition > window.innerHeight) {
@@ -145,17 +143,37 @@ const SidebarContent = (props: any) => {
     }
   }
 
+  const [openMenus, setOpenMenus] = useState<string[]>([]);
+
+  const handleItemClick = (itemPath: string, e: any) => {
+    if (openMenus.includes(itemPath)) {
+      setOpenMenus((prevMenus) => prevMenus.filter((menu) => menu !== itemPath));
+    } else {
+      const parentPath = getParentPath(itemPath);
+      setOpenMenus((prevMenus) => [
+        ...prevMenus.filter((menu) => !menu.startsWith(parentPath)),
+        itemPath,
+      ]);
+    }
+    e.preventDefault();
+  };
+
+  const getParentPath = (itemPath: string) => {
+    const segments = itemPath.split('/').filter(Boolean);
+    segments.pop();
+    return `/${segments.join('/')}`;
+  };
+
+
   return (
     <React.Fragment>
       <SimpleBar style={{ maxHeight: "100%" }} ref={ref}>
         <div id="sidebar-menu">
           <ul className="metismenu list-unstyled" id="side-menu">
-            <li className="menu-title" style={{ color: "#FFF" }}>
-              {props.t("Menu")}{" "}
-            </li>
+
             <li className="mt-3 li-sideBar">
               <Link to="/dashboard" className="">
-              
+
 
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -169,89 +187,82 @@ const SidebarContent = (props: any) => {
               </Link>
             </li>
 
-            
-            {/* <li className="mt-3 li-sideBar">
-              <Link to="/colors" className="">
-                <FeatherIcon icon="pie-chart" />{" "}
-                <span>{props.t("Colors")}</span>
-                
-              </Link>
-            </li> */}
             <li className="mt-3 li-sideBar">
-              <Link to="/vendors" className="">
-                <FeatherIcon icon="pie-chart" />{" "}
-                <span>{props.t("Vendors")}</span>
-               
+              <Link to="/users" className="">
+                <FeatherIcon icon="user" />{" "}
+                <span>{props.t("Users")}</span>
+
               </Link>
             </li>
 
             <li className="mt-3 li-sideBar">
-              <Link to="/users" className="">
-                <FeatherIcon icon="pie-chart" />{" "}
-                <span>{props.t("Users")}</span>
-               
+              <Link to="/vendors" className="">
+                <FeatherIcon icon="users" />{" "}
+                <span>{props.t("Vendors")}</span>
+
               </Link>
             </li>
+
+
 
             <li className="mt-3 li-sideBar">
               <Link to="/kyc" className="">
-                <FeatherIcon icon="pie-chart" />{" "}
+                <FeatherIcon icon="shield" />{" "}
                 <span>{props.t("Kyc")}</span>
-               
+
               </Link>
             </li>
 
-          
+            <li className="mt-3 li-sideBar">
+              <Link to="/attributes" className="">
+                <FeatherIcon icon="pie-chart" />{" "}
+                <span>{props.t("Attributes")}</span>
+              </Link>
+            </li>
 
-            
 
             <li className="mt-3  li-sideBar" >
-              <Link to="/category" className="">
-                
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="15"
-                  height="15"
-                  viewBox="0 0 15 15"
-                >
-                  <path d="M4.0625 6.875L7.5 1.25L10.9375 6.875H4.0625ZM10.9375 13.75C10.1562 13.75 9.49219 13.4766 8.94531 12.9297C8.39844 12.3828 8.125 11.7188 8.125 10.9375C8.125 10.1562 8.39844 9.49219 8.94531 8.94531C9.49219 8.39844 10.1562 8.125 10.9375 8.125C11.7188 8.125 12.3828 8.39844 12.9297 8.94531C13.4766 9.49219 13.75 10.1562 13.75 10.9375C13.75 11.7188 13.4766 12.3828 12.9297 12.9297C12.3828 13.4766 11.7188 13.75 10.9375 13.75ZM1.875 13.4375V8.4375H6.875V13.4375H1.875Z" />
-                </svg>
-                <span className="arrow-down">{props.t("Category")}</span>
-               
-
-               
+              <Link to="/category" onClick={(e) => handleItemClick("/category", e)}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "center", }}>
+                    <FeatherIcon icon="shopping-bag" />
+                    <span>{props.t("Categories")}</span>
+                  </div>
+                  <div
+                    className="arrow-down"
+                    style={{ position: "absolute", top: "30px", right: "25px" }}
+                  ></div>
+                </div>
               </Link>
-
-               {/* <p
-                  className="arrow-down"
-                  style={{ marginLeft: "150px", height:"20px" }}
-                ></p> */}
-
-              <ul className="sub-menu " >
-                <li>
-                  <Link to="/category">
-                    <FeatherIcon icon="chevron-right" />{" "}
-                    <span>{props.t("Category List")}</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/assign-attribute">
-                    <FeatherIcon icon="chevron-right" />{" "}
-                    <span>{props.t("Assign Attribute")}</span>
-                  </Link>
-                </li>
-              </ul>
-              
+              {openMenus.includes("/category") && (
+                <ul className={`sub-menu ${openMenus.includes("/category") ? "mm-show" : ""}`}
+                >
+                  <li>
+                    <Link to="/category">
+                      <FeatherIcon icon="chevron-right" />{" "}
+                      <span>{props.t("Category List")}</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/assign-attribute">
+                      <FeatherIcon icon="chevron-right" />{" "}
+                      <span>{props.t("Assign Attribute")}</span>
+                    </Link>
+                  </li>
+                </ul>
+              )}
             </li>
 
             <li className="mt-3 li-sideBar">
               <Link to="/brands" className="">
-                <FeatherIcon icon="pie-chart" />{" "}
-                <span className="arrow-down">{props.t("Brands")}</span>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "center", }}>
+                    <FeatherIcon icon="shopping-bag" />
+                    <span>{props.t("Brands")}</span>
+                  </div>
+                </div>
               </Link>
-
-
-              <ul className="sub-menu">
+              {/* <ul className="sub-menu">
                 <li>
                   <Link to="/brands">
                     <FeatherIcon icon="chevron-right" />{" "}
@@ -264,16 +275,8 @@ const SidebarContent = (props: any) => {
                     <span>{props.t("Assign Category")}</span>
                   </Link>
                 </li>
-              </ul>
+              </ul> */}
             </li>
-
-            <li className="mt-3 li-sideBar">
-              <Link to="/attributes" className="">
-                <FeatherIcon icon="pie-chart" />{" "}
-                <span>{props.t("Attributes")}</span>
-              </Link>
-            </li>
-
 
             <li className="mt-3 li-sideBar">
               <Link to="/product" className=" ">
@@ -290,441 +293,94 @@ const SidebarContent = (props: any) => {
               </Link>
             </li>
 
-            {/* <li className="mt-3 li-sideBar">
-              <Link to="/size" className="">
-                
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                >
-                  <path d="M2.33335 10.5C2.01252 10.5 1.73787 10.3858 1.5094 10.1573C1.28092 9.92882 1.16669 9.65417 1.16669 9.33333V4.66667C1.16669 4.34583 1.28092 4.07118 1.5094 3.84271C1.73787 3.61424 2.01252 3.5 2.33335 3.5H4.08335V7H5.25002V3.5H6.41669V7H7.58335V3.5H8.75002V7H9.91669V3.5H11.6667C11.9875 3.5 12.2622 3.61424 12.4906 3.84271C12.7191 4.07118 12.8334 4.34583 12.8334 4.66667V9.33333C12.8334 9.65417 12.7191 9.92882 12.4906 10.1573C12.2622 10.3858 11.9875 10.5 11.6667 10.5H2.33335Z" />
-                </svg>
-                <span>{props.t("Size")}</span>
-              </Link>
-            </li> */}
-          
-            
-            {/* <li className="mt-3 li-sideBar" >
-              <Link to="/product" >
-                <FeatherIcon icon="home" /> <span>{props.t("CMS")}</span>
-                <div
-                  className="arrow-down"
-                  style={{ marginLeft: "150px" }}
-                ></div>
-              </Link>
-              <ul className="sub-menu">
-                <li>
-                  <Link to="/cmslisting">
-                    <FeatherIcon icon="chevron-right" />{" "}
-                    <span>{props.t("Home Page")}</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/cmstwolisting">
-                    <FeatherIcon icon="chevron-right" />{" "}
-                    <span>{props.t("collections")}</span>
-                  </Link>
-                </li>
-              </ul>
-            </li> */}
+            {/* ORDERS */}
 
-            {/* <li>
-              <Link to="/#" className="has-arrow">
-                <FeatherIcon icon="grid" /> <span>{props.t("Apps")}</span>
-              </Link>
-              <ul className="sub-menu">
-                <li>
-                  <Link to="/apps-calendar">{props.t("Calendar")}</Link>
-                </li>
-                <li>
-                  <Link to="/apps-chat">{props.t("Chat")}</Link>
-                </li>
-                <li>
-                  <Link to="/#" className="has-arrow">
-                    <span>{props.t("Email")}</span>
-                  </Link>
-                  <ul className="sub-menu">
-                    <li>
-                      <Link to="/email-inbox">{props.t("Inbox")}</Link>
-                    </li>
-                    <li>
-                      <Link to="/email-read">{props.t("Read Email")} </Link>
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <Link to="/#" className="has-arrow">
-                    <span>{props.t("Invoices")}</span>
-                  </Link>
-                  <ul className="sub-menu">
-                    <li>
-                      <Link to="/invoices-list">{props.t("Invoice List")}</Link>
-                    </li>
-                    <li>
-                      <Link to="/invoices-detail">
-                        {props.t("Invoice Detail")}
-                      </Link>
-                    </li>
-                  </ul>
-                </li>
-              
-                <li>
-                  <Link to="/#" className="has-arrow ">
-                    <span>{props.t("Contacts")}</span>
-                  </Link>
-                  <ul className="sub-menu">
-                    <li>
-                      <Link to="/contacts-grid">{props.t("User Grid")}</Link>
-                    </li>
-                    <li>
-                      <Link to="/contacts-list">{props.t("User List")}</Link>
-                    </li>
-                    <li>
-                      <Link to="/contacts-profile">{props.t("Profile")}</Link>
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <Link to="/#" className="has-arrow">
-                    <span className="badge rounded-pill badge-soft-danger text-danger float-end">
-                      New
-                    </span>
-                    <span>{props.t("Blog")}</span>
-                  </Link>
-                  <ul className="sub-menu">
-                    <li>
-                      <Link to="/blog-grid">{props.t("Blog Grid")}</Link>
-                    </li>
-                    <li>
-                      <Link to="/blog-list">{props.t("Blog List")}</Link>
-                    </li>
-                    <li>
-                      <Link to="/blog-details">{props.t("Blog Details")}</Link>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li> */}
+            <li className="mt-3 li-sideBar" >
+              <a href="/order-resolution" onClick={(e) => handleItemClick("/order-resolution", e)}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "center", }}>
+                    <FeatherIcon icon="shopping-bag" />
+                    <span>{props.t("Order Resolution")}</span>
+                  </div>
+                  <div
+                    className="arrow-down"
+                    style={{ position: "absolute", top: "30px", right: "25px" }}
+                  ></div>
+                </div>
+              </a>
+              {openMenus.includes("/order-resolution") && (
+                <ul className={`sub-menu ${openMenus.includes("/order-resolution") ? "mm-show" : ""}`}>
+                  <li>
+                    <Link to="/orders">
+                      <FeatherIcon icon="chevron-right" />{" "}
+                      <span>{props.t("All Orders")}</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/shipping-orders">
+                      <FeatherIcon icon="chevron-right" />{" "}
+                      <span>{props.t("Shipping Orders")}</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/return-orders">
+                      <FeatherIcon icon="chevron-right" />{" "}
+                      <span>{props.t("Return orders")}</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/refund-orders">
+                      <FeatherIcon icon="chevron-right" />{" "}
+                      <span>{props.t("Refund orders")}</span>
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
 
-            {/* <li>
-              <Link to="/#" className="has-arrow">
-                <FeatherIcon icon="users" /> <span>{props.t("Authentication")}</span>
-              </Link>
-              <ul className="sub-menu">
-                <li>
-                  <Link to="/page-login">{props.t("Login")}</Link>
-                </li>
-                <li>
-                  <Link to="/page-register">{props.t("Register")}</Link>
-                </li>
-                <li>
-                  <Link to="/page-recoverpw">
-                    {props.t("Recover Password")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/page-lock-screen">{props.t("Lock Screen")}</Link>
-                </li>
-                <li>
-                  <Link to="/page-logout">{props.t("Log Out")}</Link>
-                </li>
-                <li>
-                  <Link to="/page-confirm-mail">{props.t("Confirm Mail")}</Link>
-                </li>
-                <li>
-                  <Link to="/page-email-verification">
-                    {props.t("Email Verification")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/page-two-step-verification">
-                    {props.t("Two Step Verification")}
-                  </Link>
-                </li>
-              </ul>
-            </li> */}
-            {/* <li>
-              <Link to="/#" className="has-arrow ">
-                <FeatherIcon icon="file-text" /> <span>{props.t("Pages")}</span>
-              </Link>
-              <ul className="sub-menu">
-                <li>
-                  <Link to="/pages-starter">{props.t("Starter Page")}</Link>
-                </li>
-                <li>
-                  <Link to="/pages-maintenance">{props.t("Maintenance")}</Link>
-                </li>
-                <li>
-                  <Link to="/pages-comingsoon">{props.t("Coming Soon")}</Link>
-                </li>
-                <li>
-                  <Link to="/pages-timeline">{props.t("Timeline")}</Link>
-                </li>
-                <li>
-                  <Link to="/pages-faqs">{props.t("FAQs")}</Link>
-                </li>
-                <li>
-                  <Link to="/pages-pricing">{props.t("Pricing")}</Link>
-                </li>
-                <li>
-                  <Link to="/pages-404">{props.t("Error 404")}</Link>
-                </li>
-                <li>
-                  <Link to="/pages-500">{props.t("Error 500")}</Link>
-                </li>
-              </ul>
-            </li> */}
 
-            {/* <li className="menu-title">{props.t("Elements")}</li> */}
-
-            {/* <li>
-              <Link to="/#" className="has-arrow ">
-                <FeatherIcon icon="briefcase" /> <span>{props.t("Components")}</span>
+            <li className="mt-3 li-sideBar" >
+              <Link to="/cms" onClick={(e) => handleItemClick("/cms", e)}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "center", }}>
+                    <FeatherIcon icon="shopping-bag" />
+                    <span>{props.t("CMS")}</span>
+                  </div>
+                  <div
+                    className="arrow-down"
+                    style={{ position: "absolute", top: "30px", right: "25px" }}
+                  ></div>
+                </div>
               </Link>
-              <ul className="sub-menu">
-                <li>
-                  <Link to="/ui-alerts">{props.t("Alerts")}</Link>
-                </li>
-                <li>
-                  <Link to="/ui-buttons">{props.t("Buttons")}</Link>
-                </li>
-                <li>
-                  <Link to="/ui-cards">{props.t("Cards")}</Link>
-                </li>
-                <li>
-                  <Link to="/ui-carousel">{props.t("Carousel")}</Link>
-                </li>
-                <li>
-                  <Link to="/ui-dropdowns">{props.t("Dropdowns")}</Link>
-                </li>
-                <li>
-                  <Link to="/ui-grid">{props.t("Grid")}</Link>
-                </li>
-                <li>
-                  <Link to="/ui-images">{props.t("Images")}</Link>
-                </li>
-                <li>
-                  <Link to="/ui-modals">{props.t("Modals")}</Link>
-                </li>
-                <li>
-                  <Link to="/ui-offcanvas">{props.t("Offcanvas")}</Link>
-                </li>
-                <li>
-                  <Link to="/ui-progressbars">{props.t("Progress Bars")}</Link>
-                </li>
-                <li>
-                  <Link to="/ui-placeholders">{props.t("Placeholders")}</Link>
-                </li>
-                <li>
-                  <Link to="/ui-tabs-accordions">
-                    {props.t("Tabs & Accordions")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/ui-typography">{props.t("Typography")}</Link>
-                </li>
-                <li>
-                  <Link to="/ui-toasts">{props.t("Toasts")}</Link>
-                </li>
-                <li>
-                  <Link to="/ui-video">{props.t("Video")}</Link>
-                </li>
-                <li>
-                  <Link to="/ui-general">{props.t("General")}</Link>
-                </li>
-                <li>
-                  <Link to="/ui-colors">{props.t("Colors")}</Link>
-                </li>
-                <li>
-                  <Link to="/ui-utilities">{props.t("Utilities")}</Link>
-                </li>
-              </ul>
-            </li> */}
+              {openMenus.includes("/cms") && (
+                <ul className={`sub-menu ${openMenus.includes("/cms") ? "mm-show" : ""}`}>
+                  <li>
+                    <Link to="/cmslisting">
+                      <FeatherIcon icon="chevron-right" />{" "}
+                      <span>{props.t("Pages")}</span>
+                    </Link>
+                  </li>
+                  {/* <li>
+                    <Link to="/cmstwolisting">
+                      <FeatherIcon icon="chevron-right" />{" "}
+                      <span>{props.t("collections")}</span>
+                    </Link>
+                  </li> */}
+                </ul>
+              )}
+            </li>
 
-            {/* <li>
-              <Link to="/#" className="has-arrow ">
-                <FeatherIcon icon="gift" /> <span>{props.t("Extended")}</span>
+            <li className="mt-3 li-sideBar">
+              <Link to="/settings" className="">
+                <FeatherIcon icon="settings" />{" "}
+                <span>{props.t("Settings")}</span>
               </Link>
-              <ul className="sub-menu">
-                <li>
-                  <Link to="/extended-lightbox">{props.t("Lightbox")}</Link>
-                </li>
-                <li>
-                  <Link to="/extended-rangeslider">
-                    {props.t("Range Slider")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/extended-session-timeout">
-                    {props.t("Session Timeout")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/extended-rating">{props.t("Rating")}</Link>
-                </li>
-                <li>
-                  <Link to="/extended-notifications">
-                    {props.t("Notifications")}
-                  </Link>
-                </li>
-              </ul>
-            </li> */}
-
-            {/* <li>
-              <Link to="/#" className="">
-                <FeatherIcon icon="box" /> <span className="badge rounded-pill badge-soft-danger text-danger float-end">
-                  7
-                </span>
-                <span>{props.t("Forms")}</span>
-              </Link>
-              <ul className="sub-menu">
-                <li>
-                  <Link to="/form-elements">{props.t("Basic Elements")}</Link>
-                </li>
-                <li>
-                  <Link to="/form-validation">{props.t("Validation")}</Link>
-                </li>
-                <li>
-                  <Link to="/form-advanced">{props.t("Advanced Plugins")}</Link>
-                </li>
-                <li>
-                  <Link to="/form-editors">{props.t("Editors")}</Link>
-                </li>
-                <li>
-                  <Link to="/form-uploads">{props.t("File Upload")} </Link>
-                </li>
-                <li>
-                  <Link to="/form-wizard">{props.t("Form Wizard")}</Link>
-                </li>
-                <li>
-                  <Link to="/form-mask">{props.t("Form Mask")}</Link>
-                </li>
-              </ul>
-            </li> */}
-
-            {/* <li>
-              <Link to="/#" className="has-arrow ">
-                <FeatherIcon icon="sliders" /> <span>{props.t("Tables")}</span>
-              </Link>
-              <ul className="sub-menu">
-                <li>
-                  <Link to="/tables-basic">{props.t("Bootstrap Basic")}</Link>
-                </li>
-                <li>
-                  <Link to="/tables-datatable">{props.t("DataTables")}</Link>
-                </li>
-                <li>
-                  <Link to="/tables-responsive">{props.t("Responsive")}</Link>
-                </li>
-                <li>
-                  <Link to="/tables-editable">{props.t("Editable")}</Link>
-                </li>
-              </ul>
-            </li> */}
-
-            {/* <li>
-              <Link to="/#" className="has-arrow ">
-                <FeatherIcon icon="pie-chart" /> <span>{props.t("Charts")}</span>
-              </Link>
-
-              <ul className="sub-menu">
-                <li>
-                  <Link to="/charts-apex">{props.t("Apexcharts")}</Link>
-                </li>
-                <li>
-                  <Link to="/charts-echart">{props.t("Echarts")}</Link>
-                </li>
-                <li>
-                  <Link to="/charts-chartjs">{props.t("Chartjs")}</Link>
-                </li>
-              </ul>
-            </li> */}
-
-            {/* <li>
-              <Link to="/#" className="has-arrow ">
-                <FeatherIcon icon="cpu" /> <span>{props.t("Icons")}</span>
-              </Link>
-              <ul className="sub-menu">
-                <li>
-                  <Link to="/icons-boxicons">{props.t("Boxicons")}</Link>
-                </li>
-                <li>
-                  <Link to="/icons-materialdesign">
-                    {props.t("Material Design")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/icons-dripicons">{props.t("Dripicons")}</Link>
-                </li>
-                <li>
-                  <Link to="/icons-fontawesome">{props.t("Font awesome")}</Link>
-                </li>
-              </ul>
-            </li> */}
-
-            {/* <li>
-              <Link to="/#" className="has-arrow ">
-                <FeatherIcon icon="map" /> <span>{props.t("Maps")}</span>
-              </Link>
-              <ul className="sub-menu">
-                <li>
-                  <Link to="/maps-google">{props.t("Google")}</Link>
-                </li>
-                <li>
-                  <Link to="/maps-vector">{props.t("Vector")}</Link>
-                </li>
-                <li>
-                  <Link to="/maps-leaflet">{props.t("Leaflet")}</Link>
-                </li>
-              </ul>
-            </li> */}
-
-            {/* <li>
-              <Link to="/#" className="has-arrow ">
-                <FeatherIcon icon="share-2" /> <span>{props.t("Multi Level")}</span>
-              </Link>
-              <ul className="sub-menu">
-                <li>
-                  <Link to="/#">{props.t("Level 1.1")}</Link>
-                </li>
-                <li>
-                  <Link to="/#" className="has-arrow">
-                    {props.t("Level 1.2")}
-                  </Link>
-                  <ul className="sub-menu">
-                    <li>
-                      <Link to="/#">{props.t("Level 2.1")}</Link>
-                    </li>
-                    <li>
-                      <Link to="/#">{props.t("Level 2.2")}</Link>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li> */}
+            </li>
           </ul>
-          {/* <div className="card sidebar-alert border-0 text-center mx-4 mb-0 mt-5">
-            <div className="card-body">
-              <img src={giftBox} alt="" />
-              <div className="mt-4">
-                <h5 className="alertcard-title font-size-16">
-                  Unlimited Access
-                </h5>
-                <p className="font-size-13">
-                  Upgrade your plan from a Free trial, to select ‘Business
-                  Plan’.
-                </p>
-                <a href="#!" className="btn btn-primary mt-2">
-                  Upgrade Now
-                </a>
-              </div>
-            </div>
-          </div> */}
+
         </div>
-      </SimpleBar>
-    </React.Fragment>
+      </SimpleBar >
+    </React.Fragment >
   );
 };
 

@@ -16,13 +16,18 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import image10 from "../../assets/images/users/avatar-10.jpg";
 import image3 from "../../assets/images/small/img-3.jpg";
 import { Link } from "react-router-dom";
+import Breadcrumb from "../../components/Common/Breadcrumb";
 
 const UiUtilities = () => {
+
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title="Components" breadcrumbItem="Utilities" />
+          <Breadcrumb items={items} currentPage="Ui Utils" />
           {/* <Row>
                         <div className="col-12">
                             <div className="page-title-box d-sm-flex align-items-center justify-content-between">

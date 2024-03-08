@@ -17,7 +17,7 @@ import {
   Table,
 } from "reactstrap";
 import Breadcrumb from "src/components/Common/Breadcrumb";
-import ViewCard from "../venders/components/Outlate";
+import ViewCard from "../venders/components/ViewCardCompany";
 import classnames from "classnames";
 import { Tabs } from "react-bootstrap";
 import OutletListing from "./component/OutletList";
@@ -48,40 +48,45 @@ function KycListing() {
     setActiveTab(newTab);
   };
 
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
 
   return (
     <>
       <div className="page-content">
-        <Breadcrumb title="Dashboard" breadcrumbItem="Kyc Listing" link="/" />
         <Container fluid={true}>
-        <Nav tabs>
+          <Breadcrumb items={items} currentPage="KYC Listing" />
+          <Nav tabs>
             <NavItem>
               <NavLink
-                className={classnames({ active: activeTab === "CompanyList" })} onClick={() => handleTabChange("CompanyList")}
+                className={activeTab === "CompanyList" ? "tab-button active" : "tab-button"}
+                onClick={() => handleTabChange("CompanyList")}
               >
                 Company List
               </NavLink>
             </NavItem>
             <NavItem>
               <NavLink
-                className={classnames({ active: activeTab === "OutletList" })} onClick={() => handleTabChange("OutletList")}>
-               Outlet List
+                className={activeTab === "OutletList" ? "tab-button active" : "tab-button"}
+                onClick={() => handleTabChange("OutletList")}>
+                Outlet List
               </NavLink>
             </NavItem>
-            
+
           </Nav>
 
 
           <TabContent activeTab={activeTab}>
 
-          <TabPane tabId="CompanyList">
-          <CompanyListing/>
-        </TabPane>
+            <TabPane tabId="CompanyList">
+              <CompanyListing />
+            </TabPane>
 
-        <TabPane tabId="OutletList">
-        <OutletListing/>
-        </TabPane>
-  </TabContent>
+            <TabPane tabId="OutletList">
+              <OutletListing />
+            </TabPane>
+          </TabContent>
         </Container>
       </div>
     </>

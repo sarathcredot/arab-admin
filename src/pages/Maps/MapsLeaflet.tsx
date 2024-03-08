@@ -13,13 +13,13 @@ import MapLayerControl from "./LeafletMap/MapLayerControl";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const MapsLeaflet = () => {
-  document.title = "Leaflet Maps | Minia - React Admin & Dashboard Template";
+  // document.title = "Leaflet Maps | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title="Maps" breadcrumbItem="Leaflet Maps" />
+          {/* <Breadcrumbs title="Maps" breadcrumbItem="Leaflet Maps" /> */}
           <Row>
             <Col lg="6">
               <Card>

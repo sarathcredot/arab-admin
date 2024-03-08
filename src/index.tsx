@@ -11,6 +11,7 @@ import { authLink, requestInterceptor, responseInterceptor } from "./Interceptor
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { createUploadLink } from 'apollo-upload-client';
+import { ToastContainer } from "react-toastify";
 
 
 
@@ -31,7 +32,7 @@ const uploadLink = createUploadLink({
 
 
 const client = new ApolloClient({
-  link: ApolloLink.from([authLink, responseInterceptor,  uploadLink]),
+  link: ApolloLink.from([authLink, responseInterceptor, uploadLink]),
   cache: new InMemoryCache(),
   // link: ApolloLink.from([requestInterceptor, responseInterceptor /* other links if needed */]),
 });
@@ -51,6 +52,18 @@ root.render(
   <Provider store={configureStore({})}>
     <BrowserRouter>
       <ApolloProvider client={client}>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
         <App />
       </ApolloProvider>
     </BrowserRouter>

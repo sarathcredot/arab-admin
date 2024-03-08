@@ -1,0 +1,10 @@
+.tab-button.active {
+    background-color: #e30613 !important; 
+    color: #fff !important;
+  }
+  
+  .tab-button:hover {
+    cursor: pointer !important; 
+  }
+
+  

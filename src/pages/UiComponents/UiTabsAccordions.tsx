@@ -29,7 +29,7 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import classnames from "classnames";
 
 const UiTabsAccordions = () => {
-  document.title = "Tabs & Accordions | Minia - React Admin & Dashboard Template";
+  // document.title = "Tabs & Accordions | Minia - React Admin & Dashboard Template";
 
   const [activeTab, setactiveTab] = useState("1");
   const [activeTab1, setactiveTab1] = useState("5");
@@ -162,7 +162,7 @@ const UiTabsAccordions = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Components" breadcrumbItem="Tabs & Accordions" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Tabs & Accordions" /> */}
           <Row>
             <Col xl={6}>
               <Card>

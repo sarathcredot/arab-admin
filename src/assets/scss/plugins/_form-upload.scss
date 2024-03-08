@@ -5,7 +5,7 @@
 
 /* Dropzone */
 .dropzone {
-  min-height: 230px;
+  min-height: 100px;
   border: 2px dashed var(--#{$prefix}border-color);
   background:  var(--#{$prefix}card-bg);
   border-radius: 6px;

@@ -7,7 +7,7 @@ import logo from "../../assets/images/logo-sm.svg";
 import CarouselPage from "./CarouselPage";
 
 const PageRegister = () => {
-  document.title = "Register |  Arab Deals";
+  // document.title = "Register |  Arab Deals";
   return (
     <React.Fragment>
       <div className="auth-page">
@@ -96,30 +96,30 @@ const PageRegister = () => {
                         </div>
                       </form>
                       <div className="mt-4 pt-2 text-center">
-                          <div className="signin-other-title">
-                              <h5 className="font-size-14 mb-3 text-muted fw-medium">- Sign up using -</h5>
-                          </div>
+                        <div className="signin-other-title">
+                          <h5 className="font-size-14 mb-3 text-muted fw-medium">- Sign up using -</h5>
+                        </div>
 
-                          <ul className="list-inline mb-0">
-                              <li className="list-inline-item">
-                                  <a href="/#"
-                                      className="social-list-item bg-primary text-white border-primary">
-                                      <i className="mdi mdi-facebook"></i>
-                                  </a>
-                              </li>{" "}
-                              <li className="list-inline-item">
-                                  <a href="/#"
-                                      className="social-list-item bg-info text-white border-info">
-                                      <i className="mdi mdi-twitter"></i>
-                                  </a>
-                              </li>{" "}
-                              <li className="list-inline-item">
-                                  <a href="/#"
-                                      className="social-list-item bg-danger text-white border-danger">
-                                      <i className="mdi mdi-google"></i>
-                                  </a>
-                              </li>
-                          </ul>
+                        <ul className="list-inline mb-0">
+                          <li className="list-inline-item">
+                            <a href="/#"
+                              className="social-list-item bg-primary text-white border-primary">
+                              <i className="mdi mdi-facebook"></i>
+                            </a>
+                          </li>{" "}
+                          <li className="list-inline-item">
+                            <a href="/#"
+                              className="social-list-item bg-info text-white border-info">
+                              <i className="mdi mdi-twitter"></i>
+                            </a>
+                          </li>{" "}
+                          <li className="list-inline-item">
+                            <a href="/#"
+                              className="social-list-item bg-danger text-white border-danger">
+                              <i className="mdi mdi-google"></i>
+                            </a>
+                          </li>
+                        </ul>
                       </div>
 
                       <div className="mt-5 text-center">

@@ -13,11 +13,13 @@ import {
   Nav,
   NavItem,
   NavLink,
+  CardHeader,
 } from "reactstrap";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import FormVender from "../venders/FormVender";
 import { bR } from "@fullcalendar/core/internal-common";
 import BrandForm from "./BrandForm";
+import CustomButton from "src/components/Common/CustomButton";
 
 interface IBrandRecord {
   _id: string;
@@ -75,7 +77,7 @@ const BrandList: React.FC = () => {
 
   if (brandError) {
     console.error("Error fetching vendor data:", brandError);
-  
+
   }
 
   const totalPages = Math.ceil(brandData.length / pageSize);
@@ -89,16 +91,18 @@ const BrandList: React.FC = () => {
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
   };
-
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
   return (
     <>
       <div className="page-content">
-        <Breadcrumb title="Dashboard" breadcrumbItem="Brands" link="/" />
         <Container fluid={true}>
+          <Breadcrumb items={items} currentPage="Brands" />
           <Nav tabs>
             <NavItem>
               <NavLink
-                className={activeTab === undefined ? "active" : ""}
+                className={activeTab === undefined ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(undefined)}
               >
                 All
@@ -106,7 +110,7 @@ const BrandList: React.FC = () => {
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === false ? "active" : ""}
+                className={activeTab === false ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(false)}
               >
                 Active
@@ -114,7 +118,7 @@ const BrandList: React.FC = () => {
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === true ? "active" : ""}
+                className={activeTab === true ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(true)}
               >
                 Blocked
@@ -125,23 +129,25 @@ const BrandList: React.FC = () => {
           <Row>
             <Col lg={12}>
               <Card>
+                <CardHeader>
+                  <Row>
+                    <Col xs={6}>
+                      <Input
+                        type="text"
+                        placeholder="Search by name"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{ width: "60%", }}
+                      />
+                    </Col>
+                    <Col xs={6} style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                      <CustomButton
+                        onClick={() => toggleAddModal()} name="Add New Brand" icon="material-symbols:add" /
+                      >
+                    </Col>
+                  </Row>
+                </CardHeader>
                 <CardBody>
-                  <Input
-                    type="text"
-                    placeholder="Search by name"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{ width: "50%", marginBottom: "20px" }}
-                  />
-
-                  <div className="d-flex justify-content-end mb-3">
-                    <Button
-                      onClick={() => toggleAddModal()}
-                      style={{ backgroundColor: "#000000" }}
-                    >
-                      Add New Brand
-                    </Button>
-                  </div>
 
                   <BrandForm
                     isOpen={showAddModal}
@@ -149,10 +155,7 @@ const BrandList: React.FC = () => {
                     refetch={brandRefetch}
                   />
 
-                  <Table
-                    responsive
-                    className="table table-bordered table-centered mb-0"
-                  >
+                  <Table id="tech-companies-1" className="table table-striped table-bordered">
                     <thead>
                       <tr>
                         <th>No</th>
@@ -193,10 +196,8 @@ const BrandList: React.FC = () => {
                             <td>
                               <Link to={`/brands/${brand._id}`}>
                                 <Button
-                                  style={{
-                                    marginLeft: "20px",
-                                    backgroundColor: "#000000",
-                                  }}
+                                  size="sm"
+                                  color="primary"
                                 >
                                   View
                                 </Button>
@@ -213,9 +214,8 @@ const BrandList: React.FC = () => {
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">
                         <li
-                          className={`page-item ${
-                            currentPage === 0 ? "disabled" : ""
-                          }`}
+                          className={`page-item ${currentPage === 0 ? "disabled" : ""
+                            }`}
                         >
                           <button
                             className="page-link"
@@ -229,9 +229,8 @@ const BrandList: React.FC = () => {
                         {Array.from({ length: totalPages }, (_, index) => (
                           <li
                             key={index}
-                            className={`page-item ${
-                              currentPage === index ? "active" : ""
-                            }`}
+                            className={`page-item ${currentPage === index ? "active" : ""
+                              }`}
                           >
                             <button
                               className="page-link"
@@ -244,9 +243,8 @@ const BrandList: React.FC = () => {
 
                         {currentPage < totalPages - 1 && (
                           <li
-                            className={`page-item ${
-                              currentPage === totalPages - 1 ? "disabled" : ""
-                            }`}
+                            className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                              }`}
                           >
                             <button
                               className="page-link"

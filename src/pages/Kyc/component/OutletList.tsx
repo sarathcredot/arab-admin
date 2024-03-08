@@ -20,14 +20,14 @@ interface IStatus {
 }
 
 interface IOutlet {
-  vendorId:string;
-  fullName:string;
-  isKycCompleted:boolean;
-  _id:string;
-  outletName:string;
+  vendorId: string;
+  fullName: string;
+  isKycCompleted: boolean;
+  _id: string;
+  outletName: string;
   status: string;
-  companyId:string;
-  companyName:string;
+  companyId: string;
+  companyName: string;
   companyStatus: string;
 }
 
@@ -39,26 +39,31 @@ function OutletListing() {
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState(0);
 
-  const GET_ALL_KYC = gql`query GetAllVendorOutletRecordsByAdmin($input: VendorOutletRecordsByAdminFilter) {
+  const GET_ALL_KYC = gql`
+  query GetAllVendorOutletRecordsByAdmin($input: VendorOutletRecordsByAdminFilter) {
   getAllVendorOutletRecordsByAdmin(input: $input) {
-    maxRecords
+    message
     records {
+      outletName
       vendorId
       fullName
       isKycCompleted
       _id
-      outletName
       status
-      companyId
-      companyName
-      companyStatus
+      country
+      district
+      village
+      address
+      contactPersonName
+      contactPersonNumber
+      contactPersonDesignation
+      remarks
     }
-    message
   }
 }
   `;
 
-  
+
   const {
     loading: kycLoading,
     error: kycError,
@@ -69,7 +74,7 @@ function OutletListing() {
       input: {
         page: currentPage,
         size: pageSize,
-        status:activeTab
+        status: activeTab
       },
     },
   });
@@ -78,7 +83,7 @@ function OutletListing() {
     if (kycDataResponse) {
       setOutletData(kycDataResponse.getAllVendorOutletRecordsByAdmin?.records || []);
     }
-  }, [kycDataResponse,currentPage]);
+  }, [kycDataResponse, currentPage]);
 
   const toggleTab = (tab: string) => {
     console.log("Active Tab:", tab);
@@ -115,7 +120,7 @@ function OutletListing() {
           <Nav tabs>
             <NavItem>
               <NavLink
-                className={activeTab === "UNDER_VERIFICATION" ? "active" : ""}
+                className={activeTab === "UNDER_VERIFICATION" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("UNDER_VERIFICATION")}
               >
                 Verify
@@ -123,7 +128,7 @@ function OutletListing() {
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === "PENDING" ? "active" : ""}
+                className={activeTab === "PENDING" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("PENDING")}
               >
                 Pending
@@ -131,12 +136,22 @@ function OutletListing() {
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === "COMPLETED" ? "active" : ""}
+                className={activeTab === "COMPLETED" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("COMPLETED")}
               >
                 Completed
               </NavLink>
             </NavItem>
+
+            <NavItem>
+              <NavLink
+                className={activeTab === "REJECTED" ? "tab-button active" : "tab-button"}
+                onClick={() => toggleTab("REJECTED")}
+              >
+                Rejected
+              </NavLink>
+            </NavItem>
+
           </Nav>
 
           <Row>
@@ -150,17 +165,14 @@ function OutletListing() {
                     onChange={handleSearch}
                     style={{ width: "50%", marginBottom: "20px" }}
                   />
-                  <Table
-                    responsive
-                    className="table table-bordered table-centered mb-0"
-                  >
+                  <Table id="tech-companies-1" className="table table-striped table-bordered">
                     <thead>
                       <tr>
                         <th>No</th>
                         <th>Full Name</th>
                         <th>Outlet Name</th>
                         <th>Kyc Status</th>
-                       <th>Status</th>
+                        <th>Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -173,20 +185,20 @@ function OutletListing() {
 
                         .map((outlet, index) => (
                           <tr key={outlet._id}>
-                            <td>{index + 1}</td>
+                            <td>{currentPage * pageSize + index + 1}</td>
                             <td>{outlet.fullName}</td>
                             <td>{outlet.outletName}</td>
                             <td
                               style={{
                                 color: outlet.isKycCompleted ? "#5cb85c" : "red",
                               }}
-                              >
-                              {outlet.isKycCompleted  ? "COMPLETED" : "PENDING"}
+                            >
+                              {outlet.isKycCompleted ? "COMPLETED" : "PENDING"}
                             </td>
-                              <td>{outlet.status}</td>
+                            <td>{outlet.status}</td>
                             <td>
-                              <Link to={`/vendors/${outlet.vendorId}`}>
-                                <Button style={{ marginLeft: "20px" , backgroundColor: "#000000"}}>
+                              <Link to={`/vendors/view?id=${outlet.vendorId}`}>
+                                <Button size="sm" color="primary">
                                   View
                                 </Button>
                               </Link>
@@ -197,14 +209,13 @@ function OutletListing() {
                   </Table>
                 </CardBody>
 
-                <Row style={{marginRight:"10px"}}>
+                <Row style={{ marginRight: "10px" }}>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">
                         <li
-                          className={`page-item ${
-                            currentPage === 0 ? "disabled" : ""
-                          }`}
+                          className={`page-item ${currentPage === 0 ? "disabled" : ""
+                            }`}
                         >
                           <button
                             className="page-link"
@@ -218,9 +229,8 @@ function OutletListing() {
                         {Array.from({ length: totalPages }, (_, index) => (
                           <li
                             key={`page-${index + 1}`}
-                            className={`page-item ${
-                              currentPage === index ? "active" : ""
-                            }`}
+                            className={`page-item ${currentPage === index ? "active" : ""
+                              }`}
                           >
                             <button
                               className="page-link"
@@ -233,9 +243,8 @@ function OutletListing() {
 
                         {currentPage < totalPages - 1 && (
                           <li
-                            className={`page-item ${
-                              currentPage === totalPages - 1 ? "disabled" : ""
-                            }`}
+                            className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                              }`}
                           >
                             <button
                               className="page-link"

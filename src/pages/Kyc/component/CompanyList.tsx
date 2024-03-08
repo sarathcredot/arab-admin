@@ -17,18 +17,19 @@ import {
   Table,
 } from "reactstrap";
 import Breadcrumb from "src/components/Common/Breadcrumb";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
 
 interface ICompanyData {
-    vendorId:string;
-    _id:string;
-    fullName:string;
-    isKycCompleted:boolean;
-    companyName:string;
-    status:string;
-    outletId:string;
-    outletName:string;
-    outletStatus:string;
+  vendorId: string;
+  _id: string;
+  fullName: string;
+  isKycCompleted: boolean;
+  companyName: string;
+  status: string;
+  outletId: string;
+  outletName: string;
+  outletStatus: string;
 }
 
 function CompanyListing() {
@@ -39,31 +40,31 @@ function CompanyListing() {
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState(0);
 
-  const GET_ALL_COMPANY_DATA = gql`query GetAllVendorCompanyRecordsByAdmin($input: VendorCompanyRecordsByAdminFilter) {
-  getAllVendorCompanyRecordsByAdmin(input: $input) {
-    maxRecords
-    message
-    records {
-      vendorId
-      _id
-      fullName
-      isKycCompleted
-      companyName
-      status
-      outletId
-      outletName
-      outletStatus
+  const GET_ALL_COMPANY_DATA = gql`
+  query GetAllVendorCompanyRecordsByAdmin($input: VendorCompanyRecordsByAdminFilter) {
+    getAllVendorCompanyRecordsByAdmin(input: $input) {
+      maxRecords
+      records {
+        status
+        vendorId
+        _id
+        fullName
+        isKycCompleted
+        companyName
+        companyType
+        crNumber
+      }
+      message
     }
-  }
-}`;
+  }`;
 
-  
-const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
+
+  const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
     variables: {
       input: {
         page: currentPage,
         size: pageSize,
-        status:activeTab
+        status: activeTab
       },
     },
   });
@@ -71,15 +72,13 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
   useEffect(() => {
     if (kycDataResponse) {
       setCompanyData(kycDataResponse.getAllVendorCompanyRecordsByAdmin?.records || []);
-      
+
     }
 
-  }, [ kycDataResponse , activeTab ,currentPage]);
+  }, [kycDataResponse, activeTab, currentPage]);
 
-  console.log(companyData)
 
   const toggleTab = (tab: string) => {
-    console.log("Active Tab:", tab);
     setActiveTab(tab);
   };
 
@@ -109,12 +108,12 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
   return (
     <>
       <div className="page-content">
-     
+
         <Container fluid={true}>
           <Nav tabs>
             <NavItem>
               <NavLink
-                className={activeTab === "UNDER_VERIFICATION" ? "active" : ""}
+                className={activeTab === "UNDER_VERIFICATION" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("UNDER_VERIFICATION")}
               >
                 Verify
@@ -122,7 +121,7 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === "PENDING" ? "active" : ""}
+                className={activeTab === "PENDING" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("PENDING")}
               >
                 Pending
@@ -130,10 +129,18 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === "COMPLETED" ? "active" : ""}
+                className={activeTab === "COMPLETED" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("COMPLETED")}
               >
                 Completed
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                className={activeTab === "REJECTED" ? "tab-button active" : "tab-button"}
+                onClick={() => toggleTab("REJECTED")}
+              >
+                Rejected
               </NavLink>
             </NavItem>
           </Nav>
@@ -149,10 +156,7 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
                     onChange={handleSearch}
                     style={{ width: "50%", marginBottom: "20px" }}
                   />
-                  <Table
-                    responsive
-                    className="table table-bordered table-centered mb-0"
-                  >
+                  <Table id="tech-companies-1" className="table table-striped table-bordered">
                     <thead>
                       <tr>
                         <th>No</th>
@@ -172,22 +176,19 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
 
                         .map((company, index) => (
                           <tr key={company._id}>
-                            <td>{index + 1}</td>
+                            <td>{pageSize * currentPage + index + 1}</td>
                             <td>{company.fullName}</td>
                             <td>{company.companyName}</td>
                             <td style={{ color: company.isKycCompleted ? "#5cb85c" : "red" }}>
-  {company.isKycCompleted ? "COMPLETED" : "PENDING"}
-</td>
+                              {company.isKycCompleted ? "COMPLETED" : "PENDING"}
+                            </td>
+                            <td >
+                              <StatusIndicator status={company?.status} />
 
-                            
-                            <td
-                            
-                            >
-                              {company?.status}
                             </td>
                             <td>
-                              <Link to={`/vendors/${company.vendorId}`}>
-                                <Button style={{ marginLeft: "20px" , backgroundColor: "#000000"}}>
+                              <Link to={`/vendors/view?id=${company.vendorId}`}>
+                                <Button size="sm" color="primary">
                                   View
                                 </Button>
                               </Link>
@@ -197,14 +198,13 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
                     </tbody>
                   </Table>
                 </CardBody>
-                <Row style={{marginRight:"10px"}}>
+                <Row style={{ marginRight: "10px" }}>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">
                         <li
-                          className={`page-item ${
-                            currentPage === 0 ? "disabled" : ""
-                          }`}
+                          className={`page-item ${currentPage === 0 ? "disabled" : ""
+                            }`}
                         >
                           <button
                             className="page-link"
@@ -218,9 +218,8 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
                         {Array.from({ length: totalPages }, (_, index) => (
                           <li
                             key={`page-${index + 1}`}
-                            className={`page-item ${
-                              currentPage === index ? "active" : ""
-                            }`}
+                            className={`page-item ${currentPage === index ? "active" : ""
+                              }`}
                           >
                             <button
                               className="page-link"
@@ -233,9 +232,8 @@ const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
 
                         {currentPage < totalPages - 1 && (
                           <li
-                            className={`page-item ${
-                              currentPage === totalPages - 1 ? "disabled" : ""
-                            }`}
+                            className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                              }`}
                           >
                             <button
                               className="page-link"

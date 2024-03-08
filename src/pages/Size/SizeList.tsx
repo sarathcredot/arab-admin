@@ -101,7 +101,7 @@ function SizeList() {
   }, [selectedCategory, refetchSize, sizeData]);
 
   const handleCategorySelect = (category: any) => {
-    console.log(category,"any category selected")
+    console.log(category, "any category selected")
     setSelectedCategory(category);
     // setSelectedCategoryData(category);
   };
@@ -121,16 +121,16 @@ function SizeList() {
 
   const handleStatusSelect = (selectedOption: any) => {
     setSelectedStatus(selectedOption);
-    setStatusDropdownOpen(false); 
+    setStatusDropdownOpen(false);
   };
 
   useEffect(() => {
     if (selectedStatus) {
       const filtered = size.filter((size: any) => {
         if (selectedStatus.value === "all") {
-          return true; 
+          return true;
         } else {
-          return size?.isBlocked === (selectedStatus.value === "blocked"?true:false)
+          return size?.isBlocked === (selectedStatus.value === "blocked" ? true : false)
         }
       });
       setFilteredSize(filtered);
@@ -139,14 +139,16 @@ function SizeList() {
     }
   }, [selectedStatus, size]);
 
-  console.log(selectCategoryData, {selectedCategory},"jdjsdjdjfidsjf")
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
 
   return (
     <div>
       <div className="page-content">
         <Container fluid={true} >
-        <Breadcrumb title="Dashboard" link="/" breadcrumbItem="SizeList"/>
-        
+          <Breadcrumb items={items} currentPage="Size List" />
+
           <Row>
             <Col lg={12}>
               <Card>
@@ -178,13 +180,13 @@ function SizeList() {
                     </Col> */}
 
                     <Col xs={4}>
-                      
+
                       <ReactSelect
                         value={selectedCategory}
-                        onChange={(selectedOption: any) =>{
-                          handleCategorySelect(selectedOption) 
+                        onChange={(selectedOption: any) => {
+                          handleCategorySelect(selectedOption)
                           // setSelectedCategory(selectedOption?.value);
-                         
+
                         }}
                         options={categories.map((category: Category) => ({
                           value: category._id,
@@ -193,11 +195,11 @@ function SizeList() {
                         placeholder="Select Category"
                         isSearchable
 
-                       
 
-                        
+
+
                       />
-                      
+
                     </Col>
 
                     <Col xs={3}>
@@ -210,7 +212,7 @@ function SizeList() {
                             ? selectedStatus?.label
                             : "Select Status"}{" "}
 
-<FontAwesomeIcon icon={faAngleDown} />
+                          <FontAwesomeIcon icon={faAngleDown} />
                         </DropdownToggle>
                         <DropdownMenu>
                           {statusOptions.map((option) => (
@@ -224,9 +226,9 @@ function SizeList() {
                         </DropdownMenu>
                       </Dropdown>
                     </Col>
-                   
-                    <Col xs={4} className="text-right" style={{display:"flex",justifyContent:"flex-end", marginLeft:"100px"}}>
-                      <Button style={{backgroundColor: "rgba(0, 0, 0, 1)" }} onClick={() => toggleAddModal()}  disabled={!selectedCategory}>
+
+                    <Col xs={4} className="text-right" style={{ display: "flex", justifyContent: "flex-end", marginLeft: "100px" }}>
+                      <Button style={{ backgroundColor: "rgba(0, 0, 0, 1)" }} onClick={() => toggleAddModal()} disabled={!selectedCategory}>
                         Add Size
                       </Button>
                     </Col>

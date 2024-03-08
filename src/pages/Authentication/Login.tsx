@@ -99,7 +99,7 @@ const Login = (props: any) => {
 
   const [loginAdmin] = useMutation(LOGIN_MUTATION);
 
-  document.title = "Login | Arab Deals";
+  // document.title = "Login | Arab Deals";
 
   const validation = useFormik({
     enableReinitialize: true,
@@ -189,7 +189,7 @@ const Login = (props: any) => {
                             fontWeight: "300",
                             lineHeight: "normal",
                             letterSpacing: "0.5px",
-                            fontFamily:"Arial",
+                            fontFamily: "Arial",
                           }}
                         >
                           Welcome Back!
@@ -216,15 +216,15 @@ const Login = (props: any) => {
                             value={validation.values.email || ""}
                             invalid={
                               validation.touched.email &&
-                              validation.errors.email
+                                validation.errors.email
                                 ? true
                                 : false
                             }
 
-                            style={{borderRadius:"15px ", height:"52px",fontFamily:"Arial",}}
+                            style={{ borderRadius: "15px ", height: "52px", fontFamily: "Arial", }}
                           />
                           {validation.touched.email &&
-                          validation.errors.email ? (
+                            validation.errors.email ? (
                             <FormFeedback type="invalid">
                               {validation.errors.email}
                             </FormFeedback>
@@ -258,23 +258,23 @@ const Login = (props: any) => {
                               onBlur={validation.handleBlur}
                               invalid={
                                 validation.touched.password &&
-                                validation.errors.password
+                                  validation.errors.password
                                   ? true
                                   : false
                               }
-                              style={{borderTopLeftRadius:"15px ", borderBottomLeftRadius:"15px ", height:"52px" ,fontFamily:"Arial",}}
+                              style={{ borderTopLeftRadius: "15px ", borderBottomLeftRadius: "15px ", height: "52px", fontFamily: "Arial", }}
                             />
                             <button
                               onClick={() => setPasswordShow(!passwordShow)}
                               className="btn btn-light shadow-none ms-0"
                               type="button"
                               id="password-addon"
-                              style={{borderTopRightRadius:"15px " ,borderBottomRightRadius:"15px" ,height:"52px", }}
+                              style={{ borderTopRightRadius: "15px ", borderBottomRightRadius: "15px", height: "52px", }}
                             >
                               <i className="mdi mdi-eye-outline"></i>
                             </button>
                             {validation.touched.password &&
-                            validation.errors.password ? (
+                              validation.errors.password ? (
                               <FormFeedback type="invalid">
                                 {validation.errors.password}
                               </FormFeedback>
@@ -306,15 +306,15 @@ const Login = (props: any) => {
                                   backgroundColor: "rgba(43, 43, 42, 1)",
                                   color: "#FFFFFF",
                                   borderRadius: "30px",
-                                  height:"52px",
-                                  fontSize:"14px",
-                                  fontWeight:"600",
-                                  lineHeight:"34px",
-                                  letterSpacing:"1px",
-                                  fontFamily:"Arial",
+                                  height: "52px",
+                                  fontSize: "14px",
+                                  fontWeight: "600",
+                                  lineHeight: "34px",
+                                  letterSpacing: "1px",
+                                  fontFamily: "Arial",
 
                                 }}
-                                // onClick={() => logIn()}
+                              // onClick={() => logIn()}
                               >
                                 LOGIN
                               </button>

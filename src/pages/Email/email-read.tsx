@@ -17,13 +17,13 @@ import EmailSideBar from "./email-sidebar";
 import EmailToolbar from "./email-toolbar";
 
 const EmailRead = () => {
-  document.title = "Read Email | Minia - React Admin & Dashboard Template";
+  // document.title = "Read Email | Minia - React Admin & Dashboard Template";
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Email" breadcrumbItem="Read Email" />
+          {/* <Breadcrumbs title="Email" breadcrumbItem="Read Email" /> */}
 
           <Row>
             <Col xs="12">

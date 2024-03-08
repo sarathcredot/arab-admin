@@ -8,10 +8,10 @@ import avatar from "../../assets/images/users/avatar-1.jpg";
 import CarouselPage from "./CarouselPage";
 
 const LockScreen = () => {
-  document.title = "Lock Screen | Arab Deals";
+  // document.title = "Lock Screen | Arab Deals";
 
   return (
-    <React.Fragment>      
+    <React.Fragment>
       <div className="auth-page">
         <Container fluid className="p-0">
           <Row className="g-0">

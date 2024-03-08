@@ -14,7 +14,7 @@ import Cleave from "cleave.js/react";
 import "cleave.js/dist/addons/cleave-phone.in";
 
 const FormMask = () => {
-  document.title = "Form Mask | Minia - React Admin & Dashboard Template";
+  // document.title = "Form Mask | Minia - React Admin & Dashboard Template";
 
   const [date, setDate] = useState<any>("");
   const [dateFormat, setDateFormat] = useState<any>("");
@@ -29,51 +29,51 @@ const FormMask = () => {
 
   //Date 
   function onDateChange(e: any) {
-      setDate(e.target.rawValue);
+    setDate(e.target.rawValue);
   }
   //Date Format
   function onDateFormatChange(e: any) {
-      setDateFormat(e.target.rawValue);
+    setDateFormat(e.target.rawValue);
   }
   //Time 
   function onTimeChange(e: any) {
-      setTime(e.target.rawValue);
+    setTime(e.target.rawValue);
   }
   //Time Format
   function onTimeFormatChange(e: any) {
-      setTimeFormat(e.target.rawValue);
+    setTimeFormat(e.target.rawValue);
   }
   //Credit card 
   function onCreditCardChange(e: any) {
-      setCreditCardNo(e.target.rawValue);
+    setCreditCardNo(e.target.rawValue);
   }
 
   //Delimeter
   function onDelimiterChange(e: any) {
-      setDelimiter(e.target.rawValue);
+    setDelimiter(e.target.rawValue);
   }
   //Delimeter
   function onDelimiterChange2(e: any) {
-      setDelimiter2(e.target.rawValue);
+    setDelimiter2(e.target.rawValue);
   }
 
   //Prefix
   function onPrefixChange(e: any) {
-      setPrefix(e.target.rawValue);
+    setPrefix(e.target.rawValue);
   }
   //Phone
   function onPhoneChange(e: any) {
-      setPhone(e.target.rawValue);
+    setPhone(e.target.rawValue);
   }
   //Number
   function onNumberChange(e: any) {
-      setNumber(e.target.rawValue);
+    setNumber(e.target.rawValue);
   }
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Form" breadcrumbItem="Form Mask" />
+          {/* <Breadcrumbs title="Form" breadcrumbItem="Form Mask" /> */}
 
           <Row>
             <Col lg={12}>

@@ -14,25 +14,28 @@ import {
   NavItem,
   NavLink,
   Label,
+  CardHeader,
 } from "reactstrap";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
 import AttributeForm from "./AttributeForm";
+import CustomButton from "src/components/Common/CustomButton";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
 interface IAttribute {
-    _id: string;
-    attributeType: string;
-    name: string;
-    description: string;
-    isBlocked: boolean;
-  }
-  
+  _id: string;
+  attributeType: string;
+  name: string;
+  description: string;
+  isBlocked: boolean;
+}
+
 
 const AttributeList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [attributeData, setAttributeData] = useState<IAttribute[]>([]);
-//   const [assignBrandData, setAssignBrandData] = useState<IBrandRecord[]>([]);
+  //   const [assignBrandData, setAssignBrandData] = useState<IBrandRecord[]>([]);
   const [activeTab, setActiveTab] = useState<boolean>();
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 10; // Number of items per page
@@ -60,7 +63,7 @@ const AttributeList: React.FC = () => {
 
 
 
-const PUT_VENDOR=gql`
+  const PUT_VENDOR = gql`
 mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
   updateVendorProfileByAdmin(input: $input) {
     _id
@@ -69,33 +72,33 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
 }`
 
 
-const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
+  const [UpdateVendorProfileByAdmin] = useMutation(PUT_VENDOR)
 
-const {
-  loading: attributeLoading,
-  error: attributeError,
-  data: attributeResponse,
-  refetch: attributeRefetch,
-} = useQuery(GET_ATTRIBUTES, {
-  variables: {
-    input: {
-      page: currentPage,
-      size: pageSize,
-      isBlocked: activeTab,
+  const {
+    loading: attributeLoading,
+    error: attributeError,
+    data: attributeResponse,
+    refetch: attributeRefetch,
+  } = useQuery(GET_ATTRIBUTES, {
+    variables: {
+      input: {
+        page: currentPage,
+        size: pageSize,
+        isBlocked: activeTab,
+      },
     },
-  },
-});
+  });
 
 
 
 
 
-useEffect(() => {
-  if (attributeResponse && attributeResponse.getAllAttributeRecordsByAdmin) {
-    setAttributeData(attributeResponse.getAllAttributeRecordsByAdmin.records);
-  }
+  useEffect(() => {
+    if (attributeResponse && attributeResponse.getAllAttributeRecordsByAdmin) {
+      setAttributeData(attributeResponse.getAllAttributeRecordsByAdmin.records);
+    }
 
-}, [attributeResponse,attributeRefetch,id,activeTab,currentPage]);
+  }, [attributeResponse, attributeRefetch, id, activeTab, currentPage]);
 
   if (attributeError) {
     console.error("Error fetching vendor data:", attributeError);
@@ -112,7 +115,7 @@ useEffect(() => {
   };
 
 
-  console.log(attributeData,"wertyui")
+  console.log(attributeData, "wertyui")
 
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
@@ -128,7 +131,7 @@ useEffect(() => {
     if (selectedBrands.length > 0) {
       const brandIds = selectedBrands.map((brand) => brand.value);
       try {
-        const response:any = await UpdateVendorProfileByAdmin({
+        const response: any = await UpdateVendorProfileByAdmin({
           variables: {
             input: {
               _id: id,
@@ -136,31 +139,33 @@ useEffect(() => {
             },
           },
         });
-  
+
         toast.success(response?.message)
         setSelectedBrands([])
-        
-      } catch (error:any) {
+
+      } catch (error: any) {
         console.error("Error assigning brands:", error.message);
       }
     } else {
       console.error("Please select at least one brand to assign");
     }
   };
-  
 
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
 
   return (
     <>
       <div className="page-content">
-      <ToastContainer/>
+        <ToastContainer />
 
         <Container fluid={true}>
-        <Breadcrumb title="Dashboard" breadcrumbItem="Attributes" link="/" />
+          <Breadcrumb items={items} currentPage="Attributes" />
           <Nav tabs>
             <NavItem>
               <NavLink
-                className={activeTab === undefined ? "active" : ""}
+                className={activeTab === undefined ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(undefined)}
               >
                 All
@@ -168,7 +173,7 @@ useEffect(() => {
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === false ? "active" : ""}
+                className={activeTab === false ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(false)}
               >
                 Active
@@ -176,7 +181,7 @@ useEffect(() => {
             </NavItem>
             <NavItem>
               <NavLink
-                className={activeTab === true ? "active" : ""}
+                className={activeTab === true ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(true)}
               >
                 Blocked
@@ -184,34 +189,34 @@ useEffect(() => {
             </NavItem>
           </Nav>
 
-          <Row>
+          <Row style={{ marginTop: "20px" }}>
             <Col lg={12}>
               <Card>
+                <CardHeader>
+                  <Row>
+                    <Col xs={6}>
+                      <Input
+                        type="text"
+                        placeholder="Search by name"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{ width: "60%", }}
+                      />
+                    </Col>
+                    <Col xs={6} style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                      <CustomButton icon="material-symbols:add" name="Add Attribute" onClick={() => toggleAddModal()} />
+                    </Col>
+                  </Row>
+                </CardHeader>
                 <CardBody>
-                  <Input
-                    type="text"
-                    placeholder="Search by name"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{ width: "50%", marginBottom: "20px" }}
-                  />
 
-                  <div className="d-flex justify-content-end mb-3">
-                    
-                    <Button  onClick={() => toggleAddModal()} style={{backgroundColor:"#000000"}}>
-                      Add Attribute
-                    </Button>
 
-                    <AttributeForm isOpen={showAddModal} toggle={toggleAddModal} refetch={attributeRefetch} />
-                  </div>
+                  <AttributeForm isOpen={showAddModal} toggle={toggleAddModal} refetch={attributeRefetch} />
 
-                  <Table
-                    responsive
-                    className="table table-bordered table-centered mb-0"
-                  >
+                  <Table id="tech-companies-1" className="table table-striped table-bordered">
                     <thead>
                       <tr>
-                        <th>No</th>
+                        <th>Sl.No</th>
                         <th>Name</th>
                         <th>Description</th>
                         <th>Attribute Type</th>
@@ -227,22 +232,20 @@ useEffect(() => {
                             .includes(searchTerm.toLowerCase())
                         )
                         .map((attribute, index) => (
-                          <tr key={attribute._id}>
-                            <td>{index + 1}</td>
-                            <td>{attribute.name}</td>
-                            <td>{attribute.description}</td>
-                            <td>{attribute.attributeType}</td>
-                            
+                          <tr key={attribute?._id}>
+                            <td>{currentPage * pageSize + index + 1}</td>
+                            <td>{attribute?.name}</td>
+                            <td>{attribute?.description}</td>
+                            <td>{attribute?.attributeType}</td>
+
                             <td
-                              style={{
-                                color: attribute.isBlocked ? "red" : "#5cb85c",
-                              }}
                             >
-                              {attribute.isBlocked ? "Blocked" : "Active"}
+                              <StatusIndicator status={attribute?.isBlocked ? "BLOCKED" : "ACTIVE"} />
+
                             </td>
                             <td>
-                              <Link to={`/attributes/${attribute._id}`}>
-                                <Button style={{ marginLeft: "20px", backgroundColor: "#000000" }}>
+                              <Link to={`/attributes/${attribute?._id}`}>
+                                <Button size="sm" color="primary">
                                   View
                                 </Button>
                               </Link>
@@ -253,14 +256,13 @@ useEffect(() => {
                   </Table>
                 </CardBody>
 
-                <Row style={{marginRight:"10px"}}>
+                <Row style={{ marginRight: "10px" }}>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">
                         <li
-                          className={`page-item ${
-                            currentPage === 0 ? "disabled" : ""
-                          }`}
+                          className={`page-item ${currentPage === 0 ? "disabled" : ""
+                            }`}
                         >
                           <button
                             className="page-link"
@@ -274,9 +276,8 @@ useEffect(() => {
                         {Array.from({ length: totalPages }, (_, index) => (
                           <li
                             key={index}
-                            className={`page-item ${
-                              currentPage === index ? "active" : ""
-                            }`}
+                            className={`page-item ${currentPage === index ? "active" : ""
+                              }`}
                           >
                             <button
                               className="page-link"
@@ -289,9 +290,8 @@ useEffect(() => {
 
                         {currentPage < totalPages - 1 && (
                           <li
-                            className={`page-item ${
-                              currentPage === totalPages - 1 ? "disabled" : ""
-                            }`}
+                            className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                              }`}
                           >
                             <button
                               className="page-link"

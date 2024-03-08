@@ -29,6 +29,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
 import Breadcrumbs from "../../components/Common/Breadcrumb";
+import Breadcrumb from "../../components/Common/Breadcrumb";
 
 interface ProductForm {
   productName: string;
@@ -85,11 +86,11 @@ const ADD_VARIANT = gql`
   }
 `;
 
-const AddVariant = ({}) => {
+const AddVariant = ({ }) => {
   const {
     control,
     handleSubmit,
-    setValue, 
+    setValue,
     formState: { errors },
   } = useForm<ProductForm>({
     criteriaMode: "all",
@@ -128,14 +129,14 @@ const AddVariant = ({}) => {
     const categoryIdParam = new URLSearchParams(location.search).get(
       "category"
     );
-    setDropdownDisabled(true); 
+    setDropdownDisabled(true);
 
-   
+
     const defaultCategory = categories.find(
       (category: Category) => category._id === categoryIdParam
     );
 
-    
+
     if (defaultCategory) {
       setSelectedCategory(defaultCategory);
     }
@@ -245,7 +246,7 @@ const AddVariant = ({}) => {
       return;
     }
 
-    
+
     const mutationInput = {
       productCode: parseInt(productCodeParam),
       categoryId: selectedCategory?._id,
@@ -266,7 +267,7 @@ const AddVariant = ({}) => {
       tags: data.tags,
     };
 
-    console.log(acceptedFiles)  
+    console.log(acceptedFiles)
 
     try {
       const { data: mutationData } = await addVariantMutation({
@@ -278,9 +279,9 @@ const AddVariant = ({}) => {
       console.log(acceptedFiles)
 
       // Additional logic if needed
-    } catch (error:any) {
+    } catch (error: any) {
       // Handle error, e.g., show an error toast
-     toast.error(error.message)
+      toast.error(error.message)
 
       // Log the error for debugging
       console.error("Add Variant Mutation Error:", error);
@@ -288,12 +289,14 @@ const AddVariant = ({}) => {
   };
   const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
     useDropzone();
-
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="product" breadcrumbItem={"Add variant"} link="/product" />
+          <Breadcrumb items={items} currentPage="Add Variant" />
 
           <Row>
             <Col lg={12}>
@@ -417,7 +420,7 @@ const AddVariant = ({}) => {
                       )}
                     </FormGroup>
 
-                   
+
                     <FormGroup>
                       <Label for="shortDescription">Short Description:</Label>
                       <Controller

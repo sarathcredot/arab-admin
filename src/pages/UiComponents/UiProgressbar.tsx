@@ -14,13 +14,13 @@ import {
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const UiProgressbar = () => {
-  document.title = "Progress Bars | Minia - React Admin & Dashboard Template";
+  // document.title = "Progress Bars | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Components" breadcrumbItem="Progress Bars" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Progress Bars" /> */}
 
           <Row>
             <Col xl={6}>

@@ -6,7 +6,7 @@ import { Container, Row, Col, Card, CardBody, CardHeader } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const IconMaterialdesign = () => {
-  document.title = "Material Design | Minia - React Admin & Dashboard Template";
+  // document.title = "Material Design | Minia - React Admin & Dashboard Template";
 
   useEffect(() => {
     function isNew(icon: any) {
@@ -24,9 +24,9 @@ const IconMaterialdesign = () => {
       div.appendChild(span);
       return div;
     }
-    
+
     (function () {
-      var icons : any = [
+      var icons: any = [
         { name: "ab-testing", hex: "F01C9", version: "4.0.96" },
         { name: "abacus", hex: "F16E0", version: "5.9.55" },
         { name: "abjad-arabic", hex: "F1328", version: "4.9.95" },
@@ -7813,7 +7813,7 @@ const IconMaterialdesign = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title="Icons" breadcrumbItem="Material Design Icons" />
+          {/* <Breadcrumbs title="Icons" breadcrumbItem="Material Design Icons" /> */}
 
           <Row className="icons-demo-content">
             <Col xs="12">

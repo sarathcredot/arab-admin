@@ -5,14 +5,14 @@ import { Card, CardBody, Col, Container, Row } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const PageFaqs = () => {
-  document.title = "FAQS | Minia - React Admin & Dashboard Template";
+  // document.title = "FAQS | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Pages" breadcrumbItem="FAQs" />
+          {/* <Breadcrumbs title="Pages" breadcrumbItem="FAQs" /> */}
           <Row>
             <Col lg={12}>
               <Card>

@@ -414,7 +414,7 @@ body[data-layout=horizontal] .footer {
   display: none;
 }
 .metismenu .mm-collapse.mm-show {
-  display: block;
+  display: flex;
 }
 .metismenu .mm-collapsing {
   position: relative;
@@ -503,6 +503,7 @@ body[data-layout=horizontal] .footer {
 }
 #sidebar-menu ul li ul.sub-menu {
   padding: 0;
+  margin: 500px;
 }
 #sidebar-menu ul li ul.sub-menu li a {
   padding: 0.4rem 1.5rem 0.4rem 3.3rem;
@@ -3208,7 +3209,7 @@ span.flatpickr-weekday {
 
 /* Dropzone */
 .dropzone {
-  min-height: 230px;
+  min-height: 100px !important;
   border: 2px dashed var(--bs-border-color);
   background: var(--bs-card-bg);
   border-radius: 6px;
@@ -3695,7 +3696,7 @@ div.dataTables_wrapper div.dataTables_info {
 }
 
 .auth-bg {
-  background-image: url("src/assets/images/ArabDealDashpic.png");
+  background-image: url("../../images/auth-bg.jpg");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -4678,3 +4679,4 @@ body[data-layout=horizontal] .chat-conversation {
 [data-bs-theme=dark] .pricing-tab-box .nav-link {
   border-color: var(--bs-border-color);
 }/*# sourceMappingURL=app.css.map */
+

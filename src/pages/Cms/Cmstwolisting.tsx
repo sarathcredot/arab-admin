@@ -59,7 +59,7 @@ interface CmsTwoRecord {
 }
 
 const CmstwoListing = () => {
-  document.title = "CMS Listing ";
+  // document.title = "CMS Listing ";
 
   const pageSize = 10; // Number of items per page
   const [currentPage, setCurrentPage] = useState(0);
@@ -93,7 +93,7 @@ const CmstwoListing = () => {
     <React.Fragment>
       <div className="page-content">
         <div className="container-fluid">
-          <Breadcrumbs title="Tables" breadcrumbItem="" />
+          {/* <Breadcrumbs title="Tables" breadcrumbItem="" /> */}
           <Row>
             <Col lg={12}>
               <div className="d-flex justify-content-end mb-3">
@@ -196,9 +196,8 @@ const CmstwoListing = () => {
                       <div className="d-flex justify-content-end mt-0 ">
                         <ul className="pagination">
                           <li
-                            className={`page-item ${
-                              currentPage === 0 ? "disabled" : ""
-                            }`}
+                            className={`page-item ${currentPage === 0 ? "disabled" : ""
+                              }`}
                           >
                             <button
                               className="page-link"
@@ -212,9 +211,8 @@ const CmstwoListing = () => {
                           {Array.from({ length: totalPages }, (_, index) => (
                             <li
                               key={index}
-                              className={`page-item ${
-                                currentPage === index ? "active" : ""
-                              }`}
+                              className={`page-item ${currentPage === index ? "active" : ""
+                                }`}
                             >
                               <button
                                 className="page-link"
@@ -227,9 +225,8 @@ const CmstwoListing = () => {
 
                           {currentPage < totalPages - 1 && (
                             <li
-                              className={`page-item ${
-                                currentPage === totalPages - 1 ? "disabled" : ""
-                              }`}
+                              className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                                }`}
                             >
                               <button
                                 className="page-link"

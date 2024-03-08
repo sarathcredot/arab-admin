@@ -18,14 +18,14 @@ import {
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const UiButton = () => {
-  document.title = "Buttons | Minia - React Admin & Dashboard Template";
+  // document.title = "Buttons | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Components" breadcrumbItem="Buttons" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Buttons" /> */}
           <Row>
             <Col xl={6}>
               <Card>

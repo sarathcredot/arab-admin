@@ -8,16 +8,16 @@ import ProfileTab from "./ProfileTab";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 
 const ContactsProfile = () => {
-  document.title = "Profile | Minia - React Admin & Dashboard Template";
+  // document.title = "Profile | Minia - React Admin & Dashboard Template";
   return (
     <React.Fragment>
-      <div className="page-content">        
+      <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Contacts" breadcrumbItem="Profile" />
+          {/* <Breadcrumbs title="Contacts" breadcrumbItem="Profile" /> */}
 
-            {/* Render profilemenu */}
-            <ProfileTab />
+          {/* Render profilemenu */}
+          <ProfileTab />
         </Container>
       </div>
     </React.Fragment>

@@ -168,8 +168,6 @@
 .arrow-down{
     display: inline-block;
 
-    //TODO:commented out once old style
-
     &:after {
         border-color: initial;
         border-style: solid;
@@ -179,14 +177,12 @@
         display: inline-block;
         right: 5px;
         top: 50%;
-        // margin-left: 10px;
-        margin-left: 80px;
+        margin-left: 10px;
         transform: rotate(-45deg) translateY(-50%);
         transform-origin: top;
         transition: all .3s ease-out;
         width: .4em;
-        // margin-bottom: 24px !important; 
-        margin-bottom: 0px !important; 
+        margin-bottom: 24px !important; 
         margin-top: -11px !important;
     }
 }

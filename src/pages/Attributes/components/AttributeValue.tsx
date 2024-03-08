@@ -14,12 +14,14 @@ import {
   NavItem,
   NavLink,
   Label,
+  CardHeader,
 } from "reactstrap";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
 import AttributeForm from "./AttributeForm";
 import SubAttributeForm from "./SubAttributeForm";
+import CustomButton from "src/components/Common/CustomButton";
 
 interface AttributeValue {
   _id: string;
@@ -38,12 +40,12 @@ interface IAttribute {
   isBlocked: boolean;
 }
 
-  
+
 
 const ValueAttributeList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [attributeData, setAttributeData] = useState<IAttribute>();
-//   const [assignBrandData, setAssignBrandData] = useState<IBrandRecord[]>([]);
+  //   const [assignBrandData, setAssignBrandData] = useState<IBrandRecord[]>([]);
   const [activeTab, setActiveTab] = useState<boolean>();
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 10; // Number of items per page
@@ -78,36 +80,36 @@ const ValueAttributeList: React.FC = () => {
 
 
 
-// const PUT_VENDOR=gql`
+  // const PUT_VENDOR=gql`
 
 
-// `
+  // `
 
 
-// const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
+  // const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
 
-const {
-  loading: attributeLoading,
-  error: attributeError,
-  data: attributeResponse,
-  refetch: attributeRefetch,
-} = useQuery(GET_SUBATTRIBUTES, {
-  variables: {
-    input: {
-      attributeId: id
+  const {
+    loading: attributeLoading,
+    error: attributeError,
+    data: attributeResponse,
+    refetch: attributeRefetch,
+  } = useQuery(GET_SUBATTRIBUTES, {
+    variables: {
+      input: {
+        attributeId: id
+      },
     },
-  },
-});
+  });
 
 
 
 
 
-useEffect(() => {
-  if (attributeResponse && attributeResponse.getAttributeRecordByAdmin) {
-    setAttributeData(attributeResponse.getAttributeRecordByAdmin.record);
-  }
-}, [attributeResponse, attributeRefetch, id, activeTab]);
+  useEffect(() => {
+    if (attributeResponse && attributeResponse.getAttributeRecordByAdmin) {
+      setAttributeData(attributeResponse.getAttributeRecordByAdmin.record);
+    }
+  }, [attributeResponse, attributeRefetch, id, activeTab]);
 
 
   if (attributeError) {
@@ -122,9 +124,6 @@ useEffect(() => {
       setCurrentPage(currentPage + 1);
     }
   };
-
-
-  console.log(attributeData,"wertyui")
 
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
@@ -148,10 +147,10 @@ useEffect(() => {
   //           },
   //         },
   //       });
-  
+
   //       toast.success(response?.message)
   //       setSelectedBrands([])
-        
+
   //     } catch (error:any) {
   //       console.error("Error assigning brands:", error.message);
   //     }
@@ -159,16 +158,19 @@ useEffect(() => {
   //     console.error("Please select at least one brand to assign");
   //   }
   // };
-  
 
+  const items = [
+    { text: "Dashboard", link: `/` },
+    { text: "Attributes", link: `/attributes` },
+  ];
 
   return (
     <>
       <div className="page-content">
-      <ToastContainer/>
+        <ToastContainer />
 
         <Container fluid={true}>
-        <Breadcrumb title="Dashboard" breadcrumbItem={attributeData?.description.toString()} link="/" />
+          <Breadcrumb items={items} currentPage="Attribute Value" />
           {/* <Nav tabs>
             <NavItem>
               <NavLink
@@ -199,34 +201,38 @@ useEffect(() => {
           <Row>
             <Col lg={12}>
               <Card>
+                <CardHeader>
+                  <Row>
+                    <Col xs={6}>
+                      <Input
+                        type="text"
+                        placeholder="Search by name"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{ width: "60%" }}
+                      />
+                    </Col>
+                    <Col xs={6} style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                      <CustomButton onClick={() => toggleAddModal()} name="Add Attribute" icon="material-symbols:add" />
+                    </Col>
+                  </Row>
+
+
+                </CardHeader>
                 <CardBody>
-                  <Input
-                    type="text"
-                    placeholder="Search by name"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{ width: "50%", marginBottom: "3px" }}
-                  />
+
 
                   <div className="d-flex justify-content-end mb-3">
-                    
-                    <Button  onClick={() => toggleAddModal()} style={{backgroundColor:"#000000"}}>
-                      Add Attribute
-                    </Button>
-
-                    <SubAttributeForm isOpen={showAddModal} toggle={toggleAddModal} refetch={attributeRefetch} Id={id} />
+                    <SubAttributeForm isOpen={showAddModal} toggle={toggleAddModal} refetch={attributeRefetch} Id={id} attributData={attributeData} />
                   </div>
 
-                  <Table
-                    responsive
-                    className="table table-bordered table-centered mb-0"
-                  >
+                  <Table id="tech-companies-1" className="table table-striped table-bordered">
                     <thead>
                       <tr>
                         <th>No</th>
                         <th>value</th>
                         {attributeData?.description.toLowerCase() === "color" ? <th>colorCode</th> : null}
-                       
+
                         <th>priority</th>
                         <th>Status</th>
                         {/* <th>Action</th> */}
@@ -235,7 +241,7 @@ useEffect(() => {
                     <tbody>
                       {attributeData?.attributeValues
                         .filter((attribute) =>
-                        attribute.value
+                          attribute.value
                             .toLowerCase()
                             .includes(searchTerm.toLowerCase())
                         )
@@ -244,8 +250,8 @@ useEffect(() => {
                             <td>{index + 1}</td>
                             <td>{attribute.value}</td>
                             {attributeData?.description.toLowerCase() === "color" ? <td>{attribute.colorCode}</td> : null}
-                            
-                            <td>{attribute.priority}</td>                            
+
+                            <td>{attribute.priority}</td>
                             <td
                               style={{
                                 color: attribute.isBlocked ? "red" : "#5cb85c",
@@ -323,7 +329,7 @@ useEffect(() => {
             </Col>
           </Row>
         </Container>
-      </div>
+      </div >
     </>
   );
 };

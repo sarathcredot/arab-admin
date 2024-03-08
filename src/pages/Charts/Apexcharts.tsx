@@ -24,12 +24,12 @@ import {
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const Apexchart = () => {
-  document.title = "Apex Charts | Minia - React Admin & Dashboard Template";
+  // document.title = "Apex Charts | Minia - React Admin & Dashboard Template";
   return (
     <React.Fragment>
-      <div className="page-content">       
+      <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title="Charts" breadcrumbItem="Apex Charts" />
+          {/* <Breadcrumbs title="Charts" breadcrumbItem="Apex Charts" /> */}
 
           <Row>
             <Col xl={6}>
@@ -126,7 +126,7 @@ const Apexchart = () => {
           </Row>
 
           <Row>
-          <Col xl={6}>
+            <Col xl={6}>
               <Card>
                 <CardHeader>
                   <h4 className="card-title mb-0">Pie Chart </h4>

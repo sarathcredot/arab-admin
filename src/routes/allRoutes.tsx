@@ -105,7 +105,7 @@ import Login from "src/pages/Authentication/Login";
 import Logout from "src/pages/Authentication/Logout";
 import Register from "src/pages/Authentication/Register";
 import ForgetPassword from "src/pages/Authentication/ForgetPassword";
-import UserProfile from "src/pages/Authentication/user-profile";
+import AdminProfile from "src/pages/Authentication/user-profile";
 import PagesComingsoon from "src/pages/Utility/PageComingsoon";
 import AuthLogout from "../pages/AuthenticationInner/Logout";
 
@@ -137,7 +137,18 @@ import ValueAttributeList from "src/pages/Attributes/components/AttributeValue";
 import Assignattribute from "src/pages/category/Assignattribute";
 import VariantListing from "src/pages/Product/variantList";
 import AssignBrands from "src/pages/branding/AssignBrands";
-import UserList from "src/pages/Users/UserList";
+import UserList from "src/pages/User/UserList";
+import AllOrders from "src/pages/Orders/allOrders/AllOrders";
+import ALlOrderDetails from "src/pages/Orders/allOrders/AllOrderDetails";
+import ShippingOrders from "src/pages/Orders/shippingOrders/ShippingOrders";
+import ShippingOrderDetails from "src/pages/Orders/shippingOrders/ShippingOrderDetails";
+import ReturnOrders from "src/pages/Orders/returnOrders/ReturnOrders";
+import ReturnOrderDetails from "src/pages/Orders/returnOrders/ReturnOrderDetails";
+import RefundOrders from "src/pages/Orders/refundOrders/RefundOrders";
+import RefundOrderDetails from "src/pages/Orders/refundOrders/RefundOrderDetails";
+import Settings from "src/pages/settings/Settings";
+import UserProfile from "src/pages/User/UserProfile";
+import VendorAnalyticsPage from "src/pages/venders/VendorAnalyticsPage";
 interface RouteProps {
   path: string;
   component: any;
@@ -145,11 +156,88 @@ interface RouteProps {
 }
 
 const adminRoutes: Array<RouteProps> = [
-  // //User Profile
-  { path: "/profile", component: <UserProfile /> },
+  //User Profile
+  { path: "/profile", component: <AdminProfile /> },
 
-  // //dashboard
+  //dashboard
+  { path: "/", exact: true, component: <Navigate to="/dashboard" /> },
   { path: "/dashboard", component: <Dashboard /> },
+
+
+
+  { path: "/product", component: <Productlisting /> },
+  { path: "/product/details", component: <View /> },
+  { path: "/product/variant", component: <VariantListing /> },
+  { path: "/add-product", component: <Addproduct /> },
+  { path: "/add-variant", component: <AddVariant /> },
+  { path: "/cmslisting", component: <CmsListing /> },
+  { path: "/cmstwolisting", component: <CmstwoListing /> },
+  { path: "/cms/details", component: <CmsRecordDetails /> },
+  { path: "/cmstwo/details", component: <CmsTwoRecordDetails /> },
+  { path: "/add-cms", component: <AddCmsSection /> },
+  { path: "/add-cms2", component: <AddCmstwosection /> },
+
+
+  { path: "/category", component: <Category /> },
+  { path: "/assign-attribute", component: <Assignattribute /> },
+  { path: "/colors", component: <ColorList /> },
+  { path: "/size", component: <SizeList /> },
+
+
+  { path: "/vendors", exact: true, component: <VendorList /> },
+  { path: "/vendors/view", exact: true, component: <ViewVenders /> },
+  { path: "/vendors/view/analytics", exact: true, component: <VendorAnalyticsPage /> },
+
+  { path: "/kyc", exact: true, component: <KycListing /> },
+  { path: "/kyc/:id", exact: true, component: <ViewKyc /> },
+  { path: "/brands", exact: true, component: <BrandList /> },
+  { path: "/brands/:id", exact: true, component: <ViewBrands /> },
+  { path: "/assign-brands", component: <AssignBrands /> },
+
+  { path: "/attributes", exact: true, component: <AttributeList /> },
+  { path: "/attributes/:id", exact: true, component: <ValueAttributeList /> },
+  { path: "/users", exact: true, component: <UserList /> },
+  { path: "/user/view", component: <UserProfile /> },
+
+  // ORDERS
+  { path: "/orders", component: <AllOrders /> },
+  { path: "/orders/details", component: <ALlOrderDetails /> },
+
+  { path: "/shipping-orders", component: <ShippingOrders /> },
+  { path: "/shipping-orders/details", component: <ShippingOrderDetails /> },
+
+  { path: "/return-orders", component: <ReturnOrders /> },
+  { path: "/return-orders/details", component: <ReturnOrderDetails /> },
+
+  { path: "/refund-orders", component: <RefundOrders /> },
+  { path: "/refund-orders/details", component: <RefundOrderDetails /> },
+
+  { path: "/settings", component: <Settings /> },
+];
+
+const authRoutes: Array<RouteProps> = [
+  //Authentication pages
+  { path: "/login", component: <Login /> },
+  // { path: "/logout", component: <Logout /> },
+  // { path: "/register", component: <Register /> },
+  // { path: "/recoverpw", component: <ForgetPassword /> },
+
+  //AuthenticationInner pages
+  // { path: "/page-login", component: <PageLogin /> },
+  // { path: "/page-register", component: <PageRegister /> },
+  // { path: "/page-recoverpw", component: <RecoverPassword /> },
+  // { path: "/page-lock-screen", component: <LockScreen /> },
+  // { path: "/page-confirm-mail", component: <ConfirmMail /> },
+  // { path: "/page-email-verification", component: <EmailVerification /> },
+  // { path: "/page-two-step-verification", component: <TwoStepVerfication /> },
+  // { path: "/page-two-step-verification", component: <TwoStepVerfication /> },
+  // { path: "/page-logout", component: <AuthLogout /> },
+
+  //utility page
+  // { path: "/pages-comingsoon", component: <PagesComingsoon /> },
+  // { path: "/pages-maintenance", component: <PageMaintenance /> },
+  // { path: "/pages-404", component: <Error404 /> },
+  // { path: "/pages-500", component: <Error500 /> },
 
   // //Calendar
   // { path: "/apps-calendar", component: <Calendar className="" /> },
@@ -180,19 +268,7 @@ const adminRoutes: Array<RouteProps> = [
   // { path: "/pages-timeline", component: <PageTimeline /> },
   // { path: "/pages-faqs", component: <PageFaqs /> },
   // { path: "/pages-pricing", component: <PagePricing /> },
-  //Utility
 
-  { path: "/product", component: <Productlisting /> },
-  { path: "/product/details", component: <View /> },
-  { path: "/product/variant", component: <VariantListing /> },
-  { path: "/add-product", component: <Addproduct /> },
-  { path: "/add-variant", component: <AddVariant /> },
-  { path: "/cmslisting", component: <CmsListing /> },
-  { path: "/cmstwolisting", component: <CmstwoListing /> },
-  { path: "/cms/details", component: <CmsRecordDetails /> },
-  { path: "/cmstwo/details", component: <CmsTwoRecordDetails /> },
-  { path: "/add-cms", component: <AddCmsSection /> },
-  { path: "/add-cms2", component: <AddCmstwosection /> },
 
   // //UI Components
   // { path: "/ui-alerts", component: <UiAlert /> },
@@ -256,50 +332,7 @@ const adminRoutes: Array<RouteProps> = [
   // { path: "/maps-vector", component: <MapsVector /> },
   // { path: "/maps-leaflet", component: <MapsLeaflet /> },
 
-  { path: "/category", component: <Category /> },
-  {path: "/assign-attribute" , component: <Assignattribute/>},
-  { path: "/colors", component: <ColorList /> },
-  { path: "/size", component: <SizeList /> },
-
-  // this route should be at the end of all other routes
-  { path: "/", exact: true, component: <Navigate to="/dashboard" /> },
-  { path: "/vendors", exact: true, component: <VendorList /> },
-  { path: "/vendors/:id", exact: true, component: <ViewVenders /> },
-
-  { path: "/kyc", exact: true, component: <KycListing /> },
-  { path: "/kyc/:id", exact: true, component: <ViewKyc /> },
-  { path: "/brands", exact: true, component: <BrandList /> },
-  { path: "/brands/:id", exact: true, component: <ViewBrands /> },
-  {path: "/assign-brands" , component: <AssignBrands/>},
-
-  { path: "/attributes", exact: true, component: <AttributeList /> },
-  { path: "/attributes/:id", exact: true, component: <ValueAttributeList /> },
-  { path: "/users", exact: true, component: <UserList /> },
-];
-
-const authRoutes: Array<RouteProps> = [
-  //Authentication pages
-  { path: "/login", component: <Login /> },
-  // { path: "/logout", component: <Logout /> },
-  // { path: "/register", component: <Register /> },
-  // { path: "/recoverpw", component: <ForgetPassword /> },
-
-  //AuthenticationInner pages
-  // { path: "/page-login", component: <PageLogin /> },
-  // { path: "/page-register", component: <PageRegister /> },
-  // { path: "/page-recoverpw", component: <RecoverPassword /> },
-  // { path: "/page-lock-screen", component: <LockScreen /> },
-  // { path: "/page-confirm-mail", component: <ConfirmMail /> },
-  // { path: "/page-email-verification", component: <EmailVerification /> },
-  // { path: "/page-two-step-verification", component: <TwoStepVerfication /> },
-  // { path: "/page-two-step-verification", component: <TwoStepVerfication /> },
-  // { path: "/page-logout", component: <AuthLogout /> },
-
-  //utility page
-  // { path: "/pages-comingsoon", component: <PagesComingsoon /> },
-  // { path: "/pages-maintenance", component: <PageMaintenance /> },
-  // { path: "/pages-404", component: <Error404 /> },
-  // { path: "/pages-500", component: <Error500 /> },
+  //Utility
 ];
 
 export { adminRoutes, authRoutes };

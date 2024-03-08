@@ -1,0 +1,294 @@
+import React, { useEffect, useState } from "react";
+import {
+  Button,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "reactstrap";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import {
+  categoryValidation,
+  vendoreValidation,
+} from "src/validation/validation";
+import { useMutation, gql } from "@apollo/client";
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import Iconify from "src/components/iconify/Iconify";
+
+
+
+interface IVendore {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  isBlocked: boolean;
+}
+
+interface Props {
+  isOpen: boolean;
+  toggle: () => void;
+  isEdit?: IVendore | null | undefined;
+  refetch: () => void;
+  childrefetch?: () => void;
+  data?: any
+}
+
+const EditFormVender: React.FC<Props> = ({
+  isOpen,
+  toggle,
+  isEdit,
+  refetch,
+  childrefetch,
+  data
+}) => {
+
+  const navigate = useNavigate();
+
+  const [isBlockCategoryChecked, setIsBlockCategoryChecked] = useState<boolean>(false);
+
+  const PUT_VENDOR = gql`
+  mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!, $image: Upload) {
+  updateVendorProfileByAdmin(input: $input, image: $image) {
+    _id
+    message
+  }
+}
+  `;
+
+  const [UpdateVendor] = useMutation(PUT_VENDOR);
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      name: "",
+      email: "",
+      phone: "",
+      countryCode: "+968",
+      image: "",
+      isKycCompleted: "false"
+    },
+
+    validationSchema: vendoreValidation,
+    onSubmit: async (values, { resetForm }) => {
+      await onSubmit(values, { resetForm });
+    },
+  });
+
+
+  useEffect(() => {
+    formik.setValues({
+      name: data?.fullName || '',
+      email: data?.email || '',
+      phone: data?.mobileNumber || '',
+      countryCode: data?.countryCode || '+974',
+      image: data?.image || '',
+      isKycCompleted: data?.isKycCompleted
+    });
+  }, [isOpen, refetch]);
+
+
+
+  const onSubmit = async (values: any, { resetForm }: any) => {
+    try {
+      let variables: any = {
+        input: {
+          _id: data?._id,
+          email: values?.email,
+          fullName: values?.name,
+          mobileNumber: values?.phone.toString(),
+          countryCode: values?.countryCode,
+          isKycCompleted: values?.isKycCompleted == "true" ? true : false,
+        },
+      };
+
+
+      if (values.image) {
+        variables = {
+          ...variables,
+          image: values?.image,
+        };
+      }
+
+      const response = await UpdateVendor({
+        variables,
+      });
+
+      if (response) {
+        refetch();
+
+        toast.success("Successfully updated vendor");
+        toggle();
+        resetForm();
+      }
+
+      return toggle();
+    } catch (error: any) {
+      toast.error(error.message);
+      console.log(error.message);
+    }
+  };
+
+
+  return (
+    <>
+      <Modal isOpen={isOpen} toggle={toggle}>
+        <ModalHeader toggle={toggle}>Update Vendor</ModalHeader>
+        <ModalBody>
+          <Form onSubmit={formik.handleSubmit}>
+            <FormGroup>
+              <Label for="categoryName">Name</Label>
+              <Input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Please enter name"
+                value={formik.values?.name}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.name && formik.errors.name && (
+                <div className="text-danger">{formik.errors.name}</div>
+              )}
+            </FormGroup>
+            <FormGroup>
+              <Label for="categoryName">Email</Label>
+              <Input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Please enter your email address"
+                value={formik.values?.email}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.email && formik.errors.email && (
+                <div className="text-danger">{formik.errors.email}</div>
+              )}
+            </FormGroup>
+
+            <FormGroup>
+              <Label>Country code</Label>
+              <div className="input-group">
+                <div className="input-group">
+                  <div className="input-group-prepend">
+                    <span className="input-group-text"><Iconify icon="openmoji:flag-oman" /></span>
+                  </div>
+
+                  <Input
+                    type="text"
+                    id="countryCode"
+                    name="countryCode"
+                    placeholder="Please enter your country code"
+                    value={formik.values?.countryCode}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    disabled
+                  />
+                </div>
+              </div>
+
+              {formik.touched.countryCode && formik.errors.countryCode && (
+                <div className="text-danger">{formik.errors.countryCode}</div>
+              )}
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="categoryDescription">Phone number</Label>
+              <Input
+                type="number"
+                id="phone"
+                name="phone"
+                placeholder="Please enter your mobile number"
+                value={formik.values?.phone}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.phone && formik.errors.phone && (
+                <div className="text-danger">{formik.errors.phone}</div>
+              )}
+            </FormGroup>
+
+            <FormGroup>
+              <Label >KYC Status</Label>
+              <Input
+                type="select"
+                name="isKycCompleted"
+                placeholder="Select KYC status"
+                value={formik.values?.isKycCompleted}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              >
+                <option value="" disabled>Select  kyc status</option>
+                <option value="false">Pending</option>
+                <option value="true">Completed</option>
+              </Input>
+              {formik.touched.isKycCompleted && formik.errors.isKycCompleted && (
+                <div className="text-danger">{formik.errors.isKycCompleted}</div>
+              )}
+            </FormGroup>
+
+
+
+            <FormGroup>
+              <Label for="image " className="pt-2">
+                Image
+              </Label>
+              <Input
+                type="file"
+                id="image"
+                accept="image/*"
+                name="image"
+                onChange={(event) => {
+                  formik.setFieldValue(
+                    "image",
+                    event.currentTarget.files?.[0] || []
+                  );
+                }}
+              />
+            </FormGroup>
+
+
+            {/* <div>
+              <FormGroup check style={{ marginTop: "10px" }}>
+                <Label check>
+                  <Input
+                    type="checkbox"
+                    id="blockCategory"
+                    name="blockCategory"
+                    checked={isBlockCategoryChecked}
+                    onChange={() => {
+                      checkingBlockCategory();
+                    }}
+                  />{" "}
+                  Block Vendor
+                </Label>
+              </FormGroup>
+            </div> */}
+
+            <ModalFooter style={{ marginTop: "20px" }}>
+              <Button color="primary">
+                Submit
+              </Button>
+              <Button
+                color="secondary"
+                onClick={toggle}
+              >
+                Cancel
+              </Button>
+            </ModalFooter>
+
+          </Form>
+        </ModalBody>
+      </Modal>
+    </>
+  );
+};
+
+export default EditFormVender;

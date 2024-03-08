@@ -6,13 +6,13 @@ import { Row, Col, Card, CardBody, Container, CardHeader } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const IconDripicons = () => {
-  document.title = "Dripicons | Minia - React Admin & Dashboard Template";
+  // document.title = "Dripicons | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
-      <div className="page-content">       
+      <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title="Icons" breadcrumbItem="Dripicons" />
+          {/* <Breadcrumbs title="Icons" breadcrumbItem="Dripicons" /> */}
 
           <Row>
             <Col xs="12">

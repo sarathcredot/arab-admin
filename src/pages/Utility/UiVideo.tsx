@@ -5,13 +5,13 @@ import { Card, CardBody, CardHeader, Col, Container, Row } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const UiVideo = () => {
-  document.title = "Video | Minia - React Admin & Dashboard Template";
+  // document.title = "Video | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Components" breadcrumbItem="Video" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Video" /> */}
 
           <Row>
             <Col lg={6}>

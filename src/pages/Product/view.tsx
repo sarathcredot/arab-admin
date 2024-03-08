@@ -12,6 +12,10 @@ import { Link } from "react-router-dom";
 import { boolean } from "yup";
 import AddProduct from "./addproduct";
 import { ToastContainer, toast } from "react-toastify";
+import { formatCurrency } from "src/utils/formatCurrency";
+import Breadcrumb from "../../components/Common/Breadcrumb";
+import CustomButton from "src/components/Common/CustomButton";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
 interface IAttribute {
   attributeId: string;
@@ -79,50 +83,56 @@ const ProductDetails = () => {
   );
 
   const GET_PRODUCT = gql`
-    query GetProductByAdmin($input: ProductId!) {
-      getProductByAdmin(input: $input) {
-        message
-        product {
-          _id
-          vendorId
-          brandId
-          brandName
-          productName
-          shortDescription
-          skuId
-          description
-          productInfo
-          productShortInfo
-          material
-          images {
-            fileType
-            fileURL
-            mimeType
-            originalName
-          }
-          rating
-          sellingPrice
-          price
-          mrp
-          tags
-          productCode
-          categoryId
-          categoryNamePath
-          categoryIdPath
-          isBlocked
-          stock
-          status
-          offerPrice
-          attributes {
-            attributeId
-            attributeName
-            attributeValueId
-            attributeValue
-            attributeDescription
-          }
-        }
+   query GetProductByAdmin($input: ProductId!) {
+  getProductByAdmin(input: $input) {
+    product {
+      _id
+      vendorId
+      brandId
+      brandName
+      productName
+      shortDescription
+      skuId
+      description
+      productInfo
+      productShortInfo
+      images {
+        fileType
+        fileURL
+        mimeType
+        originalName
       }
+      rating
+      sellingPrice
+      price
+      mrp
+      tags
+      productCode
+      categoryId
+      categoryNamePath
+      categoryIdPath
+      isBlocked
+      stock
+      status
+      offerPrice
+      attributes {
+        attributeId
+        attributeName
+        attributeValueId
+        attributeValue
+        attributeDescription
+      }
+      productDetailImages {
+        fileType
+        fileURL
+        mimeType
+        originalName
+      }
+      warehouseSkuId
     }
+    message
+  }
+}
   `;
 
   const GET_VARIANTS = gql`
@@ -149,7 +159,7 @@ const ProductDetails = () => {
   `;
 
 
-const [UpdateProductStatus]=useMutation(PUT_STATUS)
+  const [UpdateProductStatus] = useMutation(PUT_STATUS)
 
 
   const {
@@ -158,6 +168,7 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
     error: error,
     refetch: refetch,
   } = useQuery(GET_PRODUCT, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         _id: _id,
@@ -178,7 +189,7 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
     },
     skip: !_id,
   });
-  console.log("data------------", data);
+
 
   // useEffect(() => {
   //   if (data && data.getProductByAdmin && data.getProductByAdmin.product) {
@@ -365,20 +376,21 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
   // };
 
   const [edit, setEdit] = useState(false);
+
   const handleEditProduct = () => {
     setEditedProduct(product);
     setEdit(true);
   };
 
-  const handleStatusChange = async (status:any,e:any) => {
-  e.preventDefault();
+  const handleStatusChange = async (status: any, e: any) => {
+    e.preventDefault();
     try {
       let input: any = {
         _id: _id,
         status: status,
       };
-      const response = await UpdateProductStatus({variables:{input: input}});
-      if (response ) {
+      const response = await UpdateProductStatus({ variables: { input: input } });
+      if (response) {
         console.log(response);
         toast.success(response.data.updateProductStatus.message)
         refetch()
@@ -389,121 +401,87 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
       console.log(error.message);
     }
   };
-  
 
+  const items = [
+    { text: "Dashboard", link: `/` },
+    { text: "Products", link: `/product` },
+    { text: "Variants", link: `/product/variant?productCode=${product?.productCode}` },
+  ];
 
   return (
     <React.Fragment>
       {edit ? (
-        // <AddProduct Edit={true} editedProduct={editedProduct} />
-        <>""</>
+        <AddProduct Edit={true} editedProduct={editedProduct} />
       ) : (
         <div className="page-content">
           <Container fluid={true}>
-            <ToastContainer/>
-            <Breadcrumbs
-              title="Product"
-              breadcrumbItem="Product Details"
-              link="/product"
-            />
-            {/* <div className="d-flex justify-content-end mb-3" style={{gap:"20px"}}>
-              <Link
-                to={`/add-variant?productCode=${product?.productCode}&productId=${product?._id}&category=${product?.categoryId}`}
-                style={{ textDecoration: "none" }}
-              >
-                <button
-                  // onClick={handleEditProduct}
+            <Breadcrumb items={items} currentPage="View Product" />
 
-                  style={{
-                    backgroundColor: "black",
-                    color: "white",
-                    width: "100px",
-                    height: "40px",
-                    borderRadius: "10px",
-                  }}
-                >
-                  Add Variant
-                </button>
-              </Link>
-              <button
+            <div className="d-flex justify-content-between mb-3">
+              <div style={{ width: "auto" }}>
+                <p style={{ margin: 0, fontWeight: 500, display: "flex", }}><p style={{ margin: 0, fontWeight: 500, width: "100px" }}>Category : </p>{product?.categoryNamePath}</p>
+                <p style={{ margin: 0, fontWeight: 500, display: "flex", }}><p style={{ margin: 0, fontWeight: 500, width: "100px" }}>Sku ID : </p>{product?.skuId}</p>
+              </div>
+              <CustomButton
                 onClick={handleEditProduct}
-                style={{
-                  backgroundColor: "black",
-                  color: "white",
-                  width: "100px",
-                  height: "40px",
-                  borderRadius: "10px",
-                 
-                }}
-              >
-                Edit Product
-              </button>
-            </div> */}
-            {/* <div className="d-flex justify-content-end mb-3">
-              <button
-                onClick={handleEditProduct}
-                style={{
-                  backgroundColor: "black",
-                  color: "white",
-                  width: "100px",
-                  height: "40px",
-                  borderRadius: "10px",
-                }}
-              >
-                Edit Product
-              </button>
-            </div> */}
+                name="Edit Product"
+                icon="ic:baseline-edit"
+              />
+
+            </div>
             <Row>
               <Col lg={12}>
                 <Card>
-                  {/* <CardHeader>
-                    <Row>
-                      <Col xl={6}>
-                        <div
-                          className="mb-3"
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "4px",
-                          }}
-                        >
-                          <label
-                            htmlFor="sizeDropdown"
-                            className="form-label"
-                          ></label>
-                          <div className="btn-group" role="group">
-                            {renderVariants()}
-                          </div>
-                        </div>
-                      </Col>
-                      <Col xl={6}>
-                        <div
-                          className="mb-3"
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "4px",
-                          }}
-                        >
-                          <label
-                            htmlFor="colorDropdown"
-                            className="form-label"
-                          ></label>
-                          <div className="btn-group" role="group">
-                            {renderSizeList()}
-                          </div>
-                        </div>
-                      </Col>
-                    </Row>
-                  </CardHeader> */}
 
                   <CardBody>
                     <form action="#">
-                      <div>
+
+
+                      <Row>
+                        <Col xl={6}>
+                          <div className="mb-3">
+                            <label
+                              htmlFor="cleave-time-format"
+                              className="form-label"
+                            >
+                              Images :
+                            </label>
+
+                            <div style={{ display: "flex", marginTop: '10px' }}>
+                              {product?.images.map((item, index) => (
+                                <div
+                                  key={index}
+                                  className="relative"
+                                  style={{ marginRight: "10px" }}
+                                >
+                                  <img
+                                    src={item?.fileURL}
+                                    className="w-full rounded-2xl object-cover products-image"
+                                    onClick={() =>
+                                      handleImageClick(item?.fileURL)
+                                    }
+                                    alt={`product detail ${index + 1}`}
+                                    style={{
+                                      width: "100px",
+                                      height: "100px",
+                                      objectFit: "contain",
+                                      borderRadius: "8px",
+                                    }}
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </Col>
+                      </Row>
+
+                      <div className="border mt-3 border-dashed"></div>
+
+                      <div className="mt-3">
                         <Row>
                           <Col xl={6}>
                             <div
-                              className="mb-3"
+                              className=""
                               style={{ display: "flex", gap: "4px" }}
                             >
                               <label
@@ -514,6 +492,39 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
                               </label>
                               <p className="form-control-static">
                                 {product?.productName}
+                              </p>
+                            </div>
+                          </Col>
+
+                          <Col xl={3}>
+                            <div
+                              className=""
+                              style={{ display: "flex", gap: "4px", alignItems: "center" }}
+                            >
+                              <label
+                                htmlFor="cleave-date"
+                                className="form-label"
+                              >
+                                Status :&nbsp;
+                              </label>
+                              <p className="form-control-static">
+                                <StatusIndicator status={product?.isBlocked ? "BLOCKED" : "ACTIVE"} variant="chip" />
+                              </p>
+                            </div>
+                          </Col>
+                          <Col xl={3}>
+                            <div
+                              className=""
+                              style={{ display: "flex", gap: "4px" }}
+                            >
+                              <label
+                                htmlFor="cleave-date"
+                                className="form-label"
+                              >
+                                Stock :
+                              </label>
+                              <p className="form-control-static">
+                                {product?.stock}
                               </p>
                             </div>
                           </Col>
@@ -565,7 +576,7 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
                         <Row>
                           <Col xl={6}>
                             {product?.attributes.map((attribute, index) => (
-                              <>
+                              <div key={index}>
                                 <div className="mb-3" key={index}>
                                   <label
                                     htmlFor="cleave-time-format"
@@ -577,56 +588,35 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
                                     {attribute.attributeValue}
                                   </p>
                                 </div>
-                              </>
+                              </div>
                             ))}
                           </Col>
                         </Row>
                       </div>
                       <div className="border mt-3 border-dashed"></div>
+
+
                       <div className="mt-4">
                         <Row>
-                          <Col xl={6}>
-                            <div className="mb-3">
+                          <Col xl={4}>
+                            <div
+                              className="mb-3"
+                              style={{ display: "flex", gap: "4px" }}
+                            >
                               <label
-                                htmlFor="cleave-time-format"
+                                htmlFor="cleave-numeral"
                                 className="form-label"
                               >
-                                Images:
+                                {" "}
+                                MRP :
                               </label>
-
-                              <div style={{ display: "flex" }}>
-                                {product?.images.map((item, index) => (
-                                  <div
-                                    key={index}
-                                    className="relative"
-                                    style={{ marginRight: "10px" }}
-                                  >
-                                    <img
-                                      src={item?.fileURL}
-                                      className="w-full rounded-2xl object-cover products-image"
-                                      onClick={() =>
-                                        handleImageClick(item?.fileURL)
-                                      }
-                                      alt={`product detail ${index + 1}`}
-                                      style={{
-                                        width: "100px",
-                                        height: "100px",
-                                        objectFit: "cover",
-                                        borderRadius: "8px",
-                                      }}
-                                    />
-                                  </div>
-                                ))}
-                              </div>
+                              <p className="form-control-static">
+                                {formatCurrency(product?.mrp)}
+                              </p>
                             </div>
                           </Col>
-                        </Row>
-                      </div>
-                      <div className="border mt-3 border-dashed"></div>
 
-                      <div className="mt-4">
-                        <Row>
-                          <Col xl={6}>
+                          <Col xl={4}>
                             <div
                               className="mb-3"
                               style={{ display: "flex", gap: "4px" }}
@@ -635,13 +625,31 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
                                 htmlFor="cleave-phone"
                                 className="form-label"
                               >
-                                Price:
+                                Price :
                               </label>
                               <p className="form-control-static">
-                                {product?.price}
+                                {formatCurrency(product?.price)}
                               </p>
                             </div>
                           </Col>
+
+                          <Col xl={4}>
+                            <div
+                              className="mb-3"
+                              style={{ display: "flex", gap: "4px" }}
+                            >
+                              <label
+                                htmlFor="cleave-numeral"
+                                className="form-label"
+                              >
+                                Selling Price :
+                              </label>
+                              <p className="form-control-static">
+                                {formatCurrency(product?.sellingPrice)}
+                              </p>
+                            </div>
+                          </Col>
+
 
                           <Col xl={6}>
                             <div
@@ -652,113 +660,57 @@ const [UpdateProductStatus]=useMutation(PUT_STATUS)
                                 htmlFor="cleave-numeral"
                                 className="form-label"
                               >
-                                Selling Price:
-                              </label>
-                              <p className="form-control-static">
-                                {product?.sellingPrice}
-                              </p>
-                            </div>
-                          </Col>
-                          <Col xl={6}>
-                            <div
-                              className="mb-3"
-                              style={{ display: "flex", gap: "4px" }}
-                            >
-                              <label
-                                htmlFor="cleave-numeral"
-                                className="form-label"
-                              >
-                                {" "}
-                                mrp:
-                              </label>
-                              <p className="form-control-static">
-                                {product?.mrp}
-                              </p>
-                            </div>
-
-                            
-                          </Col>
-                          <Col xl={6}>
-                            <div
-                              className="mb-3"
-                              style={{ display: "flex", gap: "4px" }}
-                            >
-                              <label
-                                htmlFor="cleave-numeral"
-                                className="form-label"
-                              >
-                                {" "}
-                                Stock:
-                              </label>
-                              <p className="form-control-static">
-                                {product?.stock}
-                              </p>
-                            </div>
-
-                      
-                            
-                          </Col>
-                          <Col xl={6}>
-                            <div
-                              className="mb-3"
-                              style={{ display: "flex", gap: "4px" }}
-                            >
-                              <label
-                                htmlFor="cleave-numeral"
-                                className="form-label"
-                              >
-                                {" "}
                                 tags:
                               </label>
                               <p className="form-control-static">
                                 {product?.tags}
                               </p>
 
-            
+
                             </div>
 
-                            
+
                           </Col>
 
-                          {product?.status==="APPROVED" ?<>
-                          {null}
-                          </>:<>
-                          <Col xl={6}>
-                            <div
-                              className="mb-3"
-                              style={{ display: "flex", gap: "4px" }}
-                            >
-                              <button
-                                onClick={(e)=>handleStatusChange("APPROVED",e)}
-                                style={{
-                                  backgroundColor: "black",
-                                  color: "white",
-                                  width: "100px",
-                                  height: "40px",
-                                  borderColor: "black",
-                                }}
+                          {product?.status === "APPROVED" ? <>
+                            {null}
+                          </> : <>
+                            <Col xl={6}>
+                              <div
+                                className="mb-3"
+                                style={{ display: "flex", gap: "4px" }}
                               >
-                                Approve
-                              </button>
+                                <button
+                                  onClick={(e) => handleStatusChange("APPROVED", e)}
+                                  style={{
+                                    backgroundColor: "black",
+                                    color: "white",
+                                    width: "100px",
+                                    height: "40px",
+                                    borderColor: "black",
+                                  }}
+                                >
+                                  Approve
+                                </button>
 
-                              <button
-                                onClick={(e)=>handleStatusChange("REJECTED",e)}
-                                style={{
-                                  backgroundColor: "red",
-                                  color: "white",
-                                  width: "100px",
-                                  height: "40px",
-                                  borderColor: "red",
-                                }}
-                              >
-                                Reject
-                              </button>
-                            </div>
-                          </Col>
-                          
+                                <button
+                                  onClick={(e) => handleStatusChange("REJECTED", e)}
+                                  style={{
+                                    backgroundColor: "red",
+                                    color: "white",
+                                    width: "100px",
+                                    height: "40px",
+                                    borderColor: "red",
+                                  }}
+                                >
+                                  Reject
+                                </button>
+                              </div>
+                            </Col>
+
                           </>}
 
-                          
+
                         </Row>
                       </div>
                     </form>

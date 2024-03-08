@@ -16,7 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { createSelector } from "reselect";
 
 const InvoiceDetails = (props: any) => {
-  document.title = "Invoice Detail | Minia - React Admin & Dashboard Template";
+  // document.title = "Invoice Detail | Minia - React Admin & Dashboard Template";
 
   const dispatch = useDispatch();
 
@@ -52,7 +52,7 @@ const InvoiceDetails = (props: any) => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Invoices" breadcrumbItem="Invoice Detail" />
+          {/* <Breadcrumbs title="Invoices" breadcrumbItem="Invoice Detail" /> */}
 
           {!isEmpty(invoiceDetail) && (
             <Row>

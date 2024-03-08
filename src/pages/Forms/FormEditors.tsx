@@ -12,18 +12,18 @@ import {
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const FormEditors = () => {
-  document.title = "Form Editors | Minia - React Admin & Dashboard Template";
+  // document.title = "Form Editors | Minia - React Admin & Dashboard Template";
 
   const editorRef = useRef<any>();
   const [editor, setEditor] = useState(false);
   const { CKEditor, ClassicEditor }: any = editorRef.current || {};
 
   useEffect(() => {
-      editorRef.current = {
-          CKEditor: require('@ckeditor/ckeditor5-react').CKEditor,
-          ClassicEditor: require('@ckeditor/ckeditor5-build-classic'),
-      };
-      setEditor(true);
+    editorRef.current = {
+      CKEditor: require('@ckeditor/ckeditor5-react').CKEditor,
+      ClassicEditor: require('@ckeditor/ckeditor5-build-classic'),
+    };
+    setEditor(true);
   }, []);
   const [data, setData] = useState('');
 
@@ -31,7 +31,7 @@ const FormEditors = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Forms" breadcrumbItem="Form Editors" />
+          {/* <Breadcrumbs title="Forms" breadcrumbItem="Form Editors" /> */}
           <Row>
             <Col lg={12}>
               <Card>

@@ -13,14 +13,14 @@ import {
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const UiColors = () => {
-  document.title = "Colors | Minia - React Admin & Dashboard Template";
+  // document.title = "Colors | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Components" breadcrumbItem="Colors" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Colors" /> */}
           <div className="row">
             <div className="col-12">
               <div className="card">

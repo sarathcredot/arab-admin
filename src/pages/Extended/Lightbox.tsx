@@ -27,11 +27,11 @@ import img7 from "../../assets/images/small/img-7.jpg";
 //Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
-const images : Array<any> = [img1, img2, img3, img4, img5, img6];
-const imageZoom : Array<any> = [img3, img7];
+const images: Array<any> = [img1, img2, img3, img4, img5, img6];
+const imageZoom: Array<any> = [img3, img7];
 
 const UiLightbox = () => {
-  document.title = "Lightbox | Minia - React Admin & Dashboard Template";
+  // document.title = "Lightbox | Minia - React Admin & Dashboard Template";
 
   const [photoIndex, setphotoIndex] = useState<any>(0);
   const [isFits, setisFits] = useState<boolean>(false);
@@ -45,7 +45,7 @@ const UiLightbox = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Extended" breadcrumbItem="Lightbox" />
+          {/* <Breadcrumbs title="Extended" breadcrumbItem="Lightbox" /> */}
 
           {isFits ? (
             <Lightbox
@@ -95,7 +95,7 @@ const UiLightbox = () => {
               nextSrc={imageZoom[(photoIndex + 1) % imageZoom.length]}
               prevSrc={
                 imageZoom[
-                  (photoIndex + imageZoom.length - 1) % imageZoom.length
+                (photoIndex + imageZoom.length - 1) % imageZoom.length
                 ]
               }
               onCloseRequest={() => {

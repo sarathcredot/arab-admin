@@ -13,6 +13,9 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { gql, useQuery } from "@apollo/client";
 import { useSearchParams } from "react-router-dom";
 import AddCmsSection from "./AddcmsSection";
+import Breadcrumb from "../../components/Common/Breadcrumb";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
+import CustomButton from "src/components/Common/CustomButton";
 
 interface CmsRecordData {
   _id: string;
@@ -44,31 +47,30 @@ const CmsRecordDetails = () => {
 
   const GET_CMS_RECORD = gql`
     query GetCmsRecordByAdmin($input: cmsRecordByAdminFilter!) {
-      getCmsRecordByAdmin(input: $input) {
-        record {
-          _id
-          buttons {
-            buttonText
-            redirectionURL
-          }
-          description
-          isBlocked
-          images {
-            fileType
-            fileURL
-            mimeType
-            originalName
-          }
-          pageName
-          sectionName
-          subTitle
-          title
-        }
+  getCmsRecordByAdmin(input: $input) {
+    record {
+      _id
+      pageName
+      sectionName
+      images {
+        fileType
+        fileURL
+        mimeType
+        originalName
       }
+      buttons {
+        buttonText
+        redirectionURL
+      }
+      isBlocked
     }
+    message
+  }
+}
   `;
 
   const { data, loading, error } = useQuery(GET_CMS_RECORD, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         _id: _id,
@@ -82,7 +84,6 @@ const CmsRecordDetails = () => {
       setCmsRecord(data.getCmsRecordByAdmin.record);
     }
   }, [data]);
-  console.log("data....", data);
 
   const [edit, setEdit] = useState(false);
 
@@ -91,6 +92,11 @@ const CmsRecordDetails = () => {
     setEdit(true);
   };
 
+  const items = [
+    { text: "Dashboard", link: `/` },
+    { text: "Cms Pages", link: `/cmslisting` },
+  ];
+
   return (
     <React.Fragment>
       {edit ? (
@@ -98,23 +104,14 @@ const CmsRecordDetails = () => {
       ) : (
         <div className="page-content">
           <Container fluid={true}>
-            <Breadcrumbs
-              title="CMS Record"
-              breadcrumbItem="CMS Record Details"
-            />
+            <Breadcrumb items={items} currentPage="CMS Details" />
             <div className="d-flex justify-content-end mb-3">
-              <button
+              <CustomButton
                 onClick={handleEditProduct}
-                style={{
-                  backgroundColor: "black",
-                  color: "white",
-                  width: "100px",
-                  height: "40px",
-                  borderRadius: "10px",
-                }}
-              >
-                Edit Cms
-              </button>
+                name="Edit Cms"
+                icon="ic:baseline-edit"
+              />
+
             </div>
             <Row>
               <Col lg={12}>
@@ -136,29 +133,12 @@ const CmsRecordDetails = () => {
                         </p>
                       </div>
 
-                      <div className="col-md-4">
-                        <label className="form-label">Title:</label>
-                        <p className="form-control-static">
-                          {cmsRecord?.title}
-                        </p>
-                      </div>
+
                     </div>
 
                     {/* Border */}
                     <div className="border mt-3 mb-3"></div>
 
-                    {/* Row 2: Description */}
-                    <div className="row mb-3">
-                      <div className="col-md-12">
-                        <label className="form-label">Subtitle:</label>
-                        <p className="form-control-static">
-                          {cmsRecord?.subTitle}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Border */}
-                    <div className="border mt-3 mb-3"></div>
 
                     {/* Row 3: Images */}
                     <div className="row mb-3">
@@ -211,10 +191,10 @@ const CmsRecordDetails = () => {
 
                     {/* Row 5: Is Blocked */}
                     <div className="row mb-3">
-                      <div className="col-md-12">
-                        <label className="form-label">Status</label>
-                        <p className="form-control-static">
-                          {cmsRecord?.isBlocked ? "Yes" : "No"}
+                      <div className="col-md-12" style={{ display: "flex", alignItems: "center" }}>
+                        <label >Status : &nbsp; </label>
+                        <p className="form-control-static" style={{ width: "100px" }}>
+                          <StatusIndicator status={cmsRecord?.isBlocked ? "BLOCKED" : "ACTIVE"} variant="chip" />
                         </p>
                       </div>
                     </div>

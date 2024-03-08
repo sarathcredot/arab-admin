@@ -8,7 +8,7 @@ import CarouselPage from "./CarouselPage";
 
 const TwoStepVerfication = () => {
 
-  document.title = "Two Step Verfication | Minia - React Admin & Dashboard Template";
+  // document.title = "Two Step Verfication | Minia - React Admin & Dashboard Template";
 
   const digit1Ref = useRef<HTMLInputElement>(null);
   const digit2Ref = useRef<HTMLInputElement>(null);

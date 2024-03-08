@@ -28,6 +28,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
 import { useParams } from "react-router";
+import { useSearchParams } from "react-router-dom";
 interface sizeChart {
   fileType: string;
   fileURL: string;
@@ -46,7 +47,7 @@ interface Category {
   fullCategoryName: string;
 }
 
-interface Props {}
+interface Props { }
 
 const CategoryList: React.FC<Props> = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -63,8 +64,10 @@ const CategoryList: React.FC<Props> = () => {
     label: string;
   } | null>(null);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
-  const [assignedCategryData, setAssignedCategryData] =useState<Category[]>([]);
-  const { id } = useParams();
+  const [assignedCategryData, setAssignedCategryData] = useState<Category[]>([]);
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id")
+
   const GET_ALL_ISLEAF_CATEGORY = gql`
     query Records {
       getAllLeafRecords {
@@ -81,8 +84,9 @@ const CategoryList: React.FC<Props> = () => {
   `;
 
 
-const GET_ASSIGNED_CATEGORY=gql`query GetAllCategoriesOfVendor($input: vendorIdInput!) {
-  getAllCategoriesOfVendor(input: $input) {
+  const GET_ASSIGNED_CATEGORY = gql`
+query GetAllCategoriesOfVendorByAdmin($input: vendorIdInput!) {
+  getAllCategoriesOfVendorByAdmin(input: $input) {
     records {
       categoryName
       _id
@@ -94,14 +98,14 @@ const GET_ASSIGNED_CATEGORY=gql`query GetAllCategoriesOfVendor($input: vendorIdI
 }
 `;
 
-const PUT_VENDOR = gql`mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
+  const PUT_VENDOR = gql`mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
   updateVendorProfileByAdmin(input: $input) {
     _id
     message
   }
 }`;
 
-const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR) 
+  const [UpdateVendorProfileByAdmin] = useMutation(PUT_VENDOR)
 
   const {
     loading: categoryLoading,
@@ -116,30 +120,31 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
     error: assignCategoryError,
     data: assignCategoryDataResponse,
     refetch: assignCategoryRefetch,
-  } = useQuery(GET_ASSIGNED_CATEGORY,{
-    variables:{
-      input:{
-        vendorId:id
+  } = useQuery(GET_ASSIGNED_CATEGORY, {
+    variables: {
+      input: {
+        vendorId: id
       }
     }
   });
+
 
   useEffect(() => {
     if (categoryDataResponse) {
       setCategoryData(categoryDataResponse?.getAllLeafRecords?.records || []);
     }
+  }, [categoryDataResponse])
 
-    if(assignCategoryDataResponse){
-      setAssignedCategryData(assignCategoryDataResponse?.getAllCategoriesOfVendor?.records ||[])
+  useEffect(() => {
+    if (assignCategoryDataResponse) {
+      setAssignedCategryData(assignCategoryDataResponse?.getAllCategoriesOfVendorByAdmin?.records || [])
     }
-  }, [categoryDataResponse, assignCategoryDataResponse]);
+  }, [assignCategoryDataResponse]);
 
   const openImageModal = (imageUrl: string) => {
     setSelectedImageUrl(imageUrl);
     setIsImageModalOpen(true);
   };
-
-  console.log(assignedCategryData,"adsfgf")
 
   const flattenedCategories: Category[] = flattenCategories(categoryData);
 
@@ -148,7 +153,7 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
-    
+
   };
 
   const handleAddCategory = () => {
@@ -184,9 +189,9 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
   const handleAssignCategory = async () => {
     if (selectedCategory.length > 0) {
       const categoryIds = selectedCategory.map((category) => category.value);
-      console.log(categoryIds,"selectedCategory")
+      console.log(categoryIds, "selectedCategory")
       try {
-        const response:any = await UpdateVendorProfileByAdmin({
+        const response: any = await UpdateVendorProfileByAdmin({
           variables: {
             input: {
               _id: id,
@@ -194,14 +199,14 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
             },
           },
         });
-  
+
         toast.success(response?.message)
         assignCategoryRefetch()
         categoryRefetch()
         setSelectedCategory([])
-        
-      } catch (error:any) {
-        toast.error( error.message);
+
+      } catch (error: any) {
+        toast.error(error.message);
       }
     } else {
       toast.error("Please select at least one brand to assign");
@@ -210,116 +215,82 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
 
   return (
     <>
-     
-      <div className="page-content">
-      <ToastContainer />
-        <Container fluid={true} >
+
+      <Card style={{
+        boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+        marginTop: "20px",
+      }}>
+        <CardHeader>
           <Row>
-            <Col lg={12}>
-              <Card>
-                <CardHeader>
-                  <Row>
-                    {/* <Col xs={5} style={{ display: "flex", gap: "20px" }}>
-                      <Input
-                        type="text"
-                        placeholder="Search by name"
-                        value={searchTerm}
-                        onChange={handleSearch}
-                        style={{ width: "50%" }}
-                      />
-                      <Dropdown
-                        isOpen={statusDropdownOpen}
-                        toggle={toggleStatusDropdown}
-                      >
-                        <DropdownToggle caret>
-                          {selectedStatus
-                            ? selectedStatus?.label
-                            : "Select Status"}{" "}
-                          <FontAwesomeIcon icon={faAngleDown} />
-                        </DropdownToggle>
-                        <DropdownMenu>
-                          {statusOptions.map((option) => (
-                            <DropdownItem
-                              key={option.value}
-                              onClick={() => handleStatusSelect(option)}
-                            >
-                              {option.label}
-                            </DropdownItem>
-                          ))}
-                        </DropdownMenu>
-                      </Dropdown>
-                    </Col> */}
 
-                    <div className="d-flex justify-content-end mb-3">
-                      <Label className="mt-2 " style={{ marginRight: "20px" }}>
-                        Assign Brands:
-                      </Label>
-                      <Select
-                        isMulti
-                        options={categoryData.map((category) => ({
-                          label: category.categoryName,
-                          value: category._id,
-                        }))}
-                        value={selectedCategory}
-                        onChange={(selectedOptions: any) =>
-                          handleBrandSelection(selectedOptions)
-                        }
-                        placeholder="Select Category...."
-                        styles={{
-                          control: (styles: any) => ({
-                            ...styles,
-                            marginRight: "10px",
-                            // width: "200px",
-                          }),
-                        }}
-                      />
-                      <Button onClick={() => handleAssignCategory()} style={{backgroundColor:"#000000"}}>
-                      Assign Brands
-                    </Button>
-                    </div>
-                  </Row>
-                </CardHeader>
-                <CardBody>
-                  <Table
-                    responsive
-                    className="table table-bordered table-centered mb-0"
-                  >
-                    <thead>
-                      <tr>
-                        <th>No</th>
-                        <th>Name</th>
-                        <th>Category full Name</th>
+            <div className="d-flex justify-content-end mb-3">
+              <Label className="mt-2 " style={{ marginRight: "20px" }}>
+                Assign Categories :
+              </Label>
+              <Select
+                isMulti
+                options={categoryData.map((category) => ({
+                  label: category.categoryName,
+                  value: category._id,
+                }))}
+                value={selectedCategory}
+                onChange={(selectedOptions: any) =>
+                  handleBrandSelection(selectedOptions)
+                }
+                placeholder="Select Category...."
+                styles={{
+                  control: (styles: any) => ({
+                    ...styles,
+                    width: "300px",
+                    marginRight: "10px",
+                    // width: "200px",
+                  }),
+                }}
+              />
+              <Button onClick={() => handleAssignCategory()} style={{ backgroundColor: "#000000" }}>
+                Assign Categories
+              </Button>
+            </div>
+          </Row>
+        </CardHeader>
+        <CardBody>
+          <Table id="tech-companies-1" className="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>Sl.No</th>
+                <th>Name</th>
+                <th>Category full Name</th>
 
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {assignedCategryData.map((category, index) => (
-                        <tr key={category._id}>
-                          <td>{index + 1}</td>
-                          <td>{category.categoryName}</td>
-                          <td>{category.fullCategoryName}</td>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {assignedCategryData?.map((category, index) => (
+                <tr key={category._id}>
+                  <td> {index + 1}</td>
+                  <td>{category.categoryName}</td>
+                  <td>{category.fullCategoryName}</td>
 
-                          <td>
-                            {category?.isBlocked == false ? "Active" : "Block"}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
+                  <td>
+                    {category?.isBlocked == false ? "Active" : "Block"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
 
-                  <Modal
-                    isOpen={isImageModalOpen}
-                    toggle={() => setIsImageModalOpen(!isImageModalOpen)}
-                  >
-                    <img
-                      src={selectedImageUrl}
-                      alt="Full Size Chart"
-                      style={{ width: "100%" }}
-                    />
-                  </Modal>
+          <Modal
+            isOpen={isImageModalOpen}
+            toggle={() => setIsImageModalOpen(!isImageModalOpen)}
+          >
+            <img
+              src={selectedImageUrl}
+              alt="Full Size Chart"
+              style={{ width: "100%" }}
+            />
+          </Modal>
 
-                  {/* <Pagination className="mt-3">
+          {/* <Pagination className="mt-3">
                     <PaginationItem disabled={currentPage === 1}>
                       <PaginationLink previous onClick={() => paginate(currentPage - 1)} />
                     </PaginationItem>
@@ -332,12 +303,8 @@ const [UpdateVendorProfileByAdmin]=useMutation(PUT_VENDOR)
                       <PaginationLink next onClick={() => paginate(currentPage + 1)} />
                     </PaginationItem>
                   </Pagination> */}
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </div>
+        </CardBody>
+      </Card>
     </>
   );
 

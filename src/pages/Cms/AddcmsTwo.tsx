@@ -156,7 +156,7 @@ const AddCmsTwoSection: React.FC<AddCmsTwoSectionProps> = ({
       editedcmstwo.items.forEach((item, index) => {
         const imageUrl: any = item.image ? item.image.fileURL : null;
         setValue(`items.${index}.image`, imageUrl);
-       
+
       });
     }
   }, [edit, editedcmstwo, setValue]);
@@ -164,15 +164,15 @@ const AddCmsTwoSection: React.FC<AddCmsTwoSectionProps> = ({
 
 
 
- 
-const navigate=useNavigate()
+
+  const navigate = useNavigate()
   const onSubmit: SubmitHandler<CmsSectionForm> = async (data) => {
     try {
       if (edit && editedcmstwo) {
         const images = buttons.map((button) => {
           return button.image ? button.image[0] : null;
         });
-       
+
         await updateCmsSection({
           variables: {
             input: {
@@ -211,7 +211,7 @@ const navigate=useNavigate()
               pageName: data.pageName,
               subTitle: data.subTitle,
               title: data.title,
-            },  
+            },
             images: buttons.map((button) => button.image?.[0]),
 
           },
@@ -229,9 +229,9 @@ const navigate=useNavigate()
     }
   };
 
- 
+
   // const [fileMap, setFileMap] = useState<any>({});
-  
+
   const hndleFileMap = (index: any, itemId: any) => {
     setIndexState((prevIndexState: any) => [...prevIndexState, index]);
     if (itemId) {
@@ -245,19 +245,19 @@ const navigate=useNavigate()
       });
     }
   };
-  
-  
 
-   
+
+
+
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs
+          {/* <Breadcrumbs
             title="CMS Section"
             breadcrumbItem={edit ? "Edit Cms section" : "Add CMS Section"}
-          />
+          /> */}
           <Row>
             <Col lg={12}>
               <Card>
@@ -356,7 +356,7 @@ const navigate=useNavigate()
                                     return newButtons;
                                   })
                                 }
-                              
+
                               />
                             </Col>
                             <div

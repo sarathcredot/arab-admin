@@ -16,7 +16,7 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { Link } from "react-router-dom";
 
 const FormUpload = () => {
-  document.title = "Form File Upload | Minia - React Admin & Dashboard Template";
+  // document.title = "Form File Upload | Minia - React Admin & Dashboard Template";
 
   const [selectedFiles, setselectedFiles] = useState<any>([]);
 
@@ -47,7 +47,7 @@ const FormUpload = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Forms" breadcrumbItem="File Upload" />
+          {/* <Breadcrumbs title="Forms" breadcrumbItem="File Upload" /> */}
 
           <Row>
             <Col className="col-12">

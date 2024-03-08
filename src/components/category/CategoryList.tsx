@@ -25,6 +25,7 @@ import { ToastContainer } from "react-toastify";
 import { result } from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import CustomButton from "../Common/CustomButton";
 
 interface sizeChart {
   fileType: string;
@@ -43,7 +44,7 @@ interface Category {
   isBlocked: boolean;
 }
 
-interface Props {}
+interface Props { }
 
 const CategoryList: React.FC<Props> = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -97,6 +98,7 @@ const CategoryList: React.FC<Props> = () => {
       }
     }
   `;
+
   const {
     loading: categoryLoading,
     error: categoryError,
@@ -108,6 +110,7 @@ const CategoryList: React.FC<Props> = () => {
         parent: null,
       },
     },
+
   });
   const {
     loading: childCategoryLoading,
@@ -189,8 +192,8 @@ const CategoryList: React.FC<Props> = () => {
 
   const statusOptions = [
     { value: "all", label: "All" },
-    { value: "blocked", label: "Blocked" },
-    { value: "nonBlocked", label: "Active" },
+    { value: "false", label: "Active" },
+    { value: "true", label: "Blocked" },
   ];
 
   const toggleStatusDropdown = () => {
@@ -204,7 +207,7 @@ const CategoryList: React.FC<Props> = () => {
 
   const handleSearch = (event: any) => {
     setSearchTerm(event.target.value);
-   
+
   };
 
   useEffect(() => {
@@ -219,7 +222,7 @@ const CategoryList: React.FC<Props> = () => {
           return (
             isNameMatch &&
             size?.isBlocked ===
-              (selectedStatus.value === "blocked" ? true : false)
+            (selectedStatus.value === "blocked" ? true : false)
           );
         }
       });
@@ -232,47 +235,22 @@ const CategoryList: React.FC<Props> = () => {
     }
   }, [selectedStatus, categoryData, breadcrumb, searchTerm]);
 
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
+
   return (
     <>
       <ToastContainer />
       <div className="page-content">
-        <div className="mb-0" style={{ display: "flex", gap: "5px" }}>
-          {breadcrumb.length > 0 && (
-            <span
-              style={{ cursor: "pointer", color: "black", fontWeight: "bold" }}
-              onClick={() => handleBreadcrumbClick(-1)}
-            >
-              Home /
-            </span>
-          )}
-          {breadcrumb.map((category, index) => (
-            <span key={category._id} color="gray ">
-              {index > 0 && " / "}
-              {index === breadcrumb.length - 1 ? (
-                category.categoryName
-              ) : (
-                <span
-                  style={{
-                    cursor: "pointer",
-                    color: "black",
-                    fontWeight: "bold",
-                  }}
-                  onClick={() => handleBreadcrumbClick(index)}
-                >
-                  {category.categoryName}
-                </span>
-              )}
-            </span>
-          ))}
-        </div>
         <Container fluid={true} style={{ marginTop: "40px" }}>
-          <Breadcrumb title="Dashboard" breadcrumbItem="Category" link="/" />
+          <Breadcrumb items={items} currentPage="Category" />
           <Row>
             <Col lg={12}>
               <Card>
                 <CardHeader>
                   <Row>
-                    <Col xs={5} style={{display:"flex", gap:"20px",}}>
+                    <Col xs={6} style={{ display: "flex", gap: "20px", }}>
                       <Input
                         type="text"
                         placeholder="Search by name"
@@ -280,7 +258,7 @@ const CategoryList: React.FC<Props> = () => {
                         onChange={handleSearch}
                         style={{ width: "50%" }}
                       />
-                       <Dropdown
+                      <Dropdown
                         isOpen={statusDropdownOpen}
                         toggle={toggleStatusDropdown}
                       >
@@ -303,16 +281,13 @@ const CategoryList: React.FC<Props> = () => {
                       </Dropdown>
                     </Col>
 
-                    <Col xs={6} style={{display:"flex", gap:"20px", justifyContent: "flex-end",marginLeft:"127px"}}>
-                     
-                      <Button
-                        style={{ backgroundColor: "rgba(0, 0, 0, 1)" }}
+                    <Col xs={6} style={{ display: "flex", justifyContent: "flex-end", }}>
+
+                      <CustomButton name="Add Category" icon="material-symbols:add"
                         onClick={() => toggleAddModal()}
-                      >
-                        Add Category
-                      </Button>
+                      />
                     </Col>
-                    
+
                   </Row>
                 </CardHeader>
                 <CardBody>
@@ -324,10 +299,7 @@ const CategoryList: React.FC<Props> = () => {
                     refetch={categoryRefetch}
                     childrefetch={childCategoryRefetch}
                   />
-                  <Table
-                    responsive
-                    className="table table-bordered table-centered mb-0"
-                  >
+                  <Table id="tech-companies-1" className="table table-striped table-bordered">
                     <thead>
                       <tr>
                         <th>No</th>
@@ -377,11 +349,10 @@ const CategoryList: React.FC<Props> = () => {
                             )}
                             {"  "}
                             <Button
+                              color="primary"
                               size="sm"
                               onClick={() => handleEdit(category)}
-                              style={{
-                                backgroundColor: "rgba(177, 35, 73, 1)",
-                              }}
+
                             >
                               Edit
                             </Button>{" "}
@@ -456,7 +427,7 @@ const CategoryList: React.FC<Props> = () => {
   }
 
   function handleDelete(id: string) {
-   
+
   }
 };
 

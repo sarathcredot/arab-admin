@@ -5,13 +5,13 @@ import { Card, Row, Col, CardBody, Container, CardHeader } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const UiTypography = () => {
-  document.title = "Typography | Minia - React Admin & Dashboard Template";
+  // document.title = "Typography | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Components" breadcrumbItem="Typography" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Typography" /> */}
 
           <Row>
             <Col xl={6}>

@@ -27,7 +27,7 @@ import Pagination from "src/components/Common/Pagination";
 import { createSelector } from "reselect";
 
 const ContactsGrid = () => {
-  document.title = "User Grid | Minia - React Admin & Dashboard Template";
+  // document.title = "User Grid | Minia - React Admin & Dashboard Template";
 
   const dispatch = useDispatch();
 
@@ -66,7 +66,7 @@ const ContactsGrid = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Contacts" breadcrumbItem="User Grid" />
+          {/* <Breadcrumbs title="Contacts" breadcrumbItem="User Grid" /> */}
           <Row className="align-items-center">
             <Col md={6}>
               <div className="mb-3">

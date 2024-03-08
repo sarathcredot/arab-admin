@@ -23,7 +23,7 @@ import { blogGridData } from "../../common/data/blog";
 // import FeatherIcon from "feather-icons-react";
 
 const blogGrid = () => {
-  document.title = "Blog Grid | Minia - React Admin & Dashboard Template";
+  // document.title = "Blog Grid | Minia - React Admin & Dashboard Template";
   const [search_Menu, setsearch_Menu] = useState(false);
 
   //Toggle Chat Box Menus
@@ -36,7 +36,7 @@ const blogGrid = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title="Blog" breadcrumbItem="Blog Grid" />
+          {/* <Breadcrumbs title="Blog" breadcrumbItem="Blog Grid" /> */}
           <Row className="align-items-center">
             <Col md={6}>
               <div className="mb-3">
@@ -79,32 +79,32 @@ const blogGrid = () => {
                   </Link>
                 </div>
 
-                  {/* <Link className="btn btn-link text-muted py-1 font-size-16 shadow-none dropdown-toggle" to="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> */}
-                  {/* <i className="bx bx-dots-horizontal-rounded"></i> */}
-                  <Dropdown isOpen={search_Menu} toggle={toggleSearch}>
-                    <DropdownToggle
-                        className="btn btn-link text-muted py-1 font-size-16 shadow-none dropdown-toggle"
-                        href="#"
-                        role="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                        <i className="bx bx-dots-horizontal-rounded"></i>
-                    </DropdownToggle>
-                    <DropdownMenu>
-                      <DropdownItem href="#" className="dropdown-item">
-                        Action
-                      </DropdownItem>
-                      <DropdownItem href="#" className="dropdown-item">
-                        Another action
-                      </DropdownItem>
-                      <DropdownItem href="#" className="dropdown-item">
-                        Something else here
-                      </DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                  {/* </Link> */}
-                </div>
+                {/* <Link className="btn btn-link text-muted py-1 font-size-16 shadow-none dropdown-toggle" to="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> */}
+                {/* <i className="bx bx-dots-horizontal-rounded"></i> */}
+                <Dropdown isOpen={search_Menu} toggle={toggleSearch}>
+                  <DropdownToggle
+                    className="btn btn-link text-muted py-1 font-size-16 shadow-none dropdown-toggle"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <i className="bx bx-dots-horizontal-rounded"></i>
+                  </DropdownToggle>
+                  <DropdownMenu>
+                    <DropdownItem href="#" className="dropdown-item">
+                      Action
+                    </DropdownItem>
+                    <DropdownItem href="#" className="dropdown-item">
+                      Another action
+                    </DropdownItem>
+                    <DropdownItem href="#" className="dropdown-item">
+                      Something else here
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+                {/* </Link> */}
+              </div>
             </Col>
           </Row>
           {/* <!-- end row --> */}

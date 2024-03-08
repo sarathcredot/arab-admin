@@ -173,7 +173,7 @@ function AssignBrands() {
 
 
 
- 
+
 
   const handleAssignBrand = async () => {
     if (selectedCategory.length > 0) {
@@ -188,12 +188,12 @@ function AssignBrands() {
             },
           },
         });
-        if (response){
-          
-         await assignCategoryRefetch();
-         
+        if (response) {
+
+          await assignCategoryRefetch();
+
         }
-       
+
         toast.success("Successfully updated");
         setSelectedCategory([]);
       } catch (error: any) {
@@ -212,16 +212,16 @@ function AssignBrands() {
     setSelectedCategory(selectedOptions);
   };
 
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
+
   return (
     <>
       <div className="page-content">
         <ToastContainer />
         <Container fluid={true}>
-          <Breadcrumb
-            title="Dashboard"
-            link="/"
-            breadcrumbItem="Assign-Brands"
-          />
+          <Breadcrumb items={items} currentPage="Assign Brand" />
           <Row>
             <Col lg={12}>
               <Card>

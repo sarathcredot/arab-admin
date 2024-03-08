@@ -44,7 +44,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { createSelector } from "reselect";
 
 const ContactsList = () => {
-  document.title = "User List | Minia - React Admin & Dashboard Template";
+  // document.title = "User List | Minia - React Admin & Dashboard Template";
 
   const dispatch = useDispatch();
   const [contact, setContact] = useState<any>();
@@ -295,7 +295,7 @@ const ContactsList = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Contacts" breadcrumbItem="User List" />
+          {/* <Breadcrumbs title="Contacts" breadcrumbItem="User List" /> */}
 
           <Row className="align-items-center">
             <Col md={6}>
@@ -373,14 +373,14 @@ const ContactsList = () => {
           <Row>
             <Col lg="12">
               {/* <div style={{ borderCollapse: 'collapse', borderSpacing: '0 8px', width: '100%' }}> */}
-                <TableContainer
-                  columns={columns}
-                  data={users}
-                  isGlobalFilter={true}
-                  isAddUserList={true}
-                  customPageSize={10}
-                  className="table align-middle datatable dt-responsive table-check nowrap"
-                />
+              <TableContainer
+                columns={columns}
+                data={users}
+                isGlobalFilter={true}
+                isAddUserList={true}
+                customPageSize={10}
+                className="table align-middle datatable dt-responsive table-check nowrap"
+              />
               {/* </div> */}
 
               <Modal isOpen={modal} toggle={toggle}>

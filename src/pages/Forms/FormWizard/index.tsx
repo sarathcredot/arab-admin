@@ -7,14 +7,14 @@ import BasicPills from "./BasicPills";
 import ProgressbarWizard from "./ProgressbarWizard";
 
 const FormWizard = () => {
-  document.title = "Form Wizard | Minia - React Admin & Dashboard Template";
+  // document.title = "Form Wizard | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Forms" breadcrumbItem="Form Wizard" />
+          {/* <Breadcrumbs title="Forms" breadcrumbItem="Form Wizard" /> */}
 
           <Row>
             <Col lg={12}>

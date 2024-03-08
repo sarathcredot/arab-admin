@@ -20,12 +20,12 @@ import RadarChart from "../AllCharts/chartjs/radarchart";
 import PolarChart from "../AllCharts/chartjs/polarchart";
 
 const ChartjsChart = () => {
-  document.title = "Chartjs Charts | Minia - React Admin & Dashboard Template";
+  // document.title = "Chartjs Charts | Minia - React Admin & Dashboard Template";
   return (
     <React.Fragment>
-      <div className="page-content">        
+      <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Charts" breadcrumbItem="Chartjs Charts" />
+          {/* <Breadcrumbs title="Charts" breadcrumbItem="Chartjs Charts" /> */}
           <Row>
             <Col xl={6}>
               <Card>

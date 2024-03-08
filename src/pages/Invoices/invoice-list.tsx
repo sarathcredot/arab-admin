@@ -48,7 +48,7 @@ import { Link } from "react-router-dom";
 import { createSelector } from "reselect";
 
 const InvoiceList = () => {
-  document.title = "Invoice List | Minia - React Admin & Dashboard Template";
+  // document.title = "Invoice List | Minia - React Admin & Dashboard Template";
 
   const dispatch = useDispatch();
 
@@ -289,7 +289,7 @@ const InvoiceList = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Invoices" breadcrumbItem="Invoice List" />
+          {/* <Breadcrumbs title="Invoices" breadcrumbItem="Invoice List" /> */}
           <Row className="mt-0">
             <Col lg="12">
               <Card>

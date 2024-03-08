@@ -22,7 +22,7 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import logo from "../../assets/images/logo.svg";
 
 const UiToast = () => {
-  document.title = "Toast | Minia - React Admin & Dashboard Template";
+  // document.title = "Toast | Minia - React Admin & Dashboard Template";
 
   const [toast, setToast] = useState(false);
   const [toast1, setToast1] = useState(true);
@@ -47,7 +47,7 @@ const UiToast = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Components" breadcrumbItem="Toasts" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Toasts" /> */}
 
           <Row>
             <Col xl={12}>

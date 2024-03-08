@@ -131,7 +131,7 @@ function Table({ columns, data }: tableinterface) {
           {/* <IndeterminateCheckbox2 {...getToggleHideAllColumnsProps()} /> Toggle
           All */}
         </div>
-        {allColumns.map((column:any) => (
+        {allColumns.map((column: any) => (
           <div key={column.id}>
             <label>
               <input type="checkbox" {...column.getToggleHiddenProps()} />{" "}
@@ -182,7 +182,7 @@ function Table({ columns, data }: tableinterface) {
 }
 
 function DatatableTables() {
-  document.title = "Data Tables | Minia - React Admin & Dashboard Template";
+  // document.title = "Data Tables | Minia - React Admin & Dashboard Template";
 
   const [copyData, setCopyData] = useState<any>([]);
 
@@ -198,7 +198,7 @@ function DatatableTables() {
     const orientation: any = "portrait"; // portrait or landscape
 
     const marginLeft = 40;
-    const doc : any = new jsPDF(orientation, unit, size);
+    const doc: any = new jsPDF(orientation, unit, size);
 
     doc.setFontSize(15);
 
@@ -369,7 +369,7 @@ function DatatableTables() {
   return (
     <div className="page-content">
       <Container fluid>
-        <Breadcrumbs title="Tables" breadcrumbItem="Data Tables" />
+        {/* <Breadcrumbs title="Tables" breadcrumbItem="Data Tables" /> */}
         <Row>
           <Col className="col-12">
             <Card>
@@ -420,7 +420,7 @@ function DatatableTables() {
                           // onClick={onCloseClick}
                           className="btn btn-secondary "
                           filename="DataTables Minia - Minimal Admin Dashboard Template.pdf.csv"
-                          // id="delete-record"
+                        // id="delete-record"
                         >
                           <span>Excel</span>
                         </CSVLink>

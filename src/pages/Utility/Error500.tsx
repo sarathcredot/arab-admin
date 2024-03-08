@@ -7,7 +7,7 @@ import error from "../../assets/images/error-img.png";
 
 const Error500 = () => {
 
-  document.title = "500 Error | Minia - React Admin & Dashboard Template";
+  // document.title = "500 Error | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

@@ -12,13 +12,13 @@ import {
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const BasicTable = () => {
-  document.title = "Basic Tables | Minia - React Admin & Dashboard Template";
+  // document.title = "Basic Tables | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <div className="container-fluid">
-          <Breadcrumbs title="Tables" breadcrumbItem="Basic Tables" />
+          {/* <Breadcrumbs title="Tables" breadcrumbItem="Basic Tables" /> */}
 
           <Row>
             <Col md={6}>

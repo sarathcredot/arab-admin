@@ -1,81 +1,102 @@
-import React, { useState } from "react";
-import { Row, Col, Card, CardBody, CardHeader, Button } from "reactstrap";
+import React, { useEffect, useState } from "react";
+import { Row, Col, Card, CardBody, CardHeader, Button, Container, Nav, NavItem, NavLink } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { Link } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
+import Breadcrumb from "../../components/Common/Breadcrumb";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
+import CustomButton from "src/components/Common/CustomButton";
 
 const GET_ALL_CMS_RECORDS = gql`
-query GetAllCmsRecords($input: CmsRecordsByAdminFilter) {
+query GetAllCmsRecordsByAdmin($input: CmsRecordsByAdminFilter) {
   getAllCmsRecordsByAdmin(input: $input) {
-    maxRecords
+    message
     records {
       _id
-      buttons {
-        buttonText
-        redirectionURL
-      }
-      description
+      pageName
+      sectionName
       images {
         fileType
         fileURL
         mimeType
         originalName
       }
+      buttons {
+        buttonText
+        redirectionURL
+      }
       isBlocked
-      pageName
-      sectionName
-      subTitle
-      title
     }
+    maxRecords
   }
 }
 
 `;
 
 interface CmsRecord {
-    _id: string; // Add this line
-    buttons: {
-      buttonText: string;
-      redirectionURL: string;
-    }[];
-    description: string;
-    images: {
-      fileType: string;
-      fileURL: string;
-      mimeType: string;
-      originalName: string;
-    }[];
-    isBlocked: boolean;
-    sectionName: string;
-    pageName: string;
-    subTitle: string;
-    title: string;
-  }
+  _id: string; // Add this line
+  buttons: {
+    buttonText: string;
+    redirectionURL: string;
+  }[];
+  description: string;
+  images: {
+    fileType: string;
+    fileURL: string;
+    mimeType: string;
+    originalName: string;
+  }[];
+  isBlocked: boolean;
+  sectionName: string;
+  pageName: string;
+  subTitle: string;
+  title: string;
+}
 
 const CmsListing = () => {
-  document.title = "CMS Listing";
 
-  const pageSize = 10; // Number of items per page
+  const pageSize = 10;
   const [currentPage, setCurrentPage] = useState(0);
 
-  const { data, loading, error } = useQuery(GET_ALL_CMS_RECORDS, {
+  const [activeTab, setActiveTab] = useState("HOME");
+  const [cmsRecords, setCmsRecords] = useState([]);
+
+  const [maxRecords, setMaxRecords] = useState(0);
+
+
+  const { data, loading, error, refetch } = useQuery(GET_ALL_CMS_RECORDS, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         page: currentPage,
         size: pageSize,
+        pageName: activeTab === "HOME" ? "Home" : "Offer"
       },
     },
   });
- 
-  
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  useEffect(() => {
 
-  const cmsRecords = data. getAllCmsRecordsByAdmin.records;
-  const maxRecords = data. getAllCmsRecordsByAdmin.maxRecords;
+    const fetchData = async () => {
+      try {
+        const result = await refetch({
+          input: {
+            page: currentPage,
+            size: pageSize,
+            pageName: activeTab === "HOME" ? "Home" : "Offer"
+          },
+        });
+        setCmsRecords(result.data.getAllCmsRecordsByAdmin.records);
+        setMaxRecords(result.data.getAllCmsRecordsByAdmin.maxRecords);
+      } catch (error: any) {
+        console.log(error)
+      }
+    }
+    fetchData();
+  }, [refetch, currentPage, activeTab])
+
 
   const totalPages = Math.ceil(maxRecords / pageSize);
 
@@ -85,37 +106,60 @@ const CmsListing = () => {
     }
   };
 
+  const toggleTab = (tab: string) => {
+    setActiveTab(tab);
+    setCurrentPage(0)
+  };
+
+
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
+
   return (
     <React.Fragment>
       <div className="page-content">
-        <div className="container-fluid">
-          <Breadcrumbs title="Tables" breadcrumbItem="" />
-          <Row>
-            <Col lg={12}>
-              <div className="d-flex justify-content-end mb-3">
-                {/* Add link to your Add CMS page */}
-                <Link to="/add-cms">
-                  <button
-                    style={{
-                      backgroundColor: "black",
-                      color: "white",
-                      width: "100px",
-                      height: "40px",
-                      borderRadius: "10px",
-                    }}
-                  >
-                    Add CMS
-                  </button>
-                </Link>
-              </div>
-            </Col>
-          </Row>
+        <Container fluid={true}>
+          <Breadcrumb items={items} currentPage="CMS Pages" />
 
-          <Row>
+          <Nav tabs>
+            <NavItem>
+              <NavLink
+                className={activeTab === "HOME" ? "tab-button active" : "tab-button"}
+                onClick={() => toggleTab("HOME")}
+              >
+                Home
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                className={activeTab === "OFFER" ? "tab-button active" : "tab-button"}
+                onClick={() => toggleTab("OFFER")}
+              >
+                Offer
+              </NavLink>
+            </NavItem>
+          </Nav>
+
+
+
+          <Row style={{ marginTop: "20px" }}>
             <Col>
               <Card>
                 <CardHeader>
-                  <h4 className="card-title">CMS Records</h4>
+                  <Row>
+                    <Col lg={12}>
+                      <div className="d-flex justify-content-end">
+                        <Link to="/add-cms">
+                          <CustomButton
+                            name="Add CMS"
+                            icon="ic:sharp-add"
+                          />
+
+                        </Link>
+                      </div>
+                    </Col>
+                  </Row>
                 </CardHeader>
                 <CardBody>
                   <div className="table-rep-plugin">
@@ -129,11 +173,9 @@ const CmsListing = () => {
                       >
                         <Thead>
                           <Tr>
-                            <Th>Serial No</Th>
+                            <Th>Sl.No</Th>
                             <Th data-priority="1">Page Name</Th>
                             <Th data-priority="3">Section Name</Th>
-                            <Th data-priority="3">Title</Th>
-                            <Th data-priority="1">Subtitle</Th>
                             <Th data-priority="3">Images</Th>
                             <Th data-priority="3">Status</Th>
                             <Th data-priority="3">View</Th>
@@ -143,11 +185,9 @@ const CmsListing = () => {
                           {cmsRecords.map(
                             (cmsRecord: CmsRecord, index: number) => (
                               <Tr key={index}>
-                                <Td>{index + 1}</Td>
+                                <Td>{currentPage * pageSize + index + 1}</Td>
                                 <Td>{cmsRecord.pageName}</Td>
                                 <Td>{cmsRecord.sectionName}</Td>
-                                <Td>{cmsRecord.title}</Td>
-                                <Td>{cmsRecord.subTitle}</Td>
                                 <Td>
                                   <img
                                     src={cmsRecord.images[0]?.fileURL}
@@ -157,16 +197,13 @@ const CmsListing = () => {
                                   />
                                 </Td>
                                 <Td>
-                                  {cmsRecord.isBlocked ? "Blocked" : "Active"}
+                                  <StatusIndicator status={cmsRecord.isBlocked ? "BLOCKED" : "ACTIVE"} />
+
                                 </Td>
                                 <Td>
                                   <Button
-                                    color="white"
-                                    style={{
-                                      backgroundColor: "black",
-                                      alignItems: "center",
-                                      color: "white",
-                                    }}
+                                    color="primary"
+                                    size="sm"
                                     tag={Link}
                                     to={{
                                       pathname: "/cms/details/",
@@ -188,9 +225,8 @@ const CmsListing = () => {
                       <div className="d-flex justify-content-end mt-0 ">
                         <ul className="pagination">
                           <li
-                            className={`page-item ${
-                              currentPage === 0 ? "disabled" : ""
-                            }`}
+                            className={`page-item ${currentPage === 0 ? "disabled" : ""
+                              }`}
                           >
                             <button
                               className="page-link"
@@ -204,9 +240,8 @@ const CmsListing = () => {
                           {Array.from({ length: totalPages }, (_, index) => (
                             <li
                               key={index}
-                              className={`page-item ${
-                                currentPage === index ? "active" : ""
-                              }`}
+                              className={`page-item ${currentPage === index ? "active" : ""
+                                }`}
                             >
                               <button
                                 className="page-link"
@@ -219,9 +254,8 @@ const CmsListing = () => {
 
                           {currentPage < totalPages - 1 && (
                             <li
-                              className={`page-item ${
-                                currentPage === totalPages - 1 ? "disabled" : ""
-                              }`}
+                              className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                                }`}
                             >
                               <button
                                 className="page-link"
@@ -240,9 +274,9 @@ const CmsListing = () => {
               </Card>
             </Col>
           </Row>
-        </div>
+        </Container>
       </div>
-    </React.Fragment>
+    </React.Fragment >
   );
 };
 

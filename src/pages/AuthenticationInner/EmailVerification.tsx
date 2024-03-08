@@ -7,11 +7,11 @@ import logo from "../../assets/images/logo-sm.svg";
 import CarouselPage from "./CarouselPage";
 
 const EmailVerification = () => {
-  document.title = "Email Verification | Arab Deals";
+  // document.title = "Email Verification | Arab Deals";
 
   return (
     <React.Fragment>
-      
+
       <div className="auth-page">
         <Container fluid className="p-0">
           <Row className="g-0">

@@ -53,7 +53,7 @@ interface CurrentUserTypes {
   isActive: boolean;
 }
 const Chat = () => {
-  document.title = "Chat | Minia - React Admin & Dashboard Template";
+  // document.title = "Chat | Minia - React Admin & Dashboard Template";
   const dispatch = useDispatch();
 
   const chatData = createSelector(
@@ -157,7 +157,7 @@ const Chat = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumb */}
-          <Breadcrumbs title="Apps" breadcrumbItem="Chat" />
+          {/* <Breadcrumbs title="Apps" breadcrumbItem="Chat" /> */}
 
           <div className="d-lg-flex">
             <Card className="chat-leftsidebar">

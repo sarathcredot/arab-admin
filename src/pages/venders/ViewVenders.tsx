@@ -1,6 +1,6 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import {
   Container,
@@ -17,15 +17,27 @@ import {
   TabPane,
   Row,
   Col,
+  CardHeader,
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
 } from "reactstrap";
 import classnames from "classnames";
-import ViewCard from "./components/Outlate";
-import CategoryList from "./components/Categorey";
+import ViewCardCompany from "./components/ViewCardCompany";
+import CategoryList from "./components/Category";
 import BrandList from "../branding/BrandList";
 import AssignedBrandList from "./components/LIstBrands";
 import user1 from "src/assets/images/users/avatar-1.jpg";
 import ConfirmationModal from "./ConfirmationModal";
 import { ToastContainer, toast } from "react-toastify";
+import { capitalCase } from "change-case";
+import CustomButton from "src/components/Common/CustomButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import EditFormVender from "./EditFormVender";
+import ViewCardBusiness from "./components/ViewCardBusiness";
+import VendorCards from "./components/VendorCards";
 
 interface IcontactPerson {
   phoneNumber: string;
@@ -43,13 +55,14 @@ interface IVendor {
   email: string;
   mobileNumber: string;
   isBlocked: boolean;
-  isKycCompleted: string;
+  isKycCompleted: boolean;
   outletId: string;
   outletName: string;
   outletStatus: string;
   companyId: string;
   companyName: string;
   companyStatus: string;
+  countryCode: string;
   profilePic: Iimage;
 }
 
@@ -59,23 +72,26 @@ const GET_AVENDOR = gql`
       message
       record {
         _id
-        fullName
-        email
-        mobileNumber
-        isBlocked
-        isKycCompleted
-        outletId
-        outletName
-        outletStatus
-        companyId
-        companyName
-        companyStatus
-        profilePic {
-          fileType
-          fileURL
-          mimeType
-          originalName
-        }
+      fullName
+      email
+      countryCode
+      mobileNumber
+      profilePic {
+        fileType
+        fileURL
+        mimeType
+        originalName
+      }
+      isBlocked
+      isKycCompleted
+      outletId
+      outletName
+      outletStatus
+      companyId
+      companyName
+      companyStatus
+      brands
+      categories
       }
     }
   }
@@ -91,10 +107,18 @@ const PUT_VENDOR_PROFILE = gql`
 `;
 
 function ViewVenders() {
-  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id")
   const [vendorData, setVendorData] = useState<IVendor>();
   const [activeTab, setActiveTab] = useState("Vendor");
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [editFormOpen, setEditFormOpen] = useState(false);
+
+
+
+  const editFormToggle = () => {
+    setEditFormOpen(!editFormOpen)
+  }
 
   const [updateVendorProfile] = useMutation(PUT_VENDOR_PROFILE);
   const {
@@ -136,183 +160,179 @@ function ViewVenders() {
     setShowConfirmationModal(!showConfirmationModal);
   };
   const handleCancel = () => {
-    // If the user cancels, close the modal
     toggleConfirmationModal();
   };
 
   const handleConfirmation = async () => {
-    try {
-      const { data } = await updateVendorProfile({
-        variables: {
-          input: {
-            _id: id,
-            isKycCompleted: true,
-          },
-        },
-      });
 
-      vendorRefetch();
-      toggleConfirmationModal();
-      setTimeout(() => {
-        if (data) {
-          toast.success(data.message);
-          vendorRefetch();
-        }
-      }, 3000);
-    } catch (error: any) {
-      toast.error(error.message);
-    }
   };
 
+  const items = [
+    { text: "Dashboard", link: `/` },
+    { text: "Vendors", link: `/vendors` },
+  ];
+
+
+
+
+
+
   return (
-    <Container fluid={true} style={{ marginTop: "100px" }}>
-      <ToastContainer />
-      <Breadcrumb title="Dashboard" breadcrumbItem="Vendor" link="/" />
+    <div className="page-content">
+      <Container fluid={true} >
+        <Breadcrumb items={items} currentPage="Vendor Details" />
 
-      <Nav tabs>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: activeTab === "Vendor" })}
-            onClick={() => handleTabChange("Vendor")}
-          >
-            Vendor
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: activeTab === "companydetails" })}
-            onClick={() => handleTabChange("companydetails")}
-          >
-            Company Details
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: activeTab === "businessoutlet" })}
-            onClick={() => handleTabChange("businessoutlet")}
-          >
-            Business Outlet
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: activeTab === "category" })}
-            onClick={() => handleTabChange("category")}
-          >
-            Category
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: activeTab === "brands" })}
-            onClick={() => handleTabChange("brands")}
-          >
-            Brands
-          </NavLink>
-        </NavItem>
-      </Nav>
+        <VendorCards id={id} />
 
-      <TabContent activeTab={activeTab}>
-        <TabPane tabId="Vendor">
-          <Card
-            style={{
-              width: "100rem",
-              boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-              marginTop: "5rem",
-            }}
-          >
-            <CardImg
-              style={{
-                height: "200px",
-                width: "200px",
-                objectFit: "cover",
-                borderRadius: "50%",
-                margin: "20px",
-                border: "5px solid #fff",
-              }}
-              variant="top"
-              src={vendorData?.profilePic?.fileURL || user1}
-              alt="Profile"
-            />
-            <CardBody>
-              <CardTitle>
-                <strong> {vendorData?.fullName} </strong>
-              </CardTitle>
-              <CardText>
-                <Row>
-                  <Col md={3}>
-                    <p className="mt-5">
-                      <strong>Email:</strong> {vendorData?.email}
-                    </p>
-                    <p className="mt-5">
-                      <strong>Mobile Number:</strong> {vendorData?.mobileNumber}
-                    </p>
-                  </Col>
-                  <Col md={3}>
-                    <p className="mt-5">
-                      <strong>Status:</strong>
-                      <span
-                        style={{
-                          display: "inline-block",
-                          padding: "5px 10px",
-                          borderRadius: "15px",
-                          background: getStatusColor(
-                            vendorData?.isBlocked == true ? "BLOCKED" : "ACTIVE"
-                          ),
-                          color: "#fff",
-                          marginLeft: "10px",
-                        }}
-                      >
-                        {vendorData?.isBlocked == true ? "BLOCKED" : "ACTIVE"}
-                      </span>
-                    </p>
-                  </Col>
-                </Row>
-              </CardText>
 
-              <div>
-                {vendorData?.isKycCompleted ? (
-                  <>{null}</>
-                ) : (
-                  <Button
-                    style={{ backgroundColor: "#000000" }}
-                    onClick={() => setShowConfirmationModal(true)}
-                  >
-                    Verify Vendor
-                  </Button>
-                )}
+        <Nav tabs style={{ marginTop: "20px" }}>
+          <NavItem>
+            <NavLink
+              className={activeTab === "Vendor" ? "tab-button active" : "tab-button"}
+              onClick={() => handleTabChange("Vendor")}
+            >
+              Vendor
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={activeTab === "companydetails" ? "tab-button active" : "tab-button"}
+              onClick={() => handleTabChange("companydetails")}
+            >
+              Company Details
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={activeTab === "businessoutlet" ? "tab-button active" : "tab-button"}
+              onClick={() => handleTabChange("businessoutlet")}
+            >
+              Business Outlet
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={activeTab === "category" ? "tab-button active" : "tab-button"}
+              onClick={() => handleTabChange("category")}
+            >
+              Category
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={activeTab === "brands" ? "tab-button active" : "tab-button"}
+              onClick={() => handleTabChange("brands")}
+            >
+              Brands
+            </NavLink>
+          </NavItem>
+        </Nav>
+
+        <TabContent activeTab={activeTab}>
+          <TabPane tabId="Vendor">
+            <div>
+
+              <div style={{ display: "flex", marginTop: "20px", gap: "20px" }}>
+                <Card style={{ flex: 3, padding: "20px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px", flexDirection: "column" }}>
+                    <CardImg
+                      style={{
+                        height: "100px",
+                        width: "100px",
+                        objectFit: "contain",
+                        borderRadius: "50%",
+                        margin: "20px",
+                        border: "5px solid #fff",
+                      }}
+                      variant="top"
+                      src={vendorData?.profilePic?.fileURL || ""}
+                      alt="Profile"
+                    />
+                    <div>
+                      <CardTitle >
+                        <strong style={{ fontSize: "20px" }}> {vendorData?.fullName && capitalCase(vendorData?.fullName)} </strong>
+                      </CardTitle>
+                    </div>
+
+                    <div style={{ border: "1px solid #e9e9ef", borderRadius: "9px", width: "100%", display: "flex", alignItems: "center", gap: "3px", flexDirection: "column", padding: "5px 0px" }}>
+                      <span style={{ fontSize: "10px" }}>Email Address</span>
+                      <h6>{vendorData?.email}</h6>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card style={{ flex: 8, }}>
+                  <CardHeader style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: "17px", fontWeight: "500" }}>Details</span>
+                    <CustomButton name="Update" icon="ic:baseline-edit" onClick={editFormToggle} />
+                    <EditFormVender isOpen={editFormOpen} refetch={vendorRefetch} toggle={editFormToggle} data={vendorData} />
+
+                  </CardHeader>
+                  <CardBody>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+
+                      <div style={{ display: 'flex', alignItems: "center" }}>
+                        <div style={{ width: "100px" }}>Fullname : </div>
+                        <strong>{vendorData?.fullName && capitalCase(vendorData?.fullName)}</strong>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: "center" }}>
+                        <div style={{ width: "100px" }}>Email : </div>
+                        <strong>{vendorData?.email}</strong>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: "center" }}>
+                        <div style={{ width: "100px" }}>ID : </div>
+                        <strong>{vendorData?._id}</strong>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: "center" }}>
+                        <div style={{ width: "100px" }}>Phone  : </div>
+                        <strong>{`${vendorData?.countryCode} ${vendorData?.mobileNumber}`}</strong>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: "center" }}>
+                        <div style={{ width: "100px" }}>Status : </div>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "1px", border: `1px solid ${vendorData?.isBlocked == true ? "red" : "green"}`, width: "100px", borderRadius: "20px", color: ` ${vendorData?.isBlocked == true ? "red" : "green"}` }}>
+                          {vendorData?.isBlocked == true ? "Blocked" : "Active"}
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: "center" }}>
+                        <div style={{ width: "100px" }}>KYC Status : </div>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "1px", border: `1px solid ${vendorData?.isKycCompleted !== true ? "orange" : "green"}`, width: "100px", borderRadius: "20px", color: ` ${vendorData?.isKycCompleted !== true ? "orange" : "green"}` }}>
+                          {vendorData?.isKycCompleted == true ? "Completed" : "Pending"}
+                        </div>
+                      </div>
+
+                    </div>
+                  </CardBody>
+                </Card>
+
+
               </div>
-              <ConfirmationModal
-                isOpen={showConfirmationModal}
-                onConfirm={handleConfirmation}
-                onCancel={handleCancel}
-              />
-            </CardBody>
-          </Card>
-        </TabPane>
-        <TabPane tabId="companydetails">
-          <ViewCard
-            option={"companydetails"}
-            IdCompany={vendorData?.companyId}
-          />
-        </TabPane>
-        <TabPane tabId="businessoutlet">
-          <ViewCard
-            option={"businessoutlet"}
-            IdBusiness={vendorData?.outletId}
-          />
-        </TabPane>
-        <TabPane tabId="category">
-          <CategoryList />
-        </TabPane>
-        <TabPane tabId="brands">
-          {/* <CategoryList    />
-           */}
 
-          <AssignedBrandList />
-        </TabPane>
-      </TabContent>
-    </Container>
+
+            </div>
+
+          </TabPane>
+          <TabPane tabId="companydetails">
+            <ViewCardCompany
+              IdCompany={vendorData?.companyId}
+            />
+          </TabPane>
+          <TabPane tabId="businessoutlet">
+            <ViewCardBusiness
+              IdBusiness={vendorData?.outletId}
+            />
+          </TabPane>
+          <TabPane tabId="category">
+            <CategoryList />
+          </TabPane>
+          <TabPane tabId="brands">
+            <AssignedBrandList />
+          </TabPane>
+        </TabContent>
+      </Container>
+    </div>
   );
 }
 

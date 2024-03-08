@@ -20,7 +20,7 @@ import {
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const UiDrawer = () => {
-  document.title = "Offcanvas | Minia - React Admin & Dashboard Template";
+  // document.title = "Offcanvas | Minia - React Admin & Dashboard Template";
 
   const [open, setOpen] = useState(false);
   const [isTop, setIsTop] = useState(false);
@@ -57,7 +57,7 @@ const UiDrawer = () => {
     <React.Fragment>
       <div className="page-content">
         <div className="container-fluid">
-          <Breadcrumbs title="Components" breadcrumbItem="Offcanvas" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Offcanvas" /> */}
           <Row>
             <Col lg={6}>
               <Card>

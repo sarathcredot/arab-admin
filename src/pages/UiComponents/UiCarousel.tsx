@@ -19,13 +19,13 @@ import Slidewithfade from "./CarouselTypes/slidewithfade";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const UiCarousel = () => {
-  document.title = "Carousel | Minia - React Admin & Dashboard Template";
+  // document.title = "Carousel | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Components" breadcrumbItem="Carousel" />
+          {/* <Breadcrumbs title="Components" breadcrumbItem="Carousel" /> */}
 
           <Row>
             <Col lg={6}>

@@ -16,14 +16,14 @@ import img1 from "../../assets/images/small/img-2.jpg";
 import img2 from "../../assets/images/small/img-5.jpg";
 
 const PageTimeline = () => {
-  document.title = "Timeline | Minia - React Admin & Dashboard Template";
+  // document.title = "Timeline | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Pages" breadcrumbItem="Timeline" />
+          {/* <Breadcrumbs title="Pages" breadcrumbItem="Timeline" /> */}
           <Row>
             <Col lg={12}>
               <Card>

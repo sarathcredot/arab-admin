@@ -123,7 +123,7 @@ const UserProfile = () => {
     validationSchema: Yup.object({
       email: Yup.string().email("Invalid email format"),
       password: Yup.string().min(6, "Password must be at least 6 characters"),
-    
+
     }),
     onSubmit: async (values) => {
       try {
@@ -168,7 +168,11 @@ const UserProfile = () => {
     }
   }, [adminData, adminRefetch]);
 
-  document.title = "Profile | Arab Deals";
+  // document.title = "Profile | Arab Deals";
+
+  const items = [
+    { text: "Dashboard", link: `/` },
+  ];
 
   return (
     <React.Fragment>
@@ -176,7 +180,7 @@ const UserProfile = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumb */}
-          <Breadcrumb title="" breadcrumbItem="Profile" />
+          <Breadcrumb items={items} currentPage="Profile" />
 
           <Row>
             <Col lg="12">

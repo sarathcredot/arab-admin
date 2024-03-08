@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const LoadingContainer = () => <div>Loading...</div>;
-document.title = "Google Maps | Minia - React Admin & Dashboard Template";
+// document.title = "Google Maps | Minia - React Admin & Dashboard Template";
 
 interface GoogleProps {
   google: Object;
@@ -25,7 +25,7 @@ const MapsGoogle = (props: any) => {
     <React.Fragment>
       <div className="page-content">
         <div className="container-fluid">
-          <Breadcrumbs title="Maps" breadcrumbItem="Google Maps" />
+          {/* <Breadcrumbs title="Maps" breadcrumbItem="Google Maps" /> */}
 
           <Row>
             <Col lg={6}>

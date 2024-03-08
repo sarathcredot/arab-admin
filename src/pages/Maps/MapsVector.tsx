@@ -14,13 +14,13 @@ import Vector from "./Vectormap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 const MapsVector = () => {
-  document.title = "Vector Maps | Minia - React Admin & Dashboard Template";
+  // document.title = "Vector Maps | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid={true}>
-          <Breadcrumbs title="Maps" breadcrumbItem="Vector Maps" />
+          {/* <Breadcrumbs title="Maps" breadcrumbItem="Vector Maps" /> */}
 
           <Row>
             <Col lg={6}>
@@ -46,9 +46,9 @@ const MapsVector = () => {
               <Card>
                 <CardHeader>
                   <h4 className="card-title">USA Map</h4>
-                    <p className="card-title-desc">
-                      Example of vector map.
-                    </p>
+                  <p className="card-title-desc">
+                    Example of vector map.
+                  </p>
                 </CardHeader>
                 <CardBody>
                   <div id="usa" className="vector-map-height">

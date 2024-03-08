@@ -12,14 +12,14 @@ import SizingInput from "./SizingInput";
 import TextualInputs from "./Textual-inputs";
 
 const FormElements = () => {
-  document.title = "Basic Elements | Minia - React Admin & Dashboard Template";
+  // document.title = "Basic Elements | Minia - React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
-      <div className="page-content">        
+      <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Forms" breadcrumbItem="Basic Elements" />
+          {/* <Breadcrumbs title="Forms" breadcrumbItem="Basic Elements" /> */}
 
           <Row>
             <Col xs={12}>
