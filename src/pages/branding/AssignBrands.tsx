@@ -27,7 +27,7 @@ import Breadcrumb from "src/components/Common/Breadcrumb";
 import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
 
-function AssignBrands() {
+function AssignBrands({ brandId }: any) {
   interface Category {
     _id: string;
     categoryName: string;
@@ -62,6 +62,12 @@ function AssignBrands() {
   >([]);
   const [assignCategoryDatas, setAssignCategoryDatas] =
     useState<IAssingCategory>();
+
+
+  useEffect(() => {
+    setSelectedBrand(brandId)
+  }, [brandId])
+
   const PUT_BRAND = gql`
     mutation UpdateBrand($input: updateBrandInput!) {
       updateBrand(input: $input) {
@@ -128,7 +134,7 @@ function AssignBrands() {
     data: assignCategoryData,
     refetch: assignCategoryRefetch,
   } = useQuery(GET_ASSIGNED_CATEGORY, {
-    variables: { input: { brandId: selectedBrand?.value || "" } },
+    variables: { input: { brandId: selectedBrand } },
   });
 
   const {
@@ -155,23 +161,27 @@ function AssignBrands() {
   }, [categoriesData, brandDataResponse]);
 
   useEffect(() => {
-    if (selectedBrand) {
-      assignCategoryRefetch({
-        input: { brandId: selectedBrand?.value },
-      });
-      setAssignCategoryDatas(
-        assignCategoryData?.getCategoryDetailsWithBrand?.records
-      );
+    const fetchData = async () => {
+      try {
+        if (selectedBrand) {
+          const result = await assignCategoryRefetch({
+            input: { brandId: selectedBrand },
+          });
+          setAssignCategoryDatas(
+            result.data?.getCategoryDetailsWithBrand?.records
+          );
+        }
+      } catch (error: any) {
+        console.log(error)
+      }
     }
-  }, [selectedBrand]);
+
+    fetchData();
+  }, [selectedBrand, brandId]);
 
   const handleBrandSelected = (brand: IBrands) => {
     setSelectedBrand(brand);
   };
-
-
-
-
 
 
 
@@ -183,7 +193,7 @@ function AssignBrands() {
         const response: any = await UpdateBrand({
           variables: {
             input: {
-              _id: selectedBrand.value,
+              _id: selectedBrand,
               categories: categoryIds,
             },
           },
@@ -212,122 +222,86 @@ function AssignBrands() {
     setSelectedCategory(selectedOptions);
   };
 
-  const items = [
-    { text: "Dashboard", link: `/` },
-  ];
 
   return (
-    <>
-      <div className="page-content">
-        <ToastContainer />
-        <Container fluid={true}>
-          <Breadcrumb items={items} currentPage="Assign Brand" />
-          <Row>
-            <Col lg={12}>
-              <Card>
-                <CardHeader>
-                  <Row>
-                    <Col xs={3}>
-                      <ReactSelect
-                        value={selectedBrand || ""}
-                        onChange={(selectedOption: any) => {
-                          handleBrandSelected(selectedOption);
-                        }}
-                        options={Brands.map((brand: IBrands) => ({
-                          value: brand._id,
-                          label: brand.brandName,
-                        }))}
-                        placeholder="Select Brand"
-                        isSearchable
-                      />
-                    </Col>{" "}
-                    <Col
-                      xs={8}
-                      className="text-right"
-                      style={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        marginLeft: "130px",
-                      }}
-                    >
-                      <div className="d-flex justify-content-end mb-3">
-                        <Label
-                          className="mt-2 "
-                          style={{ marginRight: "20px" }}
-                        >
-                          Assign Category:
-                        </Label>
-                        <Select
-                          isMulti
-                          options={categories.map((category) => ({
-                            label: category.fullCategoryName,
-                            value: category._id,
-                          }))}
-                          value={selectedCategory}
-                          onChange={(selectedOptions: any) =>
-                            handleCategorySelection(selectedOptions)
-                          }
-                          placeholder="Select Category..."
-                          styles={{
-                            control: (styles: any) => ({
-                              ...styles,
-                              marginRight: "10px",
-                              width: "200px",
-                            }),
-                          }}
-                        />
-                        <Button
-                          style={{ backgroundColor: "#000000" }}
-                          onClick={handleAssignBrand}
-                        >
-                          Assign Category
-                        </Button>
-                      </div>
-                    </Col>
-                  </Row>
-                </CardHeader>
-                <CardBody>
-                  <Table
-                    responsive
-                    className="table table-bordered table-centered mb-0"
-                    style={{ width: "100%" }}
-                  >
-                    <thead>
-                      <tr>
-                        <th style={{ width: "10%" }}>No</th>
-                        <th style={{ width: "40%" }}>Category Name</th>
-                        <th style={{ width: "40%" }}>Categorey FullName</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {selectedBrand ? (
-                        <>
-                          {assignCategoryDatas?.categories?.map(
-                            (value: Category, index: any) => (
-                              <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td>{value.categoryName}</td>
-                                <td>{value.fullCategoryName}</td>
-                              </tr>
-                            )
-                          )}
-                        </>
-                      ) : (
-                        <tr>
-                          <td colSpan={3} className="text-center">
-                            Please select a Brand
-                          </td>
+
+    <Row>
+      <Col lg={12}>
+        <Card>
+          <CardHeader>
+
+            <div className="d-flex gap-2">
+              <Label
+                className="mt-2 "
+              >
+                Assign Category:
+              </Label>
+              <Select
+                isMulti
+                options={categories.map((category) => ({
+                  label: category.fullCategoryName,
+                  value: category._id,
+                }))}
+                value={selectedCategory}
+                onChange={(selectedOptions: any) =>
+                  handleCategorySelection(selectedOptions)
+                }
+                placeholder="Select Category..."
+                styles={{
+                  control: (styles: any) => ({
+                    ...styles,
+                    marginRight: "10px",
+                    width: "500px",
+                  }),
+                }}
+              />
+              <Button
+                style={{ backgroundColor: "#000000" }}
+                onClick={handleAssignBrand}
+              >
+                Assign Category
+              </Button>
+            </div>
+          </CardHeader>
+          <CardBody>
+            <Table
+              responsive
+              className="table table-bordered table-centered mb-0"
+              style={{ width: "100%" }}
+            >
+              <thead>
+                <tr>
+                  <th style={{ width: "10%" }}>No</th>
+                  <th style={{ width: "40%" }}>Category Name</th>
+                  <th style={{ width: "40%" }}>Categorey FullName</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedBrand ? (
+                  <>
+                    {assignCategoryDatas?.categories?.map(
+                      (value: Category, index: any) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{value.categoryName}</td>
+                          <td>{value.fullCategoryName}</td>
                         </tr>
-                      )}
-                    </tbody>
-                  </Table>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </div>
-    </>
+                      )
+                    )}
+                  </>
+                ) : (
+                  <tr>
+                    <td colSpan={3} className="text-center">
+                      Please select a Brand
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+          </CardBody>
+        </Card>
+      </Col>
+    </Row>
   );
 }
 

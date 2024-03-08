@@ -5,7 +5,7 @@ import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { Link, useSearchParams } from "react-router-dom";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -47,8 +47,8 @@ query GetVariantsTableByAdmin($input: ProductVariantsByAdminFilter!) {
 `;
 
 const PUT_STATUS = gql`
-mutation UpdateProductStatus($input: ProductStatusInput!) {
-  updateProductStatus(input: $input) {
+mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
+  updateProductByAdmin(input: $input) {
     _id
     message
   }
@@ -96,6 +96,7 @@ const VariantListing = () => {
   const productCode = params.get("productCode");
 
   const { data, refetch } = useQuery(GET_VARIANTS, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         productCode: Number(productCode),
@@ -171,7 +172,6 @@ const VariantListing = () => {
   }, [searchTerm, currentPage, refetch]);
 
   const handleStatusChange = async (status: any, e: any, proId: string) => {
-    e.preventDefault();
     try {
       let input: any = {
         _id: proId,
@@ -179,13 +179,10 @@ const VariantListing = () => {
       };
       const response = await UpdateProductStatus({ variables: { input: input } });
 
-      if (response) {
-        console.log(response);
-        toast.success(response.data.updateProductStatus.message)
-        fetchData()
-      } else {
-        console.log("Unexpected response format:", response);
-      }
+      console.log(response)
+      toast.success(response.data.updateProductByAdmin.message)
+      fetchData()
+
     } catch (error: any) {
       console.log(error.message);
     }
@@ -232,7 +229,6 @@ const VariantListing = () => {
 
   return (
     <React.Fragment>
-      <ToastContainer />
       <div className="page-content">
         <div className="container-fluid">
           <Breadcrumb items={items} currentPage="Variants" />

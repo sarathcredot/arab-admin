@@ -25,7 +25,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import ReactSelect from "react-select";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import Select from "react-select";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 function Assignattribute() {
   interface Category {
@@ -50,11 +50,7 @@ function Assignattribute() {
     isBlocked: boolean;
   }
 
-  interface IAssingAttribute {
-    _id: string;
-    categoryName: string;
-    attributes: IAttribute[];
-  }
+
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<any>();
@@ -75,8 +71,8 @@ function Assignattribute() {
     Array<{ label: string; value: string }>
   >([]);
 
-  const [assignAttributeDatas, setAssignAttributeDatas] =
-    useState<IAssingAttribute>();
+  const [assignAttributeDatas, setAssignAttributeDatas] = useState([]);
+
 
   const [filteredColors, setFilteredColors] = useState<ColorType[]>([]);
   const GET_LEAF_RECORDS = gql`
@@ -106,24 +102,29 @@ function Assignattribute() {
   `;
 
   const GET_ALL_ATTRIBUTES_WITH_CATEGORY_ID = gql`
-    query GetAttributesDetailsWithCategory(
-      $input: AttributesDetailsWithCategoryIdInput!
-    ) {
-      getAttributesDetailsWithCategory(input: $input) {
-        message
-        record {
+   query GetAttributesDetailsWithCategoryByAdmin($input: AttributesDetailsWithCategoryIdInput!) {
+  getAttributesDetailsWithCategoryByAdmin(input: $input) {
+    record {
+      _id
+      categoryName
+      attributes {
+        _id
+        attributeType
+        name
+        description
+        attributeValues {
           _id
-          categoryName
-          attributes {
-            _id
-            attributeType
-            description
-            isBlocked
-            name
-          }
+          value
+          colorCode
+          priority
+          isBlocked
         }
+        isBlocked
       }
     }
+    message
+  }
+}
   `;
 
   const GET_ALL_ATTRIBUTES = gql`
@@ -160,7 +161,11 @@ function Assignattribute() {
     data: assignAttributeData,
     refetch: assignAttributeRefetch,
   } = useQuery(GET_ALL_ATTRIBUTES_WITH_CATEGORY_ID, {
-    variables: { input: { categoryId: selectedCategory?.value || "" } },
+    variables: {
+      input: {
+        ...(selectedCategory?.value && { categoryId: selectedCategory?.value })
+      }
+    },
   });
 
   const {
@@ -178,15 +183,25 @@ function Assignattribute() {
     }
   }, [categoriesData, attributesData]);
 
-  useEffect(() => {
-    if (selectedCategory) {
-      assignAttributeRefetch({
-        input: { categoryId: selectedCategory?.value },
-      });
-      setAssignAttributeDatas(
-        assignAttributeData?.getAttributesDetailsWithCategory?.record
-      );
+  const fetchData = async () => {
+    try {
+      if (selectedCategory) {
+        const result = await assignAttributeRefetch({
+          input: { categoryId: selectedCategory?.value },
+        });
+        setAssignAttributeDatas(
+          result.data?.getAttributesDetailsWithCategoryByAdmin?.record.attributes
+        );
+      }
+    } catch (error: any) {
+      console.log(error)
     }
+  }
+
+  useEffect(() => {
+
+    fetchData();
+
   }, [selectedCategory]);
 
   const handleCategorySelect = (category: Category) => {
@@ -215,7 +230,6 @@ function Assignattribute() {
     { value: "nonBlocked", label: "Non-Blocked" },
   ];
 
-  console.log(selectedCategory);
 
 
   function handleEdit(data: ColorType) {
@@ -239,9 +253,10 @@ function Assignattribute() {
           },
         });
 
-        toast.success(response?.message);
+        toast.success("Attribute added");
         setSelectedAttributes([]);
-        await Promise.all([assignAttributeRefetch(), attributesRefetch()]);
+        fetchData();
+        await attributesRefetch()
       } catch (error: any) {
         toast.error(error.message);
         console.error("Error assigning brands:", error.message);
@@ -263,7 +278,6 @@ function Assignattribute() {
   return (
     <>
       <div className="page-content">
-        <ToastContainer />
         <Container fluid={true}>
           <Breadcrumb items={items} currentPage="Assign-Attribute" />
           <Row>
@@ -416,7 +430,7 @@ function Assignattribute() {
                     <tbody>
                       {selectedCategory ? (
                         <>
-                          {assignAttributeDatas?.attributes?.map(
+                          {assignAttributeDatas?.map(
                             (value: IAttribute, index: any) => (
                               <tr key={index}>
                                 <td>{index + 1}</td>

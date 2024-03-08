@@ -13,6 +13,9 @@ import {
 } from "reactstrap";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import BrandForm from "./BrandForm";
+import AssignBrands from "./AssignBrands";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
+import CustomButton from "src/components/Common/CustomButton";
 
 interface ILogo {
   fileType: string;
@@ -81,52 +84,58 @@ function ViewBrands() {
 
   const items = [
     { text: "Dashboard", link: `/` },
+    { text: "Brands", link: `/brands` },
   ];
 
+
   return (
-    <Container fluid={true} style={{ marginTop: "100px" }}>
-      <Breadcrumb items={items} currentPage="Brand" />
-      <Card style={{ width: "50rem", boxShadow: "0 0 10px rgba(0,0,0,0.1)" }}>
-        <CardImg
-          style={{
-            height: "200px",
-            width: "200px",
-            objectFit: "cover",
-            // borderRadius: "50%",
-            margin: "20px ",
-            border: "5px solid #fff", // Add a border around the image
-          }}
-          variant="top"
-          src={brandData?.logo?.fileURL}
-          alt="Profile"
-        />
-        <CardBody>
-          <CardText>
-            <div>
-              <p className="pt-3">
-                <strong>Barand Name :</strong> {brandData?.brandName}
-              </p>
-              <p className="pt-3">
-                <strong>Status :</strong>{" "}
-                {brandData?.isBlocked ? "BLOCKED" : "ACTIVE"}
-              </p>
+    <div className="page-content">
+
+      <Container fluid={true} >
+        <Breadcrumb items={items} currentPage="Brand Details" />
+        <Card style={{ width: "100%", boxShadow: "0 0 10px rgba(0,0,0,0.1)" }}>
+          <CardBody style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <CardImg
+              style={{
+                height: "100px",
+                width: "100px",
+                objectFit: "contain",
+                margin: "20px ",
+                border: "5px solid #fff",
+              }}
+              variant="top"
+              src={brandData?.logo?.fileURL}
+              alt="Profile"
+            />
+            <span>
+              <span>Brand Name :</span> <label> {brandData?.brandName}</label>
+            </span>
+            <CardText>
+              <div>
+                <span style={{ display: "flex", alignItems: "center", gap: "3px" }}>
+                  <span>Status :</span>
+                  <StatusIndicator status={brandData?.isBlocked ? "BLOCKED" : "ACTIVE"} variant="chip" />
+
+                </span>
+              </div>
+            </CardText>
+            <div >
+              <CustomButton name="Edit Brand" icon="ic:baseline-edit" onClick={() => toggleAddModal()} />
+
+              {/* <Button variant="success">Delete</Button> */}
             </div>
-          </CardText>
-          <div className="pt-3">
-            <Button style={{ backgroundColor: "#000000" }} onClick={() => toggleAddModal()}>
-              Edit
-            </Button>{" "}
-            {/* <Button variant="success">Delete</Button> */}
-          </div>
-        </CardBody>
-      </Card>
-      <BrandForm
-        isOpen={showAddModal}
-        toggle={toggleAddModal}
-        isEdit={brandData}
-        refetch={brandRefetch}
-      />
-    </Container>
+          </CardBody>
+        </Card>
+        <BrandForm
+          isOpen={showAddModal}
+          toggle={toggleAddModal}
+          isEdit={brandData}
+          refetch={brandRefetch}
+        />
+
+        <AssignBrands brandId={id} />
+      </Container>
+    </div>
   );
 }
 

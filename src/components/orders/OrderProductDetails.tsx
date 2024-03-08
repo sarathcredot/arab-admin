@@ -206,7 +206,7 @@ function OrderProductDetails({ product, orderProdcutsRefetch, orderRefetch }: an
             if (result.data.updateAdminOrderProduct) {
                 orderProdcutsRefetch();
                 setShippingModal(!shippingModal);
-                orderRefetch();
+                await orderRefetch();
                 toast.success("Shipping Status has been updated")
                 setShippedDate("");
                 setDeliveredDate("");

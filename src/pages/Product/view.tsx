@@ -31,6 +31,7 @@ interface ProductData {
   brandName: string;
   productName: string;
   shortDescription: string;
+  warehouseSkuId: string;
   skuId: string;
   description: string;
   productInfo: string;
@@ -150,12 +151,12 @@ const ProductDetails = () => {
   `;
 
   const PUT_STATUS = gql`
-    mutation UpdateProductStatus($input: ProductStatusInput!) {
-      updateProductStatus(input: $input) {
-        _id
-        message
-      }
-    }
+mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
+  updateProductByAdmin(input: $input) {
+    _id
+    message
+  }
+}
   `;
 
 
@@ -272,109 +273,6 @@ const ProductDetails = () => {
   };
 
 
-
-
-
-
-  // const renderVariants = () => {
-  //   if (!vColors || !vColors.length) {
-  //     return null;
-  //   }
-
-  //   return (
-  //     <div>
-  //       <label htmlFor="">
-  //         <span className="text-sm font-medium">
-  //           Color:
-  //           <span className="ml-1 font-semibold">{selectedVColor}</span>
-  //         </span>
-  //       </label>
-  //       <div className="mt-2">
-  //         {vColors.length &&
-  //           vColors.map((color) => (
-  //             <div
-  //               style={{
-  //                 border:
-  //                   color.name === selectedVColor ? "1px solid #2B2B2A" : "",
-  //                 borderRadius: "30px",
-  //                 display: "inline-block",
-  //                 padding: "4px",
-  //               }}
-  //               key={`vc-${color.name}`}
-  //             >
-  //               <button
-  //                 onClick={() => handlecolorChange(color.name)}
-  //                 style={{
-  //                   borderRadius: "30px",
-  //                   width: "60px",
-  //                   display: "flex",
-  //                   justifyContent: "center",
-  //                   alignItems: "center",
-  //                   height: "30px",
-  //                   backgroundColor: color.colorCode,
-  //                 }}
-  //               ></button>
-  //             </div>
-  //           ))}
-  //       </div>
-  //     </div>
-  //   );
-  // };
-  // const renderSizeList = () => {
-  //   if (!vSizes || vSizes.length === 0) {
-  //     return null;
-  //   }
-  //   return (
-  //     <div>
-  //       <div className="flex font-medium text-sm justify-between">
-  //         <label htmlFor="">
-  //           <span className="">
-  //             Size:
-  //             <span className="ml-1 font-semibold">{selectedVSize}</span>
-  //           </span>
-  //         </label>
-  //         <div>
-  //           {vSizes.length &&
-  //             vSizes.map((size) => {
-  //               const isActive = size === selectedVSize;
-  //               const sizeOutStock = isSizeOutOfStock(size);
-  //               const isExists = getProductVariant(size);
-  //               if (!isExists) {
-  //                 return <></>;
-  //               }
-
-  //               return (
-  //                 <button
-  //                   onClick={() => handleSizeChange(size)}
-  //                   style={{
-  //                     padding: "10px",
-  //                     borderRadius: "10px",
-  //                     border: "1px solid #2B2B2A",
-  //                     marginRight: "10px",
-  //                     marginTop: "10px",
-  //                     backgroundColor: sizeOutStock
-  //                       ? isActive
-  //                         ? "#2B2B2A "
-  //                         : "#E3E5E4"
-  //                       : isActive
-  //                       ? "#2B2B2A "
-  //                       : "white",
-  //                     minWidth: "70px",
-  //                     height: "50px",
-  //                     color: isActive ? "white" : "#2B2B2A",
-  //                   }}
-  //                   key={`vs-${size}`}
-  //                 >
-  //                   {size}
-  //                 </button>
-  //               );
-  //             })}
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // };
-
   const [edit, setEdit] = useState(false);
 
   const handleEditProduct = () => {
@@ -392,7 +290,7 @@ const ProductDetails = () => {
       const response = await UpdateProductStatus({ variables: { input: input } });
       if (response) {
         console.log(response);
-        toast.success(response.data.updateProductStatus.message)
+        toast.success(response.data.updateProductByAdmin.message)
         refetch()
       } else {
         console.log("Unexpected response format:", response);
@@ -420,7 +318,8 @@ const ProductDetails = () => {
             <div className="d-flex justify-content-between mb-3">
               <div style={{ width: "auto" }}>
                 <p style={{ margin: 0, fontWeight: 500, display: "flex", }}><p style={{ margin: 0, fontWeight: 500, width: "100px" }}>Category : </p>{product?.categoryNamePath}</p>
-                <p style={{ margin: 0, fontWeight: 500, display: "flex", }}><p style={{ margin: 0, fontWeight: 500, width: "100px" }}>Sku ID : </p>{product?.skuId}</p>
+                <p style={{ margin: 0, fontWeight: 500, display: "flex", }}><p style={{ margin: 0, fontWeight: 500, width: "100px" }}> W.Sku ID : </p>{product?.warehouseSkuId}</p>
+                <p style={{ margin: 0, fontWeight: 500, display: "flex", }}><p style={{ margin: 0, fontWeight: 500, width: "100px" }}>Status : </p>{product?.status}</p>
               </div>
               <CustomButton
                 onClick={handleEditProduct}
@@ -680,31 +579,19 @@ const ProductDetails = () => {
                                 className="mb-3"
                                 style={{ display: "flex", gap: "4px" }}
                               >
-                                <button
+                                <CustomButton
                                   onClick={(e) => handleStatusChange("APPROVED", e)}
-                                  style={{
-                                    backgroundColor: "black",
-                                    color: "white",
-                                    width: "100px",
-                                    height: "40px",
-                                    borderColor: "black",
-                                  }}
-                                >
-                                  Approve
-                                </button>
+                                  name="Approve"
+                                  icon="mdi:approve"
+                                  bgColor="#e30613"
+                                />
 
-                                <button
+
+                                <CustomButton
                                   onClick={(e) => handleStatusChange("REJECTED", e)}
-                                  style={{
-                                    backgroundColor: "red",
-                                    color: "white",
-                                    width: "100px",
-                                    height: "40px",
-                                    borderColor: "red",
-                                  }}
-                                >
-                                  Reject
-                                </button>
+                                  name="Rejected"
+                                  icon="material-symbols:close"
+                                />
                               </div>
                             </Col>
 

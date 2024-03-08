@@ -25,14 +25,14 @@ export const responseInterceptor = new ApolloLink(
         next: (result) => {
           console.log('GraphQL Result:', result);
           // Check if there are errors in the result
-          if (result.errors && result.errors.some((error: any) => error.extensions?.code === "UNAUTHORIZED")){
+          if (result.errors && result.errors.some((error: any) => error.extensions?.code === "UNAUTHORIZED")) {
             console.log("Redirecting to login page");
             localStorage.removeItem("admin_token");
-            window.location.href="/login"
+            window.location.href = "/login"
           } else {
             observer.next(result);
           }
-        
+
         },
         error: (error) => {
           // Handle errors globally
