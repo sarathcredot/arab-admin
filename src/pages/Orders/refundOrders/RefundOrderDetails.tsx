@@ -360,7 +360,7 @@ query GetAdminOrderProduct($input: GetAdminOrderProductInput!) {
                               </label>
                             </div>
                             <div>
-                              <OrderProductsDetails product={product} orderProdcutsRefetch={orderProdcutRefetch} />
+                              <OrderProductsDetails product={product} orderProdcutsRefetch={orderProdcutRefetch} orderRefetch={orderRefetch} />
                             </div>
                           </Col>
                         </Row>
