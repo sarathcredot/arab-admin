@@ -7,7 +7,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { useFormState } from "react-hook-form";
 
-
 import {
   Row,
   Col,
@@ -24,6 +23,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+import { useNavigate } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
@@ -65,12 +65,12 @@ interface AddCmsSectionProps {
 }
 
 const ADD_CMS_SECTION = gql`
- mutation AddCmsSection($input: AddCmsInput!, $images: [Upload]) {
-  addCmsSection(input: $input, images: $images) {
-    _id
-    message
+  mutation AddCmsSection($input: AddCmsInput!, $images: [Upload]) {
+    addCmsSection(input: $input, images: $images) {
+      _id
+      message
+    }
   }
-}
 `;
 const UPDATE_CMS_SECTION = gql`
   mutation UpdateCmsRecord($input: UpdateCmsInput!, $images: [Upload]) {
@@ -81,9 +81,7 @@ const UPDATE_CMS_SECTION = gql`
 `;
 
 const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
-
-
-
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
@@ -105,13 +103,11 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
   >([{ buttonText: null, redirectionURL: null }]);
   useEffect(() => {
     if (Edit && editedcms) {
-
-
       setValue("pageName", editedcms.pageName);
       setValue("sectionName", editedcms.sectionName);
       setValue("title", editedcms.title);
       setValue("subTitle", editedcms.subTitle);
-      const updatedButtons = editedcms?.buttons?.map(button => ({
+      const updatedButtons = editedcms?.buttons?.map((button) => ({
         buttonText: button.buttonText || null,
         redirectionURL: button.redirectionURL || null,
       }));
@@ -122,15 +118,12 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
       }));
 
       setValue("images", imageValues);
-
     }
   }, [Edit, editedcms, setValue]);
 
   const { dirtyFields } = useFormState({
     control, // Make sure to pass the control to useFormState
   });
-
-
 
   const toggleDropdown = () => setDropdownOpen((prevState) => !prevState);
 
@@ -153,20 +146,14 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
         // For update operation
         mutation = updateCmsRecord;
 
-
         variables = {
           input: {
             _id: editedcms?._id,
-            pageName: data.pageName,
-            sectionName: data.sectionName,
-            title: data.title,
-            subTitle: data.subTitle,
             buttons: buttons?.map(({ buttonText, redirectionURL }) => ({
               buttonText: buttonText || null,
               redirectionURL: redirectionURL || null,
             })),
           },
-
           images: acceptedFiles,
         };
       } else {
@@ -189,35 +176,25 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
         variables,
       });
 
+      navigate("/cmslisting");
+
       toast.success(`CMS Section ${Edit ? "updated" : "added"} successfully!`);
     } catch (error) {
       if (error instanceof Error) {
-        console.error(
-          `Error ${Edit ? "updating" : "adding"} CMS Section:`,
-          error.message
-        );
-        toast.error(
-          `Failed to ${Edit ? "update" : "add"} CMS Section: ${error.message}`
-        );
+        console.error(`Error ${Edit ? "updating" : "adding"} CMS Section:`, error.message);
+        toast.error(`Failed to ${Edit ? "update" : "add"} CMS Section: ${error.message}`);
       } else {
-        console.error(
-          `Error ${Edit ? "updating" : "adding"} CMS Section:`,
-          error
-        );
+        console.error(`Error ${Edit ? "updating" : "adding"} CMS Section:`, error);
       }
     }
   };
 
-  const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
-    useDropzone();
+  const { getRootProps, getInputProps, isDragActive, acceptedFiles } = useDropzone();
 
   const items = [
     { text: "Dashboard", link: `/` },
     { text: "Cms Pages", link: `/cmslisting` },
-
   ];
-
-
 
   return (
     <React.Fragment>
@@ -239,9 +216,7 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
                           <>
                             <Input type="text" id="pageName" {...field} />
                             {errors.pageName && (
-                              <p className="text-danger">
-                                {errors.pageName.message}
-                              </p>
+                              <p className="text-danger">{errors.pageName.message}</p>
                             )}
                           </>
                         )}
@@ -261,8 +236,7 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
                                 onChange={(e) =>
                                   setButtons((prevButtons) => {
                                     const newButtons = [...prevButtons];
-                                    newButtons[index].buttonText =
-                                      e.target.value;
+                                    newButtons[index].buttonText = e.target.value;
                                     return newButtons;
                                   })
                                 }
@@ -276,8 +250,7 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
                                 onChange={(e) =>
                                   setButtons((prevButtons) => {
                                     const newButtons = [...prevButtons];
-                                    newButtons[index].redirectionURL =
-                                      e.target.value;
+                                    newButtons[index].redirectionURL = e.target.value;
                                     return newButtons;
                                   })
                                 }
@@ -323,22 +296,16 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
                         {isDragActive ? (
                           <p>Drop the files here ...</p>
                         ) : (
-                          <p>
-                            Drag 'n' drop some files here, or click to select
-                            files
-                          </p>
+                          <p>Drag 'n' drop some files here, or click to select files</p>
                         )}
                       </div>
                       <ul>
                         {acceptedFiles?.map((file, index) => (
                           <li key={index}>
                             {file.name} - {file.size} bytes
-
                           </li>
                         ))}
                       </ul>
-
-
                     </FormGroup>
                     <Button
                       type="submit"

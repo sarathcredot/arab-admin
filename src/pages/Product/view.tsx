@@ -43,6 +43,12 @@ interface ProductData {
     mimeType: string;
     originalName: string;
   }[];
+  productDetailImages: {
+    fileType: string;
+    fileURL: string;
+    mimeType: string;
+    originalName: string;
+  }[];
   rating: number;
   sellingPrice: number;
   price: number;
@@ -74,66 +80,62 @@ const ProductDetails = () => {
   const [productVariants, setProductVariants] = useState<IVariant[]>([]);
   const [selectedVSize, setSelectedVSize] = useState<string>("");
   const [selectedVColor, setSelectedVColor] = useState<string>("");
-  const [vColors, setVColors] = useState<{ name: string; colorCode: string }[]>(
-    []
-  );
+  const [vColors, setVColors] = useState<{ name: string; colorCode: string }[]>([]);
   const [vSizes, setVSizes] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState<string>("");
-  const [editedProduct, setEditedProduct] = useState<ProductData | undefined>(
-    undefined
-  );
+  const [editedProduct, setEditedProduct] = useState<ProductData | undefined>(undefined);
 
   const GET_PRODUCT = gql`
-   query GetProductByAdmin($input: ProductId!) {
-  getProductByAdmin(input: $input) {
-    product {
-      _id
-      vendorId
-      brandId
-      brandName
-      productName
-      shortDescription
-      skuId
-      description
-      productInfo
-      productShortInfo
-      images {
-        fileType
-        fileURL
-        mimeType
-        originalName
+    query GetProductByAdmin($input: ProductId!) {
+      getProductByAdmin(input: $input) {
+        product {
+          _id
+          vendorId
+          brandId
+          brandName
+          productName
+          shortDescription
+          skuId
+          description
+          productInfo
+          productShortInfo
+          images {
+            fileType
+            fileURL
+            mimeType
+            originalName
+          }
+          rating
+          sellingPrice
+          price
+          mrp
+          tags
+          productCode
+          categoryId
+          categoryNamePath
+          categoryIdPath
+          isBlocked
+          stock
+          status
+          offerPrice
+          attributes {
+            attributeId
+            attributeName
+            attributeValueId
+            attributeValue
+            attributeDescription
+          }
+          productDetailImages {
+            fileType
+            fileURL
+            mimeType
+            originalName
+          }
+          warehouseSkuId
+        }
+        message
       }
-      rating
-      sellingPrice
-      price
-      mrp
-      tags
-      productCode
-      categoryId
-      categoryNamePath
-      categoryIdPath
-      isBlocked
-      stock
-      status
-      offerPrice
-      attributes {
-        attributeId
-        attributeName
-        attributeValueId
-        attributeValue
-        attributeDescription
-      }
-      productDetailImages {
-        fileType
-        fileURL
-        mimeType
-        originalName
-      }
-      warehouseSkuId
     }
-    message
-  }
-}
   `;
 
   const GET_VARIANTS = gql`
@@ -151,17 +153,15 @@ const ProductDetails = () => {
   `;
 
   const PUT_STATUS = gql`
-mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
-  updateProductByAdmin(input: $input) {
-    _id
-    message
-  }
-}
+    mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
+      updateProductByAdmin(input: $input) {
+        _id
+        message
+      }
+    }
   `;
 
-
-  const [UpdateProductStatus] = useMutation(PUT_STATUS)
-
+  const [UpdateProductStatus] = useMutation(PUT_STATUS);
 
   const {
     data: data,
@@ -190,7 +190,6 @@ mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
     },
     skip: !_id,
   });
-
 
   // useEffect(() => {
   //   if (data && data.getProductByAdmin && data.getProductByAdmin.product) {
@@ -261,17 +260,12 @@ mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
   };
   const isSizeOutOfStock = (size: string): boolean => {
     for (let product of productVariants) {
-      if (
-        product.color == selectedVColor &&
-        product.size == size &&
-        product.stock > 0
-      ) {
+      if (product.color == selectedVColor && product.size == size && product.stock > 0) {
         return false;
       }
     }
     return true;
   };
-
 
   const [edit, setEdit] = useState(false);
 
@@ -290,8 +284,8 @@ mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
       const response = await UpdateProductStatus({ variables: { input: input } });
       if (response) {
         console.log(response);
-        toast.success(response.data.updateProductByAdmin.message)
-        refetch()
+        toast.success(response.data.updateProductByAdmin.message);
+        refetch();
       } else {
         console.log("Unexpected response format:", response);
       }
@@ -317,36 +311,38 @@ mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
 
             <div className="d-flex justify-content-between mb-3">
               <div style={{ width: "auto" }}>
-                <p style={{ margin: 0, fontWeight: 500, display: "flex", }}><p style={{ margin: 0, fontWeight: 500, width: "100px" }}>Category : </p>{product?.categoryNamePath}</p>
-                <p style={{ margin: 0, fontWeight: 500, display: "flex", }}><p style={{ margin: 0, fontWeight: 500, width: "100px" }}> W.Sku ID : </p>{product?.warehouseSkuId}</p>
-                <p style={{ margin: 0, fontWeight: 500, display: "flex", }}><p style={{ margin: 0, fontWeight: 500, width: "100px" }}>Status : </p>{product?.status}</p>
+                <p style={{ margin: 0, fontWeight: 500, display: "flex" }}>
+                  <p style={{ margin: 0, fontWeight: 500, width: "100px" }}>Category : </p>
+                  {product?.categoryNamePath}
+                </p>
+                <p style={{ margin: 0, fontWeight: 500, display: "flex" }}>
+                  <p style={{ margin: 0, fontWeight: 500, width: "100px" }}> W.Sku ID : </p>
+                  {product?.warehouseSkuId}
+                </p>
+                <p style={{ margin: 0, fontWeight: 500, display: "flex" }}>
+                  <p style={{ margin: 0, fontWeight: 500, width: "100px" }}>Status : </p>
+                  {product?.status}
+                </p>
               </div>
               <CustomButton
                 onClick={handleEditProduct}
                 name="Edit Product"
                 icon="ic:baseline-edit"
               />
-
             </div>
             <Row>
               <Col lg={12}>
                 <Card>
-
                   <CardBody>
                     <form action="#">
-
-
                       <Row>
                         <Col xl={6}>
                           <div className="mb-3">
-                            <label
-                              htmlFor="cleave-time-format"
-                              className="form-label"
-                            >
+                            <label htmlFor="cleave-time-format" className="form-label">
                               Images :
                             </label>
 
-                            <div style={{ display: "flex", marginTop: '10px' }}>
+                            <div style={{ display: "flex", marginTop: "10px" }}>
                               {product?.images.map((item, index) => (
                                 <div
                                   key={index}
@@ -356,9 +352,42 @@ mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
                                   <img
                                     src={item?.fileURL}
                                     className="w-full rounded-2xl object-cover products-image"
-                                    onClick={() =>
-                                      handleImageClick(item?.fileURL)
-                                    }
+                                    onClick={() => handleImageClick(item?.fileURL)}
+                                    alt={`product detail ${index + 1}`}
+                                    style={{
+                                      width: "100px",
+                                      height: "100px",
+                                      objectFit: "contain",
+                                      borderRadius: "8px",
+                                    }}
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </Col>
+                      </Row>
+
+                      <div className="border mt-3 border-dashed"></div>
+
+                      <Row style={{ marginTop: "10px" }}>
+                        <Col xl={6}>
+                          <div className="mb-3">
+                            <label htmlFor="cleave-time-format" className="form-label">
+                              Detail Images :
+                            </label>
+
+                            <div style={{ display: "flex", marginTop: "10px" }}>
+                              {product?.productDetailImages.map((item, index) => (
+                                <div
+                                  key={index}
+                                  className="relative"
+                                  style={{ marginRight: "10px" }}
+                                >
+                                  <img
+                                    src={item?.fileURL}
+                                    className="w-full rounded-2xl object-cover products-image"
+                                    onClick={() => handleImageClick(item?.fileURL)}
                                     alt={`product detail ${index + 1}`}
                                     style={{
                                       width: "100px",
@@ -379,19 +408,11 @@ mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
                       <div className="mt-3">
                         <Row>
                           <Col xl={6}>
-                            <div
-                              className=""
-                              style={{ display: "flex", gap: "4px" }}
-                            >
-                              <label
-                                htmlFor="cleave-date"
-                                className="form-label"
-                              >
+                            <div className="" style={{ display: "flex", gap: "4px" }}>
+                              <label htmlFor="cleave-date" className="form-label">
                                 Name:
                               </label>
-                              <p className="form-control-static">
-                                {product?.productName}
-                              </p>
+                              <p className="form-control-static">{product?.productName}</p>
                             </div>
                           </Col>
 
@@ -400,31 +421,23 @@ mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
                               className=""
                               style={{ display: "flex", gap: "4px", alignItems: "center" }}
                             >
-                              <label
-                                htmlFor="cleave-date"
-                                className="form-label"
-                              >
+                              <label htmlFor="cleave-date" className="form-label">
                                 Status :&nbsp;
                               </label>
                               <p className="form-control-static">
-                                <StatusIndicator status={product?.isBlocked ? "BLOCKED" : "ACTIVE"} variant="chip" />
+                                <StatusIndicator
+                                  status={product?.isBlocked ? "BLOCKED" : "ACTIVE"}
+                                  variant="chip"
+                                />
                               </p>
                             </div>
                           </Col>
                           <Col xl={3}>
-                            <div
-                              className=""
-                              style={{ display: "flex", gap: "4px" }}
-                            >
-                              <label
-                                htmlFor="cleave-date"
-                                className="form-label"
-                              >
+                            <div className="" style={{ display: "flex", gap: "4px" }}>
+                              <label htmlFor="cleave-date" className="form-label">
                                 Stock :
                               </label>
-                              <p className="form-control-static">
-                                {product?.stock}
-                              </p>
+                              <p className="form-control-static">{product?.stock}</p>
                             </div>
                           </Col>
                         </Row>
@@ -436,15 +449,10 @@ mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
                         <Row>
                           <Col xl={6}>
                             <div className="mb-3">
-                              <label
-                                htmlFor="cleave-time-format"
-                                className="form-label"
-                              >
+                              <label htmlFor="cleave-time-format" className="form-label">
                                 Description:
                               </label>
-                              <p className="form-control-static">
-                                {product?.description}
-                              </p>
+                              <p className="form-control-static">{product?.description}</p>
                             </div>
                           </Col>
                         </Row>
@@ -455,16 +463,11 @@ mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
                         <Row>
                           <Col xl={6}>
                             <div className="mb-3">
-                              <label
-                                htmlFor="cleave-time-format"
-                                className="form-label"
-                              >
+                              <label htmlFor="cleave-time-format" className="form-label">
                                 {" "}
                                 Short Description:
                               </label>
-                              <p className="form-control-static">
-                                {product?.shortDescription}
-                              </p>
+                              <p className="form-control-static">{product?.shortDescription}</p>
                             </div>
                           </Col>
                         </Row>
@@ -477,15 +480,10 @@ mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
                             {product?.attributes.map((attribute, index) => (
                               <div key={index}>
                                 <div className="mb-3" key={index}>
-                                  <label
-                                    htmlFor="cleave-time-format"
-                                    className="form-label"
-                                  >
+                                  <label htmlFor="cleave-time-format" className="form-label">
                                     {attribute.attributeDescription}
                                   </label>
-                                  <p className="form-control-static">
-                                    {attribute.attributeValue}
-                                  </p>
+                                  <p className="form-control-static">{attribute.attributeValue}</p>
                                 </div>
                               </div>
                             ))}
@@ -494,36 +492,21 @@ mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
                       </div>
                       <div className="border mt-3 border-dashed"></div>
 
-
                       <div className="mt-4">
                         <Row>
                           <Col xl={4}>
-                            <div
-                              className="mb-3"
-                              style={{ display: "flex", gap: "4px" }}
-                            >
-                              <label
-                                htmlFor="cleave-numeral"
-                                className="form-label"
-                              >
+                            <div className="mb-3" style={{ display: "flex", gap: "4px" }}>
+                              <label htmlFor="cleave-numeral" className="form-label">
                                 {" "}
                                 MRP :
                               </label>
-                              <p className="form-control-static">
-                                {formatCurrency(product?.mrp)}
-                              </p>
+                              <p className="form-control-static">{formatCurrency(product?.mrp)}</p>
                             </div>
                           </Col>
 
                           <Col xl={4}>
-                            <div
-                              className="mb-3"
-                              style={{ display: "flex", gap: "4px" }}
-                            >
-                              <label
-                                htmlFor="cleave-phone"
-                                className="form-label"
-                              >
+                            <div className="mb-3" style={{ display: "flex", gap: "4px" }}>
+                              <label htmlFor="cleave-phone" className="form-label">
                                 Price :
                               </label>
                               <p className="form-control-static">
@@ -533,14 +516,8 @@ mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
                           </Col>
 
                           <Col xl={4}>
-                            <div
-                              className="mb-3"
-                              style={{ display: "flex", gap: "4px" }}
-                            >
-                              <label
-                                htmlFor="cleave-numeral"
-                                className="form-label"
-                              >
+                            <div className="mb-3" style={{ display: "flex", gap: "4px" }}>
+                              <label htmlFor="cleave-numeral" className="form-label">
                                 Selling Price :
                               </label>
                               <p className="form-control-static">
@@ -549,55 +526,37 @@ mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!) {
                             </div>
                           </Col>
 
-
                           <Col xl={6}>
-                            <div
-                              className="mb-3"
-                              style={{ display: "flex", gap: "4px" }}
-                            >
-                              <label
-                                htmlFor="cleave-numeral"
-                                className="form-label"
-                              >
+                            <div className="mb-3" style={{ display: "flex", gap: "4px" }}>
+                              <label htmlFor="cleave-numeral" className="form-label">
                                 tags:
                               </label>
-                              <p className="form-control-static">
-                                {product?.tags}
-                              </p>
-
-
+                              <p className="form-control-static">{product?.tags}</p>
                             </div>
-
-
                           </Col>
 
-                          {product?.status === "APPROVED" ? <>
-                            {null}
-                          </> : <>
-                            <Col xl={6}>
-                              <div
-                                className="mb-3"
-                                style={{ display: "flex", gap: "4px" }}
-                              >
-                                <CustomButton
-                                  onClick={(e) => handleStatusChange("APPROVED", e)}
-                                  name="Approve"
-                                  icon="mdi:approve"
-                                  bgColor="#e30613"
-                                />
+                          {product?.status === "APPROVED" ? (
+                            <>{null}</>
+                          ) : (
+                            <>
+                              <Col xl={6}>
+                                <div className="mb-3" style={{ display: "flex", gap: "4px" }}>
+                                  <CustomButton
+                                    onClick={(e) => handleStatusChange("APPROVED", e)}
+                                    name="Approve"
+                                    icon="mdi:approve"
+                                    bgColor="#e30613"
+                                  />
 
-
-                                <CustomButton
-                                  onClick={(e) => handleStatusChange("REJECTED", e)}
-                                  name="Rejected"
-                                  icon="material-symbols:close"
-                                />
-                              </div>
-                            </Col>
-
-                          </>}
-
-
+                                  <CustomButton
+                                    onClick={(e) => handleStatusChange("REJECTED", e)}
+                                    name="Rejected"
+                                    icon="material-symbols:close"
+                                  />
+                                </div>
+                              </Col>
+                            </>
+                          )}
                         </Row>
                       </div>
                     </form>

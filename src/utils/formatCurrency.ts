@@ -11,7 +11,7 @@ export const formatCurrency = (amount: number | null | undefined): string => {
 
     const formattedCurrency = `${formattedWholeNumber}.${decimal}`;
 
-    const formattedCurrencyWithSymbol = `₹ ${formattedCurrency}`;
+    const formattedCurrencyWithSymbol = `OMR ${formattedCurrency}`;
 
     return formattedCurrencyWithSymbol;
 }
