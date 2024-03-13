@@ -40,7 +40,7 @@
     width: $sidebar-width;
     z-index: 1001;
     // background: var(--#{$prefix}sidebar-bg);
-    background: #2B2B2A;
+    background: #000000;
     bottom: 0;
     margin-top: 0;
     position: fixed;
@@ -115,7 +115,7 @@
                     fill: #FFF;
                     margin-right: 10px;
                     margin-top: -3px;
-                    background-color:  rgba(255, 255, 255, 0.03);
+                    background-color:  rgba(254, 0, 0, 0.03);
                     border-radius: 50%;
                     padding: 5px;
                 }
@@ -452,7 +452,7 @@ body[data-sidebar-size="sm"] {
 height: auto;
 flex-shrink: 0;
 border-radius: 30px;
-background: rgba(255, 255, 255, 0.03);
+background: rgba(255, 255, 255, 0.1);
 }
 
 
