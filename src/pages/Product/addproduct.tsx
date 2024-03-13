@@ -531,7 +531,7 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
 
                       <Col md={6}>
                         <FormGroup>
-                          <Label for="status">Status</Label>
+                          <Label for="status">Status :</Label>
                           <Controller
                             control={control}
                             name="status"
@@ -556,7 +556,7 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                       </Col>
                       <Col md={6}>
                         <FormGroup>
-                          <Label for="isBlocked">Blocking Status</Label>
+                          <Label for="isBlocked">Blocking Status :</Label>
                           <Controller
                             control={control}
                             name="isBlocked"
@@ -603,35 +603,6 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                           ) : null}
                         </FormGroup>
                       </Col>
-                    </Row>
-                    <Row>
-
-
-
-                      <Col md={6}>
-                        <FormGroup>
-                          <Label for="skuid">SKU ID:</Label>
-                          <Controller
-                            control={control}
-                            name="skuId"
-                            render={({ field }) => (
-                              <>
-                                <Input
-                                  type="text"
-                                  id="skuid"
-                                  {...field}
-
-                                />
-                                {errors.skuId && (
-                                  <p className="text-danger">
-                                    {errors.skuId.message}
-                                  </p>
-                                )}
-                              </>
-                            )}
-                          />
-                        </FormGroup>
-                      </Col>
                       <Col md={6}>
                         <FormGroup>
                           <Label for="warehouseSkuId">Warehouse SKU ID:</Label>
@@ -656,6 +627,34 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                           />
                         </FormGroup>
                       </Col>
+                    </Row>
+
+                    <Row>
+                      {/* <Col md={6}>
+                        <FormGroup>
+                          <Label for="skuid">SKU ID:</Label>
+                          <Controller
+                            control={control}
+                            name="skuId"
+                            render={({ field }) => (
+                              <>
+                                <Input
+                                  type="text"
+                                  id="skuid"
+                                  {...field}
+
+                                />
+                                {errors.skuId && (
+                                  <p className="text-danger">
+                                    {errors.skuId.message}
+                                  </p>
+                                )}
+                              </>
+                            )}
+                          />
+                        </FormGroup>
+                      </Col> */}
+
                       <FormGroup>
                         <Label for="productInfo">Product Info:</Label>
 

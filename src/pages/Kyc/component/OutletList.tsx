@@ -5,7 +5,9 @@ import {
   Button,
   Card,
   CardBody,
+  CardHeader,
   Col,
+  Collapse,
   Container,
   Input,
   Nav,
@@ -15,6 +17,8 @@ import {
   Table,
 } from "reactstrap";
 import Breadcrumb from "src/components/Common/Breadcrumb";
+import CustomButton from "src/components/Common/CustomButton";
+import DynamicFilter from "src/components/filter/DynamicFilter";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 interface IStatus {
   status: boolean;
@@ -114,158 +118,211 @@ function OutletListing() {
     }
   };
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleCollapse = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleFilterSubmit = (formData: any) => {
+    console.log(formData);
+  };
+
+  const filterOptions = [
+    {
+      label: 'Order ID',
+      type: 'text',
+      name: 'orderId',
+    },
+    {
+      label: 'Start Date',
+      type: 'date',
+      name: 'startDate',
+    },
+    {
+      label: 'End Date',
+      type: 'date',
+      name: 'endDate',
+    },
+    {
+      label: 'Payment Mode',
+      type: 'select',
+      name: 'paymentMode',
+      options: [
+        { value: 'COD', label: 'COD' },
+        { value: 'ONLINE', label: 'ONLINE' },
+      ],
+    },
+    {
+      label: 'User ID',
+      type: 'text',
+      name: 'userId',
+    },
+  ];
+
+
   return (
     <>
-      <div className="page-content">
-        <Container fluid={true}>
-          <Nav tabs>
-            <NavItem>
-              <NavLink
-                className={activeTab === "UNDER_VERIFICATION" ? "tab-button active" : "tab-button"}
-                onClick={() => toggleTab("UNDER_VERIFICATION")}
-              >
-                Verify
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={activeTab === "PENDING" ? "tab-button active" : "tab-button"}
-                onClick={() => toggleTab("PENDING")}
-              >
-                Pending
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={activeTab === "COMPLETED" ? "tab-button active" : "tab-button"}
-                onClick={() => toggleTab("COMPLETED")}
-              >
-                Completed
-              </NavLink>
-            </NavItem>
+      <Container fluid={true} style={{ marginTop: "50px" }}>
+        <Nav tabs>
+          <NavItem>
+            <NavLink
+              className={activeTab === "UNDER_VERIFICATION" ? "tab-button active" : "tab-button"}
+              onClick={() => toggleTab("UNDER_VERIFICATION")}
+            >
+              Verify
+            </NavLink>
+          </NavItem>
 
-            <NavItem>
-              <NavLink
-                className={activeTab === "REJECTED" ? "tab-button active" : "tab-button"}
-                onClick={() => toggleTab("REJECTED")}
-              >
-                Rejected
-              </NavLink>
-            </NavItem>
+          <NavItem>
+            <NavLink
+              className={activeTab === "COMPLETED" ? "tab-button active" : "tab-button"}
+              onClick={() => toggleTab("COMPLETED")}
+            >
+              Completed
+            </NavLink>
+          </NavItem>
 
-          </Nav>
+          <NavItem>
+            <NavLink
+              className={activeTab === "PENDING" ? "tab-button active" : "tab-button"}
+              onClick={() => toggleTab("PENDING")}
+            >
+              Pending
+            </NavLink>
+          </NavItem>
 
-          <Row>
-            <Col lg={12}>
-              <Card>
-                <CardBody>
+
+          <NavItem>
+            <NavLink
+              className={activeTab === "REJECTED" ? "tab-button active" : "tab-button"}
+              onClick={() => toggleTab("REJECTED")}
+            >
+              Rejected
+            </NavLink>
+          </NavItem>
+
+        </Nav>
+
+        <Row>
+          <Col lg={12}>
+            <Card style={{ marginTop: "10px" }}>
+              <CardHeader>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <Input
                     type="text"
                     placeholder="Search by name"
                     value={searchTerm}
                     onChange={handleSearch}
-                    style={{ width: "50%", marginBottom: "20px" }}
+                    style={{ width: "450px", }}
                   />
-                  <Table id="tech-companies-1" className="table table-striped table-bordered">
-                    <thead>
-                      <tr>
-                        <th>No</th>
-                        <th>Full Name</th>
-                        <th>Outlet Name</th>
-                        <th>Kyc Status</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {outletData
-                        .slice(
-                          currentPage * pageSize,
-                          (currentPage + 1) * pageSize
-                        )
+                  <CustomButton onClick={toggleCollapse} name="Filters" icon="clarity:filter-solid" />
+                </div>
+              </CardHeader>
+              <CardBody>
+                <Collapse isOpen={isOpen}>
+                  <DynamicFilter
+                    filterOptions={filterOptions}
+                    onSubmit={handleFilterSubmit}
+                  />
+                </Collapse>
 
-                        .map((outlet, index) => (
-                          <tr key={outlet._id}>
-                            <td>{currentPage * pageSize + index + 1}</td>
-                            <td>{outlet.fullName}</td>
-                            <td>{outlet.outletName}</td>
-                            <td
-                              style={{
-                                color: outlet.isKycCompleted ? "#5cb85c" : "red",
-                              }}
-                            >
-                              {outlet.isKycCompleted ? "COMPLETED" : "PENDING"}
-                            </td>
-                            <td> 
-                               <StatusIndicator status={outlet?.status} /></td>
-                            <td>
-                              <Link to={`/vendors/view?id=${outlet.vendorId}&&tab=businessoutlet`}>
-                                <Button size="sm" color="primary">
-                                  View
-                                </Button>
-                              </Link>
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </Table>
-                </CardBody>
+                <Table id="tech-companies-1" className="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Full Name</th>
+                      <th>Outlet Name</th>
+                      <th>Kyc Status</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {outletData
+                      .slice(
+                        currentPage * pageSize,
+                        (currentPage + 1) * pageSize
+                      )
 
-                <Row style={{ marginRight: "10px" }}>
-                  <Col>
-                    <div className="d-flex justify-content-end mt-0 ">
-                      <ul className="pagination">
+                      .map((outlet, index) => (
+                        <tr key={outlet._id}>
+                          <td>{currentPage * pageSize + index + 1}</td>
+                          <td>{outlet.fullName}</td>
+                          <td>{outlet.outletName}</td>
+                          <td
+                          >
+                            <StatusIndicator status={outlet.isKycCompleted ? "COMPLETED" : "PENDING"} />
+                          </td>
+                          <td>
+                            <StatusIndicator status={outlet?.status} /></td>
+                          <td>
+                            <Link to={`/vendors/view?id=${outlet.vendorId}&&tab=businessoutlet`}>
+                              <Button size="sm" color="primary">
+                                View
+                              </Button>
+                            </Link>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </Table>
+              </CardBody>
+
+              <Row style={{ marginRight: "10px" }}>
+                <Col>
+                  <div className="d-flex justify-content-end mt-0 ">
+                    <ul className="pagination">
+                      <li
+                        className={`page-item ${currentPage === 0 ? "disabled" : ""
+                          }`}
+                      >
+                        <button
+                          className="page-link"
+                          onClick={() => setCurrentPage(currentPage - 1)}
+                          disabled={currentPage === 0}
+                        >
+                          Previous
+                        </button>
+                      </li>
+
+                      {Array.from({ length: totalPages }, (_, index) => (
                         <li
-                          className={`page-item ${currentPage === 0 ? "disabled" : ""
+                          key={`page-${index + 1}`}
+                          className={`page-item ${currentPage === index ? "active" : ""
                             }`}
                         >
                           <button
                             className="page-link"
-                            onClick={() => setCurrentPage(currentPage - 1)}
-                            disabled={currentPage === 0}
+                            onClick={() => setCurrentPage(index)}
                           >
-                            Previous
+                            {index + 1}
                           </button>
                         </li>
+                      ))}
 
-                        {Array.from({ length: totalPages }, (_, index) => (
-                          <li
-                            key={`page-${index + 1}`}
-                            className={`page-item ${currentPage === index ? "active" : ""
-                              }`}
+                      {currentPage < totalPages - 1 && (
+                        <li
+                          className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                            }`}
+                        >
+                          <button
+                            className="page-link"
+                            onClick={() => setCurrentPage(currentPage + 1)}
+                            disabled={currentPage === totalPages - 1}
                           >
-                            <button
-                              className="page-link"
-                              onClick={() => setCurrentPage(index)}
-                            >
-                              {index + 1}
-                            </button>
-                          </li>
-                        ))}
-
-                        {currentPage < totalPages - 1 && (
-                          <li
-                            className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
-                              }`}
-                          >
-                            <button
-                              className="page-link"
-                              onClick={() => setCurrentPage(currentPage + 1)}
-                              disabled={currentPage === totalPages - 1}
-                            >
-                              Next
-                            </button>
-                          </li>
-                        )}
-                      </ul>
-                    </div>
-                  </Col>
-                </Row>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </div>
+                            Next
+                          </button>
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                </Col>
+              </Row>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </>
   );
 }

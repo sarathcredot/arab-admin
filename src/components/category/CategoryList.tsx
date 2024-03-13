@@ -18,6 +18,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  BreadcrumbItem,
 } from "reactstrap";
 import CategoryForm from "./CategoryForm";
 import { gql, useMutation, useQuery } from "@apollo/client";
@@ -26,6 +27,8 @@ import { result } from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import CustomButton from "../Common/CustomButton";
+import { Link } from "react-router-dom";
+import { capitalCase } from "change-case";
 
 interface sizeChart {
   fileType: string;
@@ -243,8 +246,48 @@ const CategoryList: React.FC<Props> = () => {
     <>
       <ToastContainer />
       <div className="page-content">
-        <Container fluid={true} style={{ marginTop: "40px" }}>
-          <Breadcrumb items={items} currentPage="Category" />
+        <Container fluid={true} >
+          <Row>
+            <Col xs={12}>
+              <div className="page-title-right">
+                <ol className="breadcrumb m-0" style={{ marginBottom: "10px" }}>
+                  {
+                    breadcrumb.length !== 0 &&
+                    <BreadcrumbItem key={-1}>
+                      <Link onClick={() => handleBreadcrumbClick(-1)} to="#">
+                        Categories
+                      </Link>
+                    </BreadcrumbItem>
+                  }
+                  {breadcrumb.map((item, index) => {
+                    const isLast = index === breadcrumb.length - 1;
+
+                    return (
+                      (!isLast || (isLast && showSubCategories)) && (
+                        <BreadcrumbItem key={index}>
+                          <Link onClick={() => handleBreadcrumbClick(index)} to="#">
+                            {capitalCase(item.categoryName)}
+                          </Link>
+                        </BreadcrumbItem>
+                      )
+                    );
+                  })}
+                </ol>
+              </div>
+            </Col>
+          </Row>
+          {/* Render the currently active breadcrumb as the heading */}
+          <Row>
+            <Col xs={12}>
+              <div style={{ marginTop: "20px" }} className="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 className="mb-0 font-size-18">
+                  {breadcrumb.length > 0 ? capitalCase(breadcrumb[breadcrumb.length - 1].categoryName) :
+                    "Categories"
+                  }
+                </h4>
+              </div>
+            </Col>
+          </Row>
           <Row>
             <Col lg={12}>
               <Card>
@@ -296,6 +339,7 @@ const CategoryList: React.FC<Props> = () => {
                     toggle={toggleAddModal}
                     isSelected={selectedCategory}
                     isEdit={editCategory}
+                    isLeaf={breadcrumb.length >= 2 ? true : false}
                     refetch={categoryRefetch}
                     childrefetch={childCategoryRefetch}
                   />

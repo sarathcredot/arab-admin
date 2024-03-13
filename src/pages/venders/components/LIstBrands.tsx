@@ -14,10 +14,17 @@ import {
   NavItem,
   NavLink,
   Label,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  CardHeader,
 } from "reactstrap";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
+import CustomButton from "src/components/Common/CustomButton";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
 interface IBrandRecord {
   _id: string;
@@ -172,6 +179,7 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
         toast.success(response?.message)
         setSelectedBrands([])
         assignBrandRefetch();
+        toggle();
       } catch (error: any) {
         console.error("Error assigning brands:", error.message);
       }
@@ -181,6 +189,11 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
   };
 
 
+  const [modal, setModal] = useState(false);
+
+  const toggle = () => setModal(!modal);
+
+
   return (
     <>
 
@@ -188,43 +201,23 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
         boxShadow: "0 0 10px rgba(0,0,0,0.1)",
         marginTop: "20px",
       }}>
-        <CardBody>
-          {/* <Input
-                    type="text"
-                    placeholder="Search by name"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{ width: "50%", marginBottom: "20px" }}
-                  /> */}
-
-          <div className="d-flex justify-content-end mb-3">
-            <Label className="mt-2 " style={{ marginRight: "20px" }}>
-              Assign Brands:
-            </Label>
-            <Select
-              isMulti
-              options={brandData.map((brand) => ({
-                label: brand.brandName,
-                value: brand._id,
-              }))}
-              value={selectedBrands}
-              onChange={(selectedOptions: any) =>
-                handleBrandSelection(selectedOptions)
-              }
-              placeholder="Select Brands..."
-              styles={{
-                control: (styles: any) => ({
-                  ...styles,
-                  width: "300px",
-                  marginRight: "10px",
-                  // width: "200px",
-                }),
-              }}
+        <CardHeader>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Input
+              type="text"
+              placeholder="Search by brand name"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{ width: "450px", }}
             />
-            <Button onClick={() => handleAssignBrands()} style={{ backgroundColor: "#000000" }}>
-              Assign Brands
-            </Button>
+
+            <CustomButton onClick={toggle} name="Assign Brands" icon="fluent:tab-add-20-filled" />
           </div>
+        </CardHeader>
+        <CardBody>
+
+
+
 
           <Table id="tech-companies-1" className="table table-striped table-bordered">
             <thead>
@@ -258,15 +251,12 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
                       )}
                     </td>
                     <td
-                      style={{
-                        color: brand.isBlocked ? "red" : "#5cb85c",
-                      }}
                     >
-                      {brand.isBlocked ? "Blocked" : "Active"}
+                      <StatusIndicator status={brand.isBlocked ? "BLOCKED" : "ACTIVE"} />
                     </td>
                     <td>
                       <Link to={`/brands/${brand._id}`}>
-                        <Button style={{ marginLeft: "20px" }}>
+                        <Button color="primary" size="sm">
                           View
                         </Button>
                       </Link>
@@ -277,9 +267,43 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
           </Table>
         </CardBody>
 
+        <Modal isOpen={modal} toggle={toggle} >
+          <ModalHeader toggle={toggle}>Assign Categories</ModalHeader>
+          <ModalBody>
+            <Select
+              isMulti
+              options={brandData.map((brand) => ({
+                label: brand.brandName,
+                value: brand._id,
+              }))}
+              value={selectedBrands}
+              onChange={(selectedOptions: any) =>
+                handleBrandSelection(selectedOptions)
+              }
+              placeholder="Select Brands..."
+              styles={{
+                control: (styles: any) => ({
+                  ...styles,
+                }),
+              }}
+            />
+
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={handleAssignBrands}>
+              Submit
+            </Button>{' '}
+            <Button color="secondary" onClick={toggle}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </Modal>
+
+
+
         <Row>
           <Col>
-            <div className="d-flex justify-content-end mt-0 ">
+            <div className="d-flex justify-content-end mt-0 me-3">
               <ul className="pagination">
                 <li
                   className={`page-item ${currentPage === 0 ? "disabled" : ""

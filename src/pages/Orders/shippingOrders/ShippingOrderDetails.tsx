@@ -57,6 +57,7 @@ interface ProductsData {
   orderId: string | null;
   productName: string | null;
   shortDescription: string | null;
+  warehouseSkuId: string | null;
   skuId: string | null;
   image: {
     fileType: string | null;
@@ -178,6 +179,7 @@ const ShippingOrderDetails = () => {
     userId
     vendorId
     vendorName
+    warehouseSkuId
     productId
     itemId
     orderId
@@ -287,9 +289,9 @@ const ShippingOrderDetails = () => {
                               <div onClick={() => navigate(`/orders/details?orderId=${order?.orderId}`)}>
                                 {order?.orderId}
                               </div>
-                              <div style={{ display: "flex", alignItems: "center", border: "1px solid #b12349", borderRadius: "9px", padding: "5px 10px  5px 10px", cursor: "pointer", color: "#b12349" }} onClick={() => navigate(`/orders/details?orderId=${order?.orderId}`)}>
-                                <Iconify icon="tabler:hand-click" style={{ color: "#b12349" }} />
-                                here
+                              <div style={{ display: "flex", alignItems: "center", border: "1px solid #e30613", borderRadius: "9px", padding: "5px 10px  5px 10px", cursor: "pointer", color: "#e30613" }} onClick={() => navigate(`/orders/details?orderId=${order?.orderId}`)}>
+                                <Iconify icon="majesticons:open" style={{ color: "#e30613" }} />
+                                Open Order
                               </div>
                             </div>
                             <p className="form-control-static">{moment(order?.orderDate).format("ll")}</p>

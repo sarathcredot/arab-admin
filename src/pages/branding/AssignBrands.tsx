@@ -14,6 +14,10 @@ import {
   DropdownMenu,
   DropdownItem,
   Label,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "reactstrap";
 import CategoryForm from "src/components/category/CategoryForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -26,6 +30,7 @@ import ReactSelect from "react-select";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
+import CustomButton from "src/components/Common/CustomButton";
 
 function AssignBrands({ brandId }: any) {
   interface Category {
@@ -155,19 +160,19 @@ function AssignBrands({ brandId }: any) {
     }
   }, [categoriesData, brandDataResponse, assignCategoryData]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (selectedBrand) {
-          const result = await assignCategoryRefetch({
-            input: { brandId: selectedBrand },
-          });
-          setAssignCategoryDatas(result.data?.getCategoryDetailsWithBrand?.records);
-        }
-      } catch (error: any) {
-        console.log(error);
+  const fetchData = async () => {
+    try {
+      if (selectedBrand) {
+        const result = await assignCategoryRefetch({
+          input: { brandId: selectedBrand },
+        });
+        setAssignCategoryDatas(result.data?.getCategoryDetailsWithBrand?.records);
       }
-    };
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
 
     fetchData();
   }, [selectedBrand, brandId]);
@@ -193,6 +198,8 @@ function AssignBrands({ brandId }: any) {
           assignCategoryRefetch();
         }
         toast.success("Successfully updated");
+        toggle();
+        fetchData();
         setSelectedCategory([]);
       } catch (error: any) {
         console.error("Error assigning brands:", error.message);
@@ -208,33 +215,22 @@ function AssignBrands({ brandId }: any) {
     setSelectedCategory(selectedOptions);
   };
 
+
+
+  const [modal, setModal] = useState(false);
+
+  const toggle = () => setModal(!modal);
+
+
+
+
   return (
     <Row>
       <Col lg={12}>
         <Card>
           <CardHeader>
-            <div className="d-flex gap-2">
-              <Label className="mt-2 ">Assign Category:</Label>
-              <Select
-                isMulti
-                options={categories.map((category) => ({
-                  label: category.fullCategoryName,
-                  value: category._id,
-                }))}
-                value={selectedCategory}
-                onChange={(selectedOptions: any) => handleCategorySelection(selectedOptions)}
-                placeholder="Select Category..."
-                styles={{
-                  control: (styles: any) => ({
-                    ...styles,
-                    marginRight: "10px",
-                    width: "500px",
-                  }),
-                }}
-              />
-              <Button style={{ backgroundColor: "#000000" }} onClick={handleAssignBrand}>
-                Assign Category
-              </Button>
+            <div style={{ display: "flex", alignItems: 'center', justifyContent: "flex-end" }}>
+              <CustomButton name="Assign Category" icon="fluent:tab-add-20-filled" onClick={toggle} />
             </div>
           </CardHeader>
           <CardBody>
@@ -245,7 +241,7 @@ function AssignBrands({ brandId }: any) {
             >
               <thead>
                 <tr>
-                  <th style={{ width: "10%" }}>No</th>
+                  <th style={{ width: "10%" }}>Sl.No</th>
                   <th style={{ width: "40%" }}>Category Name</th>
                   <th style={{ width: "40%" }}>Categorey FullName</th>
                 </tr>
@@ -272,6 +268,36 @@ function AssignBrands({ brandId }: any) {
             </Table>
           </CardBody>
         </Card>
+
+        <Modal isOpen={modal} toggle={toggle} >
+          <ModalHeader toggle={toggle}>Assign Category</ModalHeader>
+          <ModalBody>
+            <Select
+              isMulti
+              options={categories.map((category) => ({
+                label: category.fullCategoryName,
+                value: category._id,
+              }))}
+              value={selectedCategory}
+              onChange={(selectedOptions: any) => handleCategorySelection(selectedOptions)}
+              placeholder="Select Category..."
+              styles={{
+                control: (styles: any) => ({
+                  ...styles,
+                }),
+              }}
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={handleAssignBrand}>
+              Submit
+            </Button>{' '}
+            <Button color="secondary" onClick={toggle}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </Modal>
+
       </Col>
     </Row>
   );

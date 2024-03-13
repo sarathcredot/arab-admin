@@ -55,6 +55,8 @@ interface ProductsData {
     productId: string;
     itemId: string;
     orderId: string;
+    warehouseSkuId: string | null;
+
     productName: string;
     shortDescription: string;
     skuId: string;
@@ -155,6 +157,7 @@ const ALlOrderDetails = () => {
       vendorName
       orderId
       itemId
+      warehouseSkuId
       productName
       shortDescription
       skuId
