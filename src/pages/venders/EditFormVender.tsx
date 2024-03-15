@@ -87,7 +87,7 @@ const EditFormVender: React.FC<Props> = ({
       name: data?.fullName || '',
       email: data?.email || '',
       phone: data?.mobileNumber || '',
-      countryCode: data?.countryCode || '+974',
+      countryCode: data?.countryCode || '+968',
       image: data?.image || '',
       isKycCompleted: data?.isKycCompleted
     });

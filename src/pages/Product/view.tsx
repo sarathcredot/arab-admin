@@ -233,7 +233,6 @@ const ProductDetails = () => {
     setSelectedVSize("");
   };
   const handleImageClick = (imageURL: string | undefined) => {
-    // Check if imageURL is defined, if not, provide a default value (empty string)
     setSelectedImage(imageURL || "");
   };
 

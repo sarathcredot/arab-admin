@@ -247,6 +247,7 @@ const CategoryList: React.FC<Props> = () => {
       <ToastContainer />
       <div className="page-content">
         <Container fluid={true} >
+
           <Row>
             <Col xs={12}>
               <div className="page-title-right">
@@ -288,6 +289,8 @@ const CategoryList: React.FC<Props> = () => {
               </div>
             </Col>
           </Row>
+
+
           <Row>
             <Col lg={12}>
               <Card>
