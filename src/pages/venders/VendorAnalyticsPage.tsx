@@ -58,4 +58,4 @@ function VendorAnalyticsPage() {
     )
 }
 
-export default VendorAnalyticsPage
+export default VendorAnalyticsPage;

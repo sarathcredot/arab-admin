@@ -206,7 +206,7 @@ function OrderProductDetails({ product, orderProdcutsRefetch, orderRefetch }: an
             if (result.data.updateAdminOrderProduct) {
                 orderProdcutsRefetch();
                 setShippingModal(!shippingModal);
-                await orderRefetch();
+                orderRefetch();
                 toast.success("Shipping Status has been updated")
                 setShippedDate("");
                 setDeliveredDate("");
@@ -551,7 +551,7 @@ function OrderProductDetails({ product, orderProdcutsRefetch, orderRefetch }: an
                                     className="mb-2 text-muted"
                                     tag="h6"
                                 >
-                                    SKU : {product?.skuId || "nill"}
+                                    SKU : {product?.warehouseSkuId || "nill"}
                                 </CardSubtitle>
                             </div>
                         </div>

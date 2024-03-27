@@ -41,6 +41,7 @@ interface Props {
   isSelected?: Category | null | undefined;
   isEdit?: Category | null | undefined;
   refetch: () => void;
+  isLeaf: boolean | undefined;
   childrefetch: () => void;
 }
 
@@ -51,6 +52,8 @@ const CategoryForm: React.FC<Props> = ({
   isEdit,
   refetch,
   childrefetch,
+  isLeaf
+
 }) => {
   const navigate = useNavigate();
 
@@ -92,49 +95,67 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
   const onSubmit = async (values: any, { resetForm }: any) => {
     try {
 
-      let variables: any = {
-        input: {
-          _id: isEdit?._id,
-          categoryName: values?.name,
-          description: values?.description,
-          parentId: isSelected?._id,
-          isLeaf: isChecked,
-          isBlocked: isBlockCategoryChecked
-        },
-      };
-      if (values.image) {
-        variables = {
-          ...variables,
-          image: values?.image,
-        };
-      }
       if (isEdit) {
+        let variables: any = {
+          input: {
+            _id: isEdit?._id,
+            categoryName: values?.name,
+            description: values?.description,
+            parentId: isSelected?._id,
+            isBlocked: isBlockCategoryChecked
+          },
+        };
+        if (values.image) {
+          variables = {
+            ...variables,
+            image: values?.image,
+          };
+        }
         const response = await updateCategory({
-          variables,
+          variables
         });
+        resetForm();
+        checking()
 
         if (response) {
           toast.success("Successfully updated category");
           refetch();
           childrefetch();
           navigate("/category");
-          resetForm();
-          checking()
+
+
         }
         return toggle();
       } else {
+
+        let variables: any = {
+          input: {
+
+            categoryName: values?.name,
+            description: values?.description,
+            parentId: isSelected?._id,
+            isLeaf: isLeaf,
+            isBlocked: isBlockCategoryChecked
+          },
+        };
+        if (values.image) {
+          variables = {
+            ...variables,
+            image: values?.image,
+          };
+        }
         const response = await createCategory({
           variables,
         });
-
+        resetForm();
+        checking()
         if (response) {
-          console.log("Successfully created category")
           toast.success("Successfully added category");
           refetch();
           childrefetch();
           navigate("/category");
-          resetForm();
-          checking()
+
+
         }
         return toggle();
       }
@@ -254,7 +275,7 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
                     type="checkbox"
                     id="isLeaf"
                     name="isLeaf"
-                    checked={isChecked}
+                    checked={isLeaf}
                     onClick={(e) => {
                       checking();
                     }}
@@ -263,7 +284,6 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
                 </Label>
               </FormGroup>
             ) : ""}
-
 
             {isEdit ? (
               <div>

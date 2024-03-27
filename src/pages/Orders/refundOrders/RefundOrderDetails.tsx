@@ -55,6 +55,8 @@ interface ProductsData {
   userId: string | null;
   productId: string | null;
   orderId: string | null;
+  warehouseSkuId: string | null;
+
   itemId: string | null;
   productName: string | null;
   shortDescription: string | null;
@@ -165,6 +167,7 @@ query GetAdminOrderProduct($input: GetAdminOrderProductInput!) {
    skuId
    returnPeriod
    mrp
+   warehouseSkuId
    sellingPrice
    shippingCharge
    paymentMode
@@ -290,9 +293,9 @@ query GetAdminOrderProduct($input: GetAdminOrderProductInput!) {
                               <div onClick={() => navigate(`/orders/details?orderId=${order?.orderId}`)}>
                                 {order?.orderId}
                               </div>
-                              <div style={{ display: "flex", alignItems: "center", border: "1px solid #b12349", borderRadius: "9px", padding: "5px 10px  5px 10px", cursor: "pointer", color: "#b12349" }} onClick={() => navigate(`/orders/details?orderId=${order?.orderId}`)}>
-                                <Iconify icon="tabler:hand-click" style={{ color: "#b12349" }} />
-                                here
+                              <div style={{ display: "flex", alignItems: "center", border: "1px solid #e30613", borderRadius: "9px", padding: "5px 10px  5px 10px", cursor: "pointer", color: "#e30613" }} onClick={() => navigate(`/orders/details?orderId=${order?.orderId}`)}>
+                                <Iconify icon="majesticons:open" style={{ color: "#e30613" }} />
+                                Open Order
                               </div>
                             </div>
                             <p className="form-control-static">{moment(order?.orderDate).format("ll")}</p>
@@ -360,7 +363,7 @@ query GetAdminOrderProduct($input: GetAdminOrderProductInput!) {
                               </label>
                             </div>
                             <div>
-                              <OrderProductsDetails product={product} orderProdcutsRefetch={orderProdcutRefetch} />
+                              <OrderProductsDetails product={product} orderProdcutsRefetch={orderProdcutRefetch} orderRefetch={orderRefetch} />
                             </div>
                           </Col>
                         </Row>

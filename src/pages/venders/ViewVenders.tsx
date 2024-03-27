@@ -1,43 +1,28 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
+import { capitalCase } from "change-case";
 import React, { useEffect, useState } from "react";
-import { useParams, Link, useSearchParams } from "react-router-dom";
-import Breadcrumb from "src/components/Common/Breadcrumb";
+import { useSearchParams } from "react-router-dom";
 import {
-  Container,
   Card,
   CardBody,
+  CardHeader,
   CardImg,
-  CardText,
   CardTitle,
-  Button,
+  Container,
   Nav,
   NavItem,
   NavLink,
   TabContent,
-  TabPane,
-  Row,
-  Col,
-  CardHeader,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
+  TabPane
 } from "reactstrap";
-import classnames from "classnames";
-import ViewCardCompany from "./components/ViewCardCompany";
-import CategoryList from "./components/Category";
-import BrandList from "../branding/BrandList";
-import AssignedBrandList from "./components/LIstBrands";
-import user1 from "src/assets/images/users/avatar-1.jpg";
-import ConfirmationModal from "./ConfirmationModal";
-import { ToastContainer, toast } from "react-toastify";
-import { capitalCase } from "change-case";
+import Breadcrumb from "src/components/Common/Breadcrumb";
 import CustomButton from "src/components/Common/CustomButton";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import EditFormVender from "./EditFormVender";
-import ViewCardBusiness from "./components/ViewCardBusiness";
+import CategoryList from "./components/Category";
+import AssignedBrandList from "./components/LIstBrands";
 import VendorCards from "./components/VendorCards";
+import ViewCardBusiness from "./components/ViewCardBusiness";
+import ViewCardCompany from "./components/ViewCardCompany";
 
 interface IcontactPerson {
   phoneNumber: string;
@@ -143,17 +128,6 @@ function ViewVenders() {
     setActiveTab(newTab);
   };
 
-  function getStatusColor(status: any) {
-    switch (status) {
-      case "ACTIVE":
-        return "#4CAF50";
-      case "BLOCKED":
-        return "#F44336";
-
-      default:
-        return "#2196F3";
-    }
-  }
 
   const toggleConfirmationModal = () => {
     setShowConfirmationModal(!showConfirmationModal);
@@ -162,7 +136,6 @@ function ViewVenders() {
     toggleConfirmationModal();
   };
 
-  const handleConfirmation = async () => {};
 
   const items = [
     { text: "Dashboard", link: `/` },
@@ -335,9 +308,8 @@ function ViewVenders() {
                             alignItems: "center",
                             justifyContent: "center",
                             padding: "1px",
-                            border: `1px solid ${
-                              vendorData?.isKycCompleted !== true ? "orange" : "green"
-                            }`,
+                            border: `1px solid ${vendorData?.isKycCompleted !== true ? "orange" : "green"
+                              }`,
                             width: "100px",
                             borderRadius: "20px",
                             color: ` ${vendorData?.isKycCompleted !== true ? "orange" : "green"}`,

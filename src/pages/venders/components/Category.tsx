@@ -19,6 +19,9 @@ import {
   DropdownMenu,
   DropdownItem,
   Label,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "reactstrap";
 
 import { gql, useMutation, useQuery } from "@apollo/client";
@@ -29,6 +32,8 @@ import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
 import { useParams } from "react-router";
 import { useSearchParams } from "react-router-dom";
+import CustomButton from "src/components/Common/CustomButton";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 interface sizeChart {
   fileType: string;
   fileURL: string;
@@ -189,7 +194,6 @@ query GetAllCategoriesOfVendorByAdmin($input: vendorIdInput!) {
   const handleAssignCategory = async () => {
     if (selectedCategory.length > 0) {
       const categoryIds = selectedCategory.map((category) => category.value);
-      console.log(categoryIds, "selectedCategory")
       try {
         const response: any = await UpdateVendorProfileByAdmin({
           variables: {
@@ -204,7 +208,7 @@ query GetAllCategoriesOfVendorByAdmin($input: vendorIdInput!) {
         assignCategoryRefetch()
         categoryRefetch()
         setSelectedCategory([])
-
+        toggle();
       } catch (error: any) {
         toast.error(error.message);
       }
@@ -212,6 +216,12 @@ query GetAllCategoriesOfVendorByAdmin($input: vendorIdInput!) {
       toast.error("Please select at least one brand to assign");
     }
   };
+
+
+  const [modal, setModal] = useState(false);
+
+  const toggle = () => setModal(!modal);
+
 
   return (
     <>
@@ -221,12 +231,52 @@ query GetAllCategoriesOfVendorByAdmin($input: vendorIdInput!) {
         marginTop: "20px",
       }}>
         <CardHeader>
-          <Row>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Input
+              type="text"
+              placeholder="Search by category name"
+              value={searchTerm}
+              onChange={handleSearch}
+              style={{ width: "450px", }}
+            />
 
-            <div className="d-flex justify-content-end mb-3">
-              <Label className="mt-2 " style={{ marginRight: "20px" }}>
-                Assign Categories :
-              </Label>
+            <CustomButton onClick={toggle} name="Assign Categories" icon="fluent:tab-add-20-filled" />
+          </div>
+        </CardHeader>
+        <CardBody>
+          <Table id="tech-companies-1" className="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>Sl.No</th>
+                <th>Name</th>
+                <th>Category full Name</th>
+
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {assignedCategryData?.filter((category) =>
+                category.categoryName
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+              ).map((category, index) => (
+                <tr key={category._id}>
+                  <td> {index + 1}</td>
+                  <td>{category.categoryName}</td>
+                  <td>{category.fullCategoryName}</td>
+
+                  <td>
+                    <StatusIndicator status={category?.isBlocked == false ? "ACTIVE" : "BLOCKED"} />
+
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+
+          <Modal isOpen={modal} toggle={toggle} >
+            <ModalHeader toggle={toggle}>Assign Categories</ModalHeader>
+            <ModalBody>
               <Select
                 isMulti
                 options={categoryData.map((category) => ({
@@ -241,43 +291,21 @@ query GetAllCategoriesOfVendorByAdmin($input: vendorIdInput!) {
                 styles={{
                   control: (styles: any) => ({
                     ...styles,
-                    width: "300px",
-                    marginRight: "10px",
-                    // width: "200px",
                   }),
                 }}
               />
-              <Button onClick={() => handleAssignCategory()} style={{ backgroundColor: "#000000" }}>
-                Assign Categories
+
+            </ModalBody>
+            <ModalFooter>
+              <Button color="primary" onClick={handleAssignCategory}>
+                Submit
+              </Button>{' '}
+              <Button color="secondary" onClick={toggle}>
+                Cancel
               </Button>
-            </div>
-          </Row>
-        </CardHeader>
-        <CardBody>
-          <Table id="tech-companies-1" className="table table-striped table-bordered">
-            <thead>
-              <tr>
-                <th>Sl.No</th>
-                <th>Name</th>
-                <th>Category full Name</th>
+            </ModalFooter>
+          </Modal>
 
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {assignedCategryData?.map((category, index) => (
-                <tr key={category._id}>
-                  <td> {index + 1}</td>
-                  <td>{category.categoryName}</td>
-                  <td>{category.fullCategoryName}</td>
-
-                  <td>
-                    {category?.isBlocked == false ? "Active" : "Block"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
 
           <Modal
             isOpen={isImageModalOpen}

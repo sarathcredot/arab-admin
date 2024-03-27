@@ -14,6 +14,11 @@ import {
   DropdownMenu,
   DropdownItem,
   Label,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Collapse,
 } from "reactstrap";
 import CategoryForm from "src/components/category/CategoryForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -26,6 +31,8 @@ import ReactSelect from "react-select";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import Select from "react-select";
 import { toast } from "react-toastify";
+import CustomButton from "src/components/Common/CustomButton";
+import DynamicFilter from "src/components/filter/DynamicFilter";
 
 function Assignattribute() {
   interface Category {
@@ -161,11 +168,7 @@ function Assignattribute() {
     data: assignAttributeData,
     refetch: assignAttributeRefetch,
   } = useQuery(GET_ALL_ATTRIBUTES_WITH_CATEGORY_ID, {
-    variables: {
-      input: {
-        ...(selectedCategory?.value && { categoryId: selectedCategory?.value })
-      }
-    },
+    variables: { input: { categoryId: selectedCategory } },
   });
 
   const {
@@ -173,6 +176,9 @@ function Assignattribute() {
     data: attributesData,
     refetch: attributesRefetch,
   } = useQuery(GET_ALL_ATTRIBUTES);
+
+
+
   useEffect(() => {
     if (categoriesData) {
       setCategoryData(categoriesData?.getAllLeafRecords?.records);
@@ -183,11 +189,23 @@ function Assignattribute() {
     }
   }, [categoriesData, attributesData]);
 
+  useEffect(() => {
+    if (categoriesData) {
+      const initialCategory = categoriesData?.getAllLeafRecords?.records[0];
+      if (initialCategory) {
+        setSelectedCategory(initialCategory._id);
+        setAssignAttributeDatas(
+          assignAttributeData?.getAttributesDetailsWithCategoryByAdmin?.record.attributes
+        );
+      }
+    }
+  }, [categoriesData]);
+
   const fetchData = async () => {
     try {
       if (selectedCategory) {
         const result = await assignAttributeRefetch({
-          input: { categoryId: selectedCategory?.value },
+          input: { categoryId: selectedCategory },
         });
         setAssignAttributeDatas(
           result.data?.getAttributesDetailsWithCategoryByAdmin?.record.attributes
@@ -204,9 +222,12 @@ function Assignattribute() {
 
   }, [selectedCategory]);
 
-  const handleCategorySelect = (category: Category) => {
-    setSelectedCategory(category);
+
+
+  const handleCategorySelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedCategory(e.target.value);
   };
+
 
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
@@ -247,7 +268,7 @@ function Assignattribute() {
         const response: any = await updateCategory({
           variables: {
             input: {
-              _id: selectedCategory.value,
+              _id: selectedCategory,
               attributes: attributeIds,
             },
           },
@@ -257,6 +278,7 @@ function Assignattribute() {
         setSelectedAttributes([]);
         fetchData();
         await attributesRefetch()
+        toggle();
       } catch (error: any) {
         toast.error(error.message);
         console.error("Error assigning brands:", error.message);
@@ -275,6 +297,57 @@ function Assignattribute() {
   const items = [
     { text: "Dashboard", link: `/` },
   ];
+
+
+  const [modal, setModal] = useState(false);
+
+  const toggle = () => setModal(!modal);
+
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleCollapse = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleFilterSubmit = (formData: any) => {
+    console.log(formData);
+  };
+
+  const filterOptions = [
+    {
+      label: 'Order ID',
+      type: 'text',
+      name: 'orderId',
+    },
+    {
+      label: 'Start Date',
+      type: 'date',
+      name: 'startDate',
+    },
+    {
+      label: 'End Date',
+      type: 'date',
+      name: 'endDate',
+    },
+    {
+      label: 'Payment Mode',
+      type: 'select',
+      name: 'paymentMode',
+      options: [
+        { value: 'COD', label: 'COD' },
+        { value: 'ONLINE', label: 'ONLINE' },
+      ],
+    },
+    {
+      label: 'User ID',
+      type: 'text',
+      name: 'userId',
+    },
+  ];
+
+
+
   return (
     <>
       <div className="page-content">
@@ -284,144 +357,39 @@ function Assignattribute() {
             <Col lg={12}>
               <Card>
                 <CardHeader>
-                  <Row>
-                    {/* <Col xs={3}>
-                        <h5 className="mb-0">Colors</h5>
-                      </Col> */}
-                    {/* <Col xs={3}>
-                        <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
-                          <DropdownToggle caret>
-                            {selectedCategory
-                              ? selectedCategory.fullCategoryName
-                              : "Select Category"}
-                            {"  "}
-                            <FontAwesomeIcon
-                              icon={faAngleDown}
-                              style={{ marginRight: "5px" }}
-                            />
-                          </DropdownToggle>
-                          <DropdownMenu>
-                            {categories.map((category: Category, index) => (
-                              <DropdownItem
-                                key={index}
-                                onClick={() => handleCategorySelect(category)}
-                              >
-                                {category.fullCategoryName.split("/").join("  /  ")}
-                              </DropdownItem>
-                            ))}
-                          </DropdownMenu>
-                        </Dropdown>
-                      </Col> */}
-                    <Col xs={4}>
-                      <ReactSelect
-                        value={selectedCategory || ""}
-                        onChange={(selectedOption: any) => {
-                          handleCategorySelect(selectedOption);
-                        }}
-                        options={categories.map((category: Category) => ({
-                          value: category._id,
-                          label: category.fullCategoryName,
-                        }))}
-                        placeholder="Select Category"
-                        isSearchable
-                      />
-                    </Col>{" "}
-                    <Col xs={3}>
-                      <Dropdown
-                        isOpen={statusDropdownOpen}
-                        toggle={toggleStatusDropdown}
-                      >
-                        <DropdownToggle caret>
-                          {selectedStatus
-                            ? selectedStatus?.label
-                            : "Select Status"}{" "}
-                          <FontAwesomeIcon icon={faAngleDown} />
-                        </DropdownToggle>
-                        <DropdownMenu>
-                          {statusOptions.map((option) => (
-                            <DropdownItem
-                              key={option.value}
-                              onClick={() => handleStatusSelect(option)}
-                            >
-                              {option.label}
-                            </DropdownItem>
-                          ))}
-                        </DropdownMenu>
-                      </Dropdown>
-                    </Col>
-                    {/* <Col xs={2}>
-                        <Input
-                          type="text"
-                          value=""
-                          placeholder="Selected Category"
-                          readOnly
-                          style={{ width: "100%" }}
-                        />
-                      </Col> */}
-                    <Col
-                      xs={4}
-                      className="text-right"
-                      style={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        marginLeft: "100px",
-                      }}
+                  <div style={{ display: 'flex', alignItems: "center", justifyContent: "space-between" }}>
+                    <Input
+                      type="select"
+                      value={selectedCategory}
+                      onChange={handleCategorySelect}
+                      style={{ width: "500px" }}
                     >
-                      {/* <Button
-                          style={{ backgroundColor: "#000000" }}
-                          onClick={() => toggleAddModal()}
-                          disabled={!selectedCategory}
-                        >
-                          Add Color
-                        </Button> */}
+                      <option value="" disabled>Select Category</option>
+                      {categories.map((category: Category) => (
+                        <option key={category._id} value={category._id}>{category.fullCategoryName}</option>
+                      ))}
+                    </Input>
+                    <CustomButton onClick={toggleCollapse} name="Filters" icon="clarity:filter-solid" />
+                  </div>
 
-                      <div className="d-flex justify-content-end mb-3">
-                        <Label
-                          className="mt-2 "
-                          style={{ marginRight: "20px" }}
-                        >
-                          Assign Attributes:
-                        </Label>
-                        <Select
-                          isMulti
-                          options={attributes.map((attribute) => ({
-                            label: attribute.description,
-                            value: attribute._id,
-                          }))}
-                          value={setectedAttributes}
-                          onChange={(selectedOptions: any) =>
-                            handleBrandSelection(selectedOptions)
-                          }
-                          placeholder="Select Attributes..."
-                          styles={{
-                            control: (styles: any) => ({
-                              ...styles,
-                              marginRight: "10px",
-                              // width: "200px",
-
-
-                            }),
-                          }}
-                        />
-                        <Button
-                          style={{ backgroundColor: "#000000" }}
-                          onClick={handleAssignAttribute}
-                        >
-                          Assign Attributes
-                        </Button>
-                      </div>
-                    </Col>
-                  </Row>
+                </CardHeader>
+                <CardHeader>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: "flex-end" }}>
+                    <CustomButton name="Assign Attributes" icon="fluent:tab-add-20-filled" onClick={toggle} />
+                  </div>
                 </CardHeader>
                 <CardBody>
-                  <Table
-                    responsive
-                    className="table table-bordered table-centered mb-0"
-                    style={{ width: "100%" }}
-                  >
+                  <Collapse isOpen={isOpen}>
+                    <DynamicFilter
+                      filterOptions={filterOptions}
+                      onSubmit={handleFilterSubmit}
+                    />
+                  </Collapse>
+
+                  <Table id="tech-companies-1" className="table table-striped table-bordered">
                     <thead>
                       <tr>
-                        <th style={{ width: "10%" }}>No</th>
+                        <th style={{ width: "10%" }}>Sl.No</th>
                         <th style={{ width: "40%" }}>Attribute Type</th>
                         <th style={{ width: "40%" }}>Description</th>
                         <th style={{ width: "40%" }}>Name</th>
@@ -452,10 +420,45 @@ function Assignattribute() {
                   </Table>
                 </CardBody>
               </Card>
+
+              <Modal isOpen={modal} toggle={toggle} >
+                <ModalHeader toggle={toggle}>Assign Attributes</ModalHeader>
+                <ModalBody>
+                  <Select
+                    isMulti
+                    options={attributes.map((attribute) => ({
+                      label: attribute.description,
+                      value: attribute._id,
+                    }))}
+                    value={setectedAttributes}
+                    onChange={(selectedOptions: any) =>
+                      handleBrandSelection(selectedOptions)
+                    }
+                    placeholder="Select Attributes..."
+                    styles={{
+                      control: (styles: any) => ({
+                        ...styles,
+                        marginRight: "10px",
+
+
+                      }),
+                    }}
+                  />
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="primary" onClick={handleAssignAttribute}>
+                    Submit
+                  </Button>{' '}
+                  <Button color="secondary" onClick={toggle}>
+                    Cancel
+                  </Button>
+                </ModalFooter>
+              </Modal>
+
             </Col>
           </Row>
         </Container>
-      </div>
+      </div >
     </>
   );
 }

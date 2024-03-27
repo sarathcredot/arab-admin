@@ -67,21 +67,11 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
   const toggle = () => setModal(!modal);
 
   const PUT_KYC_APPROVE_BUSINESS_DETAILS = gql`
-    mutation UpdateVendorOutletByAdmin(
-      $input: UpdateVendorOutletByAdminInput!
-      $outletLicense: Upload
-      $interiorImage: Upload
-      $exteriorImage: Upload
-    ) {
-      updateVendorOutletByAdmin(
-        input: $input
-        outletLicense: $outletLicense
-        interiorImage: $interiorImage
-        exteriorImage: $exteriorImage
-      ) {
-        message
-      }
-    }
+    mutation UpdateVendorOutletByAdmin($input: UpdateVendorOutletByAdminInput!, $outletLicense: Upload, $interiorImage: Upload, $exteriorImage: Upload) {
+  updateVendorOutletByAdmin(input: $input, outletLicense: $outletLicense, interiorImage: $interiorImage, exteriorImage: $exteriorImage) {
+    message
+  }
+}
   `;
 
   const GET_BUSINESS_OUTLET = gql`
@@ -206,44 +196,40 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
           remarks: Array.isArray(values?.remarks)
             ? values.remarks
             : values?.remarks
-            ? values.remarks.split(",").map((item: any) => item.trim())
-            : [],
+              ? values.remarks.split(",").map((item: any) => item.trim())
+              : [],
         },
       };
+      console.log(values)
 
       if (values.outletLicense) {
-        variables = {
-          ...variables,
-          outletLicense: values.outletLicense,
-        };
+        variables.outletLicense = values.outletLicense;
       }
       if (values.exteriorImage) {
-        variables = {
-          ...variables,
-          exteriorImage: values.exteriorImage,
-        };
+        variables.exteriorImage = values.exteriorImage;
       }
       if (values.interiorImage) {
-        variables = {
-          ...variables,
-          interiorImage: values.interiorImage,
-        };
+        variables.interiorImage = values.interiorImage;
       }
+
+      console.log("var", variables)
 
       const response = await UpdateVendorOutletByAdmin({ variables });
 
-      if (response) {
+      if (response?.data?.updateVendorOutletByAdmin) {
         toast.success("Successfully updated Company Details");
         outletRefetch();
         setModal(false);
+      } else {
+        throw new Error("Failed to update Company Details");
       }
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
       toast.error(error.message);
     }
   };
 
-  console.log(formik.values);
+
 
   function getStatusColor(status: any) {
     switch (status) {
