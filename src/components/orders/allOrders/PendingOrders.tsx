@@ -369,7 +369,8 @@ const PendingOrders = () => {
                                                         {order.orderStatus.replace("_", " ")}
                                                     </div>
                                                 </td>
-                                                <td>  {`${order.shippingAddress["streetName"]},  ${order.shippingAddress["city"]}`}</td>
+                                                <td>  <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '5px', width: '100px' }}>{`${order.shippingAddress["streetName"]},  ${order.shippingAddress["city"]}`}
+                                                </div></td>
                                                 <td>
                                                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                                                         <div>

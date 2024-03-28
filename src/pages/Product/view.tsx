@@ -377,7 +377,7 @@ const ProductDetails = () => {
                             </label>
 
                             <div style={{ display: "flex", marginTop: "10px" }}>
-                              {product?.productDetailImages.map((item, index) => (
+                              {product?.productDetailImages?.map((item, index) => (
                                 <div
                                   key={index}
                                   className="relative"

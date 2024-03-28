@@ -294,7 +294,7 @@ const ProductListing = () => {
                             className="page-link"
                             onClick={() => setCurrentPage(index)}
                           >
-                            {index}
+                            {index + 1}
                           </button>
                         </li>
                       ))}
