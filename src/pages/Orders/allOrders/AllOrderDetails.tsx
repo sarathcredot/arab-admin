@@ -157,7 +157,6 @@ const ALlOrderDetails = () => {
       vendorName
       orderId
       itemId
-      warehouseSkuId
       productName
       shortDescription
       skuId

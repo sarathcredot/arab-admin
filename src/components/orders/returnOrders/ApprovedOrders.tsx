@@ -363,7 +363,7 @@ const ApprovedOrders = () => {
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td>{capitalCase(order?.username)}</td>
+                                                <td>{order.username && capitalCase(order?.username)}</td>
 
                                                 <td>
                                                     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>

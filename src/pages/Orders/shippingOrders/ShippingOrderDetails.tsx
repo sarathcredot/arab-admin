@@ -178,9 +178,8 @@ const ShippingOrderDetails = () => {
     _id
     userId
     vendorId
-    vendorName
-    warehouseSkuId
     productId
+    vendorName
     itemId
     orderId
     productName
@@ -225,7 +224,6 @@ const ShippingOrderDetails = () => {
       mimeType
       originalName
     }
-    
   }
 }
   `

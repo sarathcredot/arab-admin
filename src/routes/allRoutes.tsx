@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Route } from "react-router-dom";
 
 //Dashboard
 import Dashboard from "../pages/Dashboard";
@@ -149,6 +149,7 @@ import RefundOrderDetails from "src/pages/Orders/refundOrders/RefundOrderDetails
 import Settings from "src/pages/settings/Settings";
 import UserProfile from "src/pages/User/UserProfile";
 import VendorAnalyticsPage from "src/pages/venders/VendorAnalyticsPage";
+import PageNotFound from "src/pages/Page404";
 interface RouteProps {
   path: string;
   component: any;
@@ -213,126 +214,15 @@ const adminRoutes: Array<RouteProps> = [
   { path: "/refund-orders/details", component: <RefundOrderDetails /> },
 
   { path: "/settings", component: <Settings /> },
+
+  { path: "*", component: <PageNotFound /> },
 ];
 
 const authRoutes: Array<RouteProps> = [
-  //Authentication pages
+
   { path: "/login", component: <Login /> },
-  // { path: "/logout", component: <Logout /> },
-  // { path: "/register", component: <Register /> },
-  // { path: "/recoverpw", component: <ForgetPassword /> },
-
-  //AuthenticationInner pages
-  // { path: "/page-login", component: <PageLogin /> },
-  // { path: "/page-register", component: <PageRegister /> },
-  // { path: "/page-recoverpw", component: <RecoverPassword /> },
-  // { path: "/page-lock-screen", component: <LockScreen /> },
-  // { path: "/page-confirm-mail", component: <ConfirmMail /> },
-  // { path: "/page-email-verification", component: <EmailVerification /> },
-  // { path: "/page-two-step-verification", component: <TwoStepVerfication /> },
-  // { path: "/page-two-step-verification", component: <TwoStepVerfication /> },
-  // { path: "/page-logout", component: <AuthLogout /> },
-
-  //utility page
-  // { path: "/pages-comingsoon", component: <PagesComingsoon /> },
-  // { path: "/pages-maintenance", component: <PageMaintenance /> },
-  // { path: "/pages-404", component: <Error404 /> },
-  // { path: "/pages-500", component: <Error500 /> },
-
-  // //Calendar
-  // { path: "/apps-calendar", component: <Calendar className="" /> },
-
-  // //Chat
-  // { path: "/apps-chat", component: <Chat /> },
-
-  // //Email Inbox
-  // { path: "/email-inbox", component: <Inbox /> },
-  // { path: "/email-read", component: <EmailRead /> },
-
-  // //Invoice
-  // { path: "/invoices-list", component: <InvoiceList /> },
-  // { path: "/invoices-detail", component: <InvoiceDetails /> },
-
-  // //Contact
-  // { path: "/contacts-grid", component: <ContactsGrid /> },
-  // { path: "/contacts-list", component: <ContactsList /> },
-  // { path: "/contacts-profile", component: <ContactsProfile /> },
-
-  // //blog
-  // { path: "/blog-grid", component: <BlogGrid /> },
-  // { path: "/blog-list", component: <BlogList /> },
-  // { path: "/blog-details", component: <BlogDetails /> },
-
-  // //Utility
-  // { path: "/pages-starter", component: <PageStarter /> },
-  // { path: "/pages-timeline", component: <PageTimeline /> },
-  // { path: "/pages-faqs", component: <PageFaqs /> },
-  // { path: "/pages-pricing", component: <PagePricing /> },
-
-
-  // //UI Components
-  // { path: "/ui-alerts", component: <UiAlert /> },
-  // { path: "/ui-buttons", component: <UiButton /> },
-  // { path: "/ui-cards", component: <UiCard /> },
-  // { path: "/ui-carousel", component: <UiCarousel /> },
-  // { path: "/ui-dropdowns", component: <UiDropdowns /> },
-  // { path: "/ui-grid", component: <UiGrid /> },
-  // { path: "/ui-modals", component: <UiModal /> },
-  // { path: "/ui-images", component: <UiImages /> },
-  // { path: "/ui-offcanvas", component: <UiOffCanvas /> },
-  // { path: "/ui-progressbars", component: <UiProgressbar /> },
-  // { path: "/ui-placeholders", component: <UiPlaceholders /> },
-  // { path: "/ui-tabs-accordions", component: <UiTabsAccordions /> },
-  // { path: "/ui-typography", component: <UiTypography /> },
-  // { path: "/ui-toasts", component: <UiToast /> },
-  // { path: "/ui-video", component: <UiVideo /> },
-  // { path: "/ui-general", component: <UiGeneral /> },
-  // { path: "/ui-colors", component: <UiColors /> },
-  // { path: "/ui-utilities", component: <UiUtilities /> },
-
-  // //Extended pages
-  // { path: "/extended-lightbox", component: <UiLightbox /> },
-  // { path: "/extended-rangeslider", component: <RangeSlider /> },
-  // {
-  //   path: "/extended-session-timeout",
-  //   component: <SessionTimeout/>,
-  // },
-  // { path: "/extended-rating", component: <UiRating /> },
-  // { path: "/extended-notifications", component: <Notifications /> },
-
-  // // Forms pages
-  // { path: "/form-elements", component: <FormElements /> },
-  // { path: "/form-validation", component: <FormValidation /> },
-  // { path: "/form-advanced", component: <AdvancedPlugins /> },
-  // { path: "/form-editors", component: <FormEditors /> },
-  // { path: "/form-uploads", component: <FormUpload /> },
-  // { path: "/form-wizard", component: <FormWizard /> },
-  // { path: "/form-mask", component: <FormMask /> },
-
-  // //tables
-  // { path: "/tables-basic", component: <BasicTable /> },
-  // { path: "/tables-datatable", component: <DatatableTables /> },
-  // { path: "/tables-responsive", component: <ResponsiveTables /> },
-  // { path: "/tables-editable", component: <EditableTables /> },
-
-  // //Charts
-  // { path: "/charts-apex", component: <Apexchart /> },
-  // { path: "/charts-echart", component: <EChart /> },
-  // { path: "/charts-chartjs", component: <ChartjsChart /> },
-  // { path: "/charts-sparkline", component: <SparklineChart /> },
-
-  // //Icons
-  // { path: "/icons-boxicons", component: <IconBoxicons /> },
-  // { path: "/icons-materialdesign", component: <IconMaterialdesign /> },
-  // { path: "/icons-dripicons", component: <IconDripicons /> },
-  // { path: "/icons-fontawesome", component: <IconFontawesome /> },
-
-  // //Maps
-  // { path: "/maps-google", component: <MapsGoogle /> },
-  // { path: "/maps-vector", component: <MapsVector /> },
-  // { path: "/maps-leaflet", component: <MapsLeaflet /> },
-
-  //Utility
+  { path: "*", component: <Navigate to="/login" /> },
 ];
+
 
 export { adminRoutes, authRoutes };

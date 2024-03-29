@@ -154,58 +154,57 @@ getAdminOrderDetails(input: $input) {
 
   const GET_ORDER_PRODUCT = gql`
 query GetAdminOrderProduct($input: GetAdminOrderProductInput!) {
-   getAdminOrderProduct(input: $input) {
-       _id
-   userId
-   productId
-   orderId
-   itemId
-   vendorId
+  getAdminOrderProduct(input: $input) {
+    _id
+    userId
+    vendorId
+    productId
     vendorName
-   productName
-   shortDescription
-   skuId
-   returnPeriod
-   mrp
-   warehouseSkuId
-   sellingPrice
-   shippingCharge
-   paymentMode
-   paymentStatus
-   paymentRemark
-   orderDate
-   shippingStatus
-   shippedDate
-   deliveryDate
-   returnStatus
-   returnUserReason
-   returnAdminComment
-   returnRequestDate
-   returnRejectedDate
-   returnDate
-   refundStatus
-   refundAmount
-   refundRequestDate
-   refundDate
-   refundComment
-   cancelUserReason
-   cancelAdminComment
-   cancelledDate
-   courierId
-   invoiceNumber
-   image {
-     fileURL
-     fileType
-     mimeType
-     originalName
-   }
-   invoice {
-     fileURL
-     fileType
-     mimeType
-     originalName
-   }
- }
+    itemId
+    orderId
+    productName
+    shortDescription
+    skuId
+    image {
+      fileType
+      fileURL
+      mimeType
+      originalName
+    }
+    returnPeriod
+    mrp
+    sellingPrice
+    shippingCharge
+    paymentMode
+    paymentStatus
+    paymentRemark
+    orderDate
+    shippingStatus
+    shippedDate
+    deliveryDate
+    returnStatus
+    returnUserReason
+    returnAdminComment
+    returnRequestDate
+    returnRejectedDate
+    returnDate
+    refundStatus
+    refundAmount
+    refundRequestDate
+    refundDate
+    refundComment
+    cancelUserReason
+    cancelAdminComment
+    cancelledDate
+    courierId
+    invoiceNumber
+    invoice {
+      fileType
+      fileURL
+      mimeType
+      originalName
+    }
+  }
 }
 `
 
