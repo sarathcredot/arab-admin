@@ -324,12 +324,10 @@ const RejectedOrders = () => {
                 <Collapse isOpen={isOpen} style={{ marginTop: '20px' }}>
                     <ReturnOrdersFilters onSubmit={handleFormSubmit} />
                 </Collapse>
-
             </Row>
 
             <Card>
                 <CardBody>
-
                     <div>
                         {
                             ordersLoading ? <Loader />
