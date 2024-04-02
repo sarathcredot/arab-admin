@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
+import Loader from "src/components/Common/Loader";
 
 
 const GET_PRODUCTS = gql`
@@ -96,6 +97,7 @@ const ProductListing = () => {
   };
 
   const { data, refetch } = useQuery(GET_PRODUCTS, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         page: currentPage,
@@ -163,7 +165,7 @@ const ProductListing = () => {
                 className={activeTab === "ALL" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("ALL")}
               >
-                All
+                ALL
               </NavLink>
             </NavItem>
             <NavItem>
@@ -171,7 +173,7 @@ const ProductListing = () => {
                 className={activeTab === "UNDER_VERIFICATION" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("UNDER_VERIFICATION")}
               >
-                Pending
+                PENDING
               </NavLink>
             </NavItem>
             <NavItem>
@@ -179,7 +181,7 @@ const ProductListing = () => {
                 className={activeTab === "APPROVED" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("APPROVED")}
               >
-                Approved
+                APPROVED
               </NavLink>
             </NavItem>
             <NavItem>
@@ -187,7 +189,7 @@ const ProductListing = () => {
                 className={activeTab === "REJECTED" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("REJECTED")}
               >
-                Rejected
+                REJECTED
               </NavLink>
             </NavItem>
           </Nav>
@@ -212,59 +214,65 @@ const ProductListing = () => {
                   className="table-responsive mb-0"
                   data-pattern="priority-columns"
                 >
-                  <Table
-                    id="tech-companies-1"
-                    className="table table-striped table-bordered"
-                  >
-                    <Thead>
-                      <Tr>
-                        <Th data-priority="1">Sl.No</Th>
-                        <Th data-priority="1">Name</Th>
-                        <Th>ProductCode</Th>
-                        <Th data-priority="3">Short Description</Th>
-                        <Th data-priority="3">Category</Th>
-                        <Th data-priority="1">Image</Th>
-                        <Th data-priority="3"> Verify Status</Th>
-                        <Th data-priority="3">View</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {products?.map((product: Product, index: number) => (
-                        <Tr key={index}>
-                          <Td>{currentPage * pageSize + index + 1}</Td>
-                          <Td><p style={{ maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product?.productName}</p></Td>
-                          <Td>{product?.productCode}</Td>
-                          <Td ><p style={{ maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product?.shortDescription}</p></Td>
-                          <Td>{product?.categoryNamePath}</Td>
-                          <Td>
-                            <img
-                              src={product?.images[0]?.fileURL}
-                              alt={product?.productName}
-                              width={80}
-                            />
-                          </Td>
-                          <Td>
-                            <StatusIndicator status={product?.status} />
+                  {
+                    loading ?
+                      <Loader />
+                      :
 
-                          </Td>
+                      <Table
+                        id="tech-companies-1"
+                        className="table table-striped table-bordered"
+                      >
+                        <Thead>
+                          <Tr>
+                            <Th data-priority="1">Sl.No</Th>
+                            <Th data-priority="1">Name</Th>
+                            <Th>ProductCode</Th>
+                            <Th data-priority="3">Short Description</Th>
+                            <Th data-priority="3">Category</Th>
+                            <Th data-priority="1">Image</Th>
+                            <Th data-priority="3"> Verify Status</Th>
+                            <Th data-priority="3">View</Th>
+                          </Tr>
+                        </Thead>
+                        <Tbody>
+                          {products?.map((product: Product, index: number) => (
+                            <Tr key={index}>
+                              <Td>{currentPage * pageSize + index + 1}</Td>
+                              <Td><p style={{ maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product?.productName}</p></Td>
+                              <Td>{product?.productCode}</Td>
+                              <Td ><p style={{ maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product?.shortDescription}</p></Td>
+                              <Td>{product?.categoryNamePath}</Td>
+                              <Td>
+                                <img
+                                  src={product?.images[0]?.fileURL}
+                                  alt={product?.productName}
+                                  width={80}
+                                />
+                              </Td>
+                              <Td>
+                                <StatusIndicator status={product?.status} />
 
-                          <Td>
-                            <Button
-                              color="primary"
-                              size="sm"
-                              tag={Link}
-                              to={{
-                                pathname: "/product/variant",
-                                search: `?productCode=${product?.productCode}`,
-                              }}
-                            >
-                              View
-                            </Button>
-                          </Td>
-                        </Tr>
-                      ))}
-                    </Tbody>
-                  </Table>
+                              </Td>
+
+                              <Td>
+                                <Button
+                                  color="primary"
+                                  size="sm"
+                                  tag={Link}
+                                  to={{
+                                    pathname: "/product/variant",
+                                    search: `?productCode=${product?.productCode}`,
+                                  }}
+                                >
+                                  View
+                                </Button>
+                              </Td>
+                            </Tr>
+                          ))}
+                        </Tbody>
+                      </Table>
+                  }
                 </div>
               </div>
               <Row>

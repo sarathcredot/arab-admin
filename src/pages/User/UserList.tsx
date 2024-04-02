@@ -73,8 +73,8 @@ const UserList = () => {
   const [maxRecords, setMaxRecords] = useState<number>(0);
 
   const GET_USERS = gql`
-    query GetUsersByAdmin {
-  getUsersByAdmin {
+    query GetUsersByAdmin($input: userFilters) {
+  getUsersByAdmin(input: $input) {
     maxRecords
     records {
       _id
@@ -103,10 +103,15 @@ const UserList = () => {
     data: usersDataResponse,
     refetch: usersRefetch,
   } = useQuery(GET_USERS, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         page: currentPage,
         size: pageSize,
+        isBlocked: selectedStatus?.value,
+        query: userFilter.mobileNumber,
+        // phoneNumber: userFilter.mobileNumber,
+        // ...((userFilter.id) && { _id: userFilter.id }),
       },
     },
   });
@@ -146,9 +151,9 @@ const UserList = () => {
           page: currentPage,
           size: pageSize,
           isBlocked: selectedStatus?.value,
-          phoneNumber: userFilter.mobileNumber,
-          name: userFilter.firstName,
-          ...((userFilter.id) && { _id: userFilter.id }),
+          query: userFilter.mobileNumber,
+          // phoneNumber: userFilter.mobileNumber,
+          // ...((userFilter.id) && { _id: userFilter.id }),
         },
       });
       setUsers(result.data.getUsersByAdmin.records);
@@ -161,6 +166,7 @@ const UserList = () => {
   useEffect(() => {
     fetchData();
   }, [selectedStatus, currentPage, userFilter, usersRefetch]);
+
 
   const totalPages = Math.ceil(maxRecords / pageSize);
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
@@ -210,30 +216,30 @@ const UserList = () => {
                 <CardHeader>
                   <Row>
                     <Col xs={8} style={{ display: "flex", gap: "20px", }}>
-                      <Input
+                      {/* <Input
                         type="text"
                         placeholder="Search by username"
                         value={userFilter.firstName}
-                        name="name"
+                        name="firstName"
                         onChange={handleSearch}
                         style={{ width: "50%" }}
-                      />
+                      /> */}
                       <Input
                         type="text"
-                        name="phoneNumber"
+                        name="mobileNumber"
                         placeholder="Search by phone number"
                         value={userFilter.mobileNumber}
                         onChange={handleSearch}
                         style={{ width: "50%" }}
                       />
-                      <Input
+                      {/* <Input
                         type="text"
                         name="id"
                         placeholder="Search by user ID"
                         value={userFilter.id}
                         onChange={handleSearch}
                         style={{ width: "50%" }}
-                      />
+                      /> */}
                       <Dropdown
                         isOpen={statusDropdownOpen}
                         toggle={toggleStatusDropdown}

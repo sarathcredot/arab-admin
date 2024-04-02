@@ -17,6 +17,7 @@ import RejectedOrders from "src/components/orders/returnOrders/RejectedOrders";
 import All from "src/components/orders/returnOrders/All";
 
 import "../orders.css";
+import { useSearchParams } from "react-router-dom";
 
 const ReturnOrders = () => {
   const [activeTab, setActiveTab] = useState("2");
@@ -28,6 +29,17 @@ const ReturnOrders = () => {
   const items = [
     { text: "Dashboard", link: `/` },
   ];
+
+  const [searchParams] = useSearchParams();
+  const origin = searchParams.get("origin")
+  const vendorId = searchParams.get("vendorId")
+
+  if (origin && origin === "vendor") {
+    items.push(
+      { text: "Vendor", link: `/vendors/view?id=${vendorId}` },
+    )
+  }
+
 
   return (
     <>
@@ -77,7 +89,7 @@ const ReturnOrders = () => {
                         toggle("1");
                       }}
                     >
-                      All
+                      ALL
                     </NavLink>
                   </NavItem>
                 </Nav>

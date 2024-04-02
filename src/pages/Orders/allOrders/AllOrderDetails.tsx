@@ -109,7 +109,7 @@ const ALlOrderDetails = () => {
     const navigate = useNavigate();
     const orderId = searchParams.get("orderId");
     const [order, setOrder] = useState<OrderData>();
-    const [orderProducts, setOrderProducts] = useState<ProductsData | []>([]);
+    const [orderProducts, setOrderProducts] = useState([]);
 
 
     const GET_ORDER = gql`
@@ -236,7 +236,7 @@ const ALlOrderDetails = () => {
 
     useEffect(() => {
         if (orderProductsData && orderProductsData.getAdminOrderProducts && orderProductsData.getAdminOrderProducts.products) {
-            let product: ProductsData = orderProductsData.getAdminOrderProducts.products;
+            let product = orderProductsData.getAdminOrderProducts.products;
             setOrderProducts(product);
         }
     }, [orderProductsData]);
@@ -252,6 +252,17 @@ const ALlOrderDetails = () => {
         { text: "Dashboard", link: `/` },
         { text: "All Orders", link: `/orders` },
     ];
+
+
+
+    const calculatePaidAmount = () => {
+        const paidProducts = orderProducts?.filter((item: any) => item.paymentStatus === "COMPLETED");
+        const totalSellingPrice = paidProducts?.reduce((acc: any, curr: any) => acc + (curr?.sellingPrice || 0), 0);
+        const totalShippingCharge = paidProducts.reduce((acc: any, curr: any) => acc + (curr?.shippingCharge || 0), 0);
+        const totalRefundAmount = order?.orderPriceInfo?.totalRefundAmount || 0;
+        const paidAmount = totalSellingPrice + totalShippingCharge - totalRefundAmount;
+        return paidAmount;
+    };
 
     return (
         <React.Fragment>
@@ -319,6 +330,7 @@ const ALlOrderDetails = () => {
                                                         <p className="form-control-static">Shipping Charge</p>
                                                         <p className="form-control-static">Refund Amount</p>
                                                         <p className="form-control-static" style={{ fontWeight: 500 }}>Effective Price</p>
+                                                        <p className="form-control-static" style={{ fontWeight: 500 }}>Paid Amount</p>
                                                     </div>
                                                     <div style={{ textAlign: "right" }}>
                                                         <p className="form-control-static">{formatCurrency(order?.orderPriceInfo["totalSellingPrice"])}</p>
@@ -329,6 +341,11 @@ const ALlOrderDetails = () => {
                                                                 (order?.orderPriceInfo?.["totalSellingPrice"] ?? 0) +
                                                                 (order?.orderPriceInfo?.["totalShippingCharge"] ?? 0) -
                                                                 (order?.orderPriceInfo?.["totalRefundAmount"] ?? 0)
+                                                            )}
+                                                        </p>
+                                                        <p className="form-control-static" style={{ fontWeight: 500 }}>
+                                                            {formatCurrency(
+                                                                calculatePaidAmount()
                                                             )}
                                                         </p>
                                                     </div>

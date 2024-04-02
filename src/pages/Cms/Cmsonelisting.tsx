@@ -193,7 +193,6 @@ const CmsListing = () => {
                                     src={cmsRecord.images[0]?.fileURL}
                                     alt={cmsRecord.title}
                                     width={80}
-                                    height={80}
                                   />
                                 </Td>
                                 <Td>

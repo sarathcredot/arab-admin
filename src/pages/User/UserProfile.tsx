@@ -425,7 +425,7 @@ query GetUserRecordByAdmin($input: userInput!) {
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "5px", width: "80px" }}>
                           <p className="mb-0">Fullname :</p>
-                          <p className="mb-0">Id :</p>
+                          <p className="mb-0">ID :</p>
                           <p className="mb-0">Email :</p>
                           <p className="mb-0">Phone : </p>
                         </div>

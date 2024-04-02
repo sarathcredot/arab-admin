@@ -46,7 +46,7 @@ function VendorCards({ id }: any) {
                 </Card>
             </Col>
             <Col xs={3}>
-                <Card onClick={() => navigate(`/shipping-orders?vendorId=${id}`)}
+                <Card onClick={() => navigate(`/shipping-orders?vendorId=${id}&origin=vendor`)}
                     body
                     style={{
                         padding: '20px',
@@ -85,7 +85,7 @@ function VendorCards({ id }: any) {
             </Col>
             <Col xs={3}>
                 <Card
-                    onClick={() => navigate(`/return-orders?vendorId=${id}`)}
+                    onClick={() => navigate(`/return-orders?vendorId=${id}&origin=vendor`)}
                     body
                     style={{
                         padding: '20px',
@@ -124,7 +124,7 @@ function VendorCards({ id }: any) {
             </Col>
             <Col xs={3}>
                 <Card
-                    onClick={() => navigate(`/refund-orders?vendorId=${id}`)}
+                    onClick={() => navigate(`/refund-orders?vendorId=${id}&origin=vendor`)}
                     body
                     style={{
                         padding: '20px',

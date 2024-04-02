@@ -290,14 +290,8 @@ const CompletedOrders = () => {
                 </Col>
                 <Col xs={3} style={{ display: "flex", gap: "20px", justifyContent: "flex-end" }}>
 
-                    <Button onClick={handleExportClick} outline color="primary" style={{ width: "100px", display: "flex", gap: "5px", alignItems: "center", justifyContent: "center", }} >
-                        <Iconify icon="ph:export-bold" />
-                        Export
-                    </Button>
-                    <Button onClick={toggle} style={{ background: "black", width: "100px", display: "flex", gap: "5px", alignItems: "center", justifyContent: "center", }} >
-                        <Iconify icon="foundation:filter" />
-                        Filters
-                    </Button>
+                    <CustomButton outline name="Export" icon="ph:export-bold" onClick={handleExportClick} />
+                    <CustomButton name="Filters" onClick={toggle} icon="foundation:filter" />
 
                 </Col>
                 <Collapse isOpen={isOpen} style={{ marginTop: '20px', }}>

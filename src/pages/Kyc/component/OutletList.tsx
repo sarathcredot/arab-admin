@@ -18,6 +18,7 @@ import {
 } from "reactstrap";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import CustomButton from "src/components/Common/CustomButton";
+import Loader from "src/components/Common/Loader";
 import DynamicFilter from "src/components/filter/DynamicFilter";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 interface IStatus {
@@ -75,6 +76,7 @@ function OutletListing() {
     data: kycDataResponse,
     refetch: kycRefetch,
   } = useQuery(GET_ALL_KYC, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         page: currentPage,
@@ -91,7 +93,6 @@ function OutletListing() {
   }, [kycDataResponse, currentPage]);
 
   const toggleTab = (tab: string) => {
-    console.log("Active Tab:", tab);
     setActiveTab(tab);
   };
 
@@ -99,16 +100,6 @@ function OutletListing() {
     setSearchTerm(event.target.value);
   };
 
-  // const getFilteredkyc = (): IOutlet[] => {
-  //   switch (activeTab) {
-  //     case "Pending":
-  //       return outletData.filter((vendor) => vendor.isKycCompleted === false);
-  //     case "Completed":
-  //       return outletData.filter((vendor) => vendor.isKycCompleted === true);
-  //     default:
-  //       return outletData;
-  //   }
-  // };
   const totalRecords = kycDataResponse?.getAllVendorOutletRecordsByAdmin.maxRecords || 0;
   const totalPages = Math.ceil(totalRecords / pageSize);
 
@@ -130,34 +121,21 @@ function OutletListing() {
 
   const filterOptions = [
     {
-      label: 'Order ID',
+      label: 'Vendor ID',
       type: 'text',
-      name: 'orderId',
+      name: 'vendorId',
     },
     {
-      label: 'Start Date',
-      type: 'date',
-      name: 'startDate',
-    },
-    {
-      label: 'End Date',
-      type: 'date',
-      name: 'endDate',
-    },
-    {
-      label: 'Payment Mode',
-      type: 'select',
-      name: 'paymentMode',
-      options: [
-        { value: 'COD', label: 'COD' },
-        { value: 'ONLINE', label: 'ONLINE' },
-      ],
-    },
-    {
-      label: 'User ID',
+      label: 'Outlet name',
       type: 'text',
-      name: 'userId',
+      name: 'outletName',
     },
+    {
+      label: 'Fullname',
+      type: 'text',
+      name: 'fullname',
+    },
+
   ];
 
 
@@ -170,7 +148,7 @@ function OutletListing() {
               className={activeTab === "UNDER_VERIFICATION" ? "tab-button active" : "tab-button"}
               onClick={() => toggleTab("UNDER_VERIFICATION")}
             >
-              Verify
+              VERIFY
             </NavLink>
           </NavItem>
 
@@ -179,7 +157,7 @@ function OutletListing() {
               className={activeTab === "COMPLETED" ? "tab-button active" : "tab-button"}
               onClick={() => toggleTab("COMPLETED")}
             >
-              Completed
+              COMPLETED
             </NavLink>
           </NavItem>
 
@@ -188,7 +166,7 @@ function OutletListing() {
               className={activeTab === "PENDING" ? "tab-button active" : "tab-button"}
               onClick={() => toggleTab("PENDING")}
             >
-              Pending
+              PENDING
             </NavLink>
           </NavItem>
 
@@ -198,7 +176,7 @@ function OutletListing() {
               className={activeTab === "REJECTED" ? "tab-button active" : "tab-button"}
               onClick={() => toggleTab("REJECTED")}
             >
-              Rejected
+              REJECTED
             </NavLink>
           </NavItem>
 
@@ -226,47 +204,52 @@ function OutletListing() {
                     onSubmit={handleFilterSubmit}
                   />
                 </Collapse>
+                {
+                  kycLoading ?
+                    <Loader />
+                    :
 
-                <Table id="tech-companies-1" className="table table-striped table-bordered">
-                  <thead>
-                    <tr>
-                      <th>No</th>
-                      <th>Full Name</th>
-                      <th>Outlet Name</th>
-                      <th>Kyc Status</th>
-                      <th>Status</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {outletData
-                      .slice(
-                        currentPage * pageSize,
-                        (currentPage + 1) * pageSize
-                      )
-
-                      .map((outlet, index) => (
-                        <tr key={outlet._id}>
-                          <td>{currentPage * pageSize + index + 1}</td>
-                          <td>{outlet.fullName}</td>
-                          <td>{outlet.outletName}</td>
-                          <td
-                          >
-                            <StatusIndicator status={outlet.isKycCompleted ? "COMPLETED" : "PENDING"} />
-                          </td>
-                          <td>
-                            <StatusIndicator status={outlet?.status} /></td>
-                          <td>
-                            <Link to={`/vendors/view?id=${outlet.vendorId}&&tab=businessoutlet`}>
-                              <Button size="sm" color="primary">
-                                View
-                              </Button>
-                            </Link>
-                          </td>
+                    <Table id="tech-companies-1" className="table table-striped table-bordered">
+                      <thead>
+                        <tr>
+                          <th>No</th>
+                          <th>Full Name</th>
+                          <th>Outlet Name</th>
+                          <th>Kyc Status</th>
+                          <th>Status</th>
+                          <th>Action</th>
                         </tr>
-                      ))}
-                  </tbody>
-                </Table>
+                      </thead>
+                      <tbody>
+                        {outletData
+                          .slice(
+                            currentPage * pageSize,
+                            (currentPage + 1) * pageSize
+                          )
+
+                          .map((outlet, index) => (
+                            <tr key={outlet._id}>
+                              <td>{currentPage * pageSize + index + 1}</td>
+                              <td>{outlet.fullName}</td>
+                              <td>{outlet.outletName}</td>
+                              <td
+                              >
+                                <StatusIndicator status={outlet.isKycCompleted ? "COMPLETED" : "PENDING"} />
+                              </td>
+                              <td>
+                                <StatusIndicator status={outlet?.status} /></td>
+                              <td>
+                                <Link to={`/vendors/view?id=${outlet.vendorId}&&tab=businessoutlet`}>
+                                  <Button size="sm" color="primary">
+                                    View
+                                  </Button>
+                                </Link>
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </Table>
+                }
               </CardBody>
 
               <Row style={{ marginRight: "10px" }}>

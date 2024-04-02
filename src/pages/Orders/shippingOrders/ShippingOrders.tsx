@@ -19,6 +19,7 @@ import ShippedOrders from "src/components/orders/shippingOrders/ShippedOrders";
 import CancelledOrders from "src/components/orders/shippingOrders/CancelledOrders";
 import All from "src/components/orders/shippingOrders/All";
 import ExportExcelList from "src/components/orders/ExportExcelList";
+import { useSearchParams } from "react-router-dom";
 
 
 const ShippingOrders = () => {
@@ -31,6 +32,17 @@ const ShippingOrders = () => {
   const items = [
     { text: "Dashboard", link: `/` },
   ];
+
+
+  const [searchParams] = useSearchParams();
+  const origin = searchParams.get("origin")
+  const vendorId = searchParams.get("vendorId")
+
+  if (origin && origin === "vendor") {
+    items.push(
+      { text: "Vendor", link: `/vendors/view?id=${vendorId}` },
+    )
+  }
 
   return (
     <>
@@ -107,7 +119,7 @@ const ShippingOrders = () => {
                           toggle("1");
                         }}
                       >
-                        All
+                        ALL
                       </NavLink>
                     </NavItem>
                   </Nav>

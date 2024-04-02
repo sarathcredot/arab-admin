@@ -24,6 +24,7 @@ import Breadcrumb from "../../components/Common/Breadcrumb";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import Loader from "src/components/Common/Loader";
 
 const GET_VARIANTS = gql`
   query GetVariantsTableByAdmin($input: ProductVariantsByAdminFilter!) {
@@ -329,95 +330,101 @@ const VariantListing = () => {
                 <CardBody>
                   <div className="table-rep-plugin">
                     <div className="table-responsive mb-0" data-pattern="priority-columns">
-                      <Table id="tech-companies-1" className="table table-striped table-bordered">
-                        <Thead>
-                          <Tr>
-                            <Th data-priority="1">Sl.No</Th>
-                            <Th data-priority="1">Name</Th>
-                            <Th data-priority="1">Warehouse SKU</Th>
-                            <Th data-priority="1">SKU</Th>
-                            <Th data-priority="3">Attributes</Th>
-                            <Th data-priority="3">Stock</Th>
-                            <Th data-priority="1">Image</Th>
-                            <Th data-priority="3">Verify Status</Th>
-                            <Th data-priority="3">Status</Th>
-                            <Th data-priority="3">Action</Th>
-                          </Tr>
-                        </Thead>
-                        <Tbody>
-                          {filteredProducts.map((product: Product, index: number) => (
-                            <Tr key={index}>
-                              <Td>{index + 1}</Td>
-                              <Td>
-                                <p
-                                  style={{
-                                    maxWidth: "200px",
-                                    whiteSpace: "nowrap",
-                                    overflow: "hidden",
-                                    textOverflow: "ellipsis",
-                                  }}
-                                >
-                                  {product?.productName}
-                                </p>
-                              </Td>
-                              <Td>{product.warehouseSkuId}</Td>
-                              <Td>{product.skuId}</Td>
-                              <Td>
-                                {product.attributes[0]?.attributeDescription}:{" "}
-                                {product.attributes[0]?.attributeValue}
-                              </Td>
+                      {
+                        loading ?
+                          <Loader />
+                          :
 
-                              <Td>{product.stock}</Td>
-
-                              <Td>
-                                <img
-                                  src={product.images[0]?.fileURL}
-                                  alt={product?.productName}
-                                  width={80}
-                                  height={80}
-                                />
-                              </Td>
-                              <Td>
-                                <StatusIndicator status={product?.status} />
-                              </Td>
-                              <Td>
-                                <StatusIndicator
-                                  status={product.isBlocked ? "BLOCKED" : "ACTIVE"}
-                                />
-                              </Td>
-                              <Td>
-                                <Button
-                                  color="primary"
-                                  size="sm"
-                                  tag={Link}
-                                  to={{
-                                    pathname: "/product/details/",
-                                    search: `?_id=${product._id}`,
-                                  }}
-                                >
-                                  View
-                                </Button>
-
-                                {product?.status === "APPROVED" ? (
-                                  <>{null}</>
-                                ) : (
-                                  <>
-                                    <Button
-                                      style={{ marginLeft: "10px" }}
-                                      size="sm"
-                                      onClick={(e) =>
-                                        handleStatusChange("APPROVED", e, product?._id)
-                                      }
+                          <Table id="tech-companies-1" className="table table-striped table-bordered">
+                            <Thead>
+                              <Tr>
+                                <Th data-priority="1">Sl.No</Th>
+                                <Th data-priority="1">Name</Th>
+                                <Th data-priority="1">Warehouse SKU</Th>
+                                <Th data-priority="1">SKU</Th>
+                                <Th data-priority="3">Attributes</Th>
+                                <Th data-priority="3">Stock</Th>
+                                <Th data-priority="1">Image</Th>
+                                <Th data-priority="3">Verify Status</Th>
+                                <Th data-priority="3">Status</Th>
+                                <Th data-priority="3">Action</Th>
+                              </Tr>
+                            </Thead>
+                            <Tbody>
+                              {filteredProducts.map((product: Product, index: number) => (
+                                <Tr key={index}>
+                                  <Td>{index + 1}</Td>
+                                  <Td>
+                                    <p
+                                      style={{
+                                        maxWidth: "200px",
+                                        whiteSpace: "nowrap",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                      }}
                                     >
-                                      Approve
+                                      {product?.productName}
+                                    </p>
+                                  </Td>
+                                  <Td>{product.warehouseSkuId}</Td>
+                                  <Td>{product.skuId}</Td>
+                                  <Td>
+                                    {product.attributes[0]?.attributeDescription}:{" "}
+                                    {product.attributes[0]?.attributeValue}
+                                  </Td>
+
+                                  <Td>{product.stock}</Td>
+
+                                  <Td>
+                                    <img
+                                      src={product.images[0]?.fileURL}
+                                      alt={product?.productName}
+                                      width={80}
+                                      height={80}
+                                    />
+                                  </Td>
+                                  <Td>
+                                    <StatusIndicator status={product?.status} />
+                                  </Td>
+                                  <Td>
+                                    <StatusIndicator
+                                      status={product.isBlocked ? "BLOCKED" : "ACTIVE"}
+                                    />
+                                  </Td>
+                                  <Td>
+                                    <Button
+                                      color="primary"
+                                      size="sm"
+                                      tag={Link}
+                                      to={{
+                                        pathname: "/product/details/",
+                                        search: `?_id=${product._id}`,
+                                      }}
+                                    >
+                                      View
                                     </Button>
-                                  </>
-                                )}
-                              </Td>
-                            </Tr>
-                          ))}
-                        </Tbody>
-                      </Table>
+
+                                    {product?.status === "APPROVED" ? (
+                                      <>{null}</>
+                                    ) : (
+                                      <>
+                                        <Button
+                                          style={{ marginLeft: "10px" }}
+                                          size="sm"
+                                          onClick={(e) =>
+                                            handleStatusChange("APPROVED", e, product?._id)
+                                          }
+                                        >
+                                          Approve
+                                        </Button>
+                                      </>
+                                    )}
+                                  </Td>
+                                </Tr>
+                              ))}
+                            </Tbody>
+                          </Table>
+                      }
                     </div>
                   </div>
                 </CardBody>

@@ -96,7 +96,7 @@ const AllOrders = () => {
                           toggle("1");
                         }}
                       >
-                        All
+                        ALL
                       </NavLink>
                     </NavItem>
                   </Nav>

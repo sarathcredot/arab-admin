@@ -254,6 +254,18 @@ const ReturnOrderDetails = () => {
     { text: "Return Orders", link: `/return-orders` },
   ];
 
+
+  const calculatePaidAmount = () => {
+    const isPaid = product?.paymentStatus === "COMPLETED";
+    const totalSellingPrice = isPaid ? (product?.sellingPrice || 0) : 0;
+    const totalShippingCharge = isPaid ? (product?.shippingCharge || 0) : 0;
+    const totalRefundAmount = order?.orderPriceInfo?.totalRefundAmount || 0;
+    const paidAmount = totalSellingPrice + totalShippingCharge - totalRefundAmount;
+
+    return paidAmount;
+  };
+
+
   return (
     <React.Fragment>
 
@@ -318,6 +330,7 @@ const ReturnOrderDetails = () => {
                             <p className="form-control-static">Shipping Charge</p>
                             <p className="form-control-static">Refund Amount</p>
                             <p className="form-control-static" style={{ fontWeight: 500 }}>Effective Price</p>
+                            <p className="form-control-static" style={{ fontWeight: 500 }}>Paid Amount</p>
                           </div>
                           <div style={{ textAlign: "right" }}>
                             <p className="form-control-static">{formatCurrency(product?.sellingPrice)}</p>
@@ -328,6 +341,11 @@ const ReturnOrderDetails = () => {
                                 (product?.sellingPrice ?? 0) +
                                 (product?.shippingCharge ?? 0) -
                                 (product?.refundAmount ?? 0)
+                              )}
+                            </p>
+                            <p className="form-control-static" style={{ fontWeight: 500 }}>
+                              {formatCurrency(
+                                calculatePaidAmount()
                               )}
                             </p>
                           </div>

@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { useFormState } from "react-hook-form";
+import ImageUploading, { ImageListType } from "react-images-uploading";
 
 import {
   Row,
@@ -29,6 +30,8 @@ import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 import Breadcrumb from "../../components/Common/Breadcrumb";
+import CustomButton from "src/components/Common/CustomButton";
+import Iconify from "src/components/iconify";
 
 interface CmsSectionForm {
   pageName: string;
@@ -154,7 +157,7 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
               redirectionURL: redirectionURL || null,
             })),
           },
-          images: acceptedFiles,
+          images: selectedImages
         };
       } else {
         // For add operation
@@ -168,7 +171,7 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
               redirectionURL: redirectionURL || null,
             })),
           },
-          images: acceptedFiles,
+          images: selectedImages,
         };
       }
 
@@ -195,6 +198,20 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
     { text: "Dashboard", link: `/` },
     { text: "Cms Pages", link: `/cmslisting` },
   ];
+
+
+  const [images, setImages] = useState([]);
+  const [selectedImages, setselectedImages] = useState([]);
+
+  const onImageChange = (
+    imageList: ImageListType,
+    addUpdateIndex: number[] | undefined
+  ) => {
+    setImages(imageList as never[]);
+    const transformedList = imageList.map(item => item.file);
+    setselectedImages(transformedList as never[]);
+  };
+
 
   return (
     <React.Fragment>
@@ -289,24 +306,59 @@ const AddCmsSection: React.FC<AddCmsSectionProps> = ({ Edit, editedcms }) => {
                         Add Button
                       </Button>
                     </FormGroup>
-                    <FormGroup>
-                      <Label for="images">Images:</Label>
-                      <div {...getRootProps()} className="dropzone">
-                        <input {...getInputProps()} />
-                        {isDragActive ? (
-                          <p>Drop the files here ...</p>
-                        ) : (
-                          <p>Drag 'n' drop some files here, or click to select files</p>
+                    <div style={{ padding: "0px 0px 0 0px" }}>
+                      <label>Images :</label>
+                      <ImageUploading
+                        multiple
+                        value={images}
+                        onChange={onImageChange}
+                        maxNumber={7}
+                      >
+                        {({
+                          imageList,
+                          onImageUpload,
+                          onImageRemoveAll,
+                          onImageUpdate,
+                          onImageRemove,
+                          isDragging,
+                          dragProps,
+                        }) => (
+                          // write your building UI
+                          <div className="upload__image-wrapper" style={{ display: "flex", flexDirection: "column", gap: "10px" }} >
+                            <div
+                              style={{ color: isDragging ? "red" : undefined, width: "100%", height: "100px", border: "1px dashed black", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}
+                              onClick={onImageUpload}
+                              {...dragProps} >
+                              Click or Drop here
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              {
+                                imageList.length ? <label>Selected Images :</label> : ""
+                              }
+                              {
+                                imageList.length ?
+                                  <CustomButton onClick={onImageRemoveAll} name="Remove all images" icon="mdi:remove" /> : ""
+                              }
+                            </div>
+                            <div style={{ display: 'flex', flexWrap: "wrap", gap: "20px" }}>
+                              {imageList.map((image, index) => (
+                                <div key={index} className="image-item">
+                                  <div style={{ position: 'relative' }}>
+                                    <img src={image.dataURL} alt="" style={{ width: "200px" }} />
+                                    <div className="image-item__btn-wrapper">
+                                      <Button onClick={() => onImageRemove(index)} style={{ position: 'absolute', top: 0, right: 0, margin: "4px", padding: "4px" }}><Iconify icon="mdi:close" /></Button>
+                                      <Button onClick={() => onImageUpdate(index)} style={{ position: 'absolute', top: 0, left: 0, margin: "4px", padding: "4px" }}><Iconify icon="ic:baseline-edit" /></Button>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+
+                          </div>
                         )}
-                      </div>
-                      <ul>
-                        {acceptedFiles?.map((file, index) => (
-                          <li key={index}>
-                            {file.name} - {file.size} bytes
-                          </li>
-                        ))}
-                      </ul>
-                    </FormGroup>
+                      </ImageUploading>
+
+                    </div>
                     <Button
                       type="submit"
                       style={{

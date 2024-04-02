@@ -1,7 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   Button,
   Card,
@@ -35,8 +35,9 @@ interface IBrand {
 
 function ViewBrands() {
   const { id } = useParams();
-
-
+  const [searchParams] = useSearchParams();
+  const origin = searchParams.get("origin")
+  const vendorId = searchParams.get("vendorId")
   const [brandData, setBrandData] = useState<IBrand>();
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const GET_ABRAND = gql`
@@ -84,8 +85,18 @@ function ViewBrands() {
 
   const items = [
     { text: "Dashboard", link: `/` },
-    { text: "Brands", link: `/brands` },
+
   ];
+
+  if (origin && origin === "vendor") {
+    items.push(
+      { text: "Vendor", link: `/vendors/view?id=${vendorId}` },
+    )
+  } else {
+    items.push(
+      { text: "Brands", link: `/brands` },
+    )
+  }
 
 
   return (

@@ -23,7 +23,7 @@ const httpLink = createHttpLink({
 const uploadLink = createUploadLink({
   uri: process.env.REACT_APP_SERVER_URL,
   headers: {
-    "Apollo-Require-Preflight": "true"
+    "Apollo-Require-Preflight": "true",
   }
 })
 

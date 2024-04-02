@@ -33,6 +33,7 @@ import Select from "react-select";
 import { toast } from "react-toastify";
 import CustomButton from "src/components/Common/CustomButton";
 import DynamicFilter from "src/components/filter/DynamicFilter";
+import Loader from "src/components/Common/Loader";
 
 function Assignattribute() {
   interface Category {
@@ -168,6 +169,7 @@ function Assignattribute() {
     data: assignAttributeData,
     refetch: assignAttributeRefetch,
   } = useQuery(GET_ALL_ATTRIBUTES_WITH_CATEGORY_ID, {
+    fetchPolicy: "network-only",
     variables: { input: { categoryId: selectedCategory } },
   });
 
@@ -253,10 +255,10 @@ function Assignattribute() {
 
 
 
-  function handleEdit(data: ColorType) {
-    setEditColor(data);
-    toggleAddModal();
-  }
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
 
   const handleAssignAttribute = async () => {
 
@@ -348,6 +350,7 @@ function Assignattribute() {
 
 
 
+
   return (
     <>
       <div className="page-content">
@@ -369,55 +372,61 @@ function Assignattribute() {
                         <option key={category._id} value={category._id}>{category.fullCategoryName}</option>
                       ))}
                     </Input>
-                    <CustomButton onClick={toggleCollapse} name="Filters" icon="clarity:filter-solid" />
+                    {/* <CustomButton onClick={toggleCollapse} name="Filters" icon="clarity:filter-solid" /> */}
                   </div>
 
                 </CardHeader>
                 <CardHeader>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: "flex-end" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <Input
+                      type="text"
+                      placeholder="Search by name"
+                      value={searchTerm}
+                      onChange={handleSearch}
+                      style={{ width: "450px", }}
+                    />
                     <CustomButton name="Assign Attributes" icon="fluent:tab-add-20-filled" onClick={toggle} />
                   </div>
                 </CardHeader>
                 <CardBody>
-                  <Collapse isOpen={isOpen}>
-                    <DynamicFilter
-                      filterOptions={filterOptions}
-                      onSubmit={handleFilterSubmit}
-                    />
-                  </Collapse>
+                  {assignAttributeLoading
+                    ?
+                    <Loader />
+                    :
 
-                  <Table id="tech-companies-1" className="table table-striped table-bordered">
-                    <thead>
-                      <tr>
-                        <th style={{ width: "10%" }}>Sl.No</th>
-                        <th style={{ width: "40%" }}>Attribute Type</th>
-                        <th style={{ width: "40%" }}>Description</th>
-                        <th style={{ width: "40%" }}>Name</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {selectedCategory ? (
-                        <>
-                          {assignAttributeDatas?.map(
-                            (value: IAttribute, index: any) => (
-                              <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td>{value.attributeType}</td>
-                                <td>{value.description}</td>
-                                <td>{value.name}</td>
-                              </tr>
-                            )
-                          )}
-                        </>
-                      ) : (
+                    <Table id="tech-companies-1" className="table table-striped table-bordered">
+                      <thead>
                         <tr>
-                          <td colSpan={3} className="text-center">
-                            Please select a category
-                          </td>
+                          <th style={{ width: "10%" }}>Sl.No</th>
+                          <th style={{ width: "40%" }}>Attribute Type</th>
+                          <th style={{ width: "40%" }}>Description</th>
+                          <th style={{ width: "40%" }}>Name</th>
                         </tr>
-                      )}
-                    </tbody>
-                  </Table>
+                      </thead>
+                      <tbody>
+                        {selectedCategory ? (
+                          <>
+                            {assignAttributeDatas?.map(
+                              (value: IAttribute, index: any) => (
+                                <tr key={index}>
+                                  <td>{index + 1}</td>
+                                  <td>{value.attributeType}</td>
+                                  <td>{value.description}</td>
+                                  <td>{value.name}</td>
+                                </tr>
+                              )
+                            )}
+                          </>
+                        ) : (
+                          <tr>
+                            <td colSpan={3} className="text-center">
+                              Please select a category
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </Table>
+                  }
                 </CardBody>
               </Card>
 

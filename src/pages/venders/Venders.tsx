@@ -14,12 +14,14 @@ import {
   NavItem,
   NavLink,
   CardHeader,
+  Collapse,
 } from "reactstrap";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import FormVender from "./FormVender";
 import Loader from "src/components/Common/Loader";
 import CustomButton from "src/components/Common/CustomButton";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
+import DynamicFilter from "src/components/filter/DynamicFilter";
 
 
 interface IVendor {
@@ -44,28 +46,42 @@ const VendorList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 10;
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
+  const [filters, setFilters] = useState({
+    email: "",
+    status: false,
+    mobileNumber: ""
+  });
 
   const GET_VENDOR = gql`
       query GetAllVendorsRecordsByAdmin($input: VendorsRecordsByAdminFilter) {
-        getAllVendorsRecordsByAdmin(input: $input) {
-          maxRecords
-          message
-          records {
-            _id
-            fullName
-            email
-            mobileNumber
-            isBlocked
-            isKycCompleted
-            outletId
-            outletName
-            outletStatus
-            companyId
-            companyName
-            companyStatus
-          }
-        }
+  getAllVendorsRecordsByAdmin(input: $input) {
+    maxRecords
+    records {
+      _id
+      fullName
+      email
+      countryCode
+      mobileNumber
+      profilePic {
+        fileType
+        fileURL
+        mimeType
+        originalName
       }
+      isBlocked
+      isKycCompleted
+      outletId
+      outletName
+      outletStatus
+      companyId
+      companyName
+      companyStatus
+      brands
+      categories
+    }
+    message
+  }
+}
     `;
 
   const {
@@ -79,34 +95,26 @@ const VendorList: React.FC = () => {
       input: {
         page: currentPage,
         size: pageSize,
-        isKycCompleted: activeTab
+        isKycCompleted: activeTab,
+        ...([true, false].includes(filters.status) && { isBlocked: filters.status }),
+        mobileNumber: filters.mobileNumber,
+        fullName: searchTerm,
+        email: filters.email
       },
     },
   });
+
   useEffect(() => {
     if (vendorDataResponse && vendorDataResponse.getAllVendorsRecordsByAdmin) {
       setVendorData(vendorDataResponse.getAllVendorsRecordsByAdmin.records);
 
     }
-  }, [vendorDataResponse, currentPage, activeTab]);
+  }, [vendorDataResponse, currentPage, activeTab, filters, searchTerm]);
 
   if (vendorError) {
     console.error("Error fetching vendor data:", vendorError);
-    // Handle error, display an error message, etc.
   }
 
-  // const getFilteredVendors = (): IVendor[] => {
-  //   switch (activeTab) {
-  //     case "verified":
-  //       return vendorData.filter((vendor) => vendor.isKycCompleted === true);
-  //     case "blocked":
-  //       return vendorData.filter((vendor) => vendor.isKycCompleted === false);
-  //     default:
-  //       return vendorData;
-  //   }
-  // };
-
-  // const totalPages = Math.ceil(getFilteredVendors().length / pageSize);
   const totalRecords = vendorDataResponse?.getAllVendorsRecordsByAdmin.maxRecords || 0;
   const totalPages = Math.ceil(totalRecords / pageSize);
 
@@ -124,6 +132,49 @@ const VendorList: React.FC = () => {
     { text: "Dashboard", link: `/` },
   ];
 
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleCollapse = () => {
+    setIsOpen(!isOpen);
+  };
+
+
+
+
+  const handleFilterSubmit = (formData: any) => {
+    setFilters({
+      email: formData.email,
+      status: formData.status == 'true' ? true : false,
+      mobileNumber: formData.mobileNumber
+    });
+  };
+
+
+
+  const filterOptions = [
+    {
+      label: 'Mobile Number',
+      type: 'text',
+      name: 'mobileNumber',
+    },
+    {
+      label: 'Email',
+      type: 'text',
+      name: 'email',
+    },
+    {
+      label: 'Status',
+      type: 'select',
+      name: 'status',
+      options: [
+        { value: 'false', label: 'ACTIVE' },
+        { value: 'true', label: 'BLOCKED' },
+      ],
+    },
+  ];
+
+
   return (
     <>
       <div className="page-content">
@@ -135,7 +186,7 @@ const VendorList: React.FC = () => {
                 className={activeTab === undefined ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(undefined)}
               >
-                All
+                ALL
               </NavLink>
             </NavItem>
             <NavItem>
@@ -143,7 +194,7 @@ const VendorList: React.FC = () => {
                 className={activeTab === false ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(false)}
               >
-                Pending
+                PENDING
               </NavLink>
             </NavItem>
             <NavItem>
@@ -151,7 +202,7 @@ const VendorList: React.FC = () => {
                 className={activeTab === true ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(true)}
               >
-                Verified
+                VERIFIED
               </NavLink>
             </NavItem>
 
@@ -162,23 +213,30 @@ const VendorList: React.FC = () => {
               <Card>
                 <CardHeader>
                   <Row>
-                    <Col xs={6}>
-
+                    <Col xs={9} style={{ display: "flex", alignItems: "center", gap: "20px" }}>
                       <Input
                         type="text"
-                        placeholder="Search by name"
+                        placeholder="Search by fullname"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        style={{ width: "70%", }}
+                        style={{ width: "50%", }}
                       />
+                      <CustomButton onClick={toggleCollapse} name="Filters" icon="clarity:filter-solid" />
                     </Col>
-                    <Col xs={6} style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                    <Col xs={3} style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
                       <CustomButton onClick={() => toggleAddModal()} name="Add Vendor" icon="material-symbols:add" />
                     </Col>
 
                   </Row>
                 </CardHeader>
                 <CardBody>
+
+                  <Collapse isOpen={isOpen}>
+                    <DynamicFilter
+                      filterOptions={filterOptions}
+                      onSubmit={handleFilterSubmit}
+                    />
+                  </Collapse>
 
                   <FormVender isOpen={showAddModal} toggle={toggleAddModal} refetch={refetchVendore} />
 
@@ -204,38 +262,32 @@ const VendorList: React.FC = () => {
                             </tr>
                           </thead>
                           <tbody>
-                            {vendorData
-                              .filter((vendor) =>
-                                vendor.fullName
-                                  .toLowerCase()
-                                  .includes(searchTerm.toLowerCase())
-                              )
-                              .map((vendor, index) => (
-                                <tr key={vendor._id}>
-                                  <td>{currentPage * pageSize + index + 1}</td>
-                                  <td>{vendor.fullName}</td>
-                                  <td>{vendor.mobileNumber}</td>
-                                  <td>{vendor.email}</td>
-                                  <td>{vendor.companyName}</td>
-                                  <td >
-                                    <StatusIndicator status={vendor.isKycCompleted === true ? "COMPLETED" : "PENDING"} />
-                                  </td>
-                                  <td
-                                  >
-                                    <StatusIndicator status={vendor.isBlocked === true ? "BLOCKED" : "ACTIVE"} />
+                            {vendorData?.map((vendor, index) => (
+                              <tr key={vendor._id}>
+                                <td>{currentPage * pageSize + index + 1}</td>
+                                <td>{vendor.fullName}</td>
+                                <td>{vendor.mobileNumber}</td>
+                                <td>{vendor.email}</td>
+                                <td>{vendor.companyName}</td>
+                                <td >
+                                  <StatusIndicator status={vendor.isKycCompleted === true ? "COMPLETED" : "PENDING"} />
+                                </td>
+                                <td
+                                >
+                                  <StatusIndicator status={vendor.isBlocked === true ? "BLOCKED" : "ACTIVE"} />
 
-                                  </td>
-                                  <td>
-                                    <Link to={`/vendors/view?id=${vendor._id}`}>
-                                      <Button
-                                        color="primary"
-                                        size="sm">
-                                        View
-                                      </Button>
-                                    </Link>
-                                  </td>
-                                </tr>
-                              ))}
+                                </td>
+                                <td>
+                                  <Link to={`/vendors/view?id=${vendor._id}`}>
+                                    <Button
+                                      color="primary"
+                                      size="sm">
+                                      View
+                                    </Button>
+                                  </Link>
+                                </td>
+                              </tr>
+                            ))}
                           </tbody>
                         </Table>
                     }

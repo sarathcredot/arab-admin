@@ -29,6 +29,8 @@ import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import CustomButton from "../Common/CustomButton";
 import { Link } from "react-router-dom";
 import { capitalCase } from "change-case";
+import Loader from "../Common/Loader";
+import StatusIndicator from "../statusIndicator/StatusIndicator";
 
 interface sizeChart {
   fileType: string;
@@ -108,6 +110,7 @@ const CategoryList: React.FC<Props> = () => {
     data: categoryDataResponse,
     refetch: categoryRefetch,
   } = useQuery(GET_CATEGORY, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         parent: null,
@@ -131,10 +134,6 @@ const CategoryList: React.FC<Props> = () => {
     },
   });
 
-  const handleGoBack = () => {
-    const newBreadcrumb = breadcrumb.slice(0, breadcrumb.length - 1);
-    setBreadcrumb(newBreadcrumb);
-  };
 
   useEffect(() => {
     if (showSubCategories) {
@@ -346,68 +345,74 @@ const CategoryList: React.FC<Props> = () => {
                     refetch={categoryRefetch}
                     childrefetch={childCategoryRefetch}
                   />
-                  <Table id="tech-companies-1" className="table table-striped table-bordered">
-                    <thead>
-                      <tr>
-                        <th>No</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        {/* <th>Size Chart Image</th> */}
-                        <th>Status</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredCategory.map((category, index) => (
-                        <tr key={category._id}>
-                          <td>{index + 1}</td>
-                          <td>{category.categoryName}</td>
-                          <td>{category.description}</td>
-                          {/* <td>
+                  {
+                    categoryLoading ?
+                      <Loader />
+                      :
+
+                      <Table id="tech-companies-1" className="table table-striped table-bordered">
+                        <thead>
+                          <tr>
+                            <th>No</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            {/* <th>Size Chart Image</th> */}
+                            <th>Status</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredCategory.map((category, index) => (
+                            <tr key={category._id}>
+                              <td>{index + 1}</td>
+                              <td>{category.categoryName}</td>
+                              <td>{category.description}</td>
+                              {/* <td>
                             {category.sizeChart && (
                               <img
-                                src={category?.sizeChart?.fileURL}
-                                alt="Size Chart"
-                                style={{
-                                  width: "50px",
-                                  height: "50px",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() =>
-                                  openImageModal(category?.sizeChart?.fileURL)
-                                }
+                              src={category?.sizeChart?.fileURL}
+                              alt="Size Chart"
+                              style={{
+                                width: "50px",
+                                height: "50px",
+                                cursor: "pointer",
+                              }}
+                              onClick={() =>
+                                openImageModal(category?.sizeChart?.fileURL)
+                              }
                               />
-                            )}
-                          </td> */}
+                              )}
+                            </td> */}
 
-                          <td>
-                            {category?.isBlocked == false ? "Active" : "Block"}
-                          </td>
+                              <td>
+                                <StatusIndicator status={category?.isBlocked == false ? "ACTIVE" : "BLOCKED"} />
+                              </td>
 
-                          <td>
-                            {category.isLeaf ? null : (
-                              <Button
-                                size="sm"
-                                onClick={() => handleNext(category)}
-                                style={{ backgroundColor: "rgba(0, 0, 0, 1)" }}
-                              >
-                                Next
-                              </Button>
-                            )}
-                            {"  "}
-                            <Button
-                              color="primary"
-                              size="sm"
-                              onClick={() => handleEdit(category)}
+                              <td>
+                                {category.isLeaf ? null : (
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleNext(category)}
+                                    style={{ backgroundColor: "rgba(0, 0, 0, 1)" }}
+                                  >
+                                    Next
+                                  </Button>
+                                )}
+                                {"  "}
+                                <Button
+                                  color="primary"
+                                  size="sm"
+                                  onClick={() => handleEdit(category)}
 
-                            >
-                              Edit
-                            </Button>{" "}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
+                                >
+                                  Edit
+                                </Button>{" "}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
+                  }
 
                   <Modal
                     isOpen={isImageModalOpen}

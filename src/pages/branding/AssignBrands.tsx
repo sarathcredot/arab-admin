@@ -31,6 +31,7 @@ import Breadcrumb from "src/components/Common/Breadcrumb";
 import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
 import CustomButton from "src/components/Common/CustomButton";
+import Loader from "src/components/Common/Loader";
 
 function AssignBrands({ brandId }: any) {
   interface Category {
@@ -134,6 +135,7 @@ function AssignBrands({ brandId }: any) {
     data: assignCategoryData,
     refetch: assignCategoryRefetch,
   } = useQuery(GET_ASSIGNED_CATEGORY, {
+    fetchPolicy: "network-only",
     variables: { input: { brandId: selectedBrand } },
   });
 
@@ -143,6 +145,7 @@ function AssignBrands({ brandId }: any) {
     data: brandDataResponse,
     refetch: brandRefetch,
   } = useQuery(GET_BRAND, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         page: null,
@@ -221,51 +224,71 @@ function AssignBrands({ brandId }: any) {
 
   const toggle = () => setModal(!modal);
 
+  const [searchTerm, setSearchTerm] = useState("");
 
-
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
 
   return (
     <Row>
       <Col lg={12}>
         <Card>
           <CardHeader>
-            <div style={{ display: "flex", alignItems: 'center', justifyContent: "flex-end" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <Input
+                type="text"
+                placeholder="Search by category name"
+                value={searchTerm}
+                onChange={handleSearch}
+                style={{ width: "450px", }}
+              />
               <CustomButton name="Assign Category" icon="fluent:tab-add-20-filled" onClick={toggle} />
             </div>
           </CardHeader>
           <CardBody>
-            <Table
-              responsive
-              className="table table-bordered table-centered mb-0"
-              style={{ width: "100%" }}
-            >
-              <thead>
-                <tr>
-                  <th style={{ width: "10%" }}>Sl.No</th>
-                  <th style={{ width: "40%" }}>Category Name</th>
-                  <th style={{ width: "40%" }}>Categorey FullName</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedBrand ? (
-                  <>
-                    {assignCategoryDatas?.categories?.map((value: Category, index: any) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{value.categoryName}</td>
-                        <td>{value.fullCategoryName}</td>
+            {
+              assignCategoryLoading ?
+                <Loader />
+                :
+
+                <Table
+                  responsive
+                  className="table table-bordered table-centered mb-0"
+                  style={{ width: "100%" }}
+                >
+                  <thead>
+                    <tr>
+                      <th style={{ width: "10%" }}>Sl.No</th>
+                      <th style={{ width: "40%" }}>Category Name</th>
+                      <th style={{ width: "40%" }}>Categorey FullName</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedBrand ? (
+                      <>
+                        {assignCategoryDatas?.categories?.filter((category) =>
+                          category.categoryName
+                            .toLowerCase()
+                            .includes(searchTerm.toLowerCase())
+                        ).map((value: Category, index: any) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{value.categoryName}</td>
+                            <td>{value.fullCategoryName}</td>
+                          </tr>
+                        ))}
+                      </>
+                    ) : (
+                      <tr>
+                        <td colSpan={3} className="text-center">
+                          Please select a Brand
+                        </td>
                       </tr>
-                    ))}
-                  </>
-                ) : (
-                  <tr>
-                    <td colSpan={3} className="text-center">
-                      Please select a Brand
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </Table>
+                    )}
+                  </tbody>
+                </Table>
+            }
           </CardBody>
         </Card>
 

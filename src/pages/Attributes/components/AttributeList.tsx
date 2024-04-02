@@ -22,6 +22,7 @@ import { ToastContainer, toast } from "react-toastify";
 import AttributeForm from "./AttributeForm";
 import CustomButton from "src/components/Common/CustomButton";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
+import Loader from "src/components/Common/Loader";
 
 interface IAttribute {
   _id: string;
@@ -80,6 +81,7 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
     data: attributeResponse,
     refetch: attributeRefetch,
   } = useQuery(GET_ATTRIBUTES, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         page: currentPage,
@@ -115,7 +117,6 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
   };
 
 
-  console.log(attributeData, "wertyui")
 
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
@@ -168,7 +169,7 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
                 className={activeTab === undefined ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(undefined)}
               >
-                All
+                ALL
               </NavLink>
             </NavItem>
             <NavItem>
@@ -176,7 +177,7 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
                 className={activeTab === false ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(false)}
               >
-                Active
+                ACTIVE
               </NavLink>
             </NavItem>
             <NavItem>
@@ -184,7 +185,7 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
                 className={activeTab === true ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(true)}
               >
-                Blocked
+                BLOCKED
               </NavLink>
             </NavItem>
           </Nav>
@@ -212,48 +213,53 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
 
 
                   <AttributeForm isOpen={showAddModal} toggle={toggleAddModal} refetch={attributeRefetch} />
+                  {
+                    attributeLoading ?
+                      <Loader />
+                      :
 
-                  <Table id="tech-companies-1" className="table table-striped table-bordered">
-                    <thead>
-                      <tr>
-                        <th>Sl.No</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Attribute Type</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {attributeData
-                        .filter((attribute) =>
-                          attribute.attributeType
-                            .toLowerCase()
-                            .includes(searchTerm.toLowerCase())
-                        )
-                        .map((attribute, index) => (
-                          <tr key={attribute?._id}>
-                            <td>{currentPage * pageSize + index + 1}</td>
-                            <td>{attribute?.name}</td>
-                            <td>{attribute?.description}</td>
-                            <td>{attribute?.attributeType}</td>
-
-                            <td
-                            >
-                              <StatusIndicator status={attribute?.isBlocked ? "BLOCKED" : "ACTIVE"} />
-
-                            </td>
-                            <td>
-                              <Link to={`/attributes/${attribute?._id}`}>
-                                <Button size="sm" color="primary">
-                                  View
-                                </Button>
-                              </Link>
-                            </td>
+                      <Table id="tech-companies-1" className="table table-striped table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Sl.No</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Attribute Type</th>
+                            <th>Status</th>
+                            <th>Action</th>
                           </tr>
-                        ))}
-                    </tbody>
-                  </Table>
+                        </thead>
+                        <tbody>
+                          {attributeData
+                            .filter((attribute) =>
+                              attribute.name
+                                .toLowerCase()
+                                .includes(searchTerm.toLowerCase())
+                            )
+                            .map((attribute, index) => (
+                              <tr key={attribute?._id}>
+                                <td>{currentPage * pageSize + index + 1}</td>
+                                <td>{attribute?.name}</td>
+                                <td>{attribute?.description}</td>
+                                <td>{attribute?.attributeType}</td>
+
+                                <td
+                                >
+                                  <StatusIndicator status={attribute?.isBlocked ? "BLOCKED" : "ACTIVE"} />
+
+                                </td>
+                                <td>
+                                  <Link to={`/attributes/${attribute?._id}`}>
+                                    <Button size="sm" color="primary">
+                                      View
+                                    </Button>
+                                  </Link>
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </Table>
+                  }
                 </CardBody>
 
                 <Row style={{ marginRight: "10px" }}>

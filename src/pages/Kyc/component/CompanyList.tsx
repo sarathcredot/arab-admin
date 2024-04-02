@@ -20,6 +20,7 @@ import {
 } from "reactstrap";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import CustomButton from "src/components/Common/CustomButton";
+import Loader from "src/components/Common/Loader";
 import DynamicFilter from "src/components/filter/DynamicFilter";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
@@ -63,13 +64,24 @@ function CompanyListing() {
     }
   }`;
 
+  const [filters, setFilters] = useState({
+    vendorId: "",
+    crNumber: "",
+    companyName: ""
+  });
 
-  const { data: kycDataResponse } = useQuery(GET_ALL_COMPANY_DATA, {
+
+  const { data: kycDataResponse, loading: loading } = useQuery(GET_ALL_COMPANY_DATA, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         page: currentPage,
         size: pageSize,
-        status: activeTab
+        status: activeTab,
+        fullName: searchTerm,
+        ...(filters.vendorId && { vendorId: filters.vendorId }),
+        crNumber: filters.crNumber,
+        companyName: filters.companyName
       },
     },
   });
@@ -80,7 +92,7 @@ function CompanyListing() {
 
     }
 
-  }, [kycDataResponse, activeTab, currentPage]);
+  }, [kycDataResponse, activeTab, currentPage, filters, searchTerm]);
 
 
   const toggleTab = (tab: string) => {
@@ -91,25 +103,9 @@ function CompanyListing() {
     setSearchTerm(event.target.value);
   };
 
-  // const getFilteredkyc = (): ICompanyData[] => {
-  //   switch (activeTab) {
-  //     case "Pending":
-  //       return companyData.filter((vendor) => vendor.isKycCompleted === false);
-  //     case "Completed":
-  //       return companyData.filter((vendor) => vendor.isKycCompleted === true);
-  //     default:
-  //       return companyData;
-  //   }
-  // };
+
   const totalRecords = kycDataResponse?.getAllVendorCompanyRecordsByAdmin.maxRecords || 0;
   const totalPages = Math.ceil(totalRecords / pageSize);
-
-  const handleNextPage = () => {
-    if (currentPage + 1 < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -118,38 +114,28 @@ function CompanyListing() {
   };
 
   const handleFilterSubmit = (formData: any) => {
-    console.log(formData);
+    setFilters({
+      companyName: formData.companyName,
+      vendorId: formData.vendorId,
+      crNumber: formData.crNumber
+    })
   };
 
   const filterOptions = [
     {
-      label: 'Order ID',
+      label: 'Vendor ID',
       type: 'text',
-      name: 'orderId',
+      name: 'vendorId',
     },
     {
-      label: 'Start Date',
-      type: 'date',
-      name: 'startDate',
-    },
-    {
-      label: 'End Date',
-      type: 'date',
-      name: 'endDate',
-    },
-    {
-      label: 'Payment Mode',
-      type: 'select',
-      name: 'paymentMode',
-      options: [
-        { value: 'COD', label: 'COD' },
-        { value: 'ONLINE', label: 'ONLINE' },
-      ],
-    },
-    {
-      label: 'User ID',
+      label: 'Company name',
       type: 'text',
-      name: 'userId',
+      name: 'companyName',
+    },
+    {
+      label: 'CR number',
+      type: 'text',
+      name: 'crNumber',
     },
   ];
 
@@ -161,9 +147,8 @@ function CompanyListing() {
           <NavItem>
             <NavLink
               className={activeTab === "UNDER_VERIFICATION" ? "tab-button active" : "tab-button"}
-              onClick={() => toggleTab("UNDER_VERIFICATION")}
-            >
-              Verify
+              onClick={() => toggleTab("UNDER_VERIFICATION")}>
+              VERIFY
             </NavLink>
           </NavItem>
 
@@ -172,7 +157,7 @@ function CompanyListing() {
               className={activeTab === "COMPLETED" ? "tab-button active" : "tab-button"}
               onClick={() => toggleTab("COMPLETED")}
             >
-              Completed
+              COMPLETED
             </NavLink>
           </NavItem>
 
@@ -181,7 +166,7 @@ function CompanyListing() {
               className={activeTab === "PENDING" ? "tab-button active" : "tab-button"}
               onClick={() => toggleTab("PENDING")}
             >
-              Pending
+              PENDING
             </NavLink>
           </NavItem>
 
@@ -190,7 +175,7 @@ function CompanyListing() {
               className={activeTab === "REJECTED" ? "tab-button active" : "tab-button"}
               onClick={() => toggleTab("REJECTED")}
             >
-              Rejected
+              REJECTED
             </NavLink>
           </NavItem>
         </Nav>
@@ -202,7 +187,7 @@ function CompanyListing() {
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <Input
                     type="text"
-                    placeholder="Search by name"
+                    placeholder="Search by Vendor name"
                     value={searchTerm}
                     onChange={handleSearch}
                     style={{ width: "450px", }}
@@ -220,50 +205,49 @@ function CompanyListing() {
                   />
                 </Collapse>
 
-                <Table id="tech-companies-1" className="table table-striped table-bordered">
-                  <thead>
-                    <tr>
-                      <th>Sl.No</th>
-                      <th>Full Name</th>
-                      <th>Company Name</th>
-                      <th>CR Number</th>
-                      <th>Kyc Status</th>
-                      <th>Status</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {companyData
-                      .slice(
-                        currentPage * pageSize,
-                        (currentPage + 1) * pageSize
-                      )
-
-                      .map((company, index) => (
-                        <tr key={company._id}>
-                          <td>{pageSize * currentPage + index + 1}</td>
-                          <td>{company.fullName}</td>
-                          <td>{company.companyName}</td>
-                          <td>{company.crNumber}</td>
-                          <td >
-                            <StatusIndicator status={company.isKycCompleted ? "COMPLETED" : "PENDING"} />
-
-                          </td>
-                          <td >
-                            <StatusIndicator status={company?.status} />
-
-                          </td>
-                          <td>
-                            <Link to={`/vendors/view?id=${company.vendorId}&&tab=companydetails`}>
-                              <Button size="sm" color="primary">
-                                View
-                              </Button>
-                            </Link>
-                          </td>
+                {
+                  loading ?
+                    <Loader />
+                    :
+                    <Table id="tech-companies-1" className="table table-striped table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Sl.No</th>
+                          <th>Full Name</th>
+                          <th>Company Name</th>
+                          <th>CR Number</th>
+                          <th>Kyc Status</th>
+                          <th>Status</th>
+                          <th>Action</th>
                         </tr>
-                      ))}
-                  </tbody>
-                </Table>
+                      </thead>
+                      <tbody>
+                        {companyData.map((company, index) => (
+                          <tr key={company._id}>
+                            <td>{pageSize * currentPage + index + 1}</td>
+                            <td>{company.fullName}</td>
+                            <td>{company.companyName}</td>
+                            <td>{company.crNumber}</td>
+                            <td >
+                              <StatusIndicator status={company.isKycCompleted ? "COMPLETED" : "PENDING"} />
+
+                            </td>
+                            <td >
+                              <StatusIndicator status={company?.status} />
+
+                            </td>
+                            <td>
+                              <Link to={`/vendors/view?id=${company.vendorId}&&tab=companydetails`}>
+                                <Button size="sm" color="primary">
+                                  View
+                                </Button>
+                              </Link>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                }
               </CardBody>
               <Row style={{ marginRight: "10px" }}>
                 <Col>
