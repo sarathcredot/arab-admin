@@ -199,6 +199,7 @@ query GetUserRecordByAdmin($input: userInput!) {
     data: ordersDataResponse,
     refetch: ordersRefetch,
   } = useQuery(GET_USER_ORDER, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         page: currentPage,
@@ -246,6 +247,7 @@ query GetUserRecordByAdmin($input: userInput!) {
     data: userData,
     refetch: userRefetch,
   } = useQuery(GET_USER, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         _id: userId
