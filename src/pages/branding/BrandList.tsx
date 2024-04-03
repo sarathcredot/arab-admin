@@ -78,7 +78,7 @@ const BrandList: React.FC = () => {
         page: currentPage,
         size: pageSize,
         query: searchTerm,
-        ...(activeTab && { isBlocked: activeTab })
+        isBlocked: activeTab
       },
     },
   });
