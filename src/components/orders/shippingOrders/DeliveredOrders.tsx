@@ -572,18 +572,21 @@ message
                         <div className="d-flex justify-content-end mt-0 me-3">
 
                             <ul className="pagination">
-                                <li
-                                    className={`page-item ${currentPage === 0 ? "disabled" : ""
-                                        }`}
-                                >
-                                    <button
-                                        className="page-link"
-                                        onClick={() => setCurrentPage(currentPage - 1)}
-                                        disabled={currentPage === 0}
+                                {
+                                    currentPage !== 0 &&
+                                    <li
+                                        className={`page-item ${currentPage === 0 ? "disabled" : ""
+                                            }`}
                                     >
-                                        Previous
-                                    </button>
-                                </li>
+                                        <button
+                                            className="page-link"
+                                            onClick={() => setCurrentPage(currentPage - 1)}
+                                            disabled={currentPage === 0}
+                                        >
+                                            Previous
+                                        </button>
+                                    </li>
+                                }
 
                                 {Array.from({ length: totalPages }, (_, index) => (
                                     <li

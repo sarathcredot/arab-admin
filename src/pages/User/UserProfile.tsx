@@ -447,7 +447,7 @@ query GetUserRecordByAdmin($input: userInput!) {
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                          <h5 style={{ margin: "0" }}>{data?.displayName && capitalCase(data?.displayName)}</h5>
+                          <h5 style={{ margin: "0" }}>{data?.displayName && capitalCase(data?.displayName) || "User"}</h5>
                           <div style={{ width: "80px", height: '20px', border: `1px solid ${data?.isBlocked ? "#dc4016" : "green"}`, borderRadius: "18px", display: "flex", alignItems: "center", justifyContent: "center", color: `${data?.isBlocked ? "#dc4016" : "green"}` }}>
                             <p style={{ margin: "0" }}>  {data?.isBlocked == false ? "Active" : "Blocked"}</p>
                           </div>

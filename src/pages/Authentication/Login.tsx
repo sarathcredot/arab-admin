@@ -125,7 +125,7 @@ const Login = (props: any) => {
 
         if (response.data.loginAdmin.token) {
           localStorage.setItem("admin_token", response.data.loginAdmin.token);
-          toast.success("success fully logged in");
+          toast.success("Successfully logged in");
           navigate("/dashboard");
         } else {
           return toast.error("please provide the valid email or password ");
@@ -271,7 +271,7 @@ const Login = (props: any) => {
                               id="password-addon"
                               style={{ borderTopRightRadius: "15px ", borderBottomRightRadius: "15px", height: "52px", }}
                             >
-                              <i className="mdi mdi-eye-outline"></i>
+                              <i className={`mdi ${passwordShow ? "mdi-eye-outline" : "mdi-eye-off-outline"}`}></i>
                             </button>
                             {validation.touched.password &&
                               validation.errors.password ? (

@@ -108,7 +108,7 @@ const UserList = () => {
       input: {
         page: currentPage,
         size: pageSize,
-        isBlocked: selectedStatus?.value,
+        isBlocked: selectedStatus?.pass,
         query: userFilter.mobileNumber,
         // phoneNumber: userFilter.mobileNumber,
         // ...((userFilter.id) && { _id: userFilter.id }),
@@ -150,7 +150,7 @@ const UserList = () => {
         input: {
           page: currentPage,
           size: pageSize,
-          isBlocked: selectedStatus?.value,
+          isBlocked: selectedStatus?.pass,
           query: userFilter.mobileNumber,
           // phoneNumber: userFilter.mobileNumber,
           // ...((userFilter.id) && { _id: userFilter.id }),
@@ -216,14 +216,6 @@ const UserList = () => {
                 <CardHeader>
                   <Row>
                     <Col xs={8} style={{ display: "flex", gap: "20px", }}>
-                      {/* <Input
-                        type="text"
-                        placeholder="Search by username"
-                        value={userFilter.firstName}
-                        name="firstName"
-                        onChange={handleSearch}
-                        style={{ width: "50%" }}
-                      /> */}
                       <Input
                         type="text"
                         name="mobileNumber"

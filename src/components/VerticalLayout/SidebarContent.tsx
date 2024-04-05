@@ -15,13 +15,15 @@ import { Link, useLocation } from "react-router-dom";
 import withRouter from "../../../src/components/Common/withRouter";
 
 import { PiShoppingCartFill } from "react-icons/pi";
-import { TbBrandApplePodcast } from "react-icons/tb";
-import { BiSolidCategoryAlt } from "react-icons/bi";
+import { TbBrand4Chan } from "react-icons/tb";
+
+import { MdCategory, MdOutlineShoppingBag } from "react-icons/md";
 import { MdEditAttributes } from "react-icons/md";
 import { MdDomainVerification } from "react-icons/md";
 import { BiSolidBookContent } from "react-icons/bi";
 import { IoMdSettings } from "react-icons/io";
-
+import { LuShoppingBag } from "react-icons/lu";
+import Iconify from "../iconify";
 
 const SidebarContent = (props: any) => {
   const ref = useRef<any>();
@@ -174,6 +176,8 @@ const SidebarContent = (props: any) => {
   };
 
 
+
+
   return (
     <React.Fragment>
       <SimpleBar style={{ maxHeight: "100%" }} ref={ref}>
@@ -235,7 +239,7 @@ const SidebarContent = (props: any) => {
               <Link to="/category" onClick={(e) => handleItemClick("/category", e)}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <div style={{ display: "flex", alignItems: "center", }}>
-                    <BiSolidCategoryAlt />
+                    <MdCategory />
 
                     <span>{props.t("Categories")}</span>
                   </div>
@@ -268,7 +272,7 @@ const SidebarContent = (props: any) => {
               <Link to="/brands" className="">
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <div style={{ display: "flex", alignItems: "center", }}>
-                    <TbBrandApplePodcast />
+                    <TbBrand4Chan />
 
                     <span>{props.t("Brands")}</span>
                   </div>
@@ -304,7 +308,7 @@ const SidebarContent = (props: any) => {
               <a href="/order-resolution" onClick={(e) => handleItemClick("/order-resolution", e)}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <div style={{ display: "flex", alignItems: "center", }}>
-                    <FeatherIcon icon="shopping-bag" />
+                    <MdOutlineShoppingBag />
                     <span>{props.t("Order Resolution")}</span>
                   </div>
                   <div
@@ -362,7 +366,7 @@ const SidebarContent = (props: any) => {
                 <ul className={`sub-menu ${openMenus.includes("/cms") ? "mm-show" : ""}`}>
                   <li>
                     <Link to="/cmslisting">
-                      <FeatherIcon icon="chevron-right" />{" "}
+                      <FeatherIcon icon="chevron-right" />
                       <span>{props.t("Pages")}</span>
                     </Link>
                   </li>

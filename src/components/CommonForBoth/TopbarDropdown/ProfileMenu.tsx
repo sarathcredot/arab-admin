@@ -18,7 +18,7 @@ import { withTranslation } from "react-i18next";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
 // users
-import user1 from "../../../assets/images/users/avatar-1.jpg";
+import user1 from "../../../assets/images/users/avatar-dummy.webp";
 
 //redux
 import { useSelector } from "react-redux";
@@ -185,7 +185,7 @@ const ProfileMenu = (props: any) => {
           <Button style={{ backgroundColor: "rgba(0, 0, 0, 1)" }} onClick={toggleLogoutModal}>
             Cancel
           </Button>
-          <Button style={{ backgroundColor: "rgba(177, 35, 73, 1)" }} onClick={handleLogout}>
+          <Button color="primary" onClick={handleLogout}>
             Logout
           </Button>
         </ModalFooter>
