@@ -227,12 +227,12 @@ const ProductListing = () => {
                           <Tr>
                             <Th data-priority="1">Sl.No</Th>
                             <Th data-priority="1">Name</Th>
-                            <Th>ProductCode</Th>
+                            <Th>Product Code</Th>
                             <Th data-priority="3">Short Description</Th>
                             <Th data-priority="3">Category</Th>
                             <Th data-priority="1">Image</Th>
                             <Th data-priority="3"> Verify Status</Th>
-                            <Th data-priority="3">View</Th>
+                            <Th data-priority="3">Action</Th>
                           </Tr>
                         </Thead>
                         <Tbody>

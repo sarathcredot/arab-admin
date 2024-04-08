@@ -217,7 +217,7 @@ function VendorsOverview() {
 
             <Row>
                 <Col xs={12}>
-                    <Card className="card-h-100" style={{ height: "400px", width: "100%", borderRadius: "7px", borderColor: "1px solid #F9F9F9", boxShadow: "1px solid #F9F9F9" }}>
+                    <Card className="card-h-100" style={{ height: "400px", width: "100%", }}>
                         <CardHeader>
                             <h5>
                                 Vendors

@@ -44,6 +44,11 @@ function OutletListing() {
   const [maxRecords, setMaxRecords] = useState<number>(0);
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState(0);
+  const [filters, setFilters] = useState({
+    vendorId: "",
+    outletName: "",
+  });
+
 
   const GET_ALL_KYC = gql`
   query GetAllVendorOutletRecordsByAdmin($input: VendorOutletRecordsByAdminFilter) {
@@ -81,7 +86,10 @@ function OutletListing() {
       input: {
         page: currentPage,
         size: pageSize,
-        status: activeTab
+        status: activeTab,
+        fullName: searchTerm,
+        ...(filters.vendorId && { vendorId: filters.vendorId }),
+        outletName: filters.outletName,
       },
     },
   });
@@ -90,7 +98,7 @@ function OutletListing() {
     if (kycDataResponse) {
       setOutletData(kycDataResponse.getAllVendorOutletRecordsByAdmin?.records || []);
     }
-  }, [kycDataResponse, currentPage]);
+  }, [kycDataResponse, currentPage, filters, searchTerm]);
 
   const toggleTab = (tab: string) => {
     setActiveTab(tab);
@@ -116,7 +124,10 @@ function OutletListing() {
   };
 
   const handleFilterSubmit = (formData: any) => {
-    console.log(formData);
+    setFilters({
+      outletName: formData.outletName,
+      vendorId: formData.vendorId,
+    })
   };
 
   const filterOptions = [
@@ -130,14 +141,7 @@ function OutletListing() {
       type: 'text',
       name: 'outletName',
     },
-    {
-      label: 'Fullname',
-      type: 'text',
-      name: 'fullname',
-    },
-
   ];
-
 
   return (
     <>
@@ -221,32 +225,26 @@ function OutletListing() {
                         </tr>
                       </thead>
                       <tbody>
-                        {outletData
-                          .slice(
-                            currentPage * pageSize,
-                            (currentPage + 1) * pageSize
-                          )
-
-                          .map((outlet, index) => (
-                            <tr key={outlet._id}>
-                              <td>{currentPage * pageSize + index + 1}</td>
-                              <td>{outlet.fullName}</td>
-                              <td>{outlet.outletName}</td>
-                              <td
-                              >
-                                <StatusIndicator status={outlet.isKycCompleted ? "COMPLETED" : "PENDING"} />
-                              </td>
-                              <td>
-                                <StatusIndicator status={outlet?.status} /></td>
-                              <td>
-                                <Link to={`/vendors/view?id=${outlet.vendorId}&&tab=businessoutlet`}>
-                                  <Button size="sm" color="primary">
-                                    View
-                                  </Button>
-                                </Link>
-                              </td>
-                            </tr>
-                          ))}
+                        {outletData?.map((outlet, index) => (
+                          <tr key={outlet._id}>
+                            <td>{currentPage * pageSize + index + 1}</td>
+                            <td>{outlet.fullName}</td>
+                            <td>{outlet.outletName}</td>
+                            <td
+                            >
+                              <StatusIndicator status={outlet.isKycCompleted ? "COMPLETED" : "PENDING"} />
+                            </td>
+                            <td>
+                              <StatusIndicator status={outlet?.status} /></td>
+                            <td>
+                              <Link to={`/vendors/view?id=${outlet.vendorId}&&tab=businessoutlet`}>
+                                <Button size="sm" color="primary">
+                                  View
+                                </Button>
+                              </Link>
+                            </td>
+                          </tr>
+                        ))}
                       </tbody>
                     </Table>
                 }

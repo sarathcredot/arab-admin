@@ -22,6 +22,7 @@ import { ToastContainer, toast } from "react-toastify";
 import AttributeForm from "./AttributeForm";
 import SubAttributeForm from "./SubAttributeForm";
 import CustomButton from "src/components/Common/CustomButton";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
 interface AttributeValue {
   _id: string;
@@ -206,7 +207,7 @@ const ValueAttributeList: React.FC = () => {
                     <Col xs={6}>
                       <Input
                         type="text"
-                        placeholder="Search by name"
+                        placeholder="Search by value"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         style={{ width: "60%" }}
@@ -253,11 +254,8 @@ const ValueAttributeList: React.FC = () => {
 
                             <td>{attribute.priority}</td>
                             <td
-                              style={{
-                                color: attribute.isBlocked ? "red" : "#5cb85c",
-                              }}
                             >
-                              {attribute.isBlocked ? "Blocked" : "Active"}
+                              <StatusIndicator status={attribute.isBlocked ? "BLOCKED" : "ACTIVE"} />
                             </td>
                             {/* <td>
                               <Link to={`/attributes/${attribute._id}`}>

@@ -29,7 +29,7 @@ interface DynamicFilterProps {
     onSubmit: (formData: FilterData) => void;
 }
 
-const DynamicFilter: React.FC<DynamicFilterProps> = ({ filterOptions, onSubmit, }) => {
+const DynamicFilter: React.FC<DynamicFilterProps> = ({ filterOptions, onSubmit }) => {
     const initialFormData: FilterData = {};
     filterOptions.forEach(option => {
         initialFormData[option.name] = '';
@@ -60,6 +60,13 @@ const DynamicFilter: React.FC<DynamicFilterProps> = ({ filterOptions, onSubmit, 
         return chunkedArray;
     };
 
+    const getColSize = (length: number) => {
+        if (length === 2) return 6;
+        if (length === 3) return 4;
+        if (length === 4) return 3;
+        return 12;
+    };
+
     return (
         <Card>
             <CardBody>
@@ -71,7 +78,7 @@ const DynamicFilter: React.FC<DynamicFilterProps> = ({ filterOptions, onSubmit, 
                     {chunkArray(filterOptions, 4).map((row, index) => (
                         <Row key={index}>
                             {row.map((option: any, idx: any) => (
-                                <Col key={idx} md={3}>
+                                <Col key={idx} md={getColSize(row.length)}>
                                     <FormGroup>
                                         <Label for={option.name}>{option.label}</Label>
                                         {option.type === 'select' ? (

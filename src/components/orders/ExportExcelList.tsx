@@ -151,7 +151,8 @@ function ExportExcelList({ name }: any) {
                 toggle={toggleExportList}
                 innerRef={popoverRef}
             >
-                <PopoverHeader>Export List</PopoverHeader>
+                <PopoverHeader style={{ backgroundColor: "red !important" }}>Export List</PopoverHeader>
+
                 <PopoverBody >
                     {
 

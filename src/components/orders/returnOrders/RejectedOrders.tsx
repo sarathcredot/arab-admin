@@ -324,12 +324,10 @@ const RejectedOrders = () => {
                 <Collapse isOpen={isOpen} style={{ marginTop: '20px' }}>
                     <ReturnOrdersFilters onSubmit={handleFormSubmit} />
                 </Collapse>
-
             </Row>
 
             <Card>
                 <CardBody>
-
                     <div>
                         {
                             ordersLoading ? <Loader />
@@ -433,24 +431,21 @@ const RejectedOrders = () => {
                     <Col>
                         <div className="d-flex justify-content-end mt-0 me-3">
                             <ul className="pagination">
-                                <li
-                                    className={`page-item ${currentPage === 0 ? "disabled" : ""
-                                        }`}
-                                >
-                                    <button
-                                        className="page-link"
-                                        onClick={() => setCurrentPage(currentPage - 1)}
-                                        disabled={currentPage === 0}
-                                    >
-                                        Previous
-                                    </button>
-                                </li>
+                                {currentPage > 0 && (
+                                    <li className="page-item">
+                                        <button
+                                            className="page-link"
+                                            onClick={() => setCurrentPage(currentPage - 1)}
+                                        >
+                                            Previous
+                                        </button>
+                                    </li>
+                                )}
 
                                 {Array.from({ length: totalPages }, (_, index) => (
                                     <li
                                         key={index}
-                                        className={`page-item ${currentPage === index ? "active" : ""
-                                            }`}
+                                        className={`page-item ${currentPage === index ? "active" : ""}`}
                                     >
                                         <button
                                             className="page-link"
@@ -462,14 +457,10 @@ const RejectedOrders = () => {
                                 ))}
 
                                 {currentPage < totalPages - 1 && (
-                                    <li
-                                        className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
-                                            }`}
-                                    >
+                                    <li className="page-item">
                                         <button
                                             className="page-link"
                                             onClick={() => setCurrentPage(currentPage + 1)}
-                                            disabled={currentPage === totalPages - 1}
                                         >
                                             Next
                                         </button>
@@ -478,6 +469,7 @@ const RejectedOrders = () => {
                             </ul>
                         </div>
                     </Col>
+
                 </Row>
             </Card>
         </div>

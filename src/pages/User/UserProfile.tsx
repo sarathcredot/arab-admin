@@ -17,6 +17,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Collapse,
 } from "reactstrap";
 
 // Formik Validation
@@ -48,6 +49,8 @@ import { formatCurrency } from "src/utils/formatCurrency";
 import "./UserProfile.css"
 import CustomButton from "src/components/Common/CustomButton";
 import Iconify from "src/components/iconify";
+import DynamicFilter from "src/components/filter/DynamicFilter";
+import Loader from "src/components/Common/Loader";
 
 
 interface UserData {
@@ -118,6 +121,10 @@ const UserProfile = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const pageSize = 5;
   const [maxRecords, setMaxRecords] = useState<number>(0);
+
+
+  const [filters, setFilters] = useState({ orderId: "" });
+
 
   const GET_USER = gql`
 query GetUserRecordByAdmin($input: userInput!) {
@@ -192,11 +199,13 @@ query GetUserRecordByAdmin($input: userInput!) {
     data: ordersDataResponse,
     refetch: ordersRefetch,
   } = useQuery(GET_USER_ORDER, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         page: currentPage,
         size: pageSize,
-        userId: userId
+        userId: userId,
+        orderId: filters.orderId
       },
     },
   });
@@ -207,7 +216,8 @@ query GetUserRecordByAdmin($input: userInput!) {
         input: {
           page: currentPage,
           size: pageSize,
-          userId: userId
+          userId: userId,
+          orderId: filters.orderId
         },
       });
       setOrders(result.data.getUserOrderProductsByAdmin.records);
@@ -219,7 +229,7 @@ query GetUserRecordByAdmin($input: userInput!) {
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, ordersRefetch, ordersLoading]);
+  }, [currentPage, ordersRefetch, ordersLoading, filters, ordersDataResponse]);
 
   const UPDATAE_PROFILE = gql`
   mutation UpdateUserProfileByAdmin($input: UpdateUserProfileByAdminInput!) {
@@ -237,6 +247,7 @@ query GetUserRecordByAdmin($input: userInput!) {
     data: userData,
     refetch: userRefetch,
   } = useQuery(GET_USER, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         _id: userId
@@ -394,6 +405,28 @@ query GetUserRecordByAdmin($input: userInput!) {
 
 
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleCollapse = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleFilterSubmit = (formData: any) => {
+    setFilters({
+      orderId: formData.orderId,
+    })
+  };
+
+  const filterOptions = [
+    {
+      label: 'Order ID',
+      type: 'text',
+      name: 'orderId',
+    },
+  ];
+
+
+
   return (
     <React.Fragment>
       <div className="page-content">
@@ -414,7 +447,7 @@ query GetUserRecordByAdmin($input: userInput!) {
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                          <h5 style={{ margin: "0" }}>{data?.displayName && capitalCase(data?.displayName)}</h5>
+                          <h5 style={{ margin: "0" }}>{data?.displayName && capitalCase(data?.displayName) || "User"}</h5>
                           <div style={{ width: "80px", height: '20px', border: `1px solid ${data?.isBlocked ? "#dc4016" : "green"}`, borderRadius: "18px", display: "flex", alignItems: "center", justifyContent: "center", color: `${data?.isBlocked ? "#dc4016" : "green"}` }}>
                             <p style={{ margin: "0" }}>  {data?.isBlocked == false ? "Active" : "Blocked"}</p>
                           </div>
@@ -449,11 +482,25 @@ query GetUserRecordByAdmin($input: userInput!) {
           <div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginTop: "10px" }}>
-              <h4 className="mb-0 font-size-18">Orders</h4>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                {orders.map(renderProductItem)}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <h4 className="mb-0 font-size-18">Orders</h4>
+                <CustomButton onClick={toggleCollapse} name="Filters" icon="clarity:filter-solid" />
               </div>
+
+              <Collapse isOpen={isOpen}>
+                <DynamicFilter
+                  filterOptions={filterOptions}
+                  onSubmit={handleFilterSubmit}
+                />
+              </Collapse>
+              {
+                ordersLoading ?
+                  <Loader />
+                  :
+                  <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+                    {orders.map(renderProductItem)}
+                  </div>
+              }
 
             </div>
             <Row>

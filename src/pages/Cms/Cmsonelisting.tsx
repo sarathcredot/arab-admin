@@ -8,6 +8,7 @@ import { gql, useQuery } from "@apollo/client";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 import CustomButton from "src/components/Common/CustomButton";
+import Loader from "src/components/Common/Loader";
 
 const GET_ALL_CMS_RECORDS = gql`
 query GetAllCmsRecordsByAdmin($input: CmsRecordsByAdminFilter) {
@@ -167,56 +168,61 @@ const CmsListing = () => {
                       className="table-responsive mb-0"
                       data-pattern="priority-columns"
                     >
-                      <Table
-                        id="cms-records-table"
-                        className="table table-striped table-bordered"
-                      >
-                        <Thead>
-                          <Tr>
-                            <Th>Sl.No</Th>
-                            <Th data-priority="1">Page Name</Th>
-                            <Th data-priority="3">Section Name</Th>
-                            <Th data-priority="3">Images</Th>
-                            <Th data-priority="3">Status</Th>
-                            <Th data-priority="3">View</Th>
-                          </Tr>
-                        </Thead>
-                        <Tbody>
-                          {cmsRecords.map(
-                            (cmsRecord: CmsRecord, index: number) => (
-                              <Tr key={index}>
-                                <Td>{currentPage * pageSize + index + 1}</Td>
-                                <Td>{cmsRecord.pageName}</Td>
-                                <Td>{cmsRecord.sectionName}</Td>
-                                <Td>
-                                  <img
-                                    src={cmsRecord.images[0]?.fileURL}
-                                    alt={cmsRecord.title}
-                                    width={80}
-                                  />
-                                </Td>
-                                <Td>
-                                  <StatusIndicator status={cmsRecord.isBlocked ? "BLOCKED" : "ACTIVE"} />
-
-                                </Td>
-                                <Td>
-                                  <Button
-                                    color="primary"
-                                    size="sm"
-                                    tag={Link}
-                                    to={{
-                                      pathname: "/cms/details/",
-                                      search: `?_id=${cmsRecord._id}`,
-                                    }}
-                                  >
-                                    View
-                                  </Button>
-                                </Td>
+                      {
+                        loading ?
+                          <Loader />
+                          :
+                          <Table
+                            id="cms-records-table"
+                            className="table table-striped table-bordered"
+                          >
+                            <Thead>
+                              <Tr>
+                                <Th>Sl.No</Th>
+                                <Th data-priority="1">Page Name</Th>
+                                <Th data-priority="3">Section Name</Th>
+                                <Th data-priority="3">Images</Th>
+                                <Th data-priority="3">Status</Th>
+                                <Th data-priority="3">View</Th>
                               </Tr>
-                            )
-                          )}
-                        </Tbody>
-                      </Table>
+                            </Thead>
+                            <Tbody>
+                              {cmsRecords.map(
+                                (cmsRecord: CmsRecord, index: number) => (
+                                  <Tr key={index}>
+                                    <Td>{currentPage * pageSize + index + 1}</Td>
+                                    <Td>{cmsRecord.pageName}</Td>
+                                    <Td>{cmsRecord.sectionName}</Td>
+                                    <Td>
+                                      <img
+                                        src={cmsRecord.images[0]?.fileURL}
+                                        alt={cmsRecord.title}
+                                        width={80}
+                                      />
+                                    </Td>
+                                    <Td>
+                                      <StatusIndicator status={cmsRecord.isBlocked ? "BLOCKED" : "ACTIVE"} />
+
+                                    </Td>
+                                    <Td>
+                                      <Button
+                                        color="primary"
+                                        size="sm"
+                                        tag={Link}
+                                        to={{
+                                          pathname: "/cms/details/",
+                                          search: `?_id=${cmsRecord._id}`,
+                                        }}
+                                      >
+                                        View
+                                      </Button>
+                                    </Td>
+                                  </Tr>
+                                )
+                              )}
+                            </Tbody>
+                          </Table>
+                      }
                     </div>
                   </div>
                   <Row>

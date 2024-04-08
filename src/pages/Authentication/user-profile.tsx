@@ -21,7 +21,7 @@ import { useFormik } from "formik";
 import { useSelector, useDispatch } from "react-redux";
 
 import withRouter from "../../components/Common/withRouter";
-
+import user1 from "../../assets/images/users/avatar-dummy.webp";
 //Import Breadcrumb
 import Breadcrumb from "../../components/Common/Breadcrumb";
 
@@ -192,7 +192,7 @@ const UserProfile = () => {
                   <div className="d-flex">
                     <div className="ms-3">
                       <img
-                        src={data?.profilePic?.fileURL}
+                        src={data?.profilePic?.fileURL || user1}
                         alt=""
                         className="avatar-md rounded-circle img-thumbnail"
                       />
@@ -201,7 +201,7 @@ const UserProfile = () => {
                       <div className="text-muted">
                         <h5>{data?.fullName}</h5>
                         <p className="mb-1">Email : {data?.email} </p>
-                        <p className="mb-0">Name: {data?.fullName}</p>
+                        {/* <p className="mb-0">Name: {data?.fullName}</p> */}
                       </div>
                     </div>
                   </div>

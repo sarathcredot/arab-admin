@@ -224,7 +224,7 @@ const CategoryList: React.FC<Props> = () => {
           return (
             isNameMatch &&
             size?.isBlocked ===
-            (selectedStatus.value === "blocked" ? true : false)
+            (selectedStatus.value === "true" ? true : false)
           );
         }
       });

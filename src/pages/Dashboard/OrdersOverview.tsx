@@ -102,7 +102,7 @@ function OrdersOverview({ vendorId }: any) {
                 horizontal: false
             }
         },
-        colors: ["#b12349"],
+        colors: ["#e30613"],
         stroke: {
             curve: "smooth",
             width: 2,
@@ -179,9 +179,9 @@ function OrdersOverview({ vendorId }: any) {
             position: "bottom",
             horizontalAlign: "center",
             floating: false,
-            fontSize: "14px",
-            offsetX: 0,
-            offsetY: 10,
+            fontSize: "12px",
+            offsetX: 10,
+            offsetY: 0,
         },
         tooltip: {
             enabled: true,
@@ -309,7 +309,7 @@ query GetDashboardOrdersPieChartData($input: GetDashboardOrdersPieChartDataInput
 
             <Row>
                 <Col xs={12} sm={12} xl={8}>
-                    <Card className="card-h-100" style={{ height: "500px", width: "100%", borderRadius: "7px", borderColor: "1px solid #F9F9F9", boxShadow: "1px solid #F9F9F9" }}>
+                    <Card className="" style={{ height: "500px", width: "100%", }}>
                         <CardHeader>
                             <h5>
                                 Orders
@@ -357,7 +357,7 @@ query GetDashboardOrdersPieChartData($input: GetDashboardOrdersPieChartDataInput
 
                 </Col>
                 <Col xs={12} sm={12} xl={4}>
-                    <Card className="card-h-100" style={{ height: "500px", width: "100%", borderRadius: "7px", borderColor: "1px solid #F9F9F9", boxShadow: "1px solid #F9F9F9" }}>
+                    <Card className="card-h-100" style={{ height: "500px", width: "100%", }}>
                         <CardHeader>
                             <h5>
                                 Total  Orders
@@ -375,13 +375,13 @@ query GetDashboardOrdersPieChartData($input: GetDashboardOrdersPieChartDataInput
                             </FormGroup>
                         </div>
 
-                        <CardBody style={{ display: "flex", flexDirection: "column", marginTop: "" }}>
+                        <CardBody style={{ display: "flex", flexDirection: "column", }}>
                             <ReactApexChart
                                 series={[ordersPie.deliveredOrders, ordersPie.cancelledOrders, ordersPie.returnedOrders]}
                                 type="donut"
                                 className="apex-charts  "
                                 dir="ltr"
-                                height={320}
+                                height={"300px"}
                                 options={{
                                     ...donutGraphOptions,
                                     colors: ['#2ab57d', '#ffbf53', '#fd625e'], //he desired color here
