@@ -76,7 +76,7 @@ const ProductDetails = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const _id = searchParams.get("_id");
-  const [product, setProduct] = useState<ProductData>();
+  const [product, setProduct] = useState<any>();
   const [productVariants, setProductVariants] = useState<IVariant[]>([]);
   const [selectedVSize, setSelectedVSize] = useState<string>("");
   const [selectedVColor, setSelectedVColor] = useState<string>("");
@@ -139,17 +139,21 @@ const ProductDetails = () => {
   `;
 
   const GET_VARIANTS = gql`
-    query Variants($input: VariantsInput!) {
-      getVariants(input: $input) {
-        variants {
-          _id
-          color
-          size
-          stock
-          colorCode
-        }
-      }
+  query GetVariants($input: VariantsInput!) {
+  getVariants(input: $input) {
+    variants {
+      _id
+      productId
+      attributeId
+      attributeName
+      attributeType
+      attributeValueId
+      attributeValue
+      attributeDescription
+      colorCode
     }
+  }
+}
   `;
 
   const PUT_STATUS = gql`
@@ -342,7 +346,7 @@ const ProductDetails = () => {
                             </label>
 
                             <div style={{ display: "flex", marginTop: "10px" }}>
-                              {product?.images.map((item, index) => (
+                              {product?.images.map((item: any, index: number) => (
                                 <div
                                   key={index}
                                   className="relative"
@@ -377,7 +381,7 @@ const ProductDetails = () => {
                             </label>
 
                             <div style={{ display: "flex", marginTop: "10px" }}>
-                              {product?.productDetailImages?.map((item, index) => (
+                              {product?.productDetailImages?.map((item: any, index: number) => (
                                 <div
                                   key={index}
                                   className="relative"
@@ -415,7 +419,7 @@ const ProductDetails = () => {
                             </div>
                           </Col>
 
-                          <Col xl={3}>
+                          <Col xl={2}>
                             <div
                               className=""
                               style={{ display: "flex", gap: "4px", alignItems: "center" }}
@@ -431,13 +435,74 @@ const ProductDetails = () => {
                               </p>
                             </div>
                           </Col>
-                          <Col xl={3}>
+                          <Col xl={2}>
                             <div className="" style={{ display: "flex", gap: "4px" }}>
                               <label htmlFor="cleave-date" className="form-label">
                                 Stock :
                               </label>
                               <p className="form-control-static">{product?.stock}</p>
                             </div>
+                          </Col>
+                          <Col xl={2}>
+                            <div className="" style={{ display: "flex", gap: "4px" }}>
+                              <label htmlFor="cleave-date" className="form-label">
+                                Sku ID :
+                              </label>
+                              <p className="form-control-static">{product?.skuId}</p>
+                            </div>
+                          </Col>
+                        </Row>
+                      </div>
+
+                      <div className="border mt-3 border-dashed"></div>
+
+
+                      <div className="mt-4">
+                        <Row>
+                          <Col xl={6}>
+                            {product?.attributes.map((attribute: any, index: number) => (
+                              <div key={index}>
+                                <div className="mb-3" key={index}>
+                                  <label htmlFor="cleave-time-format" className="form-label">
+                                    {attribute.attributeDescription}
+                                  </label>
+                                  <p className="form-control-static">{attribute.attributeValue}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </Col>
+                        </Row>
+                      </div>
+
+                      <div className="border mt-3 border-dashed"></div>
+
+                      <div className="mt-4">
+                        <Row>
+                          <Col xl={12}>
+                            <div className="mb-1" style={{ display: "flex", gap: "4px" }}>
+                              <label htmlFor="cleave-numeral" className="form-label">
+                                {" "}
+                                Product Short Info :
+                              </label>
+                            </div>
+                            <p className="form-control-static">
+                              {product?.productShortInfo}
+                            </p>
+                          </Col>
+                          <Col xl={12}>
+                            <div className="mb-1" style={{ display: "flex", gap: "4px" }}>
+                              <label htmlFor="cleave-numeral" className="form-label">
+                                {" "}
+                                Product Info :
+                              </label>
+                            </div>
+                            <ul>
+                              {
+                                product?.productInfo?.map((item: any, index: number) => (
+                                  <li key={`${index}-item`}>{item}</li>
+                                ))
+                              }
+                            </ul>
                           </Col>
                         </Row>
                       </div>
@@ -473,23 +538,7 @@ const ProductDetails = () => {
                       </div>
                       <div className="border mt-3 border-dashed"></div>
 
-                      <div className="mt-4">
-                        <Row>
-                          <Col xl={6}>
-                            {product?.attributes.map((attribute, index) => (
-                              <div key={index}>
-                                <div className="mb-3" key={index}>
-                                  <label htmlFor="cleave-time-format" className="form-label">
-                                    {attribute.attributeDescription}
-                                  </label>
-                                  <p className="form-control-static">{attribute.attributeValue}</p>
-                                </div>
-                              </div>
-                            ))}
-                          </Col>
-                        </Row>
-                      </div>
-                      <div className="border mt-3 border-dashed"></div>
+
 
                       <div className="mt-4">
                         <Row>
@@ -528,9 +577,15 @@ const ProductDetails = () => {
                           <Col xl={6}>
                             <div className="mb-3" style={{ display: "flex", gap: "4px" }}>
                               <label htmlFor="cleave-numeral" className="form-label">
-                                tags:
+                                Tags:
                               </label>
-                              <p className="form-control-static">{product?.tags}</p>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                {
+                                  product?.tags?.map((item: any, index: number) => (
+                                    <span style={{ background: "white", border: "1px solid black", display: "flex", alignItems: "center", justifyContent: "center", padding: "10px", borderRadius: "10px", width: "auto", height: "10px", fontSize: "12px", cursor: "pointer" }} key={`btn-${index}`}>{item}</span>
+                                  ))
+                                }
+                              </div>
                             </div>
                           </Col>
 

@@ -222,14 +222,13 @@ const SubAttributeForm: React.FC<Props> = ({
             ) : null}
 
             <ModalFooter style={{ marginTop: "20px" }}>
-              <Button style={{ backgroundColor: "rgba(0, 0, 0, 1)" }}>
-                submit
-              </Button>
               <Button
-                style={{ backgroundColor: "rgba(177, 35, 73, 1)" }}
                 onClick={toggle}
               >
                 Cancel
+              </Button>
+              <Button color="primary">
+                Submit
               </Button>
             </ModalFooter>
           </Form>

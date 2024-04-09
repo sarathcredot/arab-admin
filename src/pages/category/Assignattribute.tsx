@@ -378,13 +378,13 @@ function Assignattribute() {
                 </CardHeader>
                 <CardHeader>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <Input
+                    {/* <Input
                       type="text"
                       placeholder="Search by name"
                       value={searchTerm}
                       onChange={handleSearch}
                       style={{ width: "450px", }}
-                    />
+                    /> */}
                     <CustomButton name="Assign Attributes" icon="fluent:tab-add-20-filled" onClick={toggle} />
                   </div>
                 </CardHeader>

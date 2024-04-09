@@ -204,6 +204,7 @@ query GetAdminOrderProduct($input: GetAdminOrderProductInput!) {
       mimeType
       originalName
     }
+    warehouseSkuId
   }
 }
 `

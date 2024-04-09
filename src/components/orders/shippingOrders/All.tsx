@@ -375,10 +375,17 @@ const All = () => {
 
                 </Col>
                 <Col xs={3} style={{ display: "flex", gap: "20px", justifyContent: "flex-end" }}>
-
-                    <CustomButton outline name="Export" icon="ph:export-bold" onClick={handleExportClick} />
+                    <CustomButton bgColor="unset" style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "40px",
+                        borderRadius: "10px",
+                        gap: "5px",
+                        fontSize: "13px",
+                    }} outline color="primary" name="Export" icon="ph:export-bold" onClick={handleExportClick} />
                     <CustomButton name="Filters" onClick={toggle} icon="foundation:filter" />
-
                 </Col>
                 <Collapse isOpen={isOpen} style={{ marginTop: '20px' }}>
                     <ProductOrdersFilters onSubmit={handleFormSubmit} />

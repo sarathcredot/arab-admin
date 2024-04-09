@@ -94,8 +94,6 @@ interface Product {
 }
 
 const VariantListing = () => {
-  const pageSize = 10; // Number of items per page
-  const [currentPage, setCurrentPage] = useState(0);
 
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [products, setProducts] = useState<Product[]>([]);
@@ -174,7 +172,7 @@ const VariantListing = () => {
 
   useEffect(() => {
     fetchData();
-  }, [searchTerm, currentPage, refetch]);
+  }, [refetch]);
 
   const handleStatusChange = async (status: any, e: any, proId: string) => {
     try {
@@ -211,10 +209,16 @@ const VariantListing = () => {
           (!selectedStatus2 ||
             selectedStatus2.value === "all" ||
             item.status === selectedStatus2.value) &&
-          (!outOfStockChecked || item.stock < 10)
+          (!outOfStockChecked || item.stock < 10) &&
+          (searchTerm === '' || item.warehouseSkuId?.toLowerCase()?.includes(searchTerm?.toLowerCase()))
       )
     );
-  }, [products, selectedStatus, outOfStockChecked, selectedStatus2]);
+  }, [products, selectedStatus, outOfStockChecked, selectedStatus2, searchTerm]);
+
+
+  const handleSearch = (e: any) => {
+    setSearchTerm(e.target.value)
+  }
 
   const handleStatusSelect = (selectedOption: any) => {
     setSelectedStatus(selectedOption);
@@ -253,8 +257,17 @@ const VariantListing = () => {
                         justifyContent: "space-between",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: "30px" }}>
-                        <h5 style={{ margin: "0" }}>Filters : </h5>
+                      <div style={{ display: "flex", alignItems: "center", gap: "30px", width: "100%" }}>
+                        <h5 style={{ margin: "0", width: "80px" }}>Filters : </h5>
+
+                        <Input
+                          type="text"
+                          placeholder="Search By W.Sku ID"
+                          value={searchTerm}
+                          onChange={handleSearch}
+                          style={{ width: "20%" }}
+                        />
+
                         <Dropdown isOpen={statusDropdownOpen} toggle={toggleStatusDropdown}>
                           <DropdownToggle caret>
                             {selectedStatus ? selectedStatus.label : "Select Status"}
@@ -305,6 +318,8 @@ const VariantListing = () => {
                             />
                           </FormGroup>
                         </div>
+
+
                       </div>
 
                       <div style={{ width: "auto" }}>

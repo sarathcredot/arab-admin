@@ -20,6 +20,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Iconify from "src/components/iconify";
 import ReturnOrdersFilters from "../ReturnOrdersFilters";
 import Loader from "src/components/Common/Loader";
+import CustomButton from "src/components/Common/CustomButton";
 
 
 
@@ -315,10 +316,7 @@ const RejectedOrders = () => {
 
                 </Col>
                 <Col xl={1} style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <Button onClick={toggle} style={{ width: "100%", display: "flex", gap: "5px", alignItems: "center", justifyContent: "center", background: "black" }} >
-                        <Iconify icon="foundation:filter" />
-                        Filters
-                    </Button>
+                    <CustomButton name="Filters" onClick={toggle} icon="foundation:filter" />
 
                 </Col>
                 <Collapse isOpen={isOpen} style={{ marginTop: '20px' }}>
