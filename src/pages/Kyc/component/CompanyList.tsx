@@ -209,44 +209,51 @@ function CompanyListing() {
                   loading ?
                     <Loader />
                     :
-                    <Table id="tech-companies-1" className="table table-striped table-bordered">
-                      <thead>
-                        <tr>
-                          <th>Sl.No</th>
-                          <th>Full Name</th>
-                          <th>Company Name</th>
-                          <th>CR Number</th>
-                          <th>Kyc Status</th>
-                          <th>Status</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {companyData.map((company, index) => (
-                          <tr key={company._id}>
-                            <td>{pageSize * currentPage + index + 1}</td>
-                            <td>{company.fullName}</td>
-                            <td>{company.companyName}</td>
-                            <td>{company.crNumber}</td>
-                            <td >
-                              <StatusIndicator status={company.isKycCompleted ? "COMPLETED" : "PENDING"} />
+                    <div className="table-rep-plugin">
 
-                            </td>
-                            <td >
-                              <StatusIndicator status={company?.status} />
+                      <div className="table-responsive mb-0" data-pattern="priority-columns">
 
-                            </td>
-                            <td>
-                              <Link to={`/vendors/view?id=${company.vendorId}&&tab=companydetails`}>
-                                <Button size="sm" color="primary">
-                                  View
-                                </Button>
-                              </Link>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </Table>
+
+                        <Table id="tech-companies-1" className="table table-striped table-bordered">
+                          <thead>
+                            <tr>
+                              <th>Sl.No</th>
+                              <th>Full Name</th>
+                              <th>Company Name</th>
+                              <th>CR Number</th>
+                              <th>Kyc Status</th>
+                              <th>Status</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {companyData.map((company, index) => (
+                              <tr key={company._id}>
+                                <td>{pageSize * currentPage + index + 1}</td>
+                                <td>{company.fullName}</td>
+                                <td>{company.companyName}</td>
+                                <td>{company.crNumber}</td>
+                                <td >
+                                  <StatusIndicator status={company.isKycCompleted ? "COMPLETED" : "PENDING"} />
+
+                                </td>
+                                <td >
+                                  <StatusIndicator status={company?.status} />
+
+                                </td>
+                                <td>
+                                  <Link to={`/vendors/view?id=${company.vendorId}&&tab=companydetails`}>
+                                    <Button size="sm" color="primary">
+                                      View
+                                    </Button>
+                                  </Link>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </Table>
+                      </div>
+                    </div>
                 }
               </CardBody>
               <Row style={{ marginRight: "10px" }}>

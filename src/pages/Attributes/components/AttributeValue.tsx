@@ -227,47 +227,54 @@ const ValueAttributeList: React.FC = () => {
                     <SubAttributeForm isOpen={showAddModal} toggle={toggleAddModal} refetch={attributeRefetch} Id={id} attributData={attributeData} />
                   </div>
 
-                  <Table id="tech-companies-1" className="table table-striped table-bordered">
-                    <thead>
-                      <tr>
-                        <th>No</th>
-                        <th>value</th>
-                        {attributeData?.description.toLowerCase() === "color" ? <th>colorCode</th> : null}
+                  <div className="table-rep-plugin">
 
-                        <th>priority</th>
-                        <th>Status</th>
-                        {/* <th>Action</th> */}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {attributeData?.attributeValues
-                        .filter((attribute) =>
-                          attribute.value
-                            .toLowerCase()
-                            .includes(searchTerm.toLowerCase())
-                        )
-                        .map((attribute, index) => (
-                          <tr key={attribute._id}>
-                            <td>{index + 1}</td>
-                            <td>{attribute.value}</td>
-                            {attributeData?.description.toLowerCase() === "color" ? <td>{attribute.colorCode}</td> : null}
+                    <div className="table-responsive mb-0" data-pattern="priority-columns">
 
-                            <td>{attribute.priority}</td>
-                            <td
-                            >
-                              <StatusIndicator status={attribute.isBlocked ? "BLOCKED" : "ACTIVE"} />
-                            </td>
-                            {/* <td>
+
+                      <Table id="tech-companies-1" className="table table-striped table-bordered">
+                        <thead>
+                          <tr>
+                            <th>No</th>
+                            <th>value</th>
+                            {attributeData?.description.toLowerCase() === "color" ? <th>colorCode</th> : null}
+
+                            <th>priority</th>
+                            <th>Status</th>
+                            {/* <th>Action</th> */}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {attributeData?.attributeValues
+                            .filter((attribute) =>
+                              attribute.value
+                                .toLowerCase()
+                                .includes(searchTerm.toLowerCase())
+                            )
+                            .map((attribute, index) => (
+                              <tr key={attribute._id}>
+                                <td>{index + 1}</td>
+                                <td>{attribute.value}</td>
+                                {attributeData?.description.toLowerCase() === "color" ? <td>{attribute.colorCode}</td> : null}
+
+                                <td>{attribute.priority}</td>
+                                <td
+                                >
+                                  <StatusIndicator status={attribute.isBlocked ? "BLOCKED" : "ACTIVE"} />
+                                </td>
+                                {/* <td>
                               <Link to={`/attributes/${attribute._id}`}>
                                 <Button style={{ marginLeft: "20px" }}>
                                   View
                                 </Button>
                               </Link>
                             </td> */}
-                          </tr>
-                        ))}
-                    </tbody>
-                  </Table>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </Table>
+                    </div>
+                  </div>
                 </CardBody>
 
                 {/* <Row>

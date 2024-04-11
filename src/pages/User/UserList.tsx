@@ -262,47 +262,52 @@ const UserList = () => {
                   {usersLoading ? (
                     <Loader />
                   ) : (
-                    <Table id="tech-companies-1" className="table table-striped table-bordered">
-                      <Thead>
-                        <Tr>
-                          <Th>Sl.No</Th>
-                          <Th>Phone Number</Th>
-                          <Th>Fullname</Th>
-                          <Th>Email</Th>
-                          <Th>Status</Th>
-                          <Th>Actions</Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {users.map((user, index) => (
-                          <Tr key={user._id}>
-                            <Td>{currentPage * pageSize + index + 1}</Td>
-                            <Td>{user.mobileNumber}</Td>
-                            <Td>
-                              <div style={{ display: "flex", gap: "15px", alignItems: "center", justifyContent: "space-between" }}>
-                                <p style={{ margin: "0", width: "140px" }}>  {capitalCase(`${user.firstName || ""} ${user.lastName || ""}`)}</p>
-                                <CustomButton outline disabled={copiedPage === currentPage && copiedIndex === index} name=""
-                                  onClick={() => copyToClipboard(user._id, index)}
-                                  icon="mingcute:copy-line" style={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    backgroundColor: "black",
-                                    color: "white",
-                                    width: "30px",
-                                    height: "30px",
-                                    borderRadius: "50%",
-                                    gap: "5px",
-                                    fontSize: "10px",
-                                    border: "none",
-                                  }} />
-                              </div>
-                            </Td>
-                            <Td>{user.email}</Td>
-                            <Td>
-                              <StatusIndicator status={user?.isBlocked ? "BLOCKED" : "ACTIVE"} variant={"default"} />
-                              {/* <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                    <div className="table-rep-plugin">
+
+                      <div className="table-responsive mb-0" data-pattern="priority-columns">
+
+
+                        <Table id="tech-companies-1" className="table table-striped table-bordered">
+                          <Thead>
+                            <Tr>
+                              <Th>Sl.No</Th>
+                              <Th>Phone Number</Th>
+                              <Th>Fullname</Th>
+                              <Th>Email</Th>
+                              <Th>Status</Th>
+                              <Th>Actions</Th>
+                            </Tr>
+                          </Thead>
+                          <Tbody>
+                            {users.map((user, index) => (
+                              <Tr key={user._id}>
+                                <Td>{currentPage * pageSize + index + 1}</Td>
+                                <Td>{user.mobileNumber}</Td>
+                                <Td>
+                                  <div style={{ display: "flex", gap: "15px", alignItems: "center", justifyContent: "space-between" }}>
+                                    <p style={{ margin: "0", width: "140px" }}>  {capitalCase(`${user.firstName || ""} ${user.lastName || ""}`)}</p>
+                                    <CustomButton outline disabled={copiedPage === currentPage && copiedIndex === index} name=""
+                                      onClick={() => copyToClipboard(user._id, index)}
+                                      icon="mingcute:copy-line" style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        backgroundColor: "black",
+                                        color: "white",
+                                        width: "30px",
+                                        height: "30px",
+                                        borderRadius: "50%",
+                                        gap: "5px",
+                                        fontSize: "10px",
+                                        border: "none",
+                                      }} />
+                                  </div>
+                                </Td>
+                                <Td>{user.email}</Td>
+                                <Td>
+                                  <StatusIndicator status={user?.isBlocked ? "BLOCKED" : "ACTIVE"} variant={"default"} />
+                                  {/* <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                                 <div
                                   style={{
                                     width: "8px",
@@ -313,21 +318,23 @@ const UserList = () => {
                                 />
                                 {user?.isBlocked == false ? "Active" : "Block"}
                               </div> */}
-                            </Td>
-                            <Td>
-                              {"  "}
-                              <Button
-                                size="sm"
-                                color="primary"
-                                onClick={() => navigate(`/user/view?userId=${user._id}`)}
-                              >
-                                View
-                              </Button>{" "}
-                            </Td>
-                          </Tr>
-                        ))}
-                      </Tbody>
-                    </Table>
+                                </Td>
+                                <Td>
+                                  {"  "}
+                                  <Button
+                                    size="sm"
+                                    color="primary"
+                                    onClick={() => navigate(`/user/view?userId=${user._id}`)}
+                                  >
+                                    View
+                                  </Button>{" "}
+                                </Td>
+                              </Tr>
+                            ))}
+                          </Tbody>
+                        </Table>
+                      </div>
+                    </div>
                   )}
                 </CardBody>
                 <Row>

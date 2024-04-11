@@ -213,40 +213,47 @@ function OutletListing() {
                     <Loader />
                     :
 
-                    <Table id="tech-companies-1" className="table table-striped table-bordered">
-                      <thead>
-                        <tr>
-                          <th>No</th>
-                          <th>Full Name</th>
-                          <th>Outlet Name</th>
-                          <th>Kyc Status</th>
-                          <th>Status</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {outletData?.map((outlet, index) => (
-                          <tr key={outlet._id}>
-                            <td>{currentPage * pageSize + index + 1}</td>
-                            <td>{outlet.fullName}</td>
-                            <td>{outlet.outletName}</td>
-                            <td
-                            >
-                              <StatusIndicator status={outlet.isKycCompleted ? "COMPLETED" : "PENDING"} />
-                            </td>
-                            <td>
-                              <StatusIndicator status={outlet?.status} /></td>
-                            <td>
-                              <Link to={`/vendors/view?id=${outlet.vendorId}&&tab=businessoutlet`}>
-                                <Button size="sm" color="primary">
-                                  View
-                                </Button>
-                              </Link>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </Table>
+                    <div className="table-rep-plugin">
+
+                      <div className="table-responsive mb-0" data-pattern="priority-columns">
+
+
+                        <Table id="tech-companies-1" className="table table-striped table-bordered">
+                          <thead>
+                            <tr>
+                              <th>No</th>
+                              <th>Full Name</th>
+                              <th>Outlet Name</th>
+                              <th>Kyc Status</th>
+                              <th>Status</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {outletData?.map((outlet, index) => (
+                              <tr key={outlet._id}>
+                                <td>{currentPage * pageSize + index + 1}</td>
+                                <td>{outlet.fullName}</td>
+                                <td>{outlet.outletName}</td>
+                                <td
+                                >
+                                  <StatusIndicator status={outlet.isKycCompleted ? "COMPLETED" : "PENDING"} />
+                                </td>
+                                <td>
+                                  <StatusIndicator status={outlet?.status} /></td>
+                                <td>
+                                  <Link to={`/vendors/view?id=${outlet.vendorId}&&tab=businessoutlet`}>
+                                    <Button size="sm" color="primary">
+                                      View
+                                    </Button>
+                                  </Link>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </Table>
+                      </div>
+                    </div>
                 }
               </CardBody>
 

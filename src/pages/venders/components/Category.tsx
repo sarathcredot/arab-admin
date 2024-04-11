@@ -244,35 +244,42 @@ query GetAllCategoriesOfVendorByAdmin($input: vendorIdInput!) {
           </div>
         </CardHeader>
         <CardBody>
-          <Table id="tech-companies-1" className="table table-striped table-bordered">
-            <thead>
-              <tr>
-                <th>Sl.No</th>
-                <th>Name</th>
-                <th>Category full Name</th>
+          <div className="table-rep-plugin">
 
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {assignedCategryData?.filter((category) =>
-                category.categoryName
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              ).map((category, index) => (
-                <tr key={category._id}>
-                  <td> {index + 1}</td>
-                  <td>{category.categoryName}</td>
-                  <td>{category.fullCategoryName}</td>
+            <div className="table-responsive mb-0" data-pattern="priority-columns">
 
-                  <td>
-                    <StatusIndicator status={category?.isBlocked == false ? "ACTIVE" : "BLOCKED"} />
 
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+              <Table id="tech-companies-1" className="table table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th>Sl.No</th>
+                    <th>Name</th>
+                    <th>Category full Name</th>
+
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {assignedCategryData?.filter((category) =>
+                    category.categoryName
+                      .toLowerCase()
+                      .includes(searchTerm.toLowerCase())
+                  ).map((category, index) => (
+                    <tr key={category._id}>
+                      <td> {index + 1}</td>
+                      <td>{category.categoryName}</td>
+                      <td>{category.fullCategoryName}</td>
+
+                      <td>
+                        <StatusIndicator status={category?.isBlocked == false ? "ACTIVE" : "BLOCKED"} />
+
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+          </div>
 
           <Modal isOpen={modal} toggle={toggle} >
             <ModalHeader toggle={toggle}>Assign Categories</ModalHeader>

@@ -350,24 +350,29 @@ const CategoryList: React.FC<Props> = () => {
                       <Loader />
                       :
 
-                      <Table id="tech-companies-1" className="table table-striped table-bordered">
-                        <thead>
-                          <tr>
-                            <th>No</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            {/* <th>Size Chart Image</th> */}
-                            <th>Status</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filteredCategory.map((category, index) => (
-                            <tr key={category._id}>
-                              <td>{index + 1}</td>
-                              <td>{category.categoryName}</td>
-                              <td>{category.description}</td>
-                              {/* <td>
+                      <div className="table-rep-plugin">
+
+                        <div className="table-responsive mb-0" data-pattern="priority-columns">
+
+
+                          <Table id="tech-companies-1" className="table table-striped table-bordered">
+                            <thead>
+                              <tr>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                {/* <th>Size Chart Image</th> */}
+                                <th>Status</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {filteredCategory.map((category, index) => (
+                                <tr key={category._id}>
+                                  <td>{index + 1}</td>
+                                  <td>{category.categoryName}</td>
+                                  <td>{category.description}</td>
+                                  {/* <td>
                             {category.sizeChart && (
                               <img
                               src={category?.sizeChart?.fileURL}
@@ -384,34 +389,36 @@ const CategoryList: React.FC<Props> = () => {
                               )}
                             </td> */}
 
-                              <td>
-                                <StatusIndicator status={category?.isBlocked == false ? "ACTIVE" : "BLOCKED"} />
-                              </td>
+                                  <td>
+                                    <StatusIndicator status={category?.isBlocked == false ? "ACTIVE" : "BLOCKED"} />
+                                  </td>
 
-                              <td>
-                                {category.isLeaf ? null : (
-                                  <Button
-                                    size="sm"
-                                    onClick={() => handleNext(category)}
-                                    style={{ backgroundColor: "rgba(0, 0, 0, 1)" }}
-                                  >
-                                    Next
-                                  </Button>
-                                )}
-                                {"  "}
-                                <Button
-                                  color="primary"
-                                  size="sm"
-                                  onClick={() => handleEdit(category)}
+                                  <td>
+                                    {category.isLeaf ? null : (
+                                      <Button
+                                        size="sm"
+                                        onClick={() => handleNext(category)}
+                                        style={{ backgroundColor: "rgba(0, 0, 0, 1)" }}
+                                      >
+                                        Next
+                                      </Button>
+                                    )}
+                                    {"  "}
+                                    <Button
+                                      color="primary"
+                                      size="sm"
+                                      onClick={() => handleEdit(category)}
 
-                                >
-                                  Edit
-                                </Button>{" "}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </Table>
+                                    >
+                                      Edit
+                                    </Button>{" "}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </Table>
+                        </div>
+                      </div>
                   }
 
                   <Modal
