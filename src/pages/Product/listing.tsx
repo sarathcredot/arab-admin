@@ -231,7 +231,7 @@ const ProductListing = () => {
                             <Th data-priority="3">Short Description</Th>
                             <Th data-priority="3">Category</Th>
                             <Th data-priority="1">Image</Th>
-                            <Th data-priority="3"> Verify Status</Th>
+                            {/* <Th data-priority="3"> Verify Status</Th> */}
                             <Th data-priority="3">Action</Th>
                           </Tr>
                         </Thead>
@@ -250,10 +250,10 @@ const ProductListing = () => {
                                   width={80}
                                 />
                               </Td>
-                              <Td>
+                              {/* <Td>
                                 <StatusIndicator status={product?.status} />
 
-                              </Td>
+                              </Td> */}
 
                               <Td>
                                 <Button

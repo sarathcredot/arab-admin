@@ -267,7 +267,7 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
 
   const items = [
     { text: "Dashboard", link: `/` },
-    { text: "Prodducts", link: `/product` },
+    { text: "Products", link: `/product` },
     { text: "Variants", link: `/product/variant?productCode=${editedProduct?.productCode}` },
   ];
 
@@ -604,7 +604,7 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
 
                       <Col md={6}>
                         <FormGroup>
-                          <Label for="status">Status :</Label>
+                          <Label for="status">Verification Status :</Label>
                           <Controller
                             control={control}
                             name="status"
@@ -629,7 +629,7 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                       </Col>
                       <Col md={6}>
                         <FormGroup>
-                          <Label for="isBlocked">Blocking Status :</Label>
+                          <Label for="isBlocked">Status :</Label>
                           <Controller
                             control={control}
                             name="isBlocked"

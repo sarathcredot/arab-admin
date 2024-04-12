@@ -237,7 +237,7 @@ const ValueAttributeList: React.FC = () => {
                           <tr>
                             <th>No</th>
                             <th>value</th>
-                            {attributeData?.description.toLowerCase() === "color" ? <th>colorCode</th> : null}
+                            {attributeData?.description.toLowerCase() === "color" ? <th>Color Code</th> : null}
 
                             <th>priority</th>
                             <th>Status</th>

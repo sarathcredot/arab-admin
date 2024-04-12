@@ -250,7 +250,7 @@ const VariantListing = () => {
                 <CardHeader>
                   <Row>
                     <Col
-                      xs={12}
+                      xs={8}
                       style={{
                         display: "flex",
                         alignItems: "center",
@@ -321,6 +321,8 @@ const VariantListing = () => {
 
 
                       </div>
+                    </Col>
+                    <Col xs={4}>
 
                       <div style={{ width: "auto" }}>
                         <p style={{ margin: 0, fontWeight: 500, display: "flex" }}>

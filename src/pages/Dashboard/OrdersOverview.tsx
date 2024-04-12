@@ -58,7 +58,7 @@ function OrdersOverview({ vendorId }: any) {
         let startDate;
         switch (selectedType) {
             case "DAY":
-                startDate = moment().subtract(2, 'weeks').format('YYYY-MM-DD');
+                startDate = moment().subtract(1, 'weeks').format('YYYY-MM-DD');
                 break;
             case "WEEK":
                 startDate = moment().subtract(3, 'months').format('YYYY-MM-DD');
