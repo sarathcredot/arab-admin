@@ -222,6 +222,7 @@ const ReturnOrderDetails = () => {
       mimeType
       originalName
     }
+    warehouseSkuId
   }
 }
   `

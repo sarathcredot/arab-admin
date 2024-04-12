@@ -71,12 +71,12 @@ const UserProfile = () => {
   `;
 
   const UPDATAE_PROFILE = gql`
-    mutation Mutation($input: AdminEditProfileInput!, $image: Upload) {
-      updateAdminProfile(input: $input, image: $image) {
-        _id
-        message
-      }
-    }
+   mutation UpdateAdminProfile($input: AdminEditProfileInput!, $image: Upload) {
+  updateAdminProfile(input: $input, image: $image) {
+    _id
+    message
+  }
+}
   `;
 
   const [updateProfile] = useMutation(UPDATAE_PROFILE);
@@ -116,7 +116,7 @@ const UserProfile = () => {
 
     initialValues: {
       email: "",
-
+      fullName: '',
       password: "",
       image: null,
     },
@@ -131,6 +131,7 @@ const UserProfile = () => {
           input: {
             email: values?.email,
             password: values?.password,
+            fullName: values?.fullName
           },
         };
 
@@ -212,7 +213,7 @@ const UserProfile = () => {
 
           <h4 className="card-title mb-4">Update Profile</h4>
 
-          <Card style={{ width: "50%" }}>
+          <Card style={{ width: "100%" }}>
             <CardBody>
               <div className="">
                 <Form
@@ -227,7 +228,22 @@ const UserProfile = () => {
                     className="form-group pt-2"
                     style={{ alignItems: "center", justifyContent: "center" }}
                   >
-                    <Label className="form-label">Email</Label>
+                    <Label className="form-label">Fullname</Label>
+                    <Input
+                      name="fullName"
+                      className="form-control"
+                      placeholder="Enter new fullname"
+                      type="text"
+                      autoComplete="off"
+                      value={formik.values?.fullName}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+
+                    {formik.touched.fullName && formik.errors.fullName && (
+                      <div className="text-danger">{formik.errors.fullName}</div>
+                    )}
+                    <Label className="form-label pt-2">Email</Label>
                     <Input
                       name="email"
                       className="form-control"

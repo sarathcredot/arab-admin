@@ -375,10 +375,17 @@ const All = () => {
 
                 </Col>
                 <Col xs={3} style={{ display: "flex", gap: "20px", justifyContent: "flex-end" }}>
-
-                    <CustomButton outline name="Export" icon="ph:export-bold" onClick={handleExportClick} />
+                    <CustomButton bgColor="unset" style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "40px",
+                        borderRadius: "10px",
+                        gap: "5px",
+                        fontSize: "13px",
+                    }} outline color="primary" name="Export" icon="ph:export-bold" onClick={handleExportClick} />
                     <CustomButton name="Filters" onClick={toggle} icon="foundation:filter" />
-
                 </Col>
                 <Collapse isOpen={isOpen} style={{ marginTop: '20px' }}>
                     <ProductOrdersFilters onSubmit={handleFormSubmit} />
@@ -392,124 +399,129 @@ const All = () => {
                         {
                             ordersLoading ? <Loader />
                                 :
-                                <Table id="tech-companies-1" className="table table-striped table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Order Date</th>
-                                            <th>Id</th>
-                                            <th>Username</th>
-                                            <th>Vendor</th>
-                                            <th>Product</th>
-                                            <th>Payment Mode</th>
-                                            <th>Payment Status</th>
-                                            <th>Shipping Status</th>
-                                            <th>Amount</th>
-                                            <th>View</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {orders?.map((order, index) => (
-                                            <tr key={order?._id}>
-                                                <td> {currentPage * pageSize + index + 1}</td>
-                                                <td>{moment(order?.orderDate).format("ll")}</td>
-                                                <td>
-                                                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                                                        <div>
-                                                            <p style={{ margin: "0", fontSize: "10px", fontWeight: "500" }}> Order Id :</p>
-                                                            {<p style={{ fontSize: "14px", margin: "0", }}>{order?.orderId}</p>}
+                                <div className="table-rep-plugin">
+
+                                    <div className="table-responsive mb-0" data-pattern="priority-columns">
+
+
+                                        <Table id="tech-companies-1" className="table table-striped table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Order Date</th>
+                                                    <th>Id</th>
+                                                    <th>Username</th>
+                                                    <th>Vendor</th>
+                                                    <th>Product</th>
+                                                    <th>Payment Mode</th>
+                                                    <th>Payment Status</th>
+                                                    <th>Shipping Status</th>
+                                                    <th>Amount</th>
+                                                    <th>View</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {orders?.map((order, index) => (
+                                                    <tr key={order?._id}>
+                                                        <td> {currentPage * pageSize + index + 1}</td>
+                                                        <td>{moment(order?.orderDate).format("ll")}</td>
+                                                        <td>
+                                                            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                                                                <div>
+                                                                    <p style={{ margin: "0", fontSize: "10px", fontWeight: "500" }}> Order Id :</p>
+                                                                    {<p style={{ fontSize: "14px", margin: "0", }}>{order?.orderId}</p>}
+                                                                </div>
+                                                                <div>
+                                                                    <p style={{ margin: "0", fontSize: "10px", fontWeight: '500' }}> Item Id :</p>
+                                                                    {<p style={{ fontSize: "14px", margin: "0", }}>{order?.itemId}</p>}
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            {order?.username && (
+                                                                <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent: "space-between" }}>
+                                                                    {capitalCase(order.username)}
+                                                                    <CustomButton
+                                                                        outline
+                                                                        name=""
+                                                                        onClick={() => copyToClipboard(order.userId, index)}
+                                                                        icon="mingcute:copy-line"
+                                                                        style={{
+                                                                            display: "flex",
+                                                                            flexDirection: "row",
+                                                                            alignItems: "center",
+                                                                            justifyContent: "center",
+                                                                            backgroundColor: "black",
+                                                                            color: "white",
+                                                                            width: "30px",
+                                                                            height: "30px",
+                                                                            borderRadius: "50%",
+                                                                            gap: "5px",
+                                                                            fontSize: "10px",
+                                                                            border: "none",
+                                                                        }}
+                                                                        disabled={copiedItems[index] === order.userId}
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                        </td>
+
+
+                                                        <td>
+                                                            {order?.vendorName && (
+                                                                <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent: "space-between" }}>
+                                                                    {capitalCase(order.vendorName)}
+                                                                    <CustomButton
+                                                                        outline
+                                                                        name=""
+                                                                        onClick={() => copyToClipboard(order.vendorId, index)}
+                                                                        icon="mingcute:copy-line"
+                                                                        style={{
+                                                                            display: "flex",
+                                                                            flexDirection: "row",
+                                                                            alignItems: "center",
+                                                                            justifyContent: "center",
+                                                                            backgroundColor: "black",
+                                                                            color: "white",
+                                                                            width: "30px",
+                                                                            height: "30px",
+                                                                            borderRadius: "50%",
+                                                                            gap: "5px",
+                                                                            fontSize: "10px",
+                                                                            border: "none",
+                                                                        }}
+                                                                        disabled={copiedItems[index] === order.vendorId}
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                        </td>
+
+
+
+
+                                                        <td>
+                                                            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                                                                <div>
+                                                                    <img width={"50px"} src={order?.image?.fileURL} />
+                                                                </div>
+                                                                <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '5px', width: '100px' }}>
+                                                                    {order?.productName}
+                                                                </div>
+
+                                                            </div>
+                                                        </td>
+                                                        <td>{order?.paymentMode}</td>
+                                                        <td><div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                                                            <div style={{
+                                                                width: "8px", height: "8px", borderRadius: "50%",
+                                                                background: order?.paymentStatus === "PENDING" ? "#ff9500" : (order?.paymentStatus === "IN_PROGRESS" ? "#fff200" : "green")
+                                                            }} />
+                                                            {order?.paymentStatus?.replace("_", " ")}
                                                         </div>
-                                                        <div>
-                                                            <p style={{ margin: "0", fontSize: "10px", fontWeight: '500' }}> Item Id :</p>
-                                                            {<p style={{ fontSize: "14px", margin: "0", }}>{order?.itemId}</p>}
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    {order?.username && (
-                                                        <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent: "space-between" }}>
-                                                            {capitalCase(order.username)}
-                                                            <CustomButton
-                                                                outline
-                                                                name=""
-                                                                onClick={() => copyToClipboard(order.userId, index)}
-                                                                icon="mingcute:copy-line"
-                                                                style={{
-                                                                    display: "flex",
-                                                                    flexDirection: "row",
-                                                                    alignItems: "center",
-                                                                    justifyContent: "center",
-                                                                    backgroundColor: "black",
-                                                                    color: "white",
-                                                                    width: "30px",
-                                                                    height: "30px",
-                                                                    borderRadius: "50%",
-                                                                    gap: "5px",
-                                                                    fontSize: "10px",
-                                                                    border: "none",
-                                                                }}
-                                                                disabled={copiedItems[index] === order.userId}
-                                                            />
-                                                        </div>
-                                                    )}
-                                                </td>
-
-
-                                                <td>
-                                                    {order?.vendorName && (
-                                                        <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent: "space-between" }}>
-                                                            {capitalCase(order.vendorName)}
-                                                            <CustomButton
-                                                                outline
-                                                                name=""
-                                                                onClick={() => copyToClipboard(order.vendorId, index)}
-                                                                icon="mingcute:copy-line"
-                                                                style={{
-                                                                    display: "flex",
-                                                                    flexDirection: "row",
-                                                                    alignItems: "center",
-                                                                    justifyContent: "center",
-                                                                    backgroundColor: "black",
-                                                                    color: "white",
-                                                                    width: "30px",
-                                                                    height: "30px",
-                                                                    borderRadius: "50%",
-                                                                    gap: "5px",
-                                                                    fontSize: "10px",
-                                                                    border: "none",
-                                                                }}
-                                                                disabled={copiedItems[index] === order.vendorId}
-                                                            />
-                                                        </div>
-                                                    )}
-                                                </td>
-
-
-
-
-                                                <td>
-                                                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                                                        <div>
-                                                            <img width={"50px"} src={order?.image?.fileURL} />
-                                                        </div>
-                                                        <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '5px', width: '100px' }}>
-                                                            {order?.productName}
-                                                        </div>
-
-                                                    </div>
-                                                </td>
-                                                <td>{order?.paymentMode}</td>
-                                                <td><div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                                                    <div style={{
-                                                        width: "8px", height: "8px", borderRadius: "50%",
-                                                        background: order?.paymentStatus === "PENDING" ? "#ff9500" : (order?.paymentStatus === "IN_PROGRESS" ? "#fff200" : "green")
-                                                    }} />
-                                                    {order?.paymentStatus?.replace("_", " ")}
-                                                </div>
-                                                </td>
-                                                <td>
-                                                    <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                                                        {/* <div style={{
+                                                        </td>
+                                                        <td>
+                                                            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                                                                {/* <div style={{
                                                 width: "8px", height: "8px", borderRadius: "50%",
                                                 background: order?.shippingStatus === "PENDING" ? "#ff9500" :
                                                     order?.shippingStatus === "PACKAGE_IN_PROGRESS" ? "#fff200" :
@@ -517,48 +529,50 @@ const All = () => {
                                                         order?.shippingStatus === "DELIVERED" ? "green" :
                                                         order?.shippingStatus === "CANCELLED" ? "red" : "black"
                                                     }} /> */}
-                                                        <p style={{ margin: "0" }}>
-                                                            {order?.shippingStatus === "PACKAGE_IN_PROGRESS" ? "IN PROGRESS" : order?.shippingStatus}
-                                                        </p>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                                        <div>
-                                                            {/* <div>
+                                                                <p style={{ margin: "0" }}>
+                                                                    {order?.shippingStatus === "PACKAGE_IN_PROGRESS" ? "IN PROGRESS" : order?.shippingStatus}
+                                                                </p>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                                                                <div>
+                                                                    {/* <div>
                                                      MRP:
                                                     </div> */}
-                                                            <div>
-                                                                Selling:
-                                                            </div>
-                                                            {/* <div>
+                                                                    <div>
+                                                                        Selling:
+                                                                    </div>
+                                                                    {/* <div>
                                                     Refund:
                                                 </div> */}
-                                                            <div>
-                                                                Shipping :
-                                                            </div>
-                                                        </div>
-                                                        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                                                            {/* <div>
+                                                                    <div>
+                                                                        Shipping :
+                                                                    </div>
+                                                                </div>
+                                                                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                                                                    {/* <div>
                                                     {formatCurrency(order.mrp)}
                                                 </div> */}
-                                                            <div>
-                                                                {formatCurrency(order?.sellingPrice)}
-                                                            </div>
-                                                            {/* <div>
+                                                                    <div>
+                                                                        {formatCurrency(order?.sellingPrice)}
+                                                                    </div>
+                                                                    {/* <div>
                                                     {formatCurrency(order.refundAmount)}
                                                 </div> */}
-                                                            <div>
-                                                                {formatCurrency(order?.shippingCharge)}
+                                                                    <div>
+                                                                        {formatCurrency(order?.shippingCharge)}
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td><Button size="sm" color="primary" onClick={() => navigate(`/shipping-orders/details?orderId=${order?.orderId}&_id=${order?._id}`)}>View</Button></td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
+                                                        </td>
+                                                        <td><Button size="sm" color="primary" onClick={() => navigate(`/shipping-orders/details?orderId=${order?.orderId}&_id=${order?._id}`)}>View</Button></td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </Table>
+                                    </div>
+                                </div>
                         }
                     </div>
                 </CardBody>

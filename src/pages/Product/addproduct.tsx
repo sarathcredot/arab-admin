@@ -4,8 +4,9 @@ import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FileWithPath } from "react-dropzone";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Catattribute from "./Catattribute";
 import {
   Button,
   Card,
@@ -77,10 +78,10 @@ const CREATE_PRODUCT = gql`
   }
 `;
 const UPDATE_PRODUCT = gql`
-  mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!, $images: [Upload], $productDetailImages: [Upload]) {
-  updateProductByAdmin(input: $input, images: $images, productDetailImages: $productDetailImages) {
-    _id
+ mutation UpdateProductByAdmin($input: UpdateProductByAdminInput!, $productDetailImages: [Upload], $images: [Upload]) {
+  updateProductByAdmin(input: $input, productDetailImages: $productDetailImages, images: $images) {
     message
+    _id
   }
 }
 `;
@@ -110,10 +111,9 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
   const [brandData, setBrandData] = useState<any>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [remarks, setRemarks] = useState<any>([""]);
+  const [selectedbrand, setselectedbrand] = useState<any>({})
+
   const [attributeid, setattributeid] = useState<IAttribute[] | []>([]);
-  const [selectedbrand, setselectedbrand] = useState<any>({});
-
-
   const handleAddRemark = () => {
     setRemarks([...remarks, ""]);
   };
@@ -138,7 +138,7 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
       setValue("shortDescription", editedProduct?.shortDescription || "");
       setValue("skuId", editedProduct?.skuId || "");
       setValue("stock", editedProduct?.stock);
-      setValue("tags", editedProduct?.tags);
+      setValue("tags", editedProduct?.tags.join(","));
       setValue("brandName", editedProduct?.brandName || "");
       setValue("categoryNamePath", editedProduct?.categoryNamePath || "");
       setValue("media", editedProduct?.images);
@@ -171,7 +171,7 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
 
   const fieldRules = {
     productName: {
-      required: "Name is required",
+      required: "Product name is required",
     },
     description: {
       required: "Description is required",
@@ -186,7 +186,7 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
       required: "SellingPrice is required",
     },
     tags: {
-      required: "mrp is required",
+      required: "tags field is required",
     },
     media: {
       required: "media required"
@@ -245,18 +245,17 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
       skuId: data?.skuId,
       stock: parseInt(data?.stock),
       warehouseSkuId: data?.warehouseSkuId,
-      status: data?.status
+      status: data?.status,
+      tags: data.tags
     };
     try {
       if (Edit) {
         try {
           const response = await updateproduct({
-            variables: { input: { ...formdatas }, images: selectedImages },
+            variables: { input: { ...formdatas }, images: selectedImages, productDetailImages: selectedImages2 },
           });
-          if (response) {
-            toast.success(response?.data?.createProduct?.message);
-            navigate("/product");
-          }
+          toast.success(response?.data?.updateProductByAdmin?.message);
+          navigate(`/product/variant?productCode=${editedProduct?.productCode}`);
         } catch (error: any) {
           toast.error(error.message);
         }
@@ -276,6 +275,9 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
   const [images, setImages] = useState([]);
   const [selectedImages, setselectedImages] = useState([]);
 
+  const [images2, setImages2] = useState([]);
+  const [selectedImages2, setselectedImages2] = useState([]);
+
   const onImageChange = (
     imageList: ImageListType,
     addUpdateIndex: number[] | undefined
@@ -284,10 +286,22 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
     const transformedList = imageList.map(item => item.file);
     setselectedImages(transformedList as never[]);
   };
+  const onImageChange2 = (
+    imageList: ImageListType,
+    addUpdateIndex: number[] | undefined
+  ) => {
+    setImages2(imageList as never[]);
+    const transformedList = imageList.map(item => item.file);
+    setselectedImages2(transformedList as never[]);
+  };
 
+  const handleAttributesSelectChange = (selectedValues: IAttribute[]) => {
+    setattributeid(selectedValues);
+  };
 
   return (
     <React.Fragment>
+      <ToastContainer />
       <div className="page-content">
         <Container fluid={true}>
           <Breadcrumb items={items} currentPage="Edit Product" />
@@ -350,9 +364,16 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                         </DropdownMenu>
                       </Dropdown>
                     </FormGroup>
-                    <Row>
 
-                      <Col md={6}>
+
+                    <Catattribute
+                      selectedCategoryData={getSelectedCategoryData()}
+                      onSelectChange={handleAttributesSelectChange}
+                      editedProduct={editedProduct}
+                    />
+
+                    <Row style={{ marginTop: "20px" }}>
+                      <Col md={12}>
                         <FormGroup>
                           <Label for="productShortInfo">
                             Product ShortInfo:
@@ -384,7 +405,59 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                           ) : null}
                         </FormGroup>
                       </Col>
-                      <Col md={6}>
+                      <FormGroup>
+                        <Label for="productInfo">Product Info:</Label>
+
+                        {remarks?.map((remark: any, index: any) => (
+                          <FormGroup
+                            key={index}
+                          >
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Input
+                                type="text"
+                                id={`remark-${index}`}
+                                name={`remark-${index}`}
+                                value={remark}
+                                onChange={(e) => {
+                                  const updatedRemarks = [...remarks];
+                                  updatedRemarks[index] = e.target.value;
+                                  setRemarks(updatedRemarks);
+                                }}
+                                required
+                                style={{ marginRight: "10px" }}
+                              />
+                              {index === remarks.length - 1 && (
+                                <Button
+                                  color="primary"
+                                  onClick={handleAddRemark}
+                                >
+                                  +
+                                </Button>
+                              )}{" "}
+                              {index !== 0 && (
+                                <Button
+                                  style={{
+                                    marginLeft: "5px",
+                                    marginRight: "5px",
+                                  }}
+                                  color="danger"
+                                  onClick={() => handleRemoveRemark(index)}
+                                >
+                                  -
+                                </Button>
+                              )}
+                            </div>
+                          </FormGroup>
+                        ))}
+                      </FormGroup>
+                    </Row>
+
+                    <Row style={{ marginTop: "0px" }}>
+
+
+                      <Col md={12}>
                         <FormGroup>
                           <Label for="shortDescription">
                             Product Short Description:
@@ -629,81 +702,32 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                       </Col>
                     </Row>
 
-                    <Row>
-                      {/* <Col md={6}>
-                        <FormGroup>
-                          <Label for="skuid">SKU ID:</Label>
-                          <Controller
-                            control={control}
-                            name="skuId"
-                            render={({ field }) => (
-                              <>
-                                <Input
-                                  type="text"
-                                  id="skuid"
-                                  {...field}
 
-                                />
-                                {errors.skuId && (
-                                  <p className="text-danger">
-                                    {errors.skuId.message}
-                                  </p>
-                                )}
-                              </>
+
+                    <FormGroup>
+                      <Label for="tags">Tags:</Label>
+                      <Controller
+                        control={control}
+                        name="tags"
+                        render={({ field }) => (
+                          <>
+                            <Input
+                              type="text"
+                              id="tags"
+                              placeholder="Separate with commas"
+                              {...field}
+
+                            />
+                            {errors.tags && (
+                              <p className="text-danger">
+                                {errors.tags.message}
+                              </p>
                             )}
-                          />
-                        </FormGroup>
-                      </Col> */}
+                          </>
+                        )}
+                      />
+                    </FormGroup>
 
-                      <FormGroup>
-                        <Label for="productInfo">Product Info:</Label>
-
-                        {remarks?.map((remark: any, index: any) => (
-                          <FormGroup
-                            key={index}
-                            style={{ marginBottom: "10px" }}
-                          >
-                            <div
-                              style={{ display: "flex", alignItems: "center" }}
-                            >
-                              <Input
-                                type="text"
-                                id={`remark-${index}`}
-                                name={`remark-${index}`}
-                                value={remark}
-                                onChange={(e) => {
-                                  const updatedRemarks = [...remarks];
-                                  updatedRemarks[index] = e.target.value;
-                                  setRemarks(updatedRemarks);
-                                }}
-                                required
-                                style={{ marginRight: "10px" }}
-                              />
-                              {index === remarks.length - 1 && (
-                                <Button
-                                  color="primary"
-                                  onClick={handleAddRemark}
-                                >
-                                  +
-                                </Button>
-                              )}{" "}
-                              {index !== 0 && (
-                                <Button
-                                  style={{
-                                    marginLeft: "5px",
-                                    marginRight: "5px",
-                                  }}
-                                  color="danger"
-                                  onClick={() => handleRemoveRemark(index)}
-                                >
-                                  -
-                                </Button>
-                              )}
-                            </div>
-                          </FormGroup>
-                        ))}
-                      </FormGroup>
-                    </Row>
 
                     <div style={{ padding: "0px 0px 0 0px" }}>
                       <label>Images :</label>
@@ -711,6 +735,62 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                         multiple
                         value={images}
                         onChange={onImageChange}
+                        maxNumber={7}
+                      >
+                        {({
+                          imageList,
+                          onImageUpload,
+                          onImageRemoveAll,
+                          onImageUpdate,
+                          onImageRemove,
+                          isDragging,
+                          dragProps,
+                        }) => (
+                          // write your building UI
+                          <div className="upload__image-wrapper" style={{ display: "flex", flexDirection: "column", gap: "10px" }} >
+                            <div
+                              style={{ color: isDragging ? "red" : undefined, width: "100%", height: "100px", border: "1px dashed black", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}
+                              onClick={onImageUpload}
+                              {...dragProps} >
+                              Click or Drop here
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              {
+                                imageList.length ? <label>Selected Images :</label> : ""
+                              }
+                              {
+                                imageList.length ?
+                                  <CustomButton onClick={onImageRemoveAll} name="Remove all images" icon="mdi:remove" /> : ""
+                              }
+                            </div>
+                            <div style={{ display: 'flex', flexWrap: "wrap", gap: "20px" }}>
+                              {imageList.map((image, index) => (
+                                <div key={index} className="image-item">
+                                  <div style={{ position: 'relative' }}>
+                                    <img src={image.dataURL} alt="" style={{ width: "200px" }} />
+                                    <div className="image-item__btn-wrapper">
+                                      <Button onClick={() => onImageRemove(index)} style={{ position: 'absolute', top: 0, right: 0, margin: "4px", padding: "4px" }}><Iconify icon="mdi:close" /></Button>
+                                      <Button onClick={() => onImageUpdate(index)} style={{ position: 'absolute', top: 0, left: 0, margin: "4px", padding: "4px" }}><Iconify icon="ic:baseline-edit" /></Button>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+
+                          </div>
+                        )}
+                      </ImageUploading>
+
+                    </div>
+
+
+
+                    <div style={{ padding: "0px 0px 0 0px" }}>
+                      <label>Images :</label>
+                      <ImageUploading
+                        multiple
+                        value={images2}
+                        onChange={onImageChange2}
                         maxNumber={7}
                       >
                         {({

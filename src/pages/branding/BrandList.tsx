@@ -171,50 +171,57 @@ const BrandList: React.FC = () => {
                       <Loader />
                       :
 
-                      <Table id="tech-companies-1" className="table table-striped table-bordered">
-                        <thead>
-                          <tr>
-                            <th>No</th>
-                            <th>Brand Name</th>
-                            <th>Logo</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {brandData.map((brand, index) => (
-                            <tr key={brand._id}>
-                              <td>{currentPage * pageSize + index + 1}</td>
-                              <td>{brand.brandName}</td>
+                      <div className="table-rep-plugin">
 
-                              <td>
-                                {brand.logo && (
-                                  <img
-                                    src={brand.logo.fileURL}
-                                    alt={`Logo for ${brand.brandName}`}
-                                    style={{ width: "50px", height: "50px" }}
-                                  />
-                                )}
-                              </td>
-                              <td
-                              >
-                                <StatusIndicator status={brand.isBlocked ? "BLOCKED" : "ACTIVE"} />
+                        <div className="table-responsive mb-0" data-pattern="priority-columns">
 
-                              </td>
-                              <td>
-                                <Link to={`/brands/${brand._id}`}>
-                                  <Button
-                                    size="sm"
-                                    color="primary"
+
+                          <Table id="tech-companies-1" className="table table-striped table-bordered">
+                            <thead>
+                              <tr>
+                                <th>No</th>
+                                <th>Brand Name</th>
+                                <th>Logo</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {brandData.map((brand, index) => (
+                                <tr key={brand._id}>
+                                  <td>{currentPage * pageSize + index + 1}</td>
+                                  <td>{brand.brandName}</td>
+
+                                  <td>
+                                    {brand.logo && (
+                                      <img
+                                        src={brand.logo.fileURL}
+                                        alt={`Logo for ${brand.brandName}`}
+                                        style={{ width: "50px", height: "50px" }}
+                                      />
+                                    )}
+                                  </td>
+                                  <td
                                   >
-                                    View
-                                  </Button>
-                                </Link>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </Table>
+                                    <StatusIndicator status={brand.isBlocked ? "BLOCKED" : "ACTIVE"} />
+
+                                  </td>
+                                  <td>
+                                    <Link to={`/brands/${brand._id}`}>
+                                      <Button
+                                        size="sm"
+                                        color="primary"
+                                      >
+                                        View
+                                      </Button>
+                                    </Link>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </Table>
+                        </div>
+                      </div>
                   }
                 </CardBody>
 

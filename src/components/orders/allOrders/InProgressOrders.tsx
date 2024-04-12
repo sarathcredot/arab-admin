@@ -289,10 +289,17 @@ const InProgressOrders = () => {
 
                 </Col>
                 <Col xs={3} style={{ display: "flex", gap: "20px", justifyContent: "flex-end" }}>
-
-                    <CustomButton outline name="Export" icon="ph:export-bold" onClick={handleExportClick} />
+                    <CustomButton bgColor="unset" style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "40px",
+                        borderRadius: "10px",
+                        gap: "5px",
+                        fontSize: "13px",
+                    }} outline color="primary" name="Export" icon="ph:export-bold" onClick={handleExportClick} />
                     <CustomButton name="Filters" onClick={toggle} icon="foundation:filter" />
-
                 </Col>
                 <Collapse isOpen={isOpen} style={{ marginTop: '20px', }}>
                     <AllOrderFilters onSubmit={handleFormSubmit} />
@@ -307,98 +314,105 @@ const InProgressOrders = () => {
                                 :
 
 
-                                <Table id="tech-companies-1" className="table table-striped table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th> Order Date</th>
-                                            <th>Order Id</th>
-                                            <th>Username</th>
-                                            <th>Payment Mode</th>
-                                            <th>Order Status</th>
-                                            <th>Address</th>
-                                            <th>Amount</th>
-                                            <th>View</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {orders?.map((order, index) => (
-                                            <tr key={order?._id}>
-                                                <td> {currentPage * pageSize + index + 1}</td>
-                                                <td>{moment(order?.orderDate).format("ll")}</td>
-                                                <td>{order?.orderId}</td>
-                                                <td>
-                                                    {
-                                                        order?.username &&
-                                                        <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent: "space-between" }}>
-                                                            {order?.username && capitalCase(order?.username)}
-                                                            <CustomButton outline disabled={copiedPage === currentPage && copiedIndex === index}
-                                                                name=""
-                                                                onClick={() => copyToClipboard(order.userId, index)}
-                                                                icon="mingcute:copy-line" style={{
-                                                                    display: "flex",
-                                                                    flexDirection: "row",
-                                                                    alignItems: "center",
-                                                                    justifyContent: "center",
-                                                                    backgroundColor: "black",
-                                                                    color: "white",
-                                                                    width: "30px",
-                                                                    height: "30px",
-                                                                    borderRadius: "50%    ",
-                                                                    gap: "5px",
-                                                                    fontSize: "10px",
-                                                                    border: "none",
-                                                                }} />
+                                <div className="table-rep-plugin">
+
+                                    <div className="table-responsive mb-0" data-pattern="priority-columns">
+
+
+                                        <Table id="tech-companies-1" className="table table-striped table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th> Order Date</th>
+                                                    <th>Order Id</th>
+                                                    <th>Username</th>
+                                                    <th>Payment Mode</th>
+                                                    <th>Order Status</th>
+                                                    <th>Address</th>
+                                                    <th>Amount</th>
+                                                    <th>View</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {orders?.map((order, index) => (
+                                                    <tr key={order?._id}>
+                                                        <td> {currentPage * pageSize + index + 1}</td>
+                                                        <td>{moment(order?.orderDate).format("ll")}</td>
+                                                        <td>{order?.orderId}</td>
+                                                        <td>
+                                                            {
+                                                                order?.username &&
+                                                                <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent: "space-between" }}>
+                                                                    {order?.username && capitalCase(order?.username)}
+                                                                    <CustomButton outline disabled={copiedPage === currentPage && copiedIndex === index}
+                                                                        name=""
+                                                                        onClick={() => copyToClipboard(order.userId, index)}
+                                                                        icon="mingcute:copy-line" style={{
+                                                                            display: "flex",
+                                                                            flexDirection: "row",
+                                                                            alignItems: "center",
+                                                                            justifyContent: "center",
+                                                                            backgroundColor: "black",
+                                                                            color: "white",
+                                                                            width: "30px",
+                                                                            height: "30px",
+                                                                            borderRadius: "50%    ",
+                                                                            gap: "5px",
+                                                                            fontSize: "10px",
+                                                                            border: "none",
+                                                                        }} />
+                                                                </div>
+                                                            }
+                                                        </td>
+                                                        <td>{order?.paymentMode}</td>
+                                                        <td><div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                                                            <div style={{
+                                                                width: "8px", height: "8px", borderRadius: "50%",
+                                                                background: order?.orderStatus === "PENDING" ? "#ff9500" : (order?.orderStatus === "IN_PROGRESS" ? "#fff200" : "green")
+                                                            }} />
+                                                            {order?.orderStatus.replace("_", " ")}
                                                         </div>
-                                                    }
-                                                </td>
-                                                <td>{order?.paymentMode}</td>
-                                                <td><div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                                                    <div style={{
-                                                        width: "8px", height: "8px", borderRadius: "50%",
-                                                        background: order?.orderStatus === "PENDING" ? "#ff9500" : (order?.orderStatus === "IN_PROGRESS" ? "#fff200" : "green")
-                                                    }} />
-                                                    {order?.orderStatus.replace("_", " ")}
-                                                </div>
-                                                </td>
-                                                <td>  {`${order.shippingAddress["streetName"]},  ${order.shippingAddress["city"]}`}</td>
-                                                <td>
-                                                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                                        <div>
-                                                            <div>
-                                                                Total MRP:
+                                                        </td>
+                                                        <td>  {`${order.shippingAddress["streetName"]},  ${order.shippingAddress["city"]}`}</td>
+                                                        <td>
+                                                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                                                                <div>
+                                                                    <div>
+                                                                        Total MRP:
+                                                                    </div>
+                                                                    <div>
+                                                                        Total Selling:
+                                                                    </div>
+                                                                    <div>
+                                                                        Total Refund:
+                                                                    </div>
+                                                                    <div>
+                                                                        Total Shipping :
+                                                                    </div>
+                                                                </div>
+                                                                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                                                                    <div>
+                                                                        {formatCurrency(order?.orderPriceInfo.totalMRP)}
+                                                                    </div>
+                                                                    <div>
+                                                                        {formatCurrency(order?.orderPriceInfo.totalSellingPrice)}
+                                                                    </div>
+                                                                    <div>
+                                                                        {formatCurrency(order?.orderPriceInfo.totalRefundAmount)}
+                                                                    </div>
+                                                                    <div>
+                                                                        {formatCurrency(order?.orderPriceInfo.totalShippingCharge)}
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            <div>
-                                                                Total Selling:
-                                                            </div>
-                                                            <div>
-                                                                Total Refund:
-                                                            </div>
-                                                            <div>
-                                                                Total Shipping :
-                                                            </div>
-                                                        </div>
-                                                        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                                                            <div>
-                                                                {formatCurrency(order?.orderPriceInfo.totalMRP)}
-                                                            </div>
-                                                            <div>
-                                                                {formatCurrency(order?.orderPriceInfo.totalSellingPrice)}
-                                                            </div>
-                                                            <div>
-                                                                {formatCurrency(order?.orderPriceInfo.totalRefundAmount)}
-                                                            </div>
-                                                            <div>
-                                                                {formatCurrency(order?.orderPriceInfo.totalShippingCharge)}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td><Button size="sm" onClick={() => navigate(`/orders/details?orderId=${order?.orderId}`)} color="primary">View</Button></td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
+                                                        </td>
+                                                        <td><Button size="sm" onClick={() => navigate(`/orders/details?orderId=${order?.orderId}`)} color="primary">View</Button></td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </Table>
+                                    </div>
+                                </div>
                         }
                     </div>
                 </CardBody>

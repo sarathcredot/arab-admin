@@ -378,13 +378,13 @@ function Assignattribute() {
                 </CardHeader>
                 <CardHeader>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <Input
+                    {/* <Input
                       type="text"
                       placeholder="Search by name"
                       value={searchTerm}
                       onChange={handleSearch}
                       style={{ width: "450px", }}
-                    />
+                    /> */}
                     <CustomButton name="Assign Attributes" icon="fluent:tab-add-20-filled" onClick={toggle} />
                   </div>
                 </CardHeader>
@@ -394,38 +394,45 @@ function Assignattribute() {
                     <Loader />
                     :
 
-                    <Table id="tech-companies-1" className="table table-striped table-bordered">
-                      <thead>
-                        <tr>
-                          <th style={{ width: "10%" }}>Sl.No</th>
-                          <th style={{ width: "40%" }}>Attribute Type</th>
-                          <th style={{ width: "40%" }}>Description</th>
-                          <th style={{ width: "40%" }}>Name</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {selectedCategory ? (
-                          <>
-                            {assignAttributeDatas?.map(
-                              (value: IAttribute, index: any) => (
-                                <tr key={index}>
-                                  <td>{index + 1}</td>
-                                  <td>{value.attributeType}</td>
-                                  <td>{value.description}</td>
-                                  <td>{value.name}</td>
-                                </tr>
-                              )
+                    <div className="table-rep-plugin">
+
+                      <div className="table-responsive mb-0" data-pattern="priority-columns">
+
+
+                        <Table id="tech-companies-1" className="table table-striped table-bordered">
+                          <thead>
+                            <tr>
+                              <th style={{ width: "10%" }}>Sl.No</th>
+                              <th style={{ width: "40%" }}>Attribute Type</th>
+                              <th style={{ width: "40%" }}>Description</th>
+                              <th style={{ width: "40%" }}>Name</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {selectedCategory ? (
+                              <>
+                                {assignAttributeDatas?.map(
+                                  (value: IAttribute, index: any) => (
+                                    <tr key={index}>
+                                      <td>{index + 1}</td>
+                                      <td>{value.attributeType}</td>
+                                      <td>{value.description}</td>
+                                      <td>{value.name}</td>
+                                    </tr>
+                                  )
+                                )}
+                              </>
+                            ) : (
+                              <tr>
+                                <td colSpan={3} className="text-center">
+                                  Please select a category
+                                </td>
+                              </tr>
                             )}
-                          </>
-                        ) : (
-                          <tr>
-                            <td colSpan={3} className="text-center">
-                              Please select a category
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </Table>
+                          </tbody>
+                        </Table>
+                      </div>
+                    </div>
                   }
                 </CardBody>
               </Card>

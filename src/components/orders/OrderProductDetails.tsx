@@ -551,7 +551,7 @@ function OrderProductDetails({ product, orderProdcutsRefetch, orderRefetch }: an
                                     className="mb-2 text-muted"
                                     tag="h6"
                                 >
-                                    SKU : {product?.warehouseSkuId || "nill"}
+                                    W.Sku ID : {product?.warehouseSkuId || "nill"}
                                 </CardSubtitle>
                             </div>
                         </div>

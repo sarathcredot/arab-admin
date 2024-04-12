@@ -245,51 +245,58 @@ const VendorList: React.FC = () => {
                       vendorLoading ?
                         <Loader />
                         :
-                        <Table
-                          id="tech-companies-1"
-                          className="table table-striped table-bordered"
-                        >
-                          <thead>
-                            <tr>
-                              <th>Sl.No</th>
-                              <th>Full Name</th>
-                              <th>Mobile Number</th>
-                              <th>Email</th>
-                              <th>Company Name</th>
-                              <th>Kyc Status</th>
-                              <th>Status</th>
-                              <th>Action</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {vendorData?.map((vendor, index) => (
-                              <tr key={vendor._id}>
-                                <td>{currentPage * pageSize + index + 1}</td>
-                                <td>{vendor.fullName}</td>
-                                <td>{vendor.mobileNumber}</td>
-                                <td>{vendor.email}</td>
-                                <td>{vendor.companyName}</td>
-                                <td >
-                                  <StatusIndicator status={vendor.isKycCompleted === true ? "COMPLETED" : "PENDING"} />
-                                </td>
-                                <td
-                                >
-                                  <StatusIndicator status={vendor.isBlocked === true ? "BLOCKED" : "ACTIVE"} />
+                        <div className="table-rep-plugin">
 
-                                </td>
-                                <td>
-                                  <Link to={`/vendors/view?id=${vendor._id}`}>
-                                    <Button
-                                      color="primary"
-                                      size="sm">
-                                      View
-                                    </Button>
-                                  </Link>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </Table>
+                          <div className="table-responsive mb-0" data-pattern="priority-columns">
+
+
+                            <Table
+                              id="tech-companies-1"
+                              className="table table-striped table-bordered"
+                            >
+                              <thead>
+                                <tr>
+                                  <th>Sl.No</th>
+                                  <th>Full Name</th>
+                                  <th>Mobile Number</th>
+                                  <th>Email</th>
+                                  <th>Company Name</th>
+                                  <th>Kyc Status</th>
+                                  <th>Status</th>
+                                  <th>Action</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {vendorData?.map((vendor, index) => (
+                                  <tr key={vendor._id}>
+                                    <td>{currentPage * pageSize + index + 1}</td>
+                                    <td>{vendor.fullName}</td>
+                                    <td>{vendor.mobileNumber}</td>
+                                    <td>{vendor.email}</td>
+                                    <td>{vendor.companyName}</td>
+                                    <td >
+                                      <StatusIndicator status={vendor.isKycCompleted === true ? "COMPLETED" : "PENDING"} />
+                                    </td>
+                                    <td
+                                    >
+                                      <StatusIndicator status={vendor.isBlocked === true ? "BLOCKED" : "ACTIVE"} />
+
+                                    </td>
+                                    <td>
+                                      <Link to={`/vendors/view?id=${vendor._id}`}>
+                                        <Button
+                                          color="primary"
+                                          size="sm">
+                                          View
+                                        </Button>
+                                      </Link>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </Table>
+                          </div>
+                        </div>
                     }
                   </Row>
                 </CardBody>

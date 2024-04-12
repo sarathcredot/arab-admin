@@ -94,8 +94,6 @@ interface Product {
 }
 
 const VariantListing = () => {
-  const pageSize = 10; // Number of items per page
-  const [currentPage, setCurrentPage] = useState(0);
 
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [products, setProducts] = useState<Product[]>([]);
@@ -174,7 +172,7 @@ const VariantListing = () => {
 
   useEffect(() => {
     fetchData();
-  }, [searchTerm, currentPage, refetch]);
+  }, [refetch]);
 
   const handleStatusChange = async (status: any, e: any, proId: string) => {
     try {
@@ -211,10 +209,16 @@ const VariantListing = () => {
           (!selectedStatus2 ||
             selectedStatus2.value === "all" ||
             item.status === selectedStatus2.value) &&
-          (!outOfStockChecked || item.stock < 10)
+          (!outOfStockChecked || item.stock < 10) &&
+          (searchTerm === '' || item.warehouseSkuId?.toLowerCase()?.includes(searchTerm?.toLowerCase()))
       )
     );
-  }, [products, selectedStatus, outOfStockChecked, selectedStatus2]);
+  }, [products, selectedStatus, outOfStockChecked, selectedStatus2, searchTerm]);
+
+
+  const handleSearch = (e: any) => {
+    setSearchTerm(e.target.value)
+  }
 
   const handleStatusSelect = (selectedOption: any) => {
     setSelectedStatus(selectedOption);
@@ -253,8 +257,17 @@ const VariantListing = () => {
                         justifyContent: "space-between",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: "30px" }}>
-                        <h5 style={{ margin: "0" }}>Filters : </h5>
+                      <div style={{ display: "flex", alignItems: "center", gap: "30px", width: "100%" }}>
+                        <h5 style={{ margin: "0", width: "80px" }}>Filters : </h5>
+
+                        <Input
+                          type="text"
+                          placeholder="Search By W.Sku ID"
+                          value={searchTerm}
+                          onChange={handleSearch}
+                          style={{ width: "20%" }}
+                        />
+
                         <Dropdown isOpen={statusDropdownOpen} toggle={toggleStatusDropdown}>
                           <DropdownToggle caret>
                             {selectedStatus ? selectedStatus.label : "Select Status"}
@@ -305,6 +318,8 @@ const VariantListing = () => {
                             />
                           </FormGroup>
                         </div>
+
+
                       </div>
 
                       <div style={{ width: "auto" }}>
@@ -334,96 +349,101 @@ const VariantListing = () => {
                         loading ?
                           <Loader />
                           :
+                          <div className="table-rep-plugin">
 
-                          <Table id="tech-companies-1" className="table table-striped table-bordered">
-                            <Thead>
-                              <Tr>
-                                <Th data-priority="1">Sl.No</Th>
-                                <Th data-priority="1">Name</Th>
-                                <Th data-priority="1">Warehouse SKU</Th>
-                                <Th data-priority="1">SKU</Th>
-                                <Th data-priority="3">Attributes</Th>
-                                <Th data-priority="3">Stock</Th>
-                                <Th data-priority="1">Image</Th>
-                                <Th data-priority="3">Verify Status</Th>
-                                <Th data-priority="3">Status</Th>
-                                <Th data-priority="3">Action</Th>
-                              </Tr>
-                            </Thead>
-                            <Tbody>
-                              {filteredProducts.map((product: Product, index: number) => (
-                                <Tr key={index}>
-                                  <Td>{index + 1}</Td>
-                                  <Td>
-                                    <p
-                                      style={{
-                                        maxWidth: "200px",
-                                        whiteSpace: "nowrap",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                      }}
-                                    >
-                                      {product?.productName}
-                                    </p>
-                                  </Td>
-                                  <Td>{product.warehouseSkuId}</Td>
-                                  <Td>{product.skuId}</Td>
-                                  <Td>
-                                    {product.attributes[0]?.attributeDescription}:{" "}
-                                    {product.attributes[0]?.attributeValue}
-                                  </Td>
+                            <div className="table-responsive mb-0" data-pattern="priority-columns">
 
-                                  <Td>{product.stock}</Td>
-
-                                  <Td>
-                                    <img
-                                      src={product.images[0]?.fileURL}
-                                      alt={product?.productName}
-                                      width={80}
-                                      height={80}
-                                    />
-                                  </Td>
-                                  <Td>
-                                    <StatusIndicator status={product?.status} />
-                                  </Td>
-                                  <Td>
-                                    <StatusIndicator
-                                      status={product.isBlocked ? "BLOCKED" : "ACTIVE"}
-                                    />
-                                  </Td>
-                                  <Td>
-                                    <Button
-                                      color="primary"
-                                      size="sm"
-                                      tag={Link}
-                                      to={{
-                                        pathname: "/product/details/",
-                                        search: `?_id=${product._id}`,
-                                      }}
-                                    >
-                                      View
-                                    </Button>
-
-                                    {product?.status === "APPROVED" ? (
-                                      <>{null}</>
-                                    ) : (
-                                      <>
-                                        <Button
-                                          style={{ marginLeft: "10px" }}
-                                          size="sm"
-                                          onClick={(e) =>
-                                            handleStatusChange("APPROVED", e, product?._id)
-                                          }
+                              <Table id="tech-companies-1" className="table table-striped table-bordered">
+                                <Thead>
+                                  <Tr>
+                                    <Th data-priority="1">Sl.No</Th>
+                                    <Th data-priority="1">Name</Th>
+                                    <Th data-priority="1">Warehouse SKU</Th>
+                                    <Th data-priority="1">SKU</Th>
+                                    <Th data-priority="3">Attributes</Th>
+                                    <Th data-priority="3">Stock</Th>
+                                    <Th data-priority="1">Image</Th>
+                                    <Th data-priority="3">Verify Status</Th>
+                                    <Th data-priority="3">Status</Th>
+                                    <Th data-priority="3">Action</Th>
+                                  </Tr>
+                                </Thead>
+                                <Tbody>
+                                  {filteredProducts.map((product: Product, index: number) => (
+                                    <Tr key={index}>
+                                      <Td>{index + 1}</Td>
+                                      <Td>
+                                        <p
+                                          style={{
+                                            maxWidth: "200px",
+                                            whiteSpace: "nowrap",
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                          }}
                                         >
-                                          Approve
+                                          {product?.productName}
+                                        </p>
+                                      </Td>
+                                      <Td>{product.warehouseSkuId}</Td>
+                                      <Td>{product.skuId}</Td>
+                                      <Td>
+                                        {product.attributes[0]?.attributeDescription}:{" "}
+                                        {product.attributes[0]?.attributeValue}
+                                      </Td>
+
+                                      <Td>{product.stock}</Td>
+
+                                      <Td>
+                                        <img
+                                          src={product.images[0]?.fileURL}
+                                          alt={product?.productName}
+                                          width={80}
+                                          height={80}
+                                        />
+                                      </Td>
+                                      <Td>
+                                        <StatusIndicator status={product?.status} />
+                                      </Td>
+                                      <Td>
+                                        <StatusIndicator
+                                          status={product.isBlocked ? "BLOCKED" : "ACTIVE"}
+                                        />
+                                      </Td>
+                                      <Td>
+                                        <Button
+                                          color="primary"
+                                          size="sm"
+                                          tag={Link}
+                                          to={{
+                                            pathname: "/product/details/",
+                                            search: `?_id=${product._id}`,
+                                          }}
+                                        >
+                                          View
                                         </Button>
-                                      </>
-                                    )}
-                                  </Td>
-                                </Tr>
-                              ))}
-                            </Tbody>
-                          </Table>
+
+                                        {product?.status === "APPROVED" ? (
+                                          <>{null}</>
+                                        ) : (
+                                          <>
+                                            <Button
+                                              style={{ marginLeft: "10px" }}
+                                              size="sm"
+                                              onClick={(e) =>
+                                                handleStatusChange("APPROVED", e, product?._id)
+                                              }
+                                            >
+                                              Approve
+                                            </Button>
+                                          </>
+                                        )}
+                                      </Td>
+                                    </Tr>
+                                  ))}
+                                </Tbody>
+                              </Table>
+                            </div>
+                          </div>
                       }
                     </div>
                   </div>

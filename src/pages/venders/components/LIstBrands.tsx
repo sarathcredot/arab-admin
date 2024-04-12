@@ -219,52 +219,59 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
 
 
 
-          <Table id="tech-companies-1" className="table table-striped table-bordered">
-            <thead>
-              <tr>
-                <th>Sl.No</th>
-                <th>Brand Name</th>
-                <th>Logo</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {assignBrandData
-                .filter((brand) =>
-                  brand.brandName
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-                )
-                .map((brand, index) => (
-                  <tr key={brand._id}>
-                    <td>{currentPage * pageSize + index + 1}</td>
-                    <td>{brand.brandName}</td>
+          <div className="table-rep-plugin">
 
-                    <td>
-                      {brand.logo && (
-                        <img
-                          src={brand.logo.fileURL}
-                          alt={`Logo for ${brand.brandName}`}
-                          style={{ width: "50px", height: "50px" }}
-                        />
-                      )}
-                    </td>
-                    <td
-                    >
-                      <StatusIndicator status={brand.isBlocked ? "BLOCKED" : "ACTIVE"} />
-                    </td>
-                    <td>
-                      <Link to={`/brands/${brand._id}?origin=vendor&vendorId=${id}`}>
-                        <Button color="primary" size="sm">
-                          View
-                        </Button>
-                      </Link>
-                    </td>
+            <div className="table-responsive mb-0" data-pattern="priority-columns">
+
+
+              <Table id="tech-companies-1" className="table table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th>Sl.No</th>
+                    <th>Brand Name</th>
+                    <th>Logo</th>
+                    <th>Status</th>
+                    <th>Action</th>
                   </tr>
-                ))}
-            </tbody>
-          </Table>
+                </thead>
+                <tbody>
+                  {assignBrandData
+                    .filter((brand) =>
+                      brand.brandName
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())
+                    )
+                    .map((brand, index) => (
+                      <tr key={brand._id}>
+                        <td>{currentPage * pageSize + index + 1}</td>
+                        <td>{brand.brandName}</td>
+
+                        <td>
+                          {brand.logo && (
+                            <img
+                              src={brand.logo.fileURL}
+                              alt={`Logo for ${brand.brandName}`}
+                              style={{ width: "50px", height: "50px" }}
+                            />
+                          )}
+                        </td>
+                        <td
+                        >
+                          <StatusIndicator status={brand.isBlocked ? "BLOCKED" : "ACTIVE"} />
+                        </td>
+                        <td>
+                          <Link to={`/brands/${brand._id}?origin=vendor&vendorId=${id}`}>
+                            <Button color="primary" size="sm">
+                              View
+                            </Button>
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </Table>
+            </div>
+          </div>
         </CardBody>
 
         <Modal isOpen={modal} toggle={toggle} >

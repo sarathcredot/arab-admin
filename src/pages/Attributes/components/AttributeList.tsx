@@ -218,47 +218,54 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
                       <Loader />
                       :
 
-                      <Table id="tech-companies-1" className="table table-striped table-bordered">
-                        <thead>
-                          <tr>
-                            <th>Sl.No</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Attribute Type</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {attributeData
-                            .filter((attribute) =>
-                              attribute.name
-                                .toLowerCase()
-                                .includes(searchTerm.toLowerCase())
-                            )
-                            .map((attribute, index) => (
-                              <tr key={attribute?._id}>
-                                <td>{currentPage * pageSize + index + 1}</td>
-                                <td>{attribute?.name}</td>
-                                <td>{attribute?.description}</td>
-                                <td>{attribute?.attributeType}</td>
+                      <div className="table-rep-plugin">
 
-                                <td
-                                >
-                                  <StatusIndicator status={attribute?.isBlocked ? "BLOCKED" : "ACTIVE"} />
+                        <div className="table-responsive mb-0" data-pattern="priority-columns">
 
-                                </td>
-                                <td>
-                                  <Link to={`/attributes/${attribute?._id}`}>
-                                    <Button size="sm" color="primary">
-                                      View
-                                    </Button>
-                                  </Link>
-                                </td>
+
+                          <Table id="tech-companies-1" className="table table-striped table-bordered">
+                            <thead>
+                              <tr>
+                                <th>Sl.No</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Attribute Type</th>
+                                <th>Status</th>
+                                <th>Action</th>
                               </tr>
-                            ))}
-                        </tbody>
-                      </Table>
+                            </thead>
+                            <tbody>
+                              {attributeData
+                                .filter((attribute) =>
+                                  attribute.name
+                                    .toLowerCase()
+                                    .includes(searchTerm.toLowerCase())
+                                )
+                                .map((attribute, index) => (
+                                  <tr key={attribute?._id}>
+                                    <td>{currentPage * pageSize + index + 1}</td>
+                                    <td>{attribute?.name}</td>
+                                    <td>{attribute?.description}</td>
+                                    <td>{attribute?.attributeType}</td>
+
+                                    <td
+                                    >
+                                      <StatusIndicator status={attribute?.isBlocked ? "BLOCKED" : "ACTIVE"} />
+
+                                    </td>
+                                    <td>
+                                      <Link to={`/attributes/${attribute?._id}`}>
+                                        <Button size="sm" color="primary">
+                                          View
+                                        </Button>
+                                      </Link>
+                                    </td>
+                                  </tr>
+                                ))}
+                            </tbody>
+                          </Table>
+                        </div>
+                      </div>
                   }
                 </CardBody>
 

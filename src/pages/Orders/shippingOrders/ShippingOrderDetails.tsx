@@ -224,6 +224,7 @@ const ShippingOrderDetails = () => {
       mimeType
       originalName
     }
+    warehouseSkuId
   }
 }
   `

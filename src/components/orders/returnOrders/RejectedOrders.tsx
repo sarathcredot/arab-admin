@@ -20,6 +20,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Iconify from "src/components/iconify";
 import ReturnOrdersFilters from "../ReturnOrdersFilters";
 import Loader from "src/components/Common/Loader";
+import CustomButton from "src/components/Common/CustomButton";
 
 
 
@@ -315,10 +316,7 @@ const RejectedOrders = () => {
 
                 </Col>
                 <Col xl={1} style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <Button onClick={toggle} style={{ width: "100%", display: "flex", gap: "5px", alignItems: "center", justifyContent: "center", background: "black" }} >
-                        <Iconify icon="foundation:filter" />
-                        Filters
-                    </Button>
+                    <CustomButton name="Filters" onClick={toggle} icon="foundation:filter" />
 
                 </Col>
                 <Collapse isOpen={isOpen} style={{ marginTop: '20px' }}>
@@ -332,54 +330,59 @@ const RejectedOrders = () => {
                         {
                             ordersLoading ? <Loader />
                                 :
-                                <Table id="tech-companies-1" className="table table-striped table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Rejected Date</th>
-                                            <th>Order Id</th>
-                                            <th>Username</th>
-                                            <th>Product</th>
-                                            <th>Payment Mode</th>
-                                            {/* <th>Payment Status</th> */}
-                                            <th>Amount</th>
-                                            <th>View</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {orders?.map((order, index) => (
-                                            <tr key={order?._id}>
-                                                <td> {currentPage * pageSize + index + 1}</td>
-                                                <td>{moment(order?.returnRejectedDate).format("ll")}</td>
-                                                <td>
-                                                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                                                        <div>
-                                                            <p style={{ margin: "0", fontSize: "10px", fontWeight: "500" }}> Order Id :</p>
-                                                            {<p style={{ fontSize: "14px", margin: "0", }}>{order?.orderId}</p>}
-                                                        </div>
-                                                        <div>
-                                                            <p style={{ margin: "0", fontSize: "10px", fontWeight: '500' }}> Item Id :</p>
-                                                            {<p style={{ fontSize: "14px", margin: "0", }}>{order?.itemId}</p>}
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>{order.username && capitalCase(order?.username)}</td>
+                                <div className="table-rep-plugin">
 
-                                                <td>
-                                                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                                                        <div>
-                                                            <img width={"50px"} src={order?.image?.fileURL} />
-                                                        </div>
+                                    <div className="table-responsive mb-0" data-pattern="priority-columns">
 
-                                                        <div>
-                                                            <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '5px', width: '100px' }}>
-                                                                {order?.productName}
+
+                                        <Table id="tech-companies-1" className="table table-striped table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Rejected Date</th>
+                                                    <th>Order Id</th>
+                                                    <th>Username</th>
+                                                    <th>Product</th>
+                                                    <th>Payment Mode</th>
+                                                    {/* <th>Payment Status</th> */}
+                                                    <th>Amount</th>
+                                                    <th>View</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {orders?.map((order, index) => (
+                                                    <tr key={order?._id}>
+                                                        <td> {currentPage * pageSize + index + 1}</td>
+                                                        <td>{moment(order?.returnRejectedDate).format("ll")}</td>
+                                                        <td>
+                                                            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                                                                <div>
+                                                                    <p style={{ margin: "0", fontSize: "10px", fontWeight: "500" }}> Order Id :</p>
+                                                                    {<p style={{ fontSize: "14px", margin: "0", }}>{order?.orderId}</p>}
+                                                                </div>
+                                                                <div>
+                                                                    <p style={{ margin: "0", fontSize: "10px", fontWeight: '500' }}> Item Id :</p>
+                                                                    {<p style={{ fontSize: "14px", margin: "0", }}>{order?.itemId}</p>}
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>{order?.paymentMode}</td>
-                                                {/* <td><div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                                                        </td>
+                                                        <td>{order.username && capitalCase(order?.username)}</td>
+
+                                                        <td>
+                                                            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                                                                <div>
+                                                                    <img width={"50px"} src={order?.image?.fileURL} />
+                                                                </div>
+
+                                                                <div>
+                                                                    <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '5px', width: '100px' }}>
+                                                                        {order?.productName}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>{order?.paymentMode}</td>
+                                                        {/* <td><div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                                         <div style={{
                                             width: "8px", height: "8px", borderRadius: "50%",
                                             background: order?.paymentStatus === "PENDING" ? "#ff9500" : (order.paymentStatus === "IN_PROGRESS" ? "#fff200" : "green")
@@ -387,43 +390,45 @@ const RejectedOrders = () => {
                                         {order?.paymentStatus?.replace("_", " ")}
                                         </div>
                                     </td> */}
-                                                <td>
-                                                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                                        <div>
-                                                            {/* <div>
+                                                        <td>
+                                                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                                                                <div>
+                                                                    {/* <div>
                                                      MRP:
                                                 </div> */}
-                                                            <div>
-                                                                Selling:
-                                                            </div>
-                                                            {/* <div>
+                                                                    <div>
+                                                                        Selling:
+                                                                    </div>
+                                                                    {/* <div>
                                                     Refund:
                                                 </div> */}
-                                                            <div>
-                                                                Shipping :
-                                                            </div>
-                                                        </div>
-                                                        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                                                            {/* <div>
+                                                                    <div>
+                                                                        Shipping :
+                                                                    </div>
+                                                                </div>
+                                                                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                                                                    {/* <div>
                                                     {formatCurrency(order.mrp)}
                                                 </div> */}
-                                                            <div>
-                                                                {formatCurrency(order?.sellingPrice)}
-                                                            </div>
-                                                            {/* <div>
+                                                                    <div>
+                                                                        {formatCurrency(order?.sellingPrice)}
+                                                                    </div>
+                                                                    {/* <div>
                                                     {formatCurrency(order.refundAmount)}
                                                 </div> */}
-                                                            <div>
-                                                                {formatCurrency(order?.shippingCharge)}
+                                                                    <div>
+                                                                        {formatCurrency(order?.shippingCharge)}
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td><Button size="sm" color="primary" onClick={() => navigate(`/return-orders/details?orderId=${order.orderId}&_id=${order?._id}`)}>View</Button></td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
+                                                        </td>
+                                                        <td><Button size="sm" color="primary" onClick={() => navigate(`/return-orders/details?orderId=${order.orderId}&_id=${order?._id}`)}>View</Button></td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </Table>
+                                    </div>
+                                </div>
                         }
                     </div>
                 </CardBody>
