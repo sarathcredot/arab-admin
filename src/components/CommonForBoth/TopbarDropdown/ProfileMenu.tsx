@@ -23,7 +23,7 @@ import user1 from "../../../assets/images/users/avatar-dummy.webp";
 //redux
 import { useSelector } from "react-redux";
 import { createSelector } from "reselect";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { addInvoice } from "src/helpers/fakebackend_helper";
 
 
@@ -75,11 +75,26 @@ const ProfileMenu = (props: any) => {
     }
   }, [success]);
 
-  const toggleLogoutModal = () => setLogoutModal(!logoutModal);
-  const handleLogout = async () => {
 
-    localStorage.removeItem("admin_token")
-    navigate("/login")
+  const LOGOUT_ADMIN = gql`
+mutation LogoutAdmin {
+  logoutAdmin {
+    message
+  }
+}`;
+
+  const [LogoutAdmin] = useMutation(LOGOUT_ADMIN);
+
+
+  const toggleLogoutModal = () => setLogoutModal(!logoutModal);
+
+  const handleLogout = async () => {
+    const result = await LogoutAdmin();
+    if (result.data) {
+      localStorage.removeItem("admin_token")
+      navigate("/login")
+
+    }
 
   }
 
