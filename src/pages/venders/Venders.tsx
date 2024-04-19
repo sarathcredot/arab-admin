@@ -211,6 +211,11 @@ const VendorList: React.FC = () => {
           <Row style={{ marginTop: "20px" }}>
             <Col lg={12}>
               <Card>
+
+                <CardHeader style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                  <CustomButton onClick={() => toggleAddModal()} name="Add Vendor" icon="material-symbols:add" />
+                </CardHeader>
+
                 <CardHeader>
                   <Row>
                     <Col xs={9} style={{ display: "flex", alignItems: "center", gap: "20px" }}>
@@ -221,14 +226,18 @@ const VendorList: React.FC = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         style={{ width: "50%", }}
                       />
-                      <CustomButton onClick={toggleCollapse} name="Filters" icon="clarity:filter-solid" />
+
                     </Col>
                     <Col xs={3} style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
-                      <CustomButton onClick={() => toggleAddModal()} name="Add Vendor" icon="material-symbols:add" />
+
+                      <CustomButton onClick={toggleCollapse} name="Filters" icon="clarity:filter-solid" />
                     </Col>
 
                   </Row>
                 </CardHeader>
+
+
+
                 <CardBody>
 
                   <Collapse isOpen={isOpen}>

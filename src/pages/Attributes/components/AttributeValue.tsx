@@ -255,7 +255,9 @@ const ValueAttributeList: React.FC = () => {
                               <tr key={attribute._id}>
                                 <td>{index + 1}</td>
                                 <td>{attribute.value}</td>
-                                {attributeData?.description.toLowerCase() === "color" ? <td>{attribute.colorCode}</td> : null}
+                                {attributeData?.description.toLowerCase() === "color" ? <td>{attribute.colorCode}
+
+                                  <div style={{ width: "20px", height: "20px", backgroundColor: attribute.colorCode, borderRadius: "5px", border: "1px solid black" }}></div></td> : null}
 
                                 <td>{attribute.priority}</td>
                                 <td
