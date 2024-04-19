@@ -42,10 +42,16 @@ interface sizeChart {
 interface Category {
   _id: string;
   categoryName: string;
+  fullCategoryName?: string;
   description: string;
   children?: Category[];
   isLeaf: boolean;
-  // sizeChart: sizeChart;
+  categoryImage?: {
+    fileType: string;
+    fileURL: string;
+    mimeType: string;
+    originalName: string;
+  };
   isBlocked: boolean;
 }
 
@@ -73,35 +79,46 @@ const CategoryList: React.FC<Props> = () => {
   } | null>(null);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
   const GET_CATEGORY = gql`
-    query Records($input: GetAllChildLevelCategoriesInput!) {
-      getAllChildCategories(input: $input) {
-        records {
-          categoryName
-          _id
-          isBlocked
-          fullCategoryName
-          isLeaf
-          description
-         
-        }
+      query GetAllChildCategories($input: GetAllChildLevelCategoriesInput!) {
+  getAllChildCategories(input: $input) {
+    records {
+      categoryName
+      _id
+      isBlocked
+      fullCategoryName
+      isLeaf
+      description
+      categoryImage {
+        fileType
+        fileURL
+        mimeType
+        originalName
       }
     }
+  }
+}
   `;
 
+
   const GET_CHAILEDCATGORY = gql`
-    query Records($input: GetAllChildLevelCategoriesInput!) {
-      getAllChildCategories(input: $input) {
-        records {
-          categoryName
-          _id
-          isBlocked
-          fullCategoryName
-          isLeaf
-          description
-          
-        }
+    query GetAllChildCategories($input: GetAllChildLevelCategoriesInput!) {
+  getAllChildCategories(input: $input) {
+    records {
+      categoryName
+      _id
+      isBlocked
+      fullCategoryName
+      isLeaf
+      description
+      categoryImage {
+        fileType
+        fileURL
+        mimeType
+        originalName
       }
     }
+  }
+}
   `;
 
   const {
@@ -175,21 +192,26 @@ const CategoryList: React.FC<Props> = () => {
   const handleNext = (category: Category) => {
     setSelectedCategory(category);
     setShowSubCategories(true);
-    setBreadcrumb([...breadcrumb, category]);
+    if (!breadcrumb.find(item => item._id === category._id)) {
+      setBreadcrumb([...breadcrumb, category]);
+    }
   };
 
   const handleBreadcrumbClick = (index: number) => {
     if (index === -1) {
-      // Clicked on base category (top level)
       setShowSubCategories(false);
       setBreadcrumb([]);
       setSelectedCategory(null);
     } else {
       const newBreadcrumb = breadcrumb.slice(0, index + 1);
-      setBreadcrumb(newBreadcrumb);
       setShowSubCategories(index < breadcrumb.length - 1);
       setSelectedCategory(newBreadcrumb[index]);
+      setBreadcrumb(newBreadcrumb);
     }
+  };
+
+  const isLastItem = (index: number) => {
+    return index === breadcrumb.length - 1;
   };
 
   const statusOptions = [
@@ -251,43 +273,40 @@ const CategoryList: React.FC<Props> = () => {
             <Col xs={12}>
               <div className="page-title-right">
                 <ol className="breadcrumb m-0" style={{ marginBottom: "10px" }}>
-                  {
-                    breadcrumb.length !== 0 &&
+                  {breadcrumb.length !== 0 && (
                     <BreadcrumbItem key={-1}>
                       <Link onClick={() => handleBreadcrumbClick(-1)} to="#">
                         Categories
                       </Link>
                     </BreadcrumbItem>
-                  }
-                  {breadcrumb.map((item, index) => {
-                    const isLast = index === breadcrumb.length - 1;
-
-                    return (
-                      (!isLast || (isLast && showSubCategories)) && (
-                        <BreadcrumbItem key={index}>
-                          <Link onClick={() => handleBreadcrumbClick(index)} to="#">
-                            {capitalCase(item.categoryName)}
-                          </Link>
-                        </BreadcrumbItem>
-                      )
-                    );
-                  })}
+                  )}
+                  {breadcrumb.map((item, index) => (
+                    <BreadcrumbItem key={index} active>
+                      {isLastItem(index) ? (
+                        <span>{capitalCase(item.categoryName)}</span>
+                      ) : (
+                        <Link onClick={() => handleBreadcrumbClick(index)} to="#">
+                          {capitalCase(item.categoryName)}
+                        </Link>
+                      )}
+                    </BreadcrumbItem>
+                  ))}
                 </ol>
               </div>
             </Col>
           </Row>
-          {/* Render the currently active breadcrumb as the heading */}
+
           <Row>
             <Col xs={12}>
               <div style={{ marginTop: "20px" }} className="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 className="mb-0 font-size-18">
-                  {breadcrumb.length > 0 ? capitalCase(breadcrumb[breadcrumb.length - 1].categoryName) :
-                    "Categories"
-                  }
+                  {breadcrumb.length > 0 ? capitalCase(breadcrumb[breadcrumb.length - 1].categoryName) : "Categories"}
                 </h4>
               </div>
             </Col>
           </Row>
+
+
 
 
           <Row>
@@ -370,7 +389,15 @@ const CategoryList: React.FC<Props> = () => {
                               {filteredCategory.map((category, index) => (
                                 <tr key={category._id}>
                                   <td>{index + 1}</td>
-                                  <td>{category.categoryName}</td>
+                                  <td>
+                                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                      {category.categoryImage && category.categoryImage.fileURL && (
+                                        <img src={category.categoryImage.fileURL} alt={category.categoryName} style={{ width: "30px", height: "30px" }} />
+                                      )}
+                                      <span>{category.categoryName}</span>
+                                    </div>
+                                  </td>
+
                                   <td>{category.description}</td>
                                   {/* <td>
                             {category.sizeChart && (

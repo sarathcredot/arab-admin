@@ -205,7 +205,7 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
                 type="text"
                 id="categoryName"
                 name="name"
-                placeholder="Enter category name"
+                placeholder="Enter category name *"
                 value={formik.values?.name}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -268,7 +268,7 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
             </FormGroup>
 
 
-            {!isEdit ? (
+            {!isEdit && isLeaf ? (
               <FormGroup check>
                 <Label check>
                   <Input
