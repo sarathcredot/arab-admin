@@ -287,7 +287,7 @@ query GetAllCategoriesOfVendorByAdmin($input: vendorIdInput!) {
               <Select
                 isMulti
                 options={categoryData.map((category) => ({
-                  label: category.categoryName,
+                  label: category.fullCategoryName,
                   value: category._id,
                 }))}
                 value={selectedCategory}

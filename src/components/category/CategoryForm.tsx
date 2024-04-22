@@ -134,7 +134,7 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
             categoryName: values?.name,
             description: values?.description,
             parentId: isSelected?._id,
-            isLeaf: isLeaf,
+            isLeaf: isChecked,
             isBlocked: isBlockCategoryChecked
           },
         };
@@ -205,7 +205,7 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
                 type="text"
                 id="categoryName"
                 name="name"
-                placeholder="Enter category name"
+                placeholder="Enter category name *"
                 value={formik.values?.name}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -275,7 +275,7 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
                     type="checkbox"
                     id="isLeaf"
                     name="isLeaf"
-                    checked={isLeaf}
+                    checked={isChecked}
                     onClick={(e) => {
                       checking();
                     }}

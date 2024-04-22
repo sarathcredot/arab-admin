@@ -34,6 +34,7 @@ import { toast } from "react-toastify";
 import CustomButton from "src/components/Common/CustomButton";
 import DynamicFilter from "src/components/filter/DynamicFilter";
 import Loader from "src/components/Common/Loader";
+import { Link } from "react-router-dom";
 
 function Assignattribute() {
   interface Category {
@@ -162,7 +163,9 @@ function Assignattribute() {
   const [updateCategory] = useMutation(PUT_CETEGORY);
 
   const { loading: categoriesLoading, data: categoriesData } =
-    useQuery(GET_LEAF_RECORDS);
+    useQuery(GET_LEAF_RECORDS, {
+      fetchPolicy: "network-only"
+    });
 
   const {
     loading: assignAttributeLoading,
@@ -177,7 +180,9 @@ function Assignattribute() {
     loading: attributesLoding,
     data: attributesData,
     refetch: attributesRefetch,
-  } = useQuery(GET_ALL_ATTRIBUTES);
+  } = useQuery(GET_ALL_ATTRIBUTES, {
+    fetchPolicy: "network-only"
+  });
 
 
 
@@ -403,9 +408,10 @@ function Assignattribute() {
                           <thead>
                             <tr>
                               <th style={{ width: "10%" }}>Sl.No</th>
-                              <th style={{ width: "40%" }}>Attribute Type</th>
+                              <th style={{ width: "20%" }}>Name</th>
+                              <th style={{ width: "20%" }}>Attribute Type</th>
                               <th style={{ width: "40%" }}>Description</th>
-                              <th style={{ width: "40%" }}>Name</th>
+                              <th style={{ width: "5%" }}>Action</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -415,9 +421,21 @@ function Assignattribute() {
                                   (value: IAttribute, index: any) => (
                                     <tr key={index}>
                                       <td>{index + 1}</td>
+                                      <td>{value.name}</td>
                                       <td>{value.attributeType}</td>
                                       <td>{value.description}</td>
-                                      <td>{value.name}</td>
+                                      <td>
+                                        <Button
+                                          color="primary"
+                                          size="sm"
+                                          tag={Link}
+                                          to={{
+                                            pathname: `/attributes/${value?._id}`,
+                                          }}
+                                        >
+                                          View
+                                        </Button>
+                                      </td>
                                     </tr>
                                   )
                                 )}
