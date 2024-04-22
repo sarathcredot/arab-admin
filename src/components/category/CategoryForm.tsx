@@ -134,7 +134,7 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
             categoryName: values?.name,
             description: values?.description,
             parentId: isSelected?._id,
-            isLeaf: isLeaf,
+            isLeaf: isChecked,
             isBlocked: isBlockCategoryChecked
           },
         };
@@ -268,14 +268,14 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
             </FormGroup>
 
 
-            {!isEdit && isLeaf ? (
+            {!isEdit ? (
               <FormGroup check>
                 <Label check>
                   <Input
                     type="checkbox"
                     id="isLeaf"
                     name="isLeaf"
-                    checked={isLeaf}
+                    checked={isChecked}
                     onClick={(e) => {
                       checking();
                     }}

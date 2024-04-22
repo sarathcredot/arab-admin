@@ -163,7 +163,9 @@ function Assignattribute() {
   const [updateCategory] = useMutation(PUT_CETEGORY);
 
   const { loading: categoriesLoading, data: categoriesData } =
-    useQuery(GET_LEAF_RECORDS);
+    useQuery(GET_LEAF_RECORDS, {
+      fetchPolicy: "network-only"
+    });
 
   const {
     loading: assignAttributeLoading,
@@ -178,7 +180,9 @@ function Assignattribute() {
     loading: attributesLoding,
     data: attributesData,
     refetch: attributesRefetch,
-  } = useQuery(GET_ALL_ATTRIBUTES);
+  } = useQuery(GET_ALL_ATTRIBUTES, {
+    fetchPolicy: "network-only"
+  });
 
 
 
