@@ -23,7 +23,8 @@ import AssignedBrandList from "./components/LIstBrands";
 import VendorCards from "./components/VendorCards";
 import ViewCardBusiness from "./components/ViewCardBusiness";
 import ViewCardCompany from "./components/ViewCardCompany";
-
+import VendorProducts from "./components/VendorProducts";
+import demoAvatar from "../../assets/images/users/avatar-dummy.webp"
 interface IcontactPerson {
   phoneNumber: string;
   name: string;
@@ -111,6 +112,7 @@ function ViewVenders() {
     data: vendorDataResponse,
     refetch: vendorRefetch,
   } = useQuery(GET_AVENDOR, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         _id: id,
@@ -190,6 +192,14 @@ function ViewVenders() {
               BRANDS
             </NavLink>
           </NavItem>
+          <NavItem>
+            <NavLink
+              className={activeTab === "products" ? "tab-button active" : "tab-button"}
+              onClick={() => handleTabChange("products")}
+            >
+              PRODUCTS
+            </NavLink>
+          </NavItem>
         </Nav>
 
         <TabContent activeTab={activeTab}>
@@ -215,7 +225,7 @@ function ViewVenders() {
                         border: "5px solid #fff",
                       }}
                       variant="top"
-                      src={vendorData?.profilePic?.fileURL || ""}
+                      src={vendorData?.profilePic?.fileURL || demoAvatar}
                       alt="Profile"
                     />
                     <div>
@@ -335,6 +345,9 @@ function ViewVenders() {
           </TabPane>
           <TabPane tabId="brands">
             <AssignedBrandList />
+          </TabPane>
+          <TabPane tabId="products">
+            <VendorProducts />
           </TabPane>
         </TabContent>
       </Container>
