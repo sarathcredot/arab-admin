@@ -39,9 +39,8 @@ const BrandList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [brandData, setBrandData] = useState<IBrandRecord[]>([]);
   const [assignBrandData, setAssignBrandData] = useState<IBrandRecord[]>([]);
-  const [activeTab, setActiveTab] = useState<boolean>();
   const [currentPage, setCurrentPage] = useState(0);
-  const pageSize = 10; // Number of items per page
+  const pageSize = 10;
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const [selectedBrands, setSelectedBrands] = useState<
     Array<{ label: string; value: string }>
@@ -52,19 +51,24 @@ const BrandList: React.FC = () => {
 
   const GET_BRAND = gql`
     query GetAllBrandRecordsByAdmin($input: BrandRecordsFilter) {
-      getAllBrandRecordsByAdmin(input: $input) {
-        maxRecords
-        message
-        records {
-          _id
-          brandName
-          isBlocked
-          logo {
-            fileURL
-          }
-        }
+  getAllBrandRecordsByAdmin(input: $input) {
+    maxRecords
+    records {
+      _id
+      brandName
+      isBlocked
+      logo {
+        fileType
+        fileURL
+        mimeType
+        originalName
       }
+      isPopular
+      priority
     }
+    message
+  }
+}
   `;
 
 
@@ -107,10 +111,10 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
     data: brandDataResponse,
     refetch: brandRefetch,
   } = useQuery(GET_BRAND, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
-        page: null,
-        size: 10,
+        "paginationEnabled": false
       },
     },
   });
@@ -121,10 +125,11 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
     data: assignBrandDataResponse,
     refetch: assignBrandRefetch,
   } = useQuery(GET_ASSIGN_BRAND, {
+    fetchPolicy: "network-only",
     variables: {
       input: {
         page: currentPage,
-        size: 10,
+        size: pageSize,
         vendorId: id,
       },
     },
@@ -144,13 +149,7 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
     console.error("Error fetching vendor data:", brandError);
   }
 
-  const totalPages = Math.ceil(brandData.length / pageSize);
-
-  const handleNextPage = () => {
-    if (currentPage + 1 < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
+  const totalPages = Math.ceil(assignBrandData.length / pageSize);
 
 
   const toggleAddModal = () => {
@@ -311,19 +310,23 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
         <Row>
           <Col>
             <div className="d-flex justify-content-end mt-0 me-3">
+
               <ul className="pagination">
-                <li
-                  className={`page-item ${currentPage === 0 ? "disabled" : ""
-                    }`}
-                >
-                  <button
-                    className="page-link"
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                    disabled={currentPage === 0}
+                {
+                  currentPage !== 0 &&
+                  <li
+                    className={`page-item ${currentPage === 0 ? "disabled" : ""
+                      }`}
                   >
-                    Previous
-                  </button>
-                </li>
+                    <button
+                      className="page-link"
+                      onClick={() => setCurrentPage(currentPage - 1)}
+                      disabled={currentPage === 0}
+                    >
+                      Previous
+                    </button>
+                  </li>
+                }
 
                 {Array.from({ length: totalPages }, (_, index) => (
                   <li

@@ -87,6 +87,7 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
         page: currentPage,
         size: pageSize,
         isBlocked: activeTab,
+        paginationEnabled: true
       },
     },
   });

@@ -95,6 +95,9 @@ interface Product {
 
 const VariantListing = () => {
 
+
+
+
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [products, setProducts] = useState<Product[]>([]);
   const [maxRecords, setMaxRecords] = useState<number>(0);
@@ -108,6 +111,8 @@ const VariantListing = () => {
 
   const [params] = useSearchParams();
   const productCode = params.get("productCode");
+  const origin = params.get("origin")
+  const vendorId = params.get("vendorId")
 
   const { data, refetch } = useQuery(GET_VARIANTS, {
     fetchPolicy: "network-only",
@@ -235,8 +240,18 @@ const VariantListing = () => {
 
   const items = [
     { text: "Dashboard", link: `/` },
-    { text: "Products", link: `/product` },
   ];
+
+
+  if (origin && origin === "vendor") {
+    items.push(
+      { text: "Vendor", link: `/vendors/view?id=${vendorId}&tab=products` },
+    )
+  } else {
+    items.push(
+      { text: "Products", link: `/product` },
+    )
+  }
 
   return (
     <React.Fragment>
@@ -399,8 +414,8 @@ const VariantListing = () => {
                                         <img
                                           src={product.images[0]?.fileURL}
                                           alt={product?.productName}
-                                          width={80}
-                                          height={80}
+                                          width={40}
+                                        // height={80}
                                         />
                                       </Td>
                                       <Td>

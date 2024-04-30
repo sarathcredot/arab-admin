@@ -78,7 +78,8 @@ const BrandList: React.FC = () => {
         page: currentPage,
         size: pageSize,
         query: searchTerm,
-        isBlocked: activeTab
+        isBlocked: activeTab,
+        paginationEnabled: true
       },
     },
   });
