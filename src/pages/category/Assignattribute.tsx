@@ -181,7 +181,7 @@ function Assignattribute() {
     data: attributesData,
     refetch: attributesRefetch,
   } = useQuery(GET_ALL_ATTRIBUTES, {
-    fetchPolicy: "network-only"
+    fetchPolicy: "network-only",
   });
 
 
@@ -461,7 +461,7 @@ function Assignattribute() {
                   <Select
                     isMulti
                     options={attributes.map((attribute) => ({
-                      label: attribute.description,
+                      label: attribute.name,
                       value: attribute._id,
                     }))}
                     value={setectedAttributes}
