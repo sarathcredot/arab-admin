@@ -381,30 +381,27 @@ const PendingOrders = () => {
                                                             <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                                                                 <div>
                                                                     <div>
-                                                                        Total MRP:
-                                                                    </div>
-                                                                    <div>
                                                                         Total Selling:
-                                                                    </div>
-                                                                    <div>
-                                                                        Total Refund:
                                                                     </div>
                                                                     <div>
                                                                         Total Shipping :
                                                                     </div>
+                                                                    <br />
+
+                                                                    <div>
+                                                                        Total Refund:
+                                                                    </div>
                                                                 </div>
                                                                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                                                                    <div>
-                                                                        {order.orderPriceInfo?.totalMRP && formatCurrency(order?.orderPriceInfo?.totalMRP)}
-                                                                    </div>
                                                                     <div>
                                                                         {formatCurrency(order?.orderPriceInfo?.totalSellingPrice)}
                                                                     </div>
                                                                     <div>
-                                                                        {formatCurrency(order?.orderPriceInfo?.totalRefundAmount)}
-                                                                    </div>
-                                                                    <div>
                                                                         {formatCurrency(order?.orderPriceInfo?.totalShippingCharge)}
+                                                                    </div>
+                                                                    <br />
+                                                                    <div>
+                                                                        {formatCurrency(order?.orderPriceInfo?.totalRefundAmount)}
                                                                     </div>
                                                                 </div>
                                                             </div>
