@@ -404,8 +404,13 @@ const VariantListing = () => {
                                       <Td>{product.warehouseSkuId}</Td>
                                       <Td>{product.skuId}</Td>
                                       <Td>
-                                        {product.attributes[0]?.attributeDescription}:{" "}
-                                        {product.attributes[0]?.attributeValue}
+                                        {product.attributes.map((attribute, index) => (
+                                          <div key={index}>
+                                            <p>
+                                              {attribute.attributeName}: {attribute.attributeValue}
+                                            </p>
+                                          </div>
+                                        ))}
                                       </Td>
 
                                       <Td>{product.stock}</Td>
