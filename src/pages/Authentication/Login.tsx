@@ -179,7 +179,7 @@ const Login = (props: any) => {
                           Sign in to continue to Arab Deals.
                         </p> */}
 
-                        <img src={logo} alt="" height="90%" />
+                        <img src={logo} alt="" width={"60%"} />
                         <p
                           className="text-muted mt-5"
                           style={{
