@@ -239,7 +239,7 @@ const ProductListing = () => {
                           {products?.map((product: Product, index: number) => (
                             <Tr key={index}>
                               <Td>{currentPage * pageSize + index + 1}</Td>
-                              <Td><p style={{ maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product?.productName}</p></Td>
+                              <Td><p >{product?.productName}</p></Td>
                               <Td>{product?.productCode}</Td>
                               <Td ><p style={{ maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product?.shortDescription}</p></Td>
                               <Td>{product?.categoryNamePath}</Td>

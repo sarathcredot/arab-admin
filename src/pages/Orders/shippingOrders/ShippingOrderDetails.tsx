@@ -14,6 +14,7 @@ import OrderDetails from "src/components/orders/OrderProductDetails";
 import { formatCurrency } from "src/utils/formatCurrency"; import OrderProductsDetails from "src/components/orders/OrderProductDetails";
 import Iconify from "src/components/iconify";
 import OrderShippingAddress from "src/components/orders/OrderShippingAddress";
+import StatusChip from "src/components/statusIndicator/StatusChip";
 
 interface ShippingAddress {
   _id: string;
@@ -255,15 +256,52 @@ const ShippingOrderDetails = () => {
   ];
 
 
+  // const calculatePaidAmount = () => {
+  //   const isPaid = product?.paymentStatus === "COMPLETED";
+  //   const totalSellingPrice = isPaid ? (product?.sellingPrice || 0) : 0;
+  //   const totalShippingCharge = isPaid ? (product?.shippingCharge || 0) : 0;
+  //   const totalRefundAmount = order?.orderPriceInfo?.totalRefundAmount || 0;
+  //   const paidAmount = totalSellingPrice + totalShippingCharge - totalRefundAmount;
+
+  //   return paidAmount;
+  // };
+
+
   const calculatePaidAmount = () => {
     const isPaid = product?.paymentStatus === "COMPLETED";
     const totalSellingPrice = isPaid ? (product?.sellingPrice || 0) : 0;
     const totalShippingCharge = isPaid ? (product?.shippingCharge || 0) : 0;
-    const totalRefundAmount = order?.orderPriceInfo?.totalRefundAmount || 0;
-    const paidAmount = totalSellingPrice + totalShippingCharge - totalRefundAmount;
+    const paidAmount = totalSellingPrice + totalShippingCharge;
 
     return paidAmount;
   };
+
+
+  const calculateTotalSellingPrice = () => {
+    let totalSellingPrice = 0;
+    if (!product?.cancelledDate) {
+      if (product?.paymentStatus === "COMPLETED" || product?.paymentStatus === "PENDING") {
+        totalSellingPrice += product?.sellingPrice || 0;;
+      }
+    } else {
+      if (product.paymentStatus === "COMPLETED") {
+        totalSellingPrice += product?.sellingPrice || 0;;
+      }
+    }
+    return totalSellingPrice;
+  };
+
+  const calculateTotalShippingCharge = () => {
+    let totalShippingCharge = 0;
+    if (!product?.cancelledDate) {
+      if (product?.paymentStatus === "COMPLETED" || product?.paymentStatus === "PENDING") {
+        totalShippingCharge += product?.shippingCharge || 0;
+      }
+    }
+    return totalShippingCharge;
+  };
+
+
 
 
   return (
@@ -293,6 +331,18 @@ const ShippingOrderDetails = () => {
                             <p className="form-control-static">Order Id</p>
                             <p className="form-control-static">Date</p>
                             <p className="form-control-static">Payment Mode</p>
+                            {
+                              product?.shippingStatus !== "NA" &&
+                              <p className="form-control-static">Shipping Status</p>
+                            }
+                            {
+                              product?.returnStatus !== "NA" &&
+                              <p className="form-control-static">Return  Status</p>
+                            }
+                            {
+                              product?.refundStatus !== "NA" &&
+                              <p className="form-control-static">Refund Status</p>
+                            }
                           </div>
                           <div>
                             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
@@ -305,7 +355,19 @@ const ShippingOrderDetails = () => {
                               </div>
                             </div>
                             <p className="form-control-static">{moment(order?.orderDate).format("ll")}</p>
-                            <p className="form-control-static">{order?.paymentMode}</p>
+                            <p className="form-control-static">{order?.paymentMode ?? "nill"}</p>
+                            {
+                              product?.shippingStatus !== "NA" &&
+                              <p className="form-control-static">  <StatusChip status={product?.shippingStatus ?? ""} /></p>
+                            }
+                            {
+                              product?.returnStatus !== "NA" &&
+                              <p className="form-control-static"> <StatusChip status={product?.returnStatus ?? ""} /></p>
+                            }
+                            {
+                              product?.refundStatus !== "NA" &&
+                              <p className="form-control-static">  <StatusChip status={product?.refundStatus ?? ""} /></p>
+                            }
 
                           </div>
 
@@ -321,8 +383,8 @@ const ShippingOrderDetails = () => {
                           gap: "4px",
                         }}
                       >
-
                       </div>
+
                       <div >
                         <div style={{ display: "flex", flexDirection: "row", }}>
                           <div style={{ width: "200px" }}>
@@ -331,12 +393,11 @@ const ShippingOrderDetails = () => {
                             <p className="form-control-static" style={{ fontWeight: 500 }}>Paid Amount</p>
                             <p className="form-control-static">Refund Amount</p>
                             <hr />
-
                             <p className="form-control-static" style={{ fontWeight: 500 }}>Effective Price</p>
                           </div>
                           <div style={{ textAlign: "right" }}>
-                            <p className="form-control-static">{formatCurrency(product?.sellingPrice)}</p>
-                            <p className="form-control-static">{formatCurrency(product?.shippingCharge)}</p>
+                            <p className="form-control-static">{formatCurrency(calculateTotalSellingPrice())}</p>
+                            <p className="form-control-static">{formatCurrency(calculateTotalShippingCharge())}</p>
                             <p className="form-control-static" style={{ fontWeight: 500 }}>
                               {formatCurrency(
                                 calculatePaidAmount()
@@ -344,14 +405,13 @@ const ShippingOrderDetails = () => {
                             </p>
                             <p className="form-control-static">{formatCurrency(product?.refundAmount)}</p>
                             <hr />
-
                             <p className="form-control-static" style={{ fontWeight: 500 }}>
                               {formatCurrency(
-                                (product?.sellingPrice ?? 0) +
-                                (product?.shippingCharge ?? 0) -
+                                calculatePaidAmount() -
                                 (product?.refundAmount ?? 0)
                               )}
                             </p>
+
                           </div>
 
                         </div>
