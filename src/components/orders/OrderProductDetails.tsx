@@ -1129,7 +1129,7 @@ function OrderProductDetails({ product, orderProdcutsRefetch, orderRefetch }: an
                                 <Label for="refundAmount">Refund Amount</Label>
                                 <div className="input-group">
                                     <div className="input-group-prepend">
-                                        <span className="input-group-text">&#x20B9;</span>
+                                        <span className="input-group-text">OMR</span>
                                     </div>
                                     <Input
                                         type="text"
@@ -1256,7 +1256,7 @@ function OrderProductDetails({ product, orderProdcutsRefetch, orderRefetch }: an
                                         <Label for="shippingCharge">Shipping Charge</Label>
                                         <div className="input-group">
                                             <div className="input-group-prepend">
-                                                <span className="input-group-text">&#x20B9;</span>
+                                                <span className="input-group-text">OMR</span>
                                             </div>
                                             <Input
                                                 type="number"
@@ -1388,7 +1388,7 @@ function OrderProductDetails({ product, orderProdcutsRefetch, orderRefetch }: an
                                         <Label for="refundAmount">Refund Amount</Label>
                                         <div className="input-group">
                                             <div className="input-group-prepend">
-                                                <span className="input-group-text">&#x20B9;</span>
+                                                <span className="input-group-text">OMR</span>
                                             </div>
                                             <Input
                                                 type="number"

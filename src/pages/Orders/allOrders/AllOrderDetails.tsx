@@ -329,14 +329,14 @@ const ALlOrderDetails = () => {
                                                     <div style={{ width: "200px" }}>
                                                         <p className="form-control-static">Selling Price</p>
                                                         <p className="form-control-static">Shipping Charge</p>
-                                                        <p className="form-control-static">Refund Amount</p>
-                                                        <p className="form-control-static" style={{ fontWeight: 500 }}>Effective Price</p>
                                                         <p className="form-control-static" style={{ fontWeight: 500 }}>Paid Amount</p>
+                                                        <p className="form-control-static">Refund Amount</p>
+                                                        <hr />
+                                                        <p className="form-control-static" style={{ fontWeight: 500 }}>Effective Price</p>
                                                     </div>
                                                     <div style={{ textAlign: "right" }}>
                                                         <p className="form-control-static">{formatCurrency(order?.orderPriceInfo["totalSellingPrice"])}</p>
                                                         <p className="form-control-static">{formatCurrency(order?.orderPriceInfo["totalShippingCharge"])}</p>
-                                                        <p className="form-control-static">{formatCurrency(order?.orderPriceInfo["totalRefundAmount"])}</p>
                                                         <p className="form-control-static" style={{ fontWeight: 500 }}>
                                                             {formatCurrency(
                                                                 (order?.orderPriceInfo?.["totalSellingPrice"] ?? 0) +
@@ -344,6 +344,9 @@ const ALlOrderDetails = () => {
                                                                 (order?.orderPriceInfo?.["totalRefundAmount"] ?? 0)
                                                             )}
                                                         </p>
+                                                        <p className="form-control-static">{formatCurrency(order?.orderPriceInfo["totalRefundAmount"])}</p>
+                                                        <hr />
+
                                                         <p className="form-control-static" style={{ fontWeight: 500 }}>
                                                             {formatCurrency(
                                                                 calculatePaidAmount()
