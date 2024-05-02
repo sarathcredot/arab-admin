@@ -258,7 +258,7 @@ function Settings() {
                                                         <div style={{ width: "300px" }} className="form-control-static" >
                                                             <div className="input-group">
                                                                 <div className="input-group-prepend">
-                                                                    <span className="input-group-text">&#x20B9;</span>
+                                                                    <span className="input-group-text">OMR</span>
                                                                 </div>
                                                                 <Input
                                                                     type="text"
@@ -277,7 +277,7 @@ function Settings() {
                                                         <div style={{ width: "300px" }} className="form-control-static" >
                                                             <div className="input-group">
                                                                 <div className="input-group-prepend">
-                                                                    <span className="input-group-text">&#x20B9;</span>
+                                                                    <span className="input-group-text">OMR</span>
                                                                 </div>
                                                                 <Input
                                                                     type="text"
