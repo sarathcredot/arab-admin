@@ -329,24 +329,28 @@ const ReturnOrderDetails = () => {
                           <div style={{ width: "200px" }}>
                             <p className="form-control-static">Selling Price</p>
                             <p className="form-control-static">Shipping Charge</p>
-                            <p className="form-control-static">Refund Amount</p>
-                            <p className="form-control-static" style={{ fontWeight: 500 }}>Effective Price</p>
                             <p className="form-control-static" style={{ fontWeight: 500 }}>Paid Amount</p>
+                            <p className="form-control-static">Refund Amount</p>
+                            <hr />
+
+                            <p className="form-control-static" style={{ fontWeight: 500 }}>Effective Price</p>
                           </div>
                           <div style={{ textAlign: "right" }}>
                             <p className="form-control-static">{formatCurrency(product?.sellingPrice)}</p>
                             <p className="form-control-static">{formatCurrency(product?.shippingCharge)}</p>
+                            <p className="form-control-static" style={{ fontWeight: 500 }}>
+                              {formatCurrency(
+                                calculatePaidAmount()
+                              )}
+                            </p>
                             <p className="form-control-static">{formatCurrency(product?.refundAmount)}</p>
+                            <hr />
+
                             <p className="form-control-static" style={{ fontWeight: 500 }}>
                               {formatCurrency(
                                 (product?.sellingPrice ?? 0) +
                                 (product?.shippingCharge ?? 0) -
                                 (product?.refundAmount ?? 0)
-                              )}
-                            </p>
-                            <p className="form-control-static" style={{ fontWeight: 500 }}>
-                              {formatCurrency(
-                                calculatePaidAmount()
                               )}
                             </p>
                           </div>
