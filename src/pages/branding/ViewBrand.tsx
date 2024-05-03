@@ -119,7 +119,7 @@ function ViewBrands() {
               alt="Profile"
             />
             <span>
-              <span>Brand Name :</span> <label> {brandData?.brandName}</label>
+              <span>Brand Name :</span> <label> {brandData?.brandName} &nbsp; {brandData?.isPopular && <button style={{ border: "1px solid red", color: "red", background: "white", borderRadius: "7px" }} > {brandData?.isPopular && "Popular"}</button>}</label>
             </span>
             <CardText>
               <div>
