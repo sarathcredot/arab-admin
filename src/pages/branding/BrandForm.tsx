@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Form,
@@ -55,14 +55,19 @@ const BrandForm: React.FC<Props> = ({
 }) => {
   const navigate = useNavigate();
 
-  const [isBlockCategoryChecked, setIsBlockCategoryChecked] = useState<boolean>(
-    isEdit?.isBlocked !== undefined ? isEdit.isBlocked : false
+  const [isBlockCategoryChecked, setIsBlockCategoryChecked] = useState<any>(
+    false
   );
 
+  useEffect(() => {
+    setIsBlockCategoryChecked(isEdit?.isBlocked)
+  }, [isEdit?.isBlocked])
 
-  const [isPopularChecked, setIsPopularChecked] = useState<boolean>(
-    isEdit?.isPopular !== undefined ? isEdit.isPopular : false
-  );
+  const [isPopularChecked, setIsPopularChecked] = useState<any>(false);
+
+  useEffect(() => {
+    setIsPopularChecked(isEdit?.isPopular)
+  }, [isEdit?.isPopular])
 
   const POST_BRAND = gql`
    mutation AddBrand($input: AddBrandInput!, $image: Upload) {
@@ -75,11 +80,11 @@ const BrandForm: React.FC<Props> = ({
 
   const PUT_BRAND = gql`
     mutation UpdateBrand($input: updateBrandInput!, $image: Upload) {
-      updateBrand(input: $input, image: $image) {
-        _id
-        message
-      }
-    }
+  updateBrand(input: $input, image: $image) {
+    _id
+    message
+  }
+}
   `;
 
   const [createBrand] = useMutation(POST_BRAND);
@@ -172,11 +177,11 @@ const BrandForm: React.FC<Props> = ({
   };
 
   const checkingBlockCategory = () => {
-    setIsBlockCategoryChecked((prev) => !prev);
+    setIsBlockCategoryChecked((prev: any) => !prev);
   };
 
   const checkingpolpularity = () => {
-    setIsPopularChecked((prev) => !prev);
+    setIsPopularChecked((prev: any) => !prev);
   }
 
   return (

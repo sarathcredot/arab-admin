@@ -32,6 +32,7 @@ interface IBrandRecord {
   logo: {
     fileURL: string;
   };
+  isPopular: boolean
 }
 
 const BrandList: React.FC = () => {
@@ -191,7 +192,7 @@ const BrandList: React.FC = () => {
                               {brandData.map((brand, index) => (
                                 <tr key={brand._id}>
                                   <td>{currentPage * pageSize + index + 1}</td>
-                                  <td>{brand.brandName}</td>
+                                  <td>{brand.brandName} &nbsp; {brand?.isPopular && <button style={{ border: "1px solid red", color: "red", borderRadius: "7px", backgroundColor: "inherit", }} > {brand?.isPopular && "Popular"}</button>} </td>
 
                                   <td>
                                     {brand.logo && (

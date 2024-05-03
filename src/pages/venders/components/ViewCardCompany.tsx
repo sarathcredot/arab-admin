@@ -149,7 +149,7 @@ function ViewCardCompany({ IdCompany }: IPropes) {
       companyType: companyData?.companyType || '',
       crNumber: companyData?.crNumber || '',
       status: companyData?.status || '',
-      remarks: Array.isArray(companyData?.remarks) ? companyData?.remarks.join(', ') : companyData?.remarks || [], // Ensure remarks is an array
+      remarks: Array.isArray(companyData?.remarks) ? companyData?.remarks.join(', ') : companyData?.remarks || [],
       cooCertificate: '',
       crLicense: '',
     });
