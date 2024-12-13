@@ -172,11 +172,11 @@ const FormVender: React.FC<Props> = ({
             </FormGroup>
 
             <FormGroup>
-              <Label>Country code</Label>
+              <Label>Phone number</Label>
               <div className="input-group">
                 <div className="input-group">
                   <div className="input-group-prepend">
-                    <span className="input-group-text"><Iconify icon="openmoji:flag-oman" /></span>
+                    <span className="input-group-text bg-white"><Iconify icon="openmoji:flag-oman" /></span>
                   </div>
 
                   <Input
@@ -188,16 +188,26 @@ const FormVender: React.FC<Props> = ({
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     disabled
+                    style={{ width: "70px", flex: "none", backgroundColor: "#f8f9fa", color: "#6c757d" }}
                   />
+                  <Input
+                type="number"
+                id="phone"
+                name="phone"
+                placeholder="Please enter your mobile number"
+                value={formik.values?.phone}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
                 </div>
               </div>
 
-              {formik.touched.countryCode && formik.errors.countryCode && (
-                <div className="text-danger">{formik.errors.countryCode}</div>
+              {formik.touched.phone && formik.errors.phone && (
+                <div className="text-danger">{formik.errors.phone}</div>
               )}
             </FormGroup>
 
-            <FormGroup>
+            {/* <FormGroup>
               <Label for="categoryDescription">Phone number</Label>
               <Input
                 type="number"
@@ -211,7 +221,7 @@ const FormVender: React.FC<Props> = ({
               {formik.touched.phone && formik.errors.phone && (
                 <div className="text-danger">{formik.errors.phone}</div>
               )}
-            </FormGroup>
+            </FormGroup> */}
 
 
 

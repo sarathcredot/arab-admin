@@ -404,7 +404,7 @@ function DatatableTables() {
                 <Row>
                   <Col sl={12} md={6}>
                     <div className="dt-buttons btn-group flex-wrap mb-2">
-                      <CopyToClipboard text={JSON.stringify(copyData)}>
+                      <CopyToClipboard text={JSON.stringify(copyData)} options={{ format: "text/plain" }}>
                         <button
                           onClick={() => setCopyData(data)}
                           type="button"

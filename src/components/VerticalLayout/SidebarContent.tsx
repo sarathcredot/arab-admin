@@ -13,10 +13,10 @@ import MetisMenu from "metismenujs";
 import { Link, useLocation } from "react-router-dom";
 
 import withRouter from "../../../src/components/Common/withRouter";
-
+import { CiDeliveryTruck } from "react-icons/ci";
 import { PiShoppingCartFill } from "react-icons/pi";
 import { TbBrand4Chan } from "react-icons/tb";
-
+import { TbTruckDelivery } from "react-icons/tb";
 import { MdCategory, MdOutlineShoppingBag } from "react-icons/md";
 import { MdEditAttributes } from "react-icons/md";
 import { MdDomainVerification } from "react-icons/md";
@@ -216,6 +216,49 @@ const SidebarContent = (props: any) => {
               </Link>
             </li>
 
+            {/* delivery boys */}
+
+            {/* <li className="mt-3 li-sideBar">
+              <Link to="/delivery-boys" className="">
+                <FeatherIcon icon="users" />
+                <span>{props.t("Delivery Boys")}</span>
+
+              </Link>
+            </li> */}
+            <li className="mt-3  li-sideBar" >
+              <Link to="/delivery-boys" onClick={(e) => handleItemClick("/delivery-boys", e)}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "center", }}>
+                  {/* <TbTruckDelivery /> */}
+                  <CiDeliveryTruck />
+
+                    <span>{props.t("Delivery")}</span>
+                  </div>
+                  <div
+                    className="arrow-down"
+                    style={{ position: "absolute", top: "30px", right: "25px" }}
+                  ></div>
+                </div>
+              </Link>
+              {openMenus.includes("/delivery-boys") && (
+                <ul className={`sub-menu ${openMenus.includes("/delivery-boys") ? "mm-show" : ""}`}
+                >
+                  <li>
+                    <Link to="/delivery-boys">
+                      <FeatherIcon icon="chevron-right" />{" "}
+                      <span>{props.t("Delivery Boys")}</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/settlement">
+                      <FeatherIcon icon="chevron-right" />{" "}
+                      <span>{props.t("Settlements")}</span>
+                    </Link>
+                  </li>
+                  
+                </ul>
+              )}
+            </li>
 
 
             <li className="mt-3 li-sideBar">

@@ -165,15 +165,14 @@ function ExportExcelList({ name }: any) {
                                         <th>#</th>
                                         <th>Date</th>
                                         <th>Status</th>
-                                        <th>
+                                        <th style={{width:"70px"}} >
                                             <CustomButton onClick={() => fetchData()}
                                                 iconWidth={15} icon="mingcute:refresh-3-line" name="reload"
                                                 style={{
                                                     display: "flex",
-                                                    flexDirection: "row",
                                                     alignItems: "center",
                                                     justifyContent: "center",
-                                                    backgroundColor: "black",
+                                                    backgroundColor: "#000",
                                                     color: "white",
                                                     width: "auto",
                                                     height: "30px",
@@ -197,8 +196,8 @@ function ExportExcelList({ name }: any) {
                                                 </div>
                                             </td>
                                             <td>{item.status}</td>
-                                            <td>
-                                                <Button onClick={() => handleFileDownloadClick(item._id)} color="primary" style={{ width: "30px", height: "30px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                            <td style={{display:"flex",alignItems:"center",justifyContent:"center"}}>
+                                                <Button onClick={() => handleFileDownloadClick(item._id)} color="primary" style={{ width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                                                     <Iconify icon="material-symbols:download-sharp" />
                                                 </Button>
                                             </td>

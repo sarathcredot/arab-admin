@@ -168,8 +168,8 @@ const VendorList: React.FC = () => {
       type: 'select',
       name: 'status',
       options: [
-        { value: 'false', label: 'ACTIVE' },
-        { value: 'true', label: 'BLOCKED' },
+        { value: 'true', label: 'COMPLETED' },
+        { value: 'false', label: 'PENDING' },
       ],
     },
   ];
@@ -265,7 +265,7 @@ const VendorList: React.FC = () => {
                             >
                               <thead>
                                 <tr>
-                                  <th>Sl.No</th>
+                                  <th>#</th>
                                   <th>Full Name</th>
                                   <th>Mobile Number</th>
                                   <th>Email</th>
