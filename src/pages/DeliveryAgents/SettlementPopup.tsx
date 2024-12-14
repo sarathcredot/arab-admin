@@ -8,25 +8,29 @@ import { SettlementValidation } from "src/validation/validation";
 interface Props {
   isOpen: boolean;
   toggle: () => void;
-  agentID:string;
-  //   refetch: () => void;
+  agentId: string | undefined;
+  refetch: () => void;
   //   childrefetch?: () => void;
 }
 
-// const POST_SETTLEMENT = gql`
-//   #   mutation for creating settlement
-// `;
+const POST_SETTLEMENT = gql`
+  mutation CreateSettlement($input: CreateSettlementInput!) {
+    createSettlement(input: $input) {
+      _id
+      message
+    }
+  }
+`;
 
-const SettlementPopup: React.FC<Props> = ({ isOpen, toggle,agentID }) => {
-  //   const [createSettlement] = useMutation(POST_SETTLEMENT);
-  console.log({agentID});
-  
+const SettlementPopup: React.FC<Props> = ({ isOpen, toggle, agentId, refetch }) => {
+  const [createSettlement] = useMutation(POST_SETTLEMENT);
+  console.log({ agentId });
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       amount: "",
-      remark: "",
-      agentID
+      remarks: "",
     },
 
     validationSchema: SettlementValidation,
@@ -39,22 +43,23 @@ const SettlementPopup: React.FC<Props> = ({ isOpen, toggle,agentID }) => {
     try {
       let variables: any = {
         input: {
+          agentId,
           amount: values?.amount,
-          remark: values?.remark,
+          remarks: values?.remarks,
         },
       };
 
-      //   const response = await createSettlement({
-      //     variables,
-      //   });
+      const response = await createSettlement({
+        variables,
+      });
 
-      //   if (response) {
-      //     // refetch();
+      if (response) {
+        refetch();
 
-      //     toast.success("Successfully created a Delivery Boy");
-      //     toggle();
-      //     resetForm();
-      //   }
+        toast.success("Successfully Settled");
+        toggle();
+        resetForm();
+      }
 
       return toggle();
     } catch (error: any) {
@@ -87,19 +92,19 @@ const SettlementPopup: React.FC<Props> = ({ isOpen, toggle,agentID }) => {
               )}
             </FormGroup>
             <FormGroup>
-              <Label for="remark">Remark</Label>
+              <Label for="remarks">Remarks</Label>
               <Input
                 type="textarea"
-                id="remark"
-                name="remark"
+                id="remarks"
+                name="remarks"
                 rows={3}
-                placeholder=" Enter Remark"
-                value={formik.values?.remark}
+                placeholder=" Enter Remarks"
+                value={formik.values?.remarks}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              {formik.touched.remark && formik.errors.remark && (
-                <div className="text-danger">{formik.errors.remark}</div>
+              {formik.touched.remarks && formik.errors.remarks && (
+                <div className="text-danger">{formik.errors.remarks}</div>
               )}
             </FormGroup>
             <ModalFooter style={{ marginTop: "20px" }}>

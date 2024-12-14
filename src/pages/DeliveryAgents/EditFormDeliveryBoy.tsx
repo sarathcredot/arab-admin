@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, FormGroup, Label, Input, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { useFormik } from "formik";
-import { DeliveryBoyValidation } from "src/validation/validation";
+import { DeliveryBoyValidation, EditDeliveryBoyValidation } from "src/validation/validation";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { ToastContainer, toast } from "react-toastify";
 import Iconify from "src/components/iconify/Iconify";
@@ -9,21 +9,22 @@ import styles from "./style.module.css";
 
 // Agent Type
 interface IAgent {
-  _id: string;
+  _id:string;
   fullName: string;
   contactNumber: string;
   agentType: string;
-  isActive: Boolean;
-  password: String;
-  email: String;
-  vendorID: String;
+  isActive: boolean;
+  password?: string;
+  userID: string;
+  vendorID: string;
+  image:null,
 }
 
 // vendor type
 interface IVendor {
   _id: string;
   fullName: string;
-  email: string;
+  userID: string;
   mobileNumber: string;
   isBlocked: boolean;
   isKycCompleted: boolean;
@@ -44,11 +45,11 @@ interface Props {
   data?: any;
 }
 
-const POST_DELIVERY_BOY = gql`
-  mutation CreateDeliveryBoy($input: CreateDeliveryAgentInput!, $licence: Upload) {
-    createDeliveryAgent(input: $input, licence: $licence) {
-      _id
-      message
+const EDIT_DELIVERY_BOY = gql`
+  mutation EditDeliveryBoy($input: EditAgentDataInput!,$image:Upload) {
+    editDeliveryAgentData(input: $input,image:$image){
+      status,
+      msg
     }
   }
 `;
@@ -67,7 +68,7 @@ const GET_VENDOR_FOR_SELECT = gql`
 `;
 
 const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childrefetch, data }) => {
-  const [createDeliveryBoy] = useMutation(POST_DELIVERY_BOY);
+  const [editDeliveryBoy] = useMutation(EDIT_DELIVERY_BOY);
   const [vendorData, setVendorData] = useState<IVendor[]>([]);
   console.log("vendor data==", vendorData);
   const formik = useFormik({
@@ -77,14 +78,13 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
       countryCode: "+968",
       contactNumber: "",
       agentType: "",
-      email: "",
+      userID: "",
       vendorID: "",
-      licence: "",
-      password: "",
       isActive:true,
+      image:null,
     },
 
-    validationSchema: DeliveryBoyValidation,
+    validationSchema: EditDeliveryBoyValidation,
     onSubmit: async (values, { resetForm }) => {
       await onSubmit(values, { resetForm });
     },
@@ -96,42 +96,55 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
       contactNumber: data?.contactNumber || "",
       countryCode: "+968",
       agentType: data?.agentType || "",
-      email: data?.email || "",
-      vendorID: data?.vendorID || "",
-      licence: data?.licence || "",
-      password: data?.password || "",
+      userID: data?.userID || "",
+      vendorID: data?.vendorID || null,
       isActive: data?.isActive,
+      image:null,
     });
   }, [isOpen, refetch]);
 
   
   const onSubmit = async (values: any, { resetForm }: any) => {
+    console.log(true);
+    
     try {
       let variables: any = {
         input: {
+          _id:data?._id,
           fullName: values?.fullName,
           contactNumber: values?.contactNumber.toString(),
           agentType: values?.agentType,
-          email: values?.email,
+          userID: values?.userID,
           vendorID: values?.vendorID,
-          password: values?.password,
         },
+        
+          // input: {
+          //   _id: "675d26cd2ac50ec6e58fcf33",
+          //   agentType: "hfhg",
+          //   contactNumber: "12732136470",
+          //   fullName: "dkjkfhsdkf",
+          //   userID: "sfdhjkkfdsh@gmail.com",
+          //   vendorID: null
+          // }
+        
       };
-      if (values.licence) {
+      if (values.image) {
         variables = {
           ...variables,
-          licence: values?.licence,
+          image: values?.image,
         };
       }
-
-      const response = await createDeliveryBoy({
+      console.log("variables==",variables);
+      
+      const response = await editDeliveryBoy({
         variables,
       });
 
       if (response) {
         refetch?.();
-
-        toast.success("Successfully created a Delivery Boy");
+        console.log("response=",response);
+        
+        toast.success("Successfully edited Delivery Boy");
         toggle();
         resetForm();
       }
@@ -140,6 +153,8 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
     } catch (error: any) {
       toast.error(error.message);
       console.log(error.message);
+      console.log("error=",error);
+      
     }
   };
 
@@ -156,7 +171,7 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
     },
   });
 
-  console.log("licence =", formik?.values?.licence);
+  console.log("image =", formik?.values?.image);
 
   useEffect(() => {
     if (vendorDataResponse && vendorDataResponse.getAllVendorsRecordsByAdmin) {
@@ -271,33 +286,33 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
               <Label for="userID">Email</Label>
               <Input
                 type="text"
-                id="email"
-                name="email"
+                id="userID"
+                name="userID"
                 placeholder=" Enter Email"
-                value={formik.values?.email}
+                value={formik.values?.userID}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              {formik.touched.email && formik.errors.email && <div className="text-danger">{formik.errors.email}</div>}
+              {formik.touched.userID && formik.errors.userID && <div className="text-danger">{formik.errors.userID}</div>}
             </FormGroup>
             <FormGroup>
               <Label
-                for="licence "
+                for="image "
                 className="pt-2"
               >
                 Licence
               </Label>
               <Input
                 type="file"
-                id="licence"
+                id="image"
                 accept="image/*"
-                name="licence"
+                name="image"
                 onChange={(event) => {
-                  formik.setFieldValue("licence", event.currentTarget.files?.[0] || []);
+                  formik.setFieldValue("image", event.currentTarget.files?.[0] || []);
                 }}
               />
             </FormGroup>
-            <FormGroup>
+            {/* <FormGroup>
               <Label for="password">Change Password</Label>
               <Input
                 type="password"
@@ -311,7 +326,7 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
               {formik.touched.password && formik.errors.password && (
                 <div className="text-danger">{formik.errors.password}</div>
               )}
-            </FormGroup>
+            </FormGroup> */}
             <ModalFooter style={{ marginTop: "20px" }}>
               <Button color="primary">Submit</Button>
               <Button
