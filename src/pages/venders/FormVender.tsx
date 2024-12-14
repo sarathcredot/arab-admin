@@ -107,6 +107,7 @@ const FormVender: React.FC<Props> = ({
       });
 
       if (response) {
+        
         refetch();
 
         toast.success("Successfully created a vendor");

@@ -28,31 +28,64 @@ import ExportExcelList from "src/components/orders/ExportExcelList";
 import SettlementPopup from "../DeliveryAgents/SettlementPopup";
 import Iconify from "src/components/iconify/Iconify";
 
-// Agent Type
+// Agent Type// Agent Type
+interface ILicence {
+  fileType: string;
+  fileURL: string;
+  mimeType: string;
+  originalName: string;
+}
+
+interface IWallet {
+  cashInHand: number;
+  lastSettlementDate: string;
+  totalSettlement: number;
+  grandTotal: number;
+}
+
+interface ISettlementHistory {
+  _id: string;
+  type: string;
+  amount: number;
+  remarks: string;
+  totalAmount: number;
+  balance: number;
+  createdAt: string;
+}
+
 interface IAgent {
   _id: string;
   fullName: string;
   contactNumber: string;
+  userID: string;
   agentType: string;
-  isActive: Boolean;
-  vendorID: String;
-  password: String;
+  isActive: boolean;
+  vendorID: string;
+  licence: ILicence;
+  wallet: IWallet;
+  settlementHistory: ISettlementHistory[];
 }
 
-// Agent Query
-// const GET_ALL_AGENT = gql`
-//   query {
-//     getAllAgentData {
-//       _id
-//       fullName
-//       contactNumber
-//       agentType
-//       isActive
-//       vendorID
-//       password
-//     }
-//   }
-// `;
+const GET_ALL_AGENTS = gql`
+  query {
+    getAllAgentData {
+      _id
+      fullName
+      contactNumber
+      agentType
+      isActive
+      vendorID
+      password
+      wallet {
+        cashInHand
+        lastSettlementDate
+        totalSettlement
+        grandTotal
+      }
+      
+    }
+  }
+`;
 
 const SettlementPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -65,7 +98,7 @@ const SettlementPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<boolean>();
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const [settlemodal, setSettleModal] = useState<boolean>(false);
-  const [agentID, setAgentID] = useState("");
+  const [agentId, setAgentId] = useState("");
 
   const [filters, setFilters] = useState({
     email: "",
@@ -74,15 +107,15 @@ const SettlementPage: React.FC = () => {
   });
   const loading = false;
 
-  //   const {
-  //     loading: agentLoading,
-  //     error: agentError,
-  //     data: agentDataResponse,
-  //     refetch: refetchAgent,
-  //   } = useQuery(GET_ALL_AGENT);
-  //   const toggleAddModal = () => {
-  //     setShowAddModal(!showAddModal);
-  //   };
+    const {
+      loading: agentLoading,
+      error: agentError,
+      data: agentDataResponse,
+      refetch: refetchAgent,
+    } = useQuery(GET_ALL_AGENTS);
+    const toggleAddModal = () => {
+      setShowAddModal(!showAddModal);
+    };
 
   const [isOpen, setIsOpen] = useState(false);
   const settleToggle = () => setSettleModal(!settlemodal);
@@ -132,14 +165,13 @@ const SettlementPage: React.FC = () => {
     { text: "Delivery", link: null },
   ];
 
-  //   useEffect(() => {
-  //     if (agentDataResponse && agentDataResponse) {
-  //       console.log("agenttttt====", agentDataResponse);
+    useEffect(() => {
+      if (agentDataResponse && agentDataResponse) {
+        setAgentData(agentDataResponse?.getAllAgentData);
+      }
+    }, [agentDataResponse, activeTab, filters, searchTerm]);
 
-  //       setAgentData(agentDataResponse.getAllAgentData);
-  //     }
-  //   }, [agentDataResponse, activeTab, filters, searchTerm]);
-
+    console.log("dattaaaaaa=",agentData)
   //   if (agentError) {
   //     console.error("Error fetching agent data:", agentError);
   //   }
@@ -170,7 +202,7 @@ const SettlementPage: React.FC = () => {
   const history = [
     {
       _id: "1",
-      agentID: "12312831",
+      agentId: "12312831",
       name: "sanin",
       phone: "9744712490",
       lastSettleDate: "12/12/2024",
@@ -179,7 +211,7 @@ const SettlementPage: React.FC = () => {
     },
     {
       _id: "2",
-      agentID: "872376472",
+      agentId: "872376472",
       name: "riyas",
       phone: "9744712490",
       lastSettleDate: "11/12/2024",
@@ -188,7 +220,7 @@ const SettlementPage: React.FC = () => {
     },
     {
       _id: "3",
-      agentID: "12343432",
+      agentId: "12343432",
       name: "sharath",
       phone: "9744712490",
       lastSettleDate: "11/12/2024",
@@ -197,7 +229,7 @@ const SettlementPage: React.FC = () => {
     },
     {
       _id: "4",
-      agentID: "433211232",
+      agentId: "433211232",
       name: "janna",
       phone: "9744712490",
       lastSettleDate: "10/12/2024",
@@ -206,7 +238,7 @@ const SettlementPage: React.FC = () => {
     },
     {
       _id: "5",
-      agentID: "997783732",
+      agentId: "997783732",
       name: "sadil",
       phone: "9744712490",
       lastSettleDate: "9/12/2024",
@@ -223,7 +255,7 @@ const SettlementPage: React.FC = () => {
             currentPage="Settlements"
           />
           <div style={{ position: "absolute", top: "175px", right: "50px" }}>
-            <ExportExcelList name={"TRANSACTION_EXPORT"} />
+            {/* <ExportExcelList name={"TRANSACTION_EXPORT"} /> */}
           </div>
           {/* <Nav tabs>
             <NavItem>
@@ -308,7 +340,7 @@ const SettlementPage: React.FC = () => {
                     />
                   </Collapse>
                   <Row>
-                    {loading ? (
+                    {agentLoading ? (
                       <Loader />
                     ) : (
                       <div className="table-rep-plugin mt-2">
@@ -333,14 +365,14 @@ const SettlementPage: React.FC = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              {history?.map((item, index) => (
+                              {agentData.length>0 && agentData?.map((item, index) => (
                                 <tr key={index}>
                                   <td>{index + 1}</td>
-                                  <td>{item.name}</td>
-                                  <td>{item.phone}</td>
-                                  <td>{item.lastSettleDate}</td>
-                                  <td>{item.totalSettlement}</td>
-                                  <td>{item.balance}</td>
+                                  <td>{item?.fullName}</td>
+                                  <td>{item?.contactNumber}</td>
+                                  <td>{item?.wallet.lastSettlementDate &&new Date(item.wallet.lastSettlementDate).toLocaleDateString("en-GB").replace(/\//g, "-")}</td>
+                                  <td>{item?.wallet.totalSettlement}</td>
+                                  <td>{item?.wallet.cashInHand}</td>
                                   <td
                                     style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}
                                   >
@@ -350,8 +382,8 @@ const SettlementPage: React.FC = () => {
                                       /> */}
                                     <Button
                                       onClick={() => {
-                                        setAgentID(item.agentID);
-                                        agentID && settleToggle();
+                                        setAgentId(item._id);
+                                        agentId && settleToggle();
                                       }}
                                       color="primary"
                                       size="sm"
@@ -381,9 +413,10 @@ const SettlementPage: React.FC = () => {
                       </div>
                     )}
                     <SettlementPopup
-                      agentID={agentID}
+                      agentId={agentId}
                       isOpen={settlemodal}
                       toggle={settleToggle}
+                      refetch={refetchAgent}
                     />
                   </Row>
                 </CardBody>
