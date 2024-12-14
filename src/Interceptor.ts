@@ -8,7 +8,7 @@ export const requestInterceptor = new ApolloLink(
     // Modify the operation before it is sent
     operation.setContext({
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${localStorage.getItem('admin_token')}`,
       },
     });
 
@@ -23,7 +23,10 @@ export const responseInterceptor = new ApolloLink(
     return new Observable((observer) => {
       const subscription = forward(operation).subscribe({
         next: (result) => {
-          console.log('GraphQL Result:', result);
+          console.log('GraphQL Result:', result?.errors);
+          result && result?.errors && result?.errors?.length > 0 ? result?.errors.forEach(element => {
+            
+          }): console.log("NO ERROR IN RESULT");
           // Check if there are errors in the result
           if (result.errors && result.errors.some((error: any) => error.extensions?.code === "UNAUTHORIZED")) {
             console.log("Redirecting to login page");
