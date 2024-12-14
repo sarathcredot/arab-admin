@@ -6,6 +6,9 @@ const Authmiddleware = (props: any) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const navigate = useNavigate();
 
+ const token = localStorage.getItem("admin_token");
+ 
+
   useEffect(() => {
     const token = localStorage.getItem("admin_token");
     console.log("Checking token:", token);
@@ -15,7 +18,7 @@ const Authmiddleware = (props: any) => {
       console.log("Redirecting to /login");
       navigate("/login");
     }
-  }, [navigate,isAuthenticated]);
+  }, [navigate]);
 
   
 
