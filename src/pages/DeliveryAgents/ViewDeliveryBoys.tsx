@@ -93,6 +93,9 @@ const ViewDeliveryBoys = () => {
   const [searchParams] = useSearchParams();
   const ID = searchParams.get("id");
   console.log({ ID });
+
+  const [TAB, setTAB] = useState(false);
+
   const [data, setData] = useState<IAgent>();
   const loading = false;
   const [settlemodal, setSettleModal] = useState<boolean>(false);
@@ -116,7 +119,7 @@ const ViewDeliveryBoys = () => {
     },
     skip: !ID,
   });
-  if (loading) {
+  if (detailLoading) {
     console.log("Query is loading...");
   }
   if (error) {
@@ -152,96 +155,100 @@ const ViewDeliveryBoys = () => {
               style={{ padding: 0, paddingRight: "5px" }}
             >
               <Card style={{ height: "100%" }}>
-                <CardBody>
-                  <div style={{ display: "flex", gap: "20px" }}>
-                    <div>
-                      <img
-                        src={userAvatar}
-                        alt="avatar"
-                        className="avatar rounded-circle img-thumbnail"
-                        width={"70px"}
-                      />
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          width: "100%",
-                        }}
-                      >
-                        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                          <h5 style={{ margin: "0" }}>{(data?.fullName && capitalCase(data?.fullName)) || "User"}</h5>
-                          <div
-                            style={{
-                              width: "80px",
-                              height: "20px",
-                              border: `1px solid ${data?.isActive ? "green" : "#dc4016"}`,
-                              borderRadius: "18px",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              color: `${data?.isActive ? "green" : "#dc4016"}`,
-                            }}
-                          >
-                            <p style={{ margin: "0" }}> {data?.isActive == true ? "Active" : "Blocked"}</p>
-                          </div>
-                        </div>
-                        <CustomButton
-                          name=""
-                          icon="ic:baseline-edit"
-                          onClick={editToggle}
-                        />
-                        <EditFormDeliveryBoy
-                          isOpen={editmodal}
-                          toggle={editToggle}
-                          data={data}
-                          refetch={refetchData}
+                {detailLoading ? (
+                  <Loader />
+                ) : (
+                  <CardBody>
+                    <div style={{ display: "flex", gap: "20px" }}>
+                      <div>
+                        <img
+                          src={userAvatar}
+                          alt="avatar"
+                          className="avatar rounded-circle img-thumbnail"
+                          width={"70px"}
                         />
                       </div>
-                      <div style={{ display: "flex", gap: 10 }}>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "80px" }}>
-                          <p className="mb-0">Fullname :</p>
-                          {/* <p className="mb-0">ID :</p> */}
-                          <p className="mb-0">Email :</p>
-                          <p className="mb-0">Phone : </p>
-                          <p className="mb-0">Agent Type : </p>
-                          <p
-                            className="mb-0 "
-                            style={{
-                              cursor: "pointer",
-                              width: "200px",
-                              display: "flex",
-                              alignItems: "end",
-                              gap: 6,
-                              fontWeight: "bold",
-                              zIndex: 999,
-                            }}
-                            onClick={() => handleImageClick(data?.licence?.fileURL || "")}
-                          >
-                            View Licence
-                            <Iconify icon="mingcute:upload-line" />
-                          </p>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            width: "100%",
+                          }}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                            <h5 style={{ margin: "0" }}>{(data?.fullName && capitalCase(data?.fullName)) || "User"}</h5>
+                            <div
+                              style={{
+                                width: "80px",
+                                height: "20px",
+                                border: `1px solid ${data?.isActive ? "green" : "#dc4016"}`,
+                                borderRadius: "18px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color: `${data?.isActive ? "green" : "#dc4016"}`,
+                              }}
+                            >
+                              <p style={{ margin: "0" }}> {data?.isActive == true ? "Active" : "Blocked"}</p>
+                            </div>
+                          </div>
+                          <CustomButton
+                            name=""
+                            icon="ic:baseline-edit"
+                            onClick={editToggle}
+                          />
+                          <EditFormDeliveryBoy
+                            isOpen={editmodal}
+                            toggle={editToggle}
+                            data={data}
+                            refetch={refetchData}
+                          />
                         </div>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                          <p className="mb-0"> {(data?.fullName && capitalCase(data?.fullName)) || "nill"}</p>
-                          {/* <p className="mb-0"> {data?._id || "nill"}</p> */}
-                          <p className="mb-0"> {data?.userID || "nill"}</p>
-                          <p className="mb-0"> {`+968 ${data?.contactNumber}` || "nill"}</p>
-                          <p className="mb-0"> {data?.agentType || "nill"}</p>
-                          <div style={{ display: "flex", alignItems: "center", scale: ".9" }}>
-                            {/* <CustomButton
+                        <div style={{ display: "flex", gap: 10 }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "80px" }}>
+                            <p className="mb-0">Fullname :</p>
+                            {/* <p className="mb-0">ID :</p> */}
+                            <p className="mb-0">Email :</p>
+                            <p className="mb-0">Phone : </p>
+                            <p className="mb-0">Agent Type : </p>
+                            <p
+                              className="mb-0 "
+                              style={{
+                                cursor: "pointer",
+                                width: "200px",
+                                display: "flex",
+                                alignItems: "end",
+                                gap: 6,
+                                fontWeight: "bold",
+                                zIndex: 999,
+                              }}
+                              onClick={() => handleImageClick(data?.licence?.fileURL || "")}
+                            >
+                              View Licence
+                              <Iconify icon="mingcute:upload-line" />
+                            </p>
+                          </div>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                            <p className="mb-0"> {(data?.fullName && capitalCase(data?.fullName)) || "nill"}</p>
+                            {/* <p className="mb-0"> {data?._id || "nill"}</p> */}
+                            <p className="mb-0"> {data?.userID || "nill"}</p>
+                            <p className="mb-0"> {`+968 ${data?.contactNumber}` || "nill"}</p>
+                            <p className="mb-0"> {data?.agentType || "nill"}</p>
+                            <div style={{ display: "flex", alignItems: "center", scale: ".9" }}>
+                              {/* <CustomButton
                               name=""
                               icon="mingcute:upload-line"
                               onClick={() => handleImageClick(data?.licence?.fileURL || "")}
                             /> */}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </CardBody>
+                  </CardBody>
+                )}
               </Card>
             </Col>
             <Col
@@ -294,54 +301,109 @@ const ViewDeliveryBoys = () => {
             </Col>
           </Row>
           <Row>
-                {/* <Nav tabs>
-                  <NavItem>
-                    <NavLink
-                      className={activeTab === undefined ? "tab-button active" : "tab-button"}
-                      onClick={() => setActiveTab(undefined)}
-                    >
-                      SETTLEMENTS
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink
-                      className={activeTab === false ? "tab-button active" : "tab-button"}
-                      onClick={() => setActiveTab(false)}
-                    >
-                      ORDERS
-                    </NavLink>
-                  </NavItem>
-                </Nav> */}
-            {loading ? (
-              <Loader />
-            ) : data && data?.settlementHistory?.length > 0 ? (
-              <div className="table-rep-plugin mt-2">
-                <div
-                  style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0" }}
+            <Nav
+              tabs
+              style={{ marginTop: "20px" }}
+            >
+              <NavItem>
+                <NavLink
+                  className={TAB === false ? "tab-button active" : "tab-button"}
+                  onClick={() => setTAB(false)}
                 >
-                  <h5>Settlement History</h5>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    {/* <ExportExcelList name={"TRANSACTION_EXPORT"} /> */}
-                    <CustomButton
-                      bgColor="unset"
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: "40px",
-                        borderRadius: "10px",
-                        gap: "5px",
-                        fontSize: "13px",
-                      }}
-                      outline
-                      color="primary"
-                      name="Export"
-                      icon="ph:export-bold"
-                      onClick={handleExportClick}
-                    />
+                  SETTLEMENTS
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={TAB === true ? "tab-button active" : "tab-button"}
+                  onClick={() => setTAB(true)}
+                >
+                  ORDERS
+                </NavLink>
+              </NavItem>
+            </Nav>
+            {!TAB ? (
+              detailLoading ? (
+                <Loader />
+              ) : data && data?.settlementHistory?.length > 0 ? (
+                <div className="table-rep-plugin mt-2">
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "10px 0",
+                    }}
+                  >
+                    <h5>Settlement History</h5>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <ExportExcelList name={"TRANSACTION_EXPORT"} />
+                      <CustomButton
+                        bgColor="unset"
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          height: "40px",
+                          borderRadius: "10px",
+                          gap: "5px",
+                          fontSize: "13px",
+                        }}
+                        outline
+                        color="primary"
+                        name="Export"
+                        icon="ph:export-bold"
+                        onClick={handleExportClick}
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className="table-responsive mb-0"
+                    data-pattern="priority-columns"
+                  >
+                    <Table
+                      id="tech-companies-1"
+                      className="table table-striped table-bordered"
+                    >
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Amount</th>
+                          <th>Initial CIH</th>
+                          <th>Current CIH</th>
+                          <th>Type</th>
+                          <th>Date</th>
+                          <th>Remarks</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data?.settlementHistory?.map((item, index) => {
+                          const formattedDate = new Date(item.createdAt).toLocaleDateString("en-GB");
+                          return (
+                            <tr key={index}>
+                              <td>{index + 1}</td>
+                              <td>{item.amount}</td>
+                              <td>{item.totalAmount}</td>
+                              <td>{item.balance}</td>
+                              <td>{item.type}</td>
+                              <td>{formattedDate.replace(/\//g, "-")}</td>
+                              <td>{item.remarks}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </Table>
                   </div>
                 </div>
+              ) : (
+                <div>No Settlements</div>
+              )
+            ) : detailLoading ? (
+              <Loader />
+            ) : (
+              <>
+                <div>Orders</div>
                 <div
                   className="table-responsive mb-0"
                   data-pattern="priority-columns"
@@ -363,9 +425,7 @@ const ViewDeliveryBoys = () => {
                     </thead>
                     <tbody>
                       {data?.settlementHistory?.map((item, index) => {
-                        // Format the createdAt date
-                        const formattedDate = new Date(item.createdAt).toLocaleDateString("en-GB"); // "dd/mm/yyyy" format
-
+                        const formattedDate = new Date(item.createdAt).toLocaleDateString("en-GB");
                         return (
                           <tr key={index}>
                             <td>{index + 1}</td>
@@ -381,9 +441,7 @@ const ViewDeliveryBoys = () => {
                     </tbody>
                   </Table>
                 </div>
-              </div>
-            ) : (
-              <div>No Settlements</div>
+              </>
             )}
           </Row>
         </Container>
