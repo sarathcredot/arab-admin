@@ -125,11 +125,6 @@ function OrderProductDetails({
   const [invoiceNumber, setInvoiceNumber] = useState("");
   const [signedUrl, setSignedUrl] = useState("");
 
-  // [[[[[[[[[[[[[ ASSIGN DELIVERY ]]]]]]]]]]]]]
-  const [deliveryAssignModal, setDeliveryAssignModal] = useState(false);
-  const [deliveryBoyId, setDeliveryBoyId] = useState<string>();
-  const [deliveryBoyName, setDeliveryBoyName] = useState<string>();
-
   // [[[[[[[[[[[[[ COMMENTS ]]]]]]]]]]]]]
 
   const [commentEditModal, setCommentEditModal] = useState(false);
@@ -592,12 +587,22 @@ function OrderProductDetails({
 
   const [UpdateProduct] = useMutation(UPDATE_PRODUCT);
 
-  //ASSIGN ORDER
-  //
+  //DELIVERY BOY ASSIGN ORDER ==============================================
+
+  const [deliveryAssignModal, setDeliveryAssignModal] = useState(false);
+  const [deliveryBoyId, setDeliveryBoyId] = useState<string>();
+  const [deliveryBoyName, setDeliveryBoyName] = useState<string>();
+
+  const [orderItemId, setOrderItemId] = useState("");
+
+  const handleAssignClick = (itemId: string) => {
+    toggleDeliveryAssignModal();
+    setOrderItemId(itemId);
+  };
 
   const ASSIGN_ORDER = gql`
-    mutation AssignDeliveryAgent($input: AssignDeliveryAgentInput!) {
-      assignDeliveryAgent(input: $input) {
+    mutation OrderAssignDeliveryAgent($input: OrderAssignDeliveryAgentInput!) {
+      orderAssignDeliveryAgent(input: $input) {
         status
         msg
       }
@@ -611,15 +616,15 @@ function OrderProductDetails({
       $input: GetProductDeliveryTypeDeliveryAgentsInput!
     ) {
       getProductDeliveryTypeDeliveryAgents(input: $input) {
-        products {
-          deliveryType
-          deliveryAgents
+        deliveryType
+        deliveryAgents {
+          _id
+          fullName
+          agentType
         }
       }
     }
   `;
-console.log(product, 'PRODUCT');
-console.log(product?._id, 'PRODUCT_ID');
 
   const {
     data: deliveryAgentList,
@@ -630,15 +635,42 @@ console.log(product?._id, 'PRODUCT_ID');
     fetchPolicy: "network-only",
     variables: {
       input: {
-        productId: "674ff57e654d2aad974a0f4a",
+        productId: product?.productId,
       },
     },
   });
 
-  useEffect(() => {
-    console.log(deliveryAgentList, "DELIVERY AGENT LIST");
-  }, [deliveryAgentList, deliveryAgentListLoading, deliveryAgentListError]);
+  const handleAssignOrder = async () => {
+    try {
+      if (!orderItemId) throw new Error("Can't find order Item !");
+      if (!deliveryBoyId) throw new Error("Delivery Agent Id is required !");
+      if (!deliveryBoyName)
+        throw new Error("Delivery Agent Name is requiredItem !");
 
+      const variables =  {
+        input: {
+          orderItemId: orderItemId,
+          deliveryAgentId: deliveryBoyId,
+          deliveryAgentName: deliveryBoyName,
+        },
+      }
+
+      const { errors, data } = await AssignOrder({
+        variables,
+      });
+
+      if(data?.msg){
+        toast.success(data?.msg);
+        toggleDeliveryAssignModal();
+      }
+        
+    } catch (error: any) {
+      console.log(error, 'ERROR');
+      toast.error("Can't Assign Order !")
+    }
+  };
+
+  console.log(deliveryAgentList, "DELIVERY AGENT LIST ");
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       <Card
@@ -774,12 +806,11 @@ console.log(product?._id, 'PRODUCT_ID');
                     Edit Product
                   </Dropdown.Item>
                   <Dropdown.Item
-                    onClick={toggleDeliveryAssignModal}
+                    onClick={() => handleAssignClick(product?._id)}
                     style={{ display: "flex", gap: 5 }}
                     disabled={
                       product?.shippingStatus !== "SHIPPED" &&
-                      product?.shippingStatus !== "PACKAGE_IN_PROGRESS" &&
-                      product?.deliveryBoy
+                      product?.shippingStatus !== "PACKAGE_IN_PROGRESS"
                     }
                   >
                     <CiDeliveryTruck size={20} />
@@ -1082,7 +1113,7 @@ console.log(product?._id, 'PRODUCT_ID');
                   </div>
                   <div style={{ width: "100%" }}>
                     <p className="form-control-static" style={{ margin: 10 }}>
-                      {product?.itemId || "nill"}
+                      {deliveryAgentList?.getProductDeliveryTypeDeliveryAgents?.deliveryType || "nill"}
                     </p>
                     <p className="form-control-static" style={{ margin: 10 }}>
                       {product?.courierId || "nill"}
@@ -1655,48 +1686,51 @@ console.log(product?._id, 'PRODUCT_ID');
               name="agentType"
               id="agentType"
               disabled
-              value={dummyDeliveryAgentData?.type}
+              value={
+                deliveryAgentList?.getProductDeliveryTypeDeliveryAgents
+                  ?.deliveryType
+              }
               // onChange={(e) => setInvoiceNumber(e.target.value)}
             />
           </FormGroup>
-          <Col xs={6}>
+          <Col>
             <FormGroup>
               <Label for="deliveryBoy">Select Delivery Boy</Label>
               <Input
                 id="deliveryBoy"
                 name="deliveryBoy"
                 type="select"
-                value={deliveryBoyName}
+                // value={deliveryBoyName}
                 placeholder="Select Delivery Boy"
                 onChange={(e: any) => {
                   const selectedValue = e?.target?.value; // The ID (value) of the selected option
                   const selectedName =
                     e?.target?.options[e?.target?.selectedIndex]?.text; // The name (text) of the selected option
-
                   setDeliveryBoyId(selectedValue); // Save ID in state
                   setDeliveryBoyName(selectedName); // Save name in state
-
-                  console.log("Selected ID: ", selectedValue);
-                  console.log("Selected Name: ", selectedName);
                 }}
               >
-                {dummyDeliveryAgentData &&
-                  dummyDeliveryAgentData?.agentsList &&
-                  dummyDeliveryAgentData?.agentsList?.length > 0 &&
-                  dummyDeliveryAgentData?.agentsList?.map((agent: any) => (
-                    <option key={agent?.id} id={agent?.name} value={agent?.id}>
-                      {agent?.name}
-                    </option>
-                  ))}
+                {deliveryAgentList &&
+                  deliveryAgentList?.getProductDeliveryTypeDeliveryAgents &&
+                  deliveryAgentList?.getProductDeliveryTypeDeliveryAgents
+                    ?.deliveryAgents?.length > 0 &&
+                  deliveryAgentList?.getProductDeliveryTypeDeliveryAgents?.deliveryAgents?.map(
+                    (agent: any) => (
+                      <option
+                        key={agent?._id}
+                        id={agent?.fullName}
+                        value={agent?._id}
+                      >
+                        {agent?.fullName}
+                      </option>
+                    )
+                  )}
               </Input>
             </FormGroup>
           </Col>
         </ModalBody>
         <ModalFooter>
-          <Button
-            color="primary"
-            // onClick={handleInvoiceSubmit}
-          >
+          <Button color="primary" onClick={handleAssignOrder}>
             Submit
           </Button>{" "}
           <Button
