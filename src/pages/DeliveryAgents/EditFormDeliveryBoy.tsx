@@ -40,7 +40,7 @@ interface Props {
   isOpen: boolean;
   toggle: () => void;
   //  IAgent | null | undefined;
-  refetch?: () => void;
+  refetch: () => void;
   childrefetch?: () => void;
   data?: any;
 }
@@ -118,14 +118,7 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
           vendorID: values?.vendorID,
         },
         
-          // input: {
-          //   _id: "675d26cd2ac50ec6e58fcf33",
-          //   agentType: "hfhg",
-          //   contactNumber: "12732136470",
-          //   fullName: "dkjkfhsdkf",
-          //   userID: "sfdhjkkfdsh@gmail.com",
-          //   vendorID: null
-          // }
+          
         
       };
       if (values.image) {
@@ -141,7 +134,7 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
       });
 
       if (response) {
-        refetch?.();
+        refetch();
         console.log("response=",response);
         
         toast.success("Successfully edited Delivery Boy");
@@ -300,7 +293,7 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
                 for="image "
                 className="pt-2"
               >
-                Licence
+                Driving Licence
               </Label>
               <Input
                 type="file"

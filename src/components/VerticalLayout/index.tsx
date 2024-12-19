@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   changeLayout,
   changeSidebarTheme,
@@ -19,25 +19,23 @@ import RightSidebar from "../CommonForBoth/RightSidebar";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import { createSelector } from "reselect";
+import DesktopView from "../DesktopView/DesktopView";
 const Layout = (props: any) => {
   const ref = useRef<any>();
 
   const dispatch = useDispatch();
 
   const selectLayoutState = (state: any) => state.Layout;
-  const selectLayoutProperties = createSelector(
-    selectLayoutState,
-    (layout) => ({
-      topbarTheme: layout.topbarTheme,
-      layoutWidth: layout.layoutWidth,
-      isPreloader: layout.isPreloader,
-      leftSideBarTheme: layout.leftSideBarTheme,
-      layoutType: layout.layoutType,
-      layoutMode: layout.layoutMode,
-      leftSideBarType: layout.leftSideBarType,
-      showRightSidebar: layout.showRightSidebar,
-    })
-  );
+  const selectLayoutProperties = createSelector(selectLayoutState, (layout) => ({
+    topbarTheme: layout.topbarTheme,
+    layoutWidth: layout.layoutWidth,
+    isPreloader: layout.isPreloader,
+    leftSideBarTheme: layout.leftSideBarTheme,
+    layoutType: layout.layoutType,
+    layoutMode: layout.layoutMode,
+    leftSideBarType: layout.leftSideBarType,
+    showRightSidebar: layout.showRightSidebar,
+  }));
   const {
     topbarTheme,
     layoutWidth,
@@ -46,7 +44,7 @@ const Layout = (props: any) => {
     layoutType,
     layoutMode,
     leftSideBarType,
-    showRightSidebar
+    showRightSidebar,
   } = useSelector(selectLayoutProperties);
 
   const isMobile: any = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -114,7 +112,6 @@ const Layout = (props: any) => {
     }
   }, [leftSideBarType, dispatch]);
 
-
   useEffect(() => {
     if (layoutWidth) {
       dispatch(changeLayoutWidth(layoutWidth));
@@ -141,6 +138,40 @@ const Layout = (props: any) => {
     }
   };
 
+  const [isOpen, setIsOpen] = useState(false);
+  // const [isDesktopView, setIsDesktopView] = useState(false);
+
+  const toggleCollapse = () => {
+    console.log("TOGGLE.........");
+    setIsOpen(!isOpen);
+  };
+  console.log("width=", window.innerWidth);
+
+  const handleDesktopView = () => {
+    const desktopView = localStorage.getItem("desktopView");
+    console.log({ desktopView });
+
+    if (desktopView) {
+      const viewportMeta = document.querySelector("meta[name='viewport']");
+      if (viewportMeta) {
+        viewportMeta.setAttribute("content", "width=1335");
+      } else {
+        const newMeta = document.createElement("meta");
+        newMeta.name = "viewport";
+        newMeta.content = "width=1335";
+        document.head.appendChild(newMeta);
+      }
+    } else {
+      setIsOpen(true);
+    }
+    console.log("IS MOBILE.......................................................");
+  };
+
+  useEffect(() => {
+    if (window.innerWidth < 750) {
+      handleDesktopView();
+    }
+  }, [window.innerWidth,localStorage.getItem("desktopView")]);
   return (
     <React.Fragment>
       {/* <div className="pace pace-active" id="preloader" ref={ref}>
@@ -154,7 +185,6 @@ const Layout = (props: any) => {
         </div>
         <div className="pace-activity"></div>
       </div> */}
-
       <div id="layout-wrapper">
         <Header
           toggleMenuCallback={toggleMenuCallback}
@@ -166,13 +196,16 @@ const Layout = (props: any) => {
           isMobile={isMobile}
         />
         <div className="main-content">
+          <DesktopView
+            isOpen={isOpen}
+            toggle={toggleCollapse}
+
+          />
           {props.children}
           {/* <Footer /> */}
         </div>
       </div>
-      {showRightSidebar ? (
-        <RightSidebar onChangeLayoutMode={onChangeLayoutMode} />
-      ) : null}
+      {showRightSidebar ? <RightSidebar onChangeLayoutMode={onChangeLayoutMode} /> : null}
     </React.Fragment>
   );
 };

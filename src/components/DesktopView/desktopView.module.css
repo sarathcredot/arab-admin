@@ -1,0 +1,23 @@
+.container{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:"blue";
+}
+.close{
+    z-index:999;
+    position:absolute;
+    top:20px;
+    right:20px;
+
+    display:block;
+    /* margin-left: 100%; */
+}
+.content{
+    min-height:100%;
+    /* background:red; */
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}

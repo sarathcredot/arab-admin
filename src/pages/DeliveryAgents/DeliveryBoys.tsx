@@ -38,17 +38,27 @@ interface IAgent {
 
 // Agent Query
 const GET_ALL_AGENT = gql`
-  query {
-    getAllAgentData {
+  query GetAllAgentData($input: getAllAgentDataInput) {
+  getAllAgentData(input: $input) {
+    maxRecords
+    records {
       _id
       fullName
       contactNumber
+      userID
+      password
       agentType
       isActive
       vendorID
-      password
+      wallet {
+        cashInHand
+        lastSettlementDate
+        totalSettlement
+        grandTotal
+      }
     }
   }
+}
 `;
 
 const DeliveryBoys: React.FC = () => {
@@ -62,9 +72,8 @@ const DeliveryBoys: React.FC = () => {
   const [activeTab, setActiveTab] = useState<boolean>();
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const [filters, setFilters] = useState({
-    email: "",
-    status: false,
-    mobileNumber: "",
+    isActive: "",
+    agentType: "",
   });
 
   const {
@@ -72,7 +81,17 @@ const DeliveryBoys: React.FC = () => {
     error: agentError,
     data: agentDataResponse,
     refetch: refetchAgent,
-  } = useQuery(GET_ALL_AGENT);
+  } = useQuery(GET_ALL_AGENT, {
+    variables: {
+      input: {
+        page: currentPage,
+        size: pageSize,
+        isActive: filters?.isActive,
+        agentType: filters?.agentType,
+        fullName:searchTerm 
+      },
+    },
+  });
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
   };
@@ -84,10 +103,10 @@ const DeliveryBoys: React.FC = () => {
   };
 
   const handleFilterSubmit = (formData: any) => {
+    setCurrentPage(0)
     setFilters({
-      email: formData.email,
-      status: formData.status == "true" ? true : false,
-      mobileNumber: formData.mobileNumber,
+      isActive: formData.isActive,
+      agentType: formData.agentType,
     });
   };
   const items = [
@@ -99,7 +118,8 @@ const DeliveryBoys: React.FC = () => {
     if (agentDataResponse && agentDataResponse) {
       console.log("agenttttt====", agentDataResponse);
 
-      setAgentData(agentDataResponse.getAllAgentData);
+      setAgentData(agentDataResponse.getAllAgentData.records);
+      refetchAgent()
     }
   }, [agentDataResponse, activeTab, filters, searchTerm]);
 
@@ -110,19 +130,19 @@ const DeliveryBoys: React.FC = () => {
   const totalPages = Math.ceil(totalRecords / pageSize);
   const filterOptions = [
     {
-      label: "Mobile Number",
-      type: "text",
-      name: "mobileNumber",
-    },
-    {
-      label: "Email",
-      type: "text",
-      name: "email",
+      label: "Agent Type",
+      type: "select",
+      name: "agentType",
+      options: [
+        { value: "ArabDeals", label: "ArabDeals" },
+        { value: "Vendor", label: "Vendor" },
+        { value: "ThirdParty", label: "ThirdParty" },
+      ],
     },
     {
       label: "Status",
       type: "select",
-      name: "status",
+      name: "isActive",
       options: [
         { value: "true", label: "ACTIVE" },
         { value: "false", label: "BLOCKED" },
@@ -138,7 +158,7 @@ const DeliveryBoys: React.FC = () => {
             items={items}
             currentPage="Delivery Boys"
           />
-          <Nav tabs>
+          {/* <Nav tabs>
             <NavItem>
               <NavLink
                 className={activeTab === undefined ? "tab-button active" : "tab-button"}
@@ -163,7 +183,7 @@ const DeliveryBoys: React.FC = () => {
                 ALL
               </NavLink>
             </NavItem>
-          </Nav>
+          </Nav> */}
           <Row style={{ marginTop: "20px" }}>
             <Col lg={12}>
               <Card>
@@ -236,14 +256,14 @@ const DeliveryBoys: React.FC = () => {
                                 <th>Mobile Number</th>
                                 <th>Agent Type</th>
                                 <th>Status</th>
-                                <th style={{width:"50px"}}>Action</th>
+                                <th style={{ width: "50px" }}>Action</th>
                               </tr>
                             </thead>
                             <tbody>
                               {agentData?.map((agent, index) => (
                                 <tr key={agent._id}>
                                   {/* <td>{currentPage * pageSize + index + 1}</td> */}
-                                  <td>{index + 1}</td>
+                                  <td>{(currentPage*pageSize)+(index + 1)}</td>
                                   <td>{agent.fullName}</td>
                                   <td>{agent.contactNumber}</td>
                                   <td>{agent.agentType}</td>
@@ -270,9 +290,9 @@ const DeliveryBoys: React.FC = () => {
                   </Row>
                 </CardBody>
 
-    {/* pagination does not added */}
+                {/* pagination does not added */}
 
-                {/* <Row style={{ marginRight: "10px" }}>
+                <Row style={{ marginRight: "10px" }}>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">
@@ -314,7 +334,7 @@ const DeliveryBoys: React.FC = () => {
                       </ul>
                     </div>
                   </Col>
-                </Row> */}
+                </Row>
               </Card>
             </Col>
           </Row>

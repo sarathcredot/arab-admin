@@ -48,6 +48,7 @@ const POST_DELIVERY_BOY = gql`
     createDeliveryAgent(input: $input, image: $image) {
       _id
       message
+      error
     }
   }
 `;
@@ -115,16 +116,24 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
       });
       console.log("response = ",response)
       if (response) {
-        refetch();
+        console.log("RESPONSE = ",response);
+        
+        // if(response.error){
+        //   toast.error(response.message);
 
-        toast.success("Successfully created a Delivery Boy");
-        toggle();
-        resetForm();
+        // }
+        // refetch();
+
+        // toast.success("Successfully created a Delivery Boy");
+        // toggle();
+        // resetForm();
       }
       console.log("response>>",response);
       
       return toggle();
     } catch (error: any) {
+      console.log("catch errorrrrrrr");
+      
       console.log("error>>>>>",error);
       
       toast.error(error.message);
@@ -286,7 +295,7 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
                 for="image "
                 className="pt-2"
               >
-                Licence
+                Driving Licence
               </Label>
               <Input
                 type="file"

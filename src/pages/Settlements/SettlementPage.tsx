@@ -67,22 +67,33 @@ interface IAgent {
 }
 
 const GET_ALL_AGENTS = gql`
-  query {
-    getAllAgentData {
-      _id
-      fullName
-      contactNumber
-      agentType
-      isActive
-      vendorID
-      password
-      wallet {
-        cashInHand
-        lastSettlementDate
-        totalSettlement
-        grandTotal
+  query GetAllAgentData($input: getAllAgentDataInput) {
+    getAllAgentData(input: $input) {
+      maxRecords
+      records {
+        _id
+        fullName
+        contactNumber
+        userID
+        password
+        agentType
+        isActive
+        vendorID
+        wallet {
+          cashInHand
+          lastSettlementDate
+          totalSettlement
+          grandTotal
+        }
       }
-      
+    }
+  }
+`;
+
+const EXPORT_SETTLEMENTS = gql`
+  mutation exportSettlements($input: ExportAllSettlementHistoryInput!) {
+    exportAllSettlementHistory(input: $input) {
+      message
     }
   }
 `;
@@ -100,22 +111,22 @@ const SettlementPage: React.FC = () => {
   const [settlemodal, setSettleModal] = useState<boolean>(false);
   const [agentId, setAgentId] = useState("");
 
-  const [filters, setFilters] = useState({
-    email: "",
-    status: false,
-    mobileNumber: "",
+  const {
+    loading: agentLoading,
+    error: agentError,
+    data: agentDataResponse,
+    refetch: refetchAgent,
+  } = useQuery(GET_ALL_AGENTS, {
+    variables: {
+      input: {
+        page: currentPage,
+        size: pageSize,
+      },
+    },
   });
-  const loading = false;
-
-    const {
-      loading: agentLoading,
-      error: agentError,
-      data: agentDataResponse,
-      refetch: refetchAgent,
-    } = useQuery(GET_ALL_AGENTS);
-    const toggleAddModal = () => {
-      setShowAddModal(!showAddModal);
-    };
+  const toggleAddModal = () => {
+    setShowAddModal(!showAddModal);
+  };
 
   const [isOpen, setIsOpen] = useState(false);
   const settleToggle = () => setSettleModal(!settlemodal);
@@ -123,129 +134,49 @@ const SettlementPage: React.FC = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleFilterSubmit = (formData: any) => {
-    setFilters({
-      email: formData.email,
-      status: formData.status == "true" ? true : false,
-      mobileNumber: formData.mobileNumber,
-    });
-  };
-
-  //   const [ExportAdminOrders] = useMutation(EXPORT_ORDERS);
+  const [exportSettlements] = useMutation(EXPORT_SETTLEMENTS);
 
   const handleExportClick = async () => {
     console.log("export btn clicked");
-    toast.success("btn clicked");
+    // toast.success("btn clicked");
 
-    // try {
-    //     const result = await ExportAdminOrders({
-    //         variables: {
-    //             input: {
-    //                 orderId: filterData.orderId || searchTerm,
-    //                 orderStatus: "PENDING",
-    //                 ...(filterData._id && { _id: filterData._id }),
-    //                 ...(filterData.userId && { userId: filterData.userId }),
-    //                 startDate: filterData?.startDate,
-    //                 endDate: filterData?.endDate,
-    //                 paymentMode: filterData?.paymentMode,
-    //             }
-    //         }
-    //     })
+    try {
+      const result = await exportSettlements({
+        variables: {
+          input: {
+            page: currentPage,
+            size: pageSize,
+          },
+        },
+      });
 
-    //     if (result.data.exportAdminOrders) {
-    //         toast.success("Export Successfull")
-    //     }
-    // } catch (error: any) {
-    //     toast.success(error)
-    //     console.log(error)
-    // }
+      if (result.data.exportAllSettlementHistory) {
+        console.log("result =", result.data);
+        toast.success(result.data.exportAllSettlementHistory?.message);
+      }
+    } catch (error: any) {
+      toast.error(error);
+      console.log(error);
+    }
   };
   const items = [
     { text: "Dashboard", link: `/` },
     { text: "Delivery", link: null },
   ];
 
-    useEffect(() => {
-      if (agentDataResponse && agentDataResponse) {
-        setAgentData(agentDataResponse?.getAllAgentData);
-      }
-    }, [agentDataResponse, activeTab, filters, searchTerm]);
+  useEffect(() => {
+    if (agentDataResponse && agentDataResponse) {
+      setAgentData(agentDataResponse?.getAllAgentData?.records);
+    }
+  }, [agentDataResponse, activeTab, searchTerm]);
 
-    console.log("dattaaaaaa=",agentData)
-  //   if (agentError) {
-  //     console.error("Error fetching agent data:", agentError);
-  //   }
-  //   const totalRecords = agentDataResponse?.getAllAgentData?.maxRecords || 0;
-  //   const totalPages = Math.ceil(totalRecords / pageSize);
-  const filterOptions = [
-    {
-      label: "Start Date",
-      type: "date",
-      name: "startDate",
-    },
-    {
-      label: "End Date",
-      type: "date",
-      name: "endDate",
-    },
-    {
-      label: "Type",
-      type: "select",
-      name: "type",
-      options: [
-        { value: "SETTLED", label: "SETTLED" },
-        { value: "COLLECTED", label: "COLLECTED" },
-      ],
-    },
-  ];
+  console.log("dattaaaaaa=", agentData);
+  if (agentError) {
+    console.error("Error fetching agent data:", agentError);
+  }
+    const totalRecords = agentDataResponse?.getAllAgentData?.maxRecords || 0;
+    const totalPages = Math.ceil(totalRecords / pageSize);
 
-  const history = [
-    {
-      _id: "1",
-      agentId: "12312831",
-      name: "sanin",
-      phone: "9744712490",
-      lastSettleDate: "12/12/2024",
-      totalSettlement: 5000,
-      balance: 1500,
-    },
-    {
-      _id: "2",
-      agentId: "872376472",
-      name: "riyas",
-      phone: "9744712490",
-      lastSettleDate: "11/12/2024",
-      totalSettlement: 6000,
-      balance: 2000,
-    },
-    {
-      _id: "3",
-      agentId: "12343432",
-      name: "sharath",
-      phone: "9744712490",
-      lastSettleDate: "11/12/2024",
-      totalSettlement: 4500,
-      balance: 2000,
-    },
-    {
-      _id: "4",
-      agentId: "433211232",
-      name: "janna",
-      phone: "9744712490",
-      lastSettleDate: "10/12/2024",
-      totalSettlement: 4000,
-      balance: 1200,
-    },
-    {
-      _id: "5",
-      agentId: "997783732",
-      name: "sadil",
-      phone: "9744712490",
-      lastSettleDate: "9/12/2024",
-      totalSettlement: 4400,
-      balance: 2300,
-    },
-  ];
   return (
     <>
       <div className="page-content">
@@ -255,34 +186,8 @@ const SettlementPage: React.FC = () => {
             currentPage="Settlements"
           />
           <div style={{ position: "absolute", top: "175px", right: "50px" }}>
-            {/* <ExportExcelList name={"TRANSACTION_EXPORT"} /> */}
+            <ExportExcelList name={"WALLET_EXPORT"} />
           </div>
-          {/* <Nav tabs>
-            <NavItem>
-              <NavLink
-                className={activeTab === undefined ? "tab-button active" : "tab-button"}
-                onClick={() => setActiveTab(undefined)}
-              >
-                ALL
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={activeTab === false ? "tab-button active" : "tab-button"}
-                onClick={() => setActiveTab(false)}
-              >
-                SETTLED
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={activeTab === true ? "tab-button active" : "tab-button"}
-                onClick={() => setActiveTab(true)}
-              >
-                COLLECTED
-              </NavLink>
-            </NavItem>
-          </Nav> */}
           <Row style={{ marginTop: "20px" }}>
             <Col lg={12}>
               <Card>
@@ -322,23 +227,11 @@ const SettlementPage: React.FC = () => {
                         icon="ph:export-bold"
                         onClick={handleExportClick}
                       />
-
-                      <CustomButton
-                        onClick={toggleCollapse}
-                        name="Filters"
-                        icon="clarity:filter-solid"
-                      />
                     </Col>
                   </Row>
                 </CardHeader>
 
                 <CardBody>
-                  <Collapse isOpen={isOpen}>
-                    <DynamicFilter
-                      filterOptions={filterOptions}
-                      onSubmit={handleFilterSubmit}
-                    />
-                  </Collapse>
                   <Row>
                     {agentLoading ? (
                       <Loader />
@@ -365,48 +258,59 @@ const SettlementPage: React.FC = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              {agentData.length>0 && agentData?.map((item, index) => (
-                                <tr key={index}>
-                                  <td>{index + 1}</td>
-                                  <td>{item?.fullName}</td>
-                                  <td>{item?.contactNumber}</td>
-                                  <td>{item?.wallet.lastSettlementDate &&new Date(item.wallet.lastSettlementDate).toLocaleDateString("en-GB").replace(/\//g, "-")}</td>
-                                  <td>{item?.wallet.totalSettlement}</td>
-                                  <td>{item?.wallet.cashInHand}</td>
-                                  <td
-                                    style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}
-                                  >
-                                    {/* <CustomButton
+                              {agentData?.length > 0 &&
+                                agentData?.map((item, index) => (
+                                  <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{item?.fullName}</td>
+                                    <td>{item?.contactNumber}</td>
+                                    <td>
+                                      {item?.wallet?.lastSettlementDate &&
+                                        new Date(item.wallet?.lastSettlementDate)
+                                          .toLocaleDateString("en-GB")
+                                          .replace(/\//g, "-")}
+                                    </td>
+                                    <td>{item?.wallet?.totalSettlement}</td>
+                                    <td>{item?.wallet?.cashInHand}</td>
+                                    <td
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        gap: 10,
+                                      }}
+                                    >
+                                      {/* <CustomButton
                                       name="Settle"
                                       icon="carbon:wallet"
                                       /> */}
-                                    <Button
-                                      onClick={() => {
-                                        setAgentId(item._id);
-                                        agentId && settleToggle();
-                                      }}
-                                      color="primary"
-                                      size="sm"
-                                      style={{ display: "flex", alignItems: "center", gap: 5 }}
-                                    >
-                                      <Iconify
-                                        icon={"carbon:wallet"}
-                                        width={"15px"}
-                                      />
-                                      Settle
-                                    </Button>
-
-                                    <Link to={`/delivery-boys/view?id=${item._id}`}>
                                       <Button
+                                        onClick={() => {
+                                          setAgentId(item._id);
+                                          settleToggle();
+                                        }}
                                         color="primary"
                                         size="sm"
+                                        style={{ display: "flex", alignItems: "center", gap: 5 }}
                                       >
-                                        Profile
+                                        <Iconify
+                                          icon={"carbon:wallet"}
+                                          width={"15px"}
+                                        />
+                                        Settle
                                       </Button>
-                                    </Link>
-                                  </td>
-                                </tr>
-                              ))}
+
+                                      <Link to={`/delivery-boys/view?id=${item._id}`}>
+                                        <Button
+                                          color="primary"
+                                          size="sm"
+                                        >
+                                          Profile
+                                        </Button>
+                                      </Link>
+                                    </td>
+                                  </tr>
+                                ))}
                             </tbody>
                           </Table>
                         </div>
@@ -423,7 +327,7 @@ const SettlementPage: React.FC = () => {
 
                 {/* pagination does not added */}
 
-                {/* <Row style={{ marginRight: "10px" }}>
+                <Row style={{ marginRight: "10px" }}>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">
@@ -465,7 +369,7 @@ const SettlementPage: React.FC = () => {
                       </ul>
                     </div>
                   </Col>
-                </Row> */}
+                </Row>
               </Card>
             </Col>
           </Row>

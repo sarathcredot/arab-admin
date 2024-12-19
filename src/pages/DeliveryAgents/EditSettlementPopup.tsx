@@ -8,28 +8,32 @@ import { SettlementValidation } from "src/validation/validation";
 interface Props {
   isOpen: boolean;
   toggle: () => void;
-  agentId: string | undefined;
+  settlementId: string | undefined;
+  data: {
+    amount: number;
+    remarks: string;
+  };
   refetch: () => void;
 }
 
 const POST_SETTLEMENT = gql`
-  mutation CreateSettlement($input: CreateSettlementInput!) {
-    createSettlement(input: $input) {
+  mutation EditSettlement($input: EditSettlementInput!) {
+    editSettlement(input: $input) {
       _id
       message
     }
   }
 `;
 
-const SettlementPopup: React.FC<Props> = ({ isOpen, toggle, agentId, refetch }) => {
+const EditSettlementPopup: React.FC<Props> = ({ isOpen, toggle, settlementId, data, refetch }) => {
   const [createSettlement] = useMutation(POST_SETTLEMENT);
-  console.log({ agentId });
+  console.log({ settlementId, data });
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      amount: "",
-      remarks: "",
+      amount: data?.amount,
+      remarks: data?.remarks,
     },
 
     validationSchema: SettlementValidation,
@@ -42,7 +46,7 @@ const SettlementPopup: React.FC<Props> = ({ isOpen, toggle, agentId, refetch }) 
     try {
       let variables: any = {
         input: {
-          agentId,
+          settlementId,
           amount: values?.amount,
           remarks: values?.remarks,
         },
@@ -55,7 +59,7 @@ const SettlementPopup: React.FC<Props> = ({ isOpen, toggle, agentId, refetch }) 
       if (response) {
         refetch();
 
-        toast.success("Successfully Settled");
+        toast.success("Successfully Edited Settlement");
         toggle();
         resetForm();
       }
@@ -72,7 +76,7 @@ const SettlementPopup: React.FC<Props> = ({ isOpen, toggle, agentId, refetch }) 
         isOpen={isOpen}
         toggle={toggle}
       >
-        <ModalHeader toggle={toggle}>Add Settlement</ModalHeader>
+        <ModalHeader toggle={toggle}>Edit Settlement</ModalHeader>
         <ModalBody>
           <Form onSubmit={formik.handleSubmit}>
             <FormGroup>
@@ -122,4 +126,4 @@ const SettlementPopup: React.FC<Props> = ({ isOpen, toggle, agentId, refetch }) 
   );
 };
 
-export default SettlementPopup;
+export default EditSettlementPopup;

@@ -26,6 +26,8 @@ interface Record {
 
 
 function ExportExcelList({ name }: any) {
+    console.log({name});
+    
     const [searchParams] = useSearchParams();
     const vendorId = searchParams.get("vendorId")
 

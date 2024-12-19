@@ -11,6 +11,7 @@ export const requestInterceptor = new ApolloLink(
         Authorization: `Bearer ${localStorage.getItem('admin_token')}`,
       },
     });
+    console.log("token!!!!!!!!!!!");
     // Call the next link in the chain
     return forward(operation);
   }
@@ -24,7 +25,7 @@ export const responseInterceptor = new ApolloLink(
         next: (result) => {
           console.log('GraphQL Result:', result?.errors);
           result && result?.errors && result?.errors?.length > 0 ? result?.errors.forEach(element => {
-            
+            console.log(element, )
           }): console.log("NO ERROR IN RESULT");
           // Check if there are errors in the result
           if (result.errors && result.errors.some((error: any) => error.extensions?.code === "UNAUTHORIZED")) {
@@ -32,12 +33,15 @@ export const responseInterceptor = new ApolloLink(
             localStorage.removeItem("admin_token");
             window.location.href = "/login"
           } else {
+            console.log("interceptor no error");
+            
             observer.next(result);
           }
 
         },
         error: (error) => {
           // Handle errors globally
+          console.log("INTERCEPTOR ERROR BLOCK")
           console.error('GraphQL Error:', error);
           observer.error(error);
         },

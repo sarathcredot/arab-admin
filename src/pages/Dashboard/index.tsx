@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 //import Breadcrumbs
 import Breadcrumbs from "../../components/Common/Breadcrumb";
@@ -27,13 +27,13 @@ import ReturnOrdersOverview from "./ReturnOrdersOverview";
 import RefundOrdersOverview from "./RefundOrdersOverview";
 import OrdersAmountOverview from "./OrdersAmountOverview";
 import VendorsOverview from "./VendorsOverview";
-
-
+import { useNavigate } from "react-router";
+import DesktopView from "src/components/DesktopView/DesktopView";
 
 //meta title
 
 const Dashboard = () => {
-  // // document.title = "Dashboard | collin";
+  
   return (
     <React.Fragment>
       <div className="page-content">
@@ -41,48 +41,44 @@ const Dashboard = () => {
           {/* Render Breadcrumbs */}
           {/* <Breadcrumbs  breadcrumbItem="Dashboard" /> */}
           <div style={{ display: "flex", flexDirection: "column", gap: "30px" }}>
-
             <div>
               <h4 style={{ margin: "20px 0" }}>Orders</h4>
               <OrdersOverview />
             </div>
-            <div style={{ borderTop: '1px solid #ccc', width: '100%' }} />
+            <div style={{ borderTop: "1px solid #ccc", width: "100%" }} />
 
             <div>
               <h4 style={{ margin: "20px 0" }}>Order Amounts</h4>
               <OrdersAmountOverview />
             </div>
 
-            <div style={{ borderTop: '1px solid #ccc', width: '100%' }} />
+            <div style={{ borderTop: "1px solid #ccc", width: "100%" }} />
 
             <div>
               <h4 style={{ margin: "10px 0 20px  0" }}>Return</h4>
               <ReturnOrdersOverview />
             </div>
 
-            <div style={{ borderTop: '1px solid #ccc', width: '100%' }} />
+            <div style={{ borderTop: "1px solid #ccc", width: "100%" }} />
 
             <div>
               <h4 style={{ margin: "10px 0 20px  0" }}>Refund</h4>
               <RefundOrdersOverview />
             </div>
 
-            <div style={{ borderTop: '1px solid #ccc', width: '100%' }} />
-
+            <div style={{ borderTop: "1px solid #ccc", width: "100%" }} />
 
             <div>
               <h4 style={{ margin: "10px 0 20px  0" }}>Users</h4>
               <UsersOverview />
             </div>
 
-            <div style={{ borderTop: '1px solid #ccc', width: '100%' }} />
+            <div style={{ borderTop: "1px solid #ccc", width: "100%" }} />
 
             <div>
               <h4 style={{ margin: "10px 0 20px  0" }}>Vendors</h4>
               <VendorsOverview />
             </div>
-
-
           </div>
           {/* <Row>
             <Col>
@@ -103,6 +99,7 @@ const Dashboard = () => {
           </Row> */}
         </Container>
       </div>
+      
     </React.Fragment>
   );
 };
