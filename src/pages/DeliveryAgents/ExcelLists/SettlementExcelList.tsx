@@ -7,7 +7,7 @@ import Loader from "src/components/Common/Loader";
 import Iconify from "src/components/iconify/Iconify";
 
 interface Props {
-  agentId: string;
+  agentId: string|null;
   name: string;
 }
 

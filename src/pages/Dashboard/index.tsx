@@ -28,7 +28,6 @@ import RefundOrdersOverview from "./RefundOrdersOverview";
 import OrdersAmountOverview from "./OrdersAmountOverview";
 import VendorsOverview from "./VendorsOverview";
 import { useNavigate } from "react-router";
-import DesktopView from "src/components/DesktopView/DesktopView";
 
 //meta title
 

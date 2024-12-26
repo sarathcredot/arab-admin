@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import {
-  Row,
-  Col,
-  Container,
-  Form,
-  Input,
-  FormFeedback,
-  Label,
-  Alert,
-} from "reactstrap";
+import { Row, Col, Container, Form, Input, FormFeedback, Label, Alert } from "reactstrap";
 
 import PropTypes from "prop-types";
 
@@ -40,7 +31,6 @@ import CarouselPage from "../AuthenticationInner/CarouselPage";
 import { createSelector } from "reselect";
 import { gql, useMutation } from "@apollo/client";
 import { ToastContainer, toast } from "react-toastify";
-
 
 interface LoginProps {
   history: object;
@@ -151,6 +141,7 @@ const Login = (props: any) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   useEffect(() => {
     if (!token) {
+      localStorage.removeItem("desktopView");
       navigate("/login");
     } else {
       navigate("/");
@@ -161,9 +152,16 @@ const Login = (props: any) => {
     <React.Fragment>
       <ToastContainer />
       <div className="auth-page">
-        <Container fluid className="p-0">
+        <Container
+          fluid
+          className="p-0"
+        >
           <Row className="g-0">
-            <Col lg={4} md={5} className="col-xxl-3">
+            <Col
+              lg={4}
+              md={5}
+              className="col-xxl-3"
+            >
               <div className="auth-full-page-content d-flex p-sm-5 p-4">
                 <div className="w-100">
                   <div className="d-flex flex-column h-100">
@@ -180,7 +178,11 @@ const Login = (props: any) => {
                           Sign in to continue to Arab Deals.
                         </p> */}
 
-                        <img src={logo} alt="" width={"60%"} />
+                        <img
+                          src={logo}
+                          alt=""
+                          width={"60%"}
+                        />
                         <p
                           className="text-muted mt-5"
                           style={{
@@ -215,20 +217,11 @@ const Login = (props: any) => {
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
                             value={validation.values.email || ""}
-                            invalid={
-                              validation.touched.email &&
-                                validation.errors.email
-                                ? true
-                                : false
-                            }
-
-                            style={{ borderRadius: "15px ", height: "52px", fontFamily: "Arial", }}
+                            invalid={validation.touched.email && validation.errors.email ? true : false}
+                            style={{ borderRadius: "15px ", height: "52px", fontFamily: "Arial" }}
                           />
-                          {validation.touched.email &&
-                            validation.errors.email ? (
-                            <FormFeedback type="invalid">
-                              {validation.errors.email}
-                            </FormFeedback>
+                          {validation.touched.email && validation.errors.email ? (
+                            <FormFeedback type="invalid">{validation.errors.email}</FormFeedback>
                           ) : null}
                         </div>
 
@@ -249,7 +242,7 @@ const Login = (props: any) => {
                               </div>
                             </div> */}
                           </div>
-                          <div className="input-group auth-pass-inputgroup" >
+                          <div className="input-group auth-pass-inputgroup">
                             <Input
                               name="password"
                               value={validation.values.password || ""}
@@ -257,28 +250,25 @@ const Login = (props: any) => {
                               placeholder="Enter Password"
                               onChange={validation.handleChange}
                               onBlur={validation.handleBlur}
-                              invalid={
-                                validation.touched.password &&
-                                  validation.errors.password
-                                  ? true
-                                  : false
-                              }
-                              style={{ borderTopLeftRadius: "15px ", borderBottomLeftRadius: "15px ", height: "52px", fontFamily: "Arial", }}
+                              invalid={validation.touched.password && validation.errors.password ? true : false}
+                              style={{
+                                borderTopLeftRadius: "15px ",
+                                borderBottomLeftRadius: "15px ",
+                                height: "52px",
+                                fontFamily: "Arial",
+                              }}
                             />
                             <button
                               onClick={() => setPasswordShow(!passwordShow)}
                               className="btn btn-light shadow-none ms-0"
                               type="button"
                               id="password-addon"
-                              style={{ borderTopRightRadius: "15px ", borderBottomRightRadius: "15px", height: "52px", }}
+                              style={{ borderTopRightRadius: "15px ", borderBottomRightRadius: "15px", height: "52px" }}
                             >
                               <i className={`mdi ${passwordShow ? "mdi-eye-outline" : "mdi-eye-off-outline"}`}></i>
                             </button>
-                            {validation.touched.password &&
-                              validation.errors.password ? (
-                              <FormFeedback type="invalid">
-                                {validation.errors.password}
-                              </FormFeedback>
+                            {validation.touched.password && validation.errors.password ? (
+                              <FormFeedback type="invalid">{validation.errors.password}</FormFeedback>
                             ) : null}
                           </div>
                         </div>
@@ -313,9 +303,8 @@ const Login = (props: any) => {
                                   lineHeight: "34px",
                                   letterSpacing: "1px",
                                   fontFamily: "Arial",
-
                                 }}
-                              // onClick={() => logIn()}
+                                // onClick={() => logIn()}
                               >
                                 LOGIN
                               </button>

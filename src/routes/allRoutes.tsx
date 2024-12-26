@@ -153,7 +153,6 @@ import PageNotFound from "src/pages/Page404";
 import DeliveryBoys from "src/pages/DeliveryAgents/DeliveryBoys";
 import ViewDeliveryBoys from "src/pages/DeliveryAgents/ViewDeliveryBoys";
 import SettlementPage from "src/pages/Settlements/SettlementPage";
-import DesktopView from "src/components/DesktopView/DesktopView";
 interface RouteProps {
   path: string;
   component: any;
@@ -167,7 +166,6 @@ const adminRoutes: Array<RouteProps> = [
   //dashboard
   { path: "/", exact: true, component: <Navigate to="/dashboard" /> },
   { path: "/dashboard", component: <Dashboard /> },
-  { path: "/desktop-view", component: <DesktopView /> },
 
 
 

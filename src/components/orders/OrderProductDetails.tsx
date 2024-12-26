@@ -209,8 +209,11 @@ function OrderProductDetails({
   const toggle = () => setIsOpen(!isOpen);
 
   const toggleInvoiceModal = () => setInvoiceModal(!invoiceModal);
-  const toggleDeliveryAssignModal = () =>
+  const toggleDeliveryAssignModal = () =>{
+    setDeliveryBoyId("") 
+    setDeliveryBoyName("") 
     setDeliveryAssignModal(!deliveryAssignModal);
+  }
 
   // =========================  SHIPPING ================================
 
@@ -573,7 +576,7 @@ function OrderProductDetails({
       toast.error(error.message);
     }
   };
-
+  console.log("PRODUCT =",product)
   const UPDATE_PRODUCT = gql`
     mutation UpdateAdminOrderProduct(
       $input: UpdateAdminOrderProductInput!
@@ -658,10 +661,12 @@ function OrderProductDetails({
       const { errors, data } = await AssignOrder({
         variables,
       });
-
-      if(data?.msg){
-        toast.success(data?.msg);
+      console.log("RESULT = ",{errors,data});
+      
+      if(data?.orderAssignDeliveryAgent?.msg){
+        toast.success(data?.orderAssignDeliveryAgent?.msg);
         toggleDeliveryAssignModal();
+        orderRefetch()
       }
         
     } catch (error: any) {
@@ -1700,7 +1705,7 @@ function OrderProductDetails({
                 id="deliveryBoy"
                 name="deliveryBoy"
                 type="select"
-                // value={deliveryBoyName}
+                value={deliveryBoyId}
                 placeholder="Select Delivery Boy"
                 onChange={(e: any) => {
                   const selectedValue = e?.target?.value; // The ID (value) of the selected option
@@ -1710,6 +1715,7 @@ function OrderProductDetails({
                   setDeliveryBoyName(selectedName); // Save name in state
                 }}
               >
+                 <option value="" disabled > Select Delivery Boy </option>
                 {deliveryAgentList &&
                   deliveryAgentList?.getProductDeliveryTypeDeliveryAgents &&
                   deliveryAgentList?.getProductDeliveryTypeDeliveryAgents

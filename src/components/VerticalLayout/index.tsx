@@ -139,10 +139,8 @@ const Layout = (props: any) => {
   };
 
   const [isOpen, setIsOpen] = useState(false);
-  // const [isDesktopView, setIsDesktopView] = useState(false);
 
   const toggleCollapse = () => {
-    console.log("TOGGLE.........");
     setIsOpen(!isOpen);
   };
   console.log("width=", window.innerWidth);
@@ -171,7 +169,7 @@ const Layout = (props: any) => {
     if (window.innerWidth < 750) {
       handleDesktopView();
     }
-  }, [window.innerWidth,localStorage.getItem("desktopView")]);
+  }, [window.innerWidth, localStorage.getItem("desktopView")]);
   return (
     <React.Fragment>
       {/* <div className="pace pace-active" id="preloader" ref={ref}>
@@ -199,7 +197,6 @@ const Layout = (props: any) => {
           <DesktopView
             isOpen={isOpen}
             toggle={toggleCollapse}
-
           />
           {props.children}
           {/* <Footer /> */}

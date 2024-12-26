@@ -132,7 +132,7 @@ const ViewDeliveryBoys = () => {
 
   const [TAB, setTAB] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
-  const pageSize = 5;
+  const pageSize = 10;
 
   const [data, setData] = useState<IAgent>();
 
@@ -273,14 +273,19 @@ const ViewDeliveryBoys = () => {
     <>
       <div className="page-content">
         <Container fluid>
-          <Breadcrumb
+          {/* <Breadcrumb
             items={items}
             currentPage="Details page"
-          />
-          <Row style={{ padding: "12px" }}>
+          /> */}
+          <h4>Detail Page</h4>
+          <Row  
+          // style={{ padding: "12px" }}
+          
+          >
             <Col
-              lg="6"
-              style={{ padding: 0, paddingRight: "5px" }}
+            xs={12}
+              lg={6}
+              style={{ padding: 6 }}
             >
               <Card style={{ height: "100%" }}>
                 {detailLoading ? (
@@ -318,7 +323,7 @@ const ViewDeliveryBoys = () => {
                                 justifyContent: "center",
                                 color: `${data?.isActive ? "green" : "#dc4016"}`,
                                 cursor: "pointer",
-                                padding:10,
+                                padding: 10,
                               }}
                               id={"Tooltip"}
                               onClick={() => setIsSuspendOpen(true)}
@@ -368,7 +373,7 @@ const ViewDeliveryBoys = () => {
                                 alignItems: "end",
                                 gap: 6,
                                 fontWeight: "bold",
-                                zIndex: 999,
+                                zIndex: 900,
                               }}
                               onClick={() => handleImageClick(data?.licence?.fileURL || "")}
                             >
@@ -391,8 +396,9 @@ const ViewDeliveryBoys = () => {
               </Card>
             </Col>
             <Col
-              lg="6"
-              style={{ padding: 0, paddingLeft: "5px", minHeight: "100%" }}
+              xs={12}
+              lg={6}
+              style={{ padding: 6, minHeight: "100%" }}
             >
               <Card style={{ height: "100%" }}>
                 <CardBody style={{ paddingLeft: "25px" }}>
@@ -469,7 +475,7 @@ const ViewDeliveryBoys = () => {
                         padding: "10px 0",
                       }}
                     >
-                      <h5>Settlement History</h5>
+                      <h4>Settlement History</h4>
                       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                         {data?._id && (
                           <SettlementExcelList
@@ -534,7 +540,7 @@ const ViewDeliveryBoys = () => {
                             const formattedDate = new Date(item.createdAt).toLocaleDateString("en-GB");
                             return (
                               <tr key={index}>
-                                <td>{(currentPage*pageSize)+(index + 1)}</td>
+                                <td>{currentPage * pageSize + (index + 1)}</td>
                                 <td>{item.amount}</td>
                                 <td>{item.totalAmount}</td>
                                 <td>{item.balance}</td>
@@ -558,7 +564,9 @@ const ViewDeliveryBoys = () => {
                                       refetch={refetchData}
                                     />
                                   </td>
-                                ):(<td>{}</td>)}
+                                ) : (
+                                  <td>{}</td>
+                                )}
                               </tr>
                             );
                           })}
@@ -611,12 +619,20 @@ const ViewDeliveryBoys = () => {
                   </Row>
                 </>
               ) : (
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginTop: "20px",
+                  }}
+                >
                   <Lottie
                     animationData={animation}
                     style={{ width: "200px" }}
                   />
-                  {/* No Settlements */}
+                  <h3>NO SETTLEMENTS</h3>
                 </div>
               )
             ) : (

@@ -121,6 +121,8 @@ const SettlementPage: React.FC = () => {
       input: {
         page: currentPage,
         size: pageSize,
+        search: searchTerm,
+        settlement: true,
       },
     },
   });
@@ -168,14 +170,15 @@ const SettlementPage: React.FC = () => {
     if (agentDataResponse && agentDataResponse) {
       setAgentData(agentDataResponse?.getAllAgentData?.records);
     }
+    refetchAgent();
   }, [agentDataResponse, activeTab, searchTerm]);
 
   console.log("dattaaaaaa=", agentData);
   if (agentError) {
     console.error("Error fetching agent data:", agentError);
   }
-    const totalRecords = agentDataResponse?.getAllAgentData?.maxRecords || 0;
-    const totalPages = Math.ceil(totalRecords / pageSize);
+  const totalRecords = agentDataResponse?.getAllAgentData?.maxRecords || 0;
+  const totalPages = Math.ceil(totalRecords / pageSize);
 
   return (
     <>
@@ -201,7 +204,10 @@ const SettlementPage: React.FC = () => {
                         type="text"
                         placeholder="Search by fullname"
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={(e) => {
+                          setCurrentPage(0);
+                          setSearchTerm(e.target.value);
+                        }}
                         style={{ width: "50%" }}
                       />
                     </Col>

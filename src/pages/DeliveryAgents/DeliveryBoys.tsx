@@ -39,26 +39,26 @@ interface IAgent {
 // Agent Query
 const GET_ALL_AGENT = gql`
   query GetAllAgentData($input: getAllAgentDataInput) {
-  getAllAgentData(input: $input) {
-    maxRecords
-    records {
-      _id
-      fullName
-      contactNumber
-      userID
-      password
-      agentType
-      isActive
-      vendorID
-      wallet {
-        cashInHand
-        lastSettlementDate
-        totalSettlement
-        grandTotal
+    getAllAgentData(input: $input) {
+      maxRecords
+      records {
+        _id
+        fullName
+        contactNumber
+        userID
+        password
+        agentType
+        isActive
+        vendorID
+        wallet {
+          cashInHand
+          lastSettlementDate
+          totalSettlement
+          grandTotal
+        }
       }
     }
   }
-}
 `;
 
 const DeliveryBoys: React.FC = () => {
@@ -88,7 +88,8 @@ const DeliveryBoys: React.FC = () => {
         size: pageSize,
         isActive: filters?.isActive,
         agentType: filters?.agentType,
-        fullName:searchTerm 
+        search: searchTerm,
+        settlement: false,
       },
     },
   });
@@ -103,7 +104,7 @@ const DeliveryBoys: React.FC = () => {
   };
 
   const handleFilterSubmit = (formData: any) => {
-    setCurrentPage(0)
+    setCurrentPage(0);
     setFilters({
       isActive: formData.isActive,
       agentType: formData.agentType,
@@ -119,7 +120,7 @@ const DeliveryBoys: React.FC = () => {
       console.log("agenttttt====", agentDataResponse);
 
       setAgentData(agentDataResponse.getAllAgentData.records);
-      refetchAgent()
+      refetchAgent();
     }
   }, [agentDataResponse, activeTab, filters, searchTerm]);
 
@@ -205,7 +206,10 @@ const DeliveryBoys: React.FC = () => {
                         type="text"
                         placeholder="Search by fullname"
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={(e) => {
+                          setCurrentPage(0);
+                          setSearchTerm(e.target.value);
+                        }}
                         style={{ width: "50%" }}
                       />
                     </Col>
@@ -263,7 +267,7 @@ const DeliveryBoys: React.FC = () => {
                               {agentData?.map((agent, index) => (
                                 <tr key={agent._id}>
                                   {/* <td>{currentPage * pageSize + index + 1}</td> */}
-                                  <td>{(currentPage*pageSize)+(index + 1)}</td>
+                                  <td>{currentPage * pageSize + (index + 1)}</td>
                                   <td>{agent.fullName}</td>
                                   <td>{agent.contactNumber}</td>
                                   <td>{agent.agentType}</td>

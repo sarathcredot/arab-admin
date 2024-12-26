@@ -420,7 +420,7 @@ const CategoryList: React.FC<Props> = () => {
                                     <StatusIndicator status={category?.isBlocked == false ? "ACTIVE" : "BLOCKED"} />
                                   </td>
 
-                                  <td>
+                                  <td >
                                     {category.isLeaf ? null : (
                                       <Button
                                         size="sm"

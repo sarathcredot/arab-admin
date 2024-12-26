@@ -92,14 +92,14 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
   const onSubmit = async (values: any, { resetForm }: any) => {
     try {
       console.log(true);
-      
+
       let variables: any = {
         input: {
           fullName: values?.fullName,
           contactNumber: values?.contactNumber.toString(),
           agentType: values?.agentType,
           userID: values?.userID,
-          vendorID: values.vendorID||null ,
+          vendorID: values.agentType==="Vendor"?values.vendorID : null,
           password: values?.password,
         },
       };
@@ -114,28 +114,19 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
       const response = await createDeliveryBoy({
         variables,
       });
-      console.log("response = ",response)
       if (response) {
-        console.log("RESPONSE = ",response);
-        
-        // if(response.error){
-        //   toast.error(response.message);
-
-        // }
-        // refetch();
-
-        // toast.success("Successfully created a Delivery Boy");
-        // toggle();
-        // resetForm();
+        console.log("RESPONSE = ", response);
+        refetch();
+        toast.success("Successfully created a Delivery Boy");
+        toggle();
+        resetForm();
       }
-      console.log("response>>",response);
-      
+
       return toggle();
     } catch (error: any) {
       console.log("catch errorrrrrrr");
-      
-      console.log("error>>>>>",error);
-      
+      console.log("error>>>>>", error);
+
       toast.error(error.message);
       console.log(error.message);
     }
@@ -162,14 +153,12 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
       setVendorData(vendorDataResponse.getAllVendorsRecordsByAdmin.records);
     }
   }, [vendorDataResponse]);
-  useEffect(()=>{
-    console.log("error",formik.errors);
-    
-  },[formik.errors])
-  useEffect(()=>{
+  useEffect(() => {
+    console.log("error", formik.errors);
+  }, [formik.errors]);
+  useEffect(() => {
     console.log("hhkjsdhjsd");
-    
-  },[])
+  }, []);
   return (
     <>
       <Modal
@@ -203,7 +192,6 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
                       <Iconify icon="openmoji:flag-oman" />
                     </span>
                   </div>
-                  
 
                   <Input
                     type="text"
@@ -242,7 +230,12 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 >
-                  <option value="" disabled>Select Agent Type</option>
+                  <option
+                    value=""
+                    disabled
+                  >
+                    Select Agent Type
+                  </option>
                   <option value={"ArabDeals"}>ArabDeals</option>
                   <option value={"Vendor"}>Vendor</option>
                   <option value={"ThirdParty"}>ThirdParty</option>
@@ -258,12 +251,17 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
                     placeholder="Select Vendor"
                     id="vendorID"
                     type="select"
-                    value={formik.values.vendorID||""}
+                    value={formik.values.vendorID || ""}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     defaultValue={vendorData[0]?._id}
                   >
-                    <option value="" disabled>Select Vendor</option>
+                    <option
+                      value=""
+                      disabled
+                    >
+                      Select Vendor
+                    </option>
                     {vendorData &&
                       vendorData.map((item) => (
                         <option
@@ -288,7 +286,9 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              {formik.touched.userID && formik.errors.userID && <div className="text-danger">{formik.errors.userID}</div>}
+              {formik.touched.userID && formik.errors.userID && (
+                <div className="text-danger">{formik.errors.userID}</div>
+              )}
             </FormGroup>
             <FormGroup>
               <Label

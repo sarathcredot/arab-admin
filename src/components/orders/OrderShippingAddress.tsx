@@ -36,7 +36,7 @@ function OrderShippingAddress({ order }: any) {
                                 Fullname:
                             </p>
                             <p className="form-control-static" style={{ fontWeight: 500, margin: 0 }}>
-                                {order?.shippingAddress.firstname && capitalCase(order?.shippingAddress.firstname)}
+                                {order?.username && capitalCase(order?.username)}
                             </p>
                         </div>
 
