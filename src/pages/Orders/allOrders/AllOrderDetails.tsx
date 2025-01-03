@@ -199,6 +199,32 @@ const ALlOrderDetails = () => {
           }
           username
           warehouseSkuId
+          deliveryBoy {
+            _id
+            fullName
+            contactNumber
+            userID
+            password
+            agentType
+            vendorID
+            ID
+          }
+          deliveryAssignedOn
+          deliveryAgentName
+          deliveryAgentId
+          returnOrderAssignedOn
+          returndeliveryAgentId
+          returndeliveryAgentName
+          returnCollectorBoy {
+            _id
+            fullName
+            contactNumber
+            userID
+            password
+            agentType
+            vendorID
+            ID
+          }
         }
       }
     }

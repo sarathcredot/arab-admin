@@ -68,6 +68,8 @@ const dummyDeliveryAgentData = {
   ],
 };
 
+type ASSIGN_ORDER_TYPE = "COLLECT" | "DELIVERY" | null;
+
 interface ProductEditFormData {
   invoiceNumber: string;
   courierId: string;
@@ -209,11 +211,11 @@ function OrderProductDetails({
   const toggle = () => setIsOpen(!isOpen);
 
   const toggleInvoiceModal = () => setInvoiceModal(!invoiceModal);
-  const toggleDeliveryAssignModal = () =>{
-    setDeliveryBoyId("") 
-    setDeliveryBoyName("") 
+  const toggleDeliveryAssignModal = () => {
+    setDeliveryBoyId("");
+    setDeliveryBoyName("");
     setDeliveryAssignModal(!deliveryAssignModal);
-  }
+  };
 
   // =========================  SHIPPING ================================
 
@@ -576,7 +578,7 @@ function OrderProductDetails({
       toast.error(error.message);
     }
   };
-  console.log("PRODUCT =",product)
+  console.log("PRODUCT =", product);
   const UPDATE_PRODUCT = gql`
     mutation UpdateAdminOrderProduct(
       $input: UpdateAdminOrderProductInput!
@@ -595,12 +597,19 @@ function OrderProductDetails({
   const [deliveryAssignModal, setDeliveryAssignModal] = useState(false);
   const [deliveryBoyId, setDeliveryBoyId] = useState<string>();
   const [deliveryBoyName, setDeliveryBoyName] = useState<string>();
+  const [assignOrderType, setAssignOrderType] = useState<
+    "COLLECT" | "DELIVERY" | null
+  >(null);
 
   const [orderItemId, setOrderItemId] = useState("");
 
-  const handleAssignClick = (itemId: string) => {
+  const handleAssignClick = (
+    itemId: string,
+    assingOrderType: ASSIGN_ORDER_TYPE
+  ) => {
     toggleDeliveryAssignModal();
     setOrderItemId(itemId);
+    setAssignOrderType(assingOrderType);
   };
 
   const ASSIGN_ORDER = gql`
@@ -611,8 +620,17 @@ function OrderProductDetails({
       }
     }
   `;
+  const ASSIGN_RETURN_ORDER = gql`
+    mutation OrderAssignDeliveryAgent($input: OrderAssignDeliveryAgentInput!) {
+      returnOrderAssignDeliveryAgent(input: $input) {
+        status
+        msg
+      }
+    }
+  `;
 
   const [AssignOrder] = useMutation(ASSIGN_ORDER);
+  const [AssignReturnOrder] = useMutation(ASSIGN_RETURN_ORDER);
 
   const GET_PRODUCT_DELIVERY_TYPE_DELIVERY_AGENTS = gql`
     query GetProductDeliveryTypeDeliveryAgents(
@@ -650,28 +668,44 @@ function OrderProductDetails({
       if (!deliveryBoyName)
         throw new Error("Delivery Agent Name is requiredItem !");
 
-      const variables =  {
+      const variables = {
         input: {
           orderItemId: orderItemId,
           deliveryAgentId: deliveryBoyId,
           deliveryAgentName: deliveryBoyName,
         },
+      };
+
+      let response: any = null;
+
+      console.log(assignOrderType, 'ASSIGN ORDER TYPE')
+      if (assignOrderType === "DELIVERY") {
+        response = await AssignOrder({
+          variables,
+        });
+      } else if (assignOrderType === "COLLECT") {
+        console.log(assignOrderType, 'ASSIGN ORDER TYPE IN ELSE IF')
+        response = await AssignReturnOrder({
+          variables,
+        });
       }
 
-      const { errors, data } = await AssignOrder({
-        variables,
-      });
-      console.log("RESULT = ",{errors,data});
+      const { errors, data } = response;
+
+      console.log("RESULT = ", data);
+      console.log("ERRORS = ", errors);
+
+      const success = data?.orderAssignDeliveryAgent?.status ? data?.orderAssignDeliveryAgent?.status: data?.returnOrderAssignDeliveryAgent?.status  
+      const message = data?.orderAssignDeliveryAgent?.msg ? data?.orderAssignDeliveryAgent?.msg: data?.returnOrderAssignDeliveryAgent?.msg  
       
-      if(data?.orderAssignDeliveryAgent?.msg){
-        toast.success(data?.orderAssignDeliveryAgent?.msg);
+      if (success) {
+        toast.success(message);
         toggleDeliveryAssignModal();
-        orderRefetch()
+        orderProdcutsRefetch();
       }
-        
     } catch (error: any) {
-      console.log(error, 'ERROR');
-      toast.error("Can't Assign Order !")
+      console.log(error, "ERROR");
+      toast.error("Can't Assign Order !");
     }
   };
 
@@ -811,15 +845,20 @@ function OrderProductDetails({
                     Edit Product
                   </Dropdown.Item>
                   <Dropdown.Item
-                    onClick={() => handleAssignClick(product?._id)}
+                    onClick={() => handleAssignClick(product?._id, "DELIVERY")}
                     style={{ display: "flex", gap: 5 }}
-                    disabled={
-                      product?.shippingStatus !== "SHIPPED" &&
-                      product?.shippingStatus !== "PACKAGE_IN_PROGRESS"
-                    }
+                    disabled={product?.shippingStatus !== "SHIPPED"}
                   >
                     <CiDeliveryTruck size={20} />
                     Assign Delivery Boy
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() => handleAssignClick(product?._id, "COLLECT")}
+                    style={{ display: "flex", gap: 5 }}
+                    disabled={product?.returnStatus !== "APPROVED"}
+                  >
+                    <CiDeliveryTruck size={20} />
+                    Assign Delivery Boy (Return)
                   </Dropdown.Item>
                   <Dropdown.Divider />
                   <Dropdown.Item
@@ -955,7 +994,6 @@ function OrderProductDetails({
                     <option value={"CANCELED"}>CANCELED</option>
                   </Input>
                 </FormGroup>
-
                 <FormGroup>
                   <Label for="exampleSelect">Return Status</Label>
                   <Input
@@ -1092,7 +1130,7 @@ function OrderProductDetails({
               </CardText>
             </Col>
           </Row>
-          <Row>
+          <Row style={{ display: "flex" }}>
             <Col xl={4}>
               <CardText>
                 <p className="form-control-static" style={{ fontWeight: 500 }}>
@@ -1118,16 +1156,60 @@ function OrderProductDetails({
                   </div>
                   <div style={{ width: "100%" }}>
                     <p className="form-control-static" style={{ margin: 10 }}>
-                      {deliveryAgentList?.getProductDeliveryTypeDeliveryAgents?.deliveryType || "nill"}
+                      {product?.deliveryBoy?.agentType || "nill"}
                     </p>
                     <p className="form-control-static" style={{ margin: 10 }}>
-                      {product?.courierId || "nill"}
+                      {product?.deliveryBoy?.fullName || "nill"}
                     </p>
                     <p className="form-control-static" style={{ margin: 10 }}>
-                      {product?.invoiceNumber || "nill"}
+                      {product?.deliveryBoy?.contactNumber || "nill"}
                     </p>
                     <p className="form-control-static" style={{ margin: 10 }}>
-                      {product?.paymentStatus || "nill"}
+                      {(product?.deliveryAssignedOn &&
+                        moment(product?.deliveryAssignedOn).format("L")) ||
+                        "nill"}
+                    </p>
+                  </div>
+                </div>
+              </CardText>
+            </Col>
+            <Col xl={4}>
+              <CardText>
+                <p className="form-control-static" style={{ fontWeight: 500 }}>
+                  Return Details
+                </p>
+
+                <div
+                  style={{ display: "flex", flexDirection: "row", gap: "20px" }}
+                >
+                  <div style={{ width: "220px" }}>
+                    <p className="form-control-static" style={{ margin: 10 }}>
+                      Agent Type
+                    </p>
+                    <p className="form-control-static" style={{ margin: 10 }}>
+                      Return Collector
+                    </p>
+                    <p className="form-control-static" style={{ margin: 10 }}>
+                      Mobile
+                    </p>
+                    <p className="form-control-static" style={{ margin: 10 }}>
+                      Assigned On
+                    </p>
+                  </div>
+                  <div style={{ width: "100%" }}>
+                    <p className="form-control-static" style={{ margin: 10 }}>
+                      {product?.returnCollectorBoy?.agentType || "nill"}
+                    </p>
+                    <p className="form-control-static" style={{ margin: 10 }}>
+                      {product?.returnCollectorBoy?.fullName || "nill"}
+                    </p>
+                    <p className="form-control-static" style={{ margin: 10 }}>
+                      {product?.returnCollectorBoy?.contactNumber || "nill"}
+                    </p>
+                    <p className="form-control-static" style={{ margin: 10 }}>
+                      {(product?.returnOrderAssignedOn &&
+                        moment(product?.returnOrderAssignedOn).format("L")) ||
+                        "nill"}
                     </p>
                   </div>
                 </div>
@@ -1715,7 +1797,9 @@ function OrderProductDetails({
                   setDeliveryBoyName(selectedName); // Save name in state
                 }}
               >
-                 <option value="" disabled > Select Delivery Boy </option>
+                <option value="" disabled>
+                  Select Delivery Boy
+                </option>
                 {deliveryAgentList &&
                   deliveryAgentList?.getProductDeliveryTypeDeliveryAgents &&
                   deliveryAgentList?.getProductDeliveryTypeDeliveryAgents

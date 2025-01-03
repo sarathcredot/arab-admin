@@ -11,7 +11,7 @@ export const requestInterceptor = new ApolloLink(
         Authorization: `Bearer ${localStorage.getItem('admin_token')}`,
       },
     });
-    console.log("token!!!!!!!!!!!");
+    console.log(localStorage.getItem('admin_token'), "====TOKEN====");
     // Call the next link in the chain
     return forward(operation);
   }
