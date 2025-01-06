@@ -215,6 +215,12 @@ const ALlOrderDetails = () => {
           returnOrderAssignedOn
           returndeliveryAgentId
           returndeliveryAgentName
+          returnProductImage {
+            fileType
+            fileURL
+            mimeType
+            originalName
+          }
           returnCollectorBoy {
             _id
             fullName

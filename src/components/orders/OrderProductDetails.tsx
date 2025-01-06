@@ -38,35 +38,8 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 
 import { IoMdAdd } from "react-icons/io";
 
-const dummyDeliveryAgentData = {
-  type: "Arab Deals",
-  agentsList: [
-    {
-      name: "John Doe",
-      id: 1,
-    },
-    {
-      name: "Sanin",
-      id: 2,
-    },
-    {
-      name: "Sarath",
-      id: 3,
-    },
-    {
-      name: "Janna",
-      id: 4,
-    },
-    {
-      name: "Anas",
-      id: 5,
-    },
-    {
-      name: "Shadhil",
-      id: 6,
-    },
-  ],
-};
+import styles from "./OrderProductDetails.module.scss";
+import CustomSwiper from "../swiper/Swiper";
 
 type ASSIGN_ORDER_TYPE = "COLLECT" | "DELIVERY" | null;
 
@@ -102,9 +75,10 @@ function OrderProductDetails({
   const [canceledDate, setCanceledDate] = useState("");
   const [cancelComment, setCancelComment] = useState("");
   const [paymentStatus, setPaymentStatus] = useState("");
-
+  
   // [[[[[[  return ]]]]]]]]
-
+  
+  const [returnSwiperModal, setReturnSwiperModal] = useState(false);
   const [returnStatus, setReturnStatus] = useState("");
   const [returnModal, setReturnModal] = useState(false);
   const [returnDate, setReturnDate] = useState("");
@@ -290,6 +264,10 @@ function OrderProductDetails({
   };
 
   // =========================== RETURN =================================
+
+  const toggleReturnImageSwiperModal = () => {
+    setReturnSwiperModal(!returnSwiperModal);
+  };
 
   const toggleReturnModal = () => {
     setReturnModal(!returnModal);
@@ -678,13 +656,13 @@ function OrderProductDetails({
 
       let response: any = null;
 
-      console.log(assignOrderType, 'ASSIGN ORDER TYPE')
+      console.log(assignOrderType, "ASSIGN ORDER TYPE");
       if (assignOrderType === "DELIVERY") {
         response = await AssignOrder({
           variables,
         });
       } else if (assignOrderType === "COLLECT") {
-        console.log(assignOrderType, 'ASSIGN ORDER TYPE IN ELSE IF')
+        console.log(assignOrderType, "ASSIGN ORDER TYPE IN ELSE IF");
         response = await AssignReturnOrder({
           variables,
         });
@@ -695,9 +673,13 @@ function OrderProductDetails({
       console.log("RESULT = ", data);
       console.log("ERRORS = ", errors);
 
-      const success = data?.orderAssignDeliveryAgent?.status ? data?.orderAssignDeliveryAgent?.status: data?.returnOrderAssignDeliveryAgent?.status  
-      const message = data?.orderAssignDeliveryAgent?.msg ? data?.orderAssignDeliveryAgent?.msg: data?.returnOrderAssignDeliveryAgent?.msg  
-      
+      const success = data?.orderAssignDeliveryAgent?.status
+        ? data?.orderAssignDeliveryAgent?.status
+        : data?.returnOrderAssignDeliveryAgent?.status;
+      const message = data?.orderAssignDeliveryAgent?.msg
+        ? data?.orderAssignDeliveryAgent?.msg
+        : data?.returnOrderAssignDeliveryAgent?.msg;
+
       if (success) {
         toast.success(message);
         toggleDeliveryAssignModal();
@@ -1326,91 +1308,106 @@ function OrderProductDetails({
                       Edit Comments
                     </Button>
                   </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "20px",
-                    }}
-                  >
-                    <div>
-                      <h5 style={{ color: "#b12349", marginBottom: "20px" }}>
-                        Cancel
-                      </h5>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "0",
-                        }}
-                      >
-                        <div style={{ display: "flex", gap: "20px" }}>
-                          <h6 style={{ width: "130px" }}>User Reason</h6>
-                          <div>
-                            <p style={{ width: "500px" }}>
-                              {product?.cancelUserReason || "nill"}
-                            </p>
+                  <div className={styles.comment_image_container}>
+                    <div className={styles.comment_container}>
+                      <div>
+                        <h5 style={{ color: "#b12349", marginBottom: "20px" }}>
+                          Cancel
+                        </h5>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 0,
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              gap: "20px",
+                              width: "100%",
+                            }}
+                          >
+                            <h6>User Reason</h6>
+                            <div>
+                              <p>{product?.cancelUserReason || "nill"}</p>
+                            </div>
+                          </div>
+                          <div style={{ display: "flex", gap: "20px" }}>
+                            <h6>Admin Comment</h6>
+                            <div>
+                              <p>{product?.cancelAdminComment || "nill"}</p>
+                            </div>
                           </div>
                         </div>
-                        <div style={{ display: "flex", gap: "20px" }}>
-                          <h6 style={{ width: "130px" }}>Admin Comment</h6>
-                          <div>
-                            <p style={{ width: "500px" }}>
-                              {product?.cancelAdminComment || "nill"}
-                            </p>
+                      </div>
+                      <div>
+                        <h5 style={{ color: "#b12349", marginBottom: "20px" }}>
+                          Return
+                        </h5>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "0",
+                          }}
+                        >
+                          <div style={{ display: "flex", gap: "20px" }}>
+                            <h6>User Reason</h6>
+                            <div>
+                              <p>{product?.returnUserReason || "nill"}</p>
+                            </div>
+                          </div>
+                          <div style={{ display: "flex", gap: "20px" }}>
+                            <h6>Admin Comment</h6>
+                            <div>
+                              <p>{product?.returnAdminComment || "nill"}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <h5 style={{ color: "#b12349", marginBottom: "20px" }}>
+                          Refund
+                        </h5>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "0",
+                          }}
+                        >
+                          <div style={{ display: "flex", gap: "20px" }}>
+                            <h6>Admin Comment</h6>
+                            <div>
+                              <p>{product?.refundComment || "nill"}</p>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div>
-                      <h5 style={{ color: "#b12349", marginBottom: "20px" }}>
-                        Return
-                      </h5>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "0",
-                        }}
-                      >
-                        <div style={{ display: "flex", gap: "20px" }}>
-                          <h6 style={{ width: "130px" }}>User Reason</h6>
-                          <div>
-                            <p style={{ width: "500px" }}>
-                              {product?.returnUserReason || "nill"}
-                            </p>
+                    <div className={styles.image_container}>
+                      {product?.returnProductImage &&
+                        product?.returnProductImage?.length > 0 &&
+                        product?.returnProductImage?.map((el: any) => (
+                          <div
+                            key={el?._id}
+                            className={styles.returnImageContainer}
+                            onClick={toggleReturnImageSwiperModal}
+                          >
+                            <img
+                              key={el?._id}
+                              src={el?.fileURL}
+                              alt="Return product Image"
+                              width={100}
+                              height={100}
+                            />
+                            <div className={styles.viewIcon}>
+                              <i className="fas fa-eye"></i>{" "}
+                              {/* Using FontAwesome view icon */}
+                            </div>
                           </div>
-                        </div>
-                        <div style={{ display: "flex", gap: "20px" }}>
-                          <h6 style={{ width: "130px" }}>Admin Comment</h6>
-                          <div>
-                            <p style={{ width: "500px" }}>
-                              {product?.returnAdminComment || "nill"}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <h5 style={{ color: "#b12349", marginBottom: "20px" }}>
-                        Refund
-                      </h5>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "0",
-                        }}
-                      >
-                        <div style={{ display: "flex", gap: "20px" }}>
-                          <h6 style={{ width: "130px" }}>Admin Comment</h6>
-                          <div>
-                            <p style={{ width: "500px" }}>
-                              {product?.refundComment || "nill"}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
+                        ))}
                     </div>
                   </div>
                 </CardBody>
@@ -1419,6 +1416,23 @@ function OrderProductDetails({
           </div>
         </CardBody>
       </Card>
+
+      {/* ================== RETURN IMAGES MODAL ===================== */}
+
+      <Modal isOpen={returnSwiperModal} toggle={toggleReturnImageSwiperModal}>
+        <ModalHeader toggle={toggleReturnImageSwiperModal}>Shipping Status</ModalHeader>
+        <ModalBody>
+         <CustomSwiper />
+        </ModalBody>
+        {/* <ModalFooter>
+          <Button color="primary">
+            Submit
+          </Button>{" "}
+          <Button color="secondary">
+            Cancel
+          </Button>
+        </ModalFooter> */}
+      </Modal>
 
       {/* ================== SHIPPPING MODAL ===================== */}
 
