@@ -116,13 +116,13 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
       });
       if (response) {
         console.log("RESPONSE = ", response);
-        refetch();
         toast.success("Successfully created a Delivery Boy");
+        refetch();
         toggle();
         resetForm();
       }
+      console.log("RESPONSE = ", response);
 
-      return toggle();
     } catch (error: any) {
       console.log("catch errorrrrrrr");
       console.log("error>>>>>", error);

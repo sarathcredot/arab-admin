@@ -628,11 +628,8 @@ const ViewDeliveryBoys = () => {
                     marginTop: "20px",
                   }}
                 >
-                  <Lottie
-                    animationData={animation}
-                    style={{ width: "200px" }}
-                  />
-                  <h3>NO SETTLEMENTS</h3>
+                  
+                  <p>No Settlements</p>
                 </div>
               )
             ) : (

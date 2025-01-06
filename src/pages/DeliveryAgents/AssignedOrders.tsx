@@ -177,7 +177,7 @@ const AssignedOrders: React.FC<Props> = ({ agentId, TAB }) => {
               padding: "10px 0px 15px",
             }}
           >
-            <h5>Assigned Orders History</h5>
+            <h5>Orders History</h5>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <SettlementExcelList
                 agentId={agentId}
@@ -226,7 +226,7 @@ const AssignedOrders: React.FC<Props> = ({ agentId, TAB }) => {
                 <tr>
                   <th>#</th>
                   <th>Order Item ID</th>
-                  <th>User Name</th>
+                  <th>Customer Name</th>
                   <th>Product Name</th>
                   <th>Price</th>
                   <th>Order Date</th>
