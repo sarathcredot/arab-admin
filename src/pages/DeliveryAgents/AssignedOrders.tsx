@@ -1,7 +1,7 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Col, Collapse, Row, Table } from "reactstrap";
+import { Button, Col, Collapse, Row, Table } from "reactstrap";
 import CustomButton from "src/components/Common/CustomButton";
 import DynamicFilter from "src/components/filter/DynamicFilter";
 import ExportExcelList from "src/components/orders/ExportExcelList";
@@ -9,6 +9,7 @@ import SettlementExcelList from "./ExcelLists/SettlementExcelList";
 import Loader from "src/components/Common/Loader";
 import Lottie from "lottie-react";
 import animation from "./noDataAnimation.json";
+import { Link } from "react-router-dom";
 
 interface Props {
   agentId: string | null;
@@ -17,6 +18,7 @@ interface Props {
 
 interface IOrder {
   _id: string;
+  orderId: string;
   itemId: string;
   userId: string;
   productName: string;
@@ -45,6 +47,7 @@ const GET_ORDERS = gql`
       maxRecords
       records {
         _id
+        orderId
         itemId
         userId
         productName
@@ -225,18 +228,17 @@ const AssignedOrders: React.FC<Props> = ({ agentId, TAB }) => {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Order Item ID</th>
+                  <th>Order ID</th>
                   <th>Customer Name</th>
                   <th>Product Name</th>
-                  <th>Price</th>
                   <th>Order Date</th>
-                  <th>Payment Status</th>
-                  <th>Shipping Status</th>
+                  {/* <th>Payment Status</th> */}
+                  <th>Delivery Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {orders?.map((item, index) => {
-
                   const formattedDate = new Date(item.orderDate).toLocaleDateString("en-GB");
                   return (
                     <tr key={index}>
@@ -246,10 +248,19 @@ const AssignedOrders: React.FC<Props> = ({ agentId, TAB }) => {
                       <td>
                         {item?.productName?.length > 20 ? `${item?.productName.slice(0, 20)}...` : item?.productName}
                       </td>
-                      <td>{item?.sellingPrice}</td>
                       <td>{formattedDate.replace(/\//g, "-")}</td>
-                      <td>{item?.paymentStatus}</td>
+                      {/* <td>{item?.paymentStatus}</td> */}
                       <td>{item?.shippingStatus}</td>
+                      <td>
+                        <Link to={`/shipping-orders/details?orderId=${item?.orderId}&_id=${item?._id}`}>
+                          <Button
+                            color="primary"
+                            size="sm"
+                          >
+                            View
+                          </Button>
+                        </Link>
+                      </td>
                     </tr>
                   );
                 })}
@@ -310,11 +321,7 @@ const AssignedOrders: React.FC<Props> = ({ agentId, TAB }) => {
             marginTop: "20px",
           }}
         >
-          <Lottie
-            animationData={animation}
-            style={{ width: "200px" }}
-          />
-          <h3>NO ORDERS ASSIGNED</h3>
+          <p>No Orders Assigned</p>
         </div>
       )}
     </>

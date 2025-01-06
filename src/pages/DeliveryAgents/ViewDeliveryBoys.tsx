@@ -181,7 +181,7 @@ const ViewDeliveryBoys = () => {
         limit: pageSize,
         startDate: filters?.startDate,
         endDate: filters?.endDate,
-        type: filters?.type,
+        type: filters?.type || "SETTLED",
       },
     },
     skip: !ID,
@@ -532,7 +532,7 @@ const ViewDeliveryBoys = () => {
                             <th>Type</th>
                             <th>Settlement Date</th>
                             <th>Remarks</th>
-                            <th style={{ width: "50px" }}>Action</th>
+                            {/* <th style={{ width: "50px" }}>Action</th> */}
                           </tr>
                         </thead>
                         <tbody>
@@ -547,7 +547,7 @@ const ViewDeliveryBoys = () => {
                                 <td>{item.type}</td>
                                 <td>{formattedDate.replace(/\//g, "-")}</td>
                                 <td>{item.remarks}</td>
-                                {data.lastSettlementID === item._id ? (
+                                {/* {data.lastSettlementID === item._id ? (
                                   <td>
                                     <Button
                                       color="primary"
@@ -566,7 +566,7 @@ const ViewDeliveryBoys = () => {
                                   </td>
                                 ) : (
                                   <td>{}</td>
-                                )}
+                                )} */}
                               </tr>
                             );
                           })}
