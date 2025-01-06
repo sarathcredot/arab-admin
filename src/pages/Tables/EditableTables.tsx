@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 
 import { Row, Col, Card, CardBody, CardTitle } from "reactstrap";

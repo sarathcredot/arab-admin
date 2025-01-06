@@ -165,7 +165,7 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
     }
   };
 
-  const formik = useFormik({
+  const formik: any = useFormik({
     enableReinitialize: true,
     initialValues: {
       name: isEdit ? isEdit.categoryName : "",

@@ -1,0 +1,54 @@
+.comment_image_container {
+    display: flex;
+}
+
+.comment_container {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 20
+}
+
+.image_container {
+    width: 50%;
+    padding: 15px;
+}
+
+.returnImageContainer {
+    display: inline-block;
+    padding: 5px;
+    border-radius: 8px;
+    position: relative; /* To position the icon inside the container */
+    overflow: hidden; /* Ensure the icon doesn't overflow the image */
+}
+
+.returnImageContainer img {
+    display: block;
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+}
+
+.returnImageContainer:hover img {
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Shadow on hover */
+}
+
+.viewIcon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px; /* Adjust icon size */
+    color: rgba(255, 255, 255, 0.8); /* White icon with transparency */
+    visibility: hidden; /* Initially hide the icon */
+    opacity: 0; /* Make the icon invisible */
+    transition: visibility 0.3s, opacity 0.3s ease;
+}
+
+.returnImageContainer:hover .viewIcon {
+    visibility: visible; /* Show the icon when hovering */
+    opacity: 1;
+}
+
+.viewIcon:hover {
+    color: white; /* Change icon color on hover */
+}
