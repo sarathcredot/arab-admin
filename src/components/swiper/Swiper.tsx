@@ -20,7 +20,7 @@ const CustomSwiper = ({
     >
       {data &&
         data?.length > 0 ?
-        data?.map((el: any) => <SwiperSlide key={el?._id}><img src={el?.fileURL} alt="" /></SwiperSlide>): <SwiperSlide> No images found!</SwiperSlide>}
+        data?.map((el: any) => <SwiperSlide key={el?._id}><img src={el?.fileURL} alt="Return product" /></SwiperSlide>): <SwiperSlide> No images found!</SwiperSlide>}
     </Swiper>
   );
 };

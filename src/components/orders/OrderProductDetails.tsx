@@ -75,9 +75,9 @@ function OrderProductDetails({
   const [canceledDate, setCanceledDate] = useState("");
   const [cancelComment, setCancelComment] = useState("");
   const [paymentStatus, setPaymentStatus] = useState("");
-  
+
   // [[[[[[  return ]]]]]]]]
-  
+
   const [returnSwiperModal, setReturnSwiperModal] = useState(false);
   const [returnStatus, setReturnStatus] = useState("");
   const [returnModal, setReturnModal] = useState(false);
@@ -578,6 +578,9 @@ function OrderProductDetails({
   const [assignOrderType, setAssignOrderType] = useState<
     "COLLECT" | "DELIVERY" | null
   >(null);
+  const [deliveryAgentType, setDeliveryAgentType] = useState<
+    "ArabDeals" | "Vendor" | "ThirdParty" | ""
+  >("");
 
   const [orderItemId, setOrderItemId] = useState("");
 
@@ -826,7 +829,7 @@ function OrderProductDetails({
                     <CiEdit size={20} />
                     Edit Product
                   </Dropdown.Item>
-                  <Dropdown.Item
+                  {/* <Dropdown.Item
                     onClick={() => handleAssignClick(product?._id, "DELIVERY")}
                     style={{ display: "flex", gap: 5 }}
                     disabled={product?.shippingStatus !== "SHIPPED"}
@@ -841,7 +844,7 @@ function OrderProductDetails({
                   >
                     <CiDeliveryTruck size={20} />
                     Assign Delivery Boy (Return)
-                  </Dropdown.Item>
+                  </Dropdown.Item> */}
                   <Dropdown.Divider />
                   <Dropdown.Item
                     onClick={toggleInvoiceModal}
@@ -967,11 +970,13 @@ function OrderProductDetails({
                     value={product?.shippingStatus}
                     onChange={(e) => handleShippingStatusChange(e)}
                   >
-                    <option value={"PENDING"}>PENDING</option>
+                    <option value={"POSTPONED"}>Postponed</option>
+                    <option value={"PENDING"}>Pendign</option>
                     <option value={"PACKAGE_IN_PROGRESS"}>
                       PACKAGE IN PROGRESS
                     </option>
                     <option value={"SHIPPED"}>SHIPPED</option>
+                    <option value={"OUT_FOR_DELIVERY"}>Out For Delivery</option>
                     <option value={"DELIVERED"}>DELIVERED</option>
                     <option value={"CANCELED"}>CANCELED</option>
                   </Input>
@@ -1404,7 +1409,6 @@ function OrderProductDetails({
                             />
                             <div className={styles.viewIcon}>
                               <i className="fas fa-eye"></i>{" "}
-                              {/* Using FontAwesome view icon */}
                             </div>
                           </div>
                         ))}
@@ -1420,9 +1424,11 @@ function OrderProductDetails({
       {/* ================== RETURN IMAGES MODAL ===================== */}
 
       <Modal isOpen={returnSwiperModal} toggle={toggleReturnImageSwiperModal}>
-        <ModalHeader toggle={toggleReturnImageSwiperModal}>Shipping Status</ModalHeader>
+        <ModalHeader toggle={toggleReturnImageSwiperModal}>
+          Shipping Status
+        </ModalHeader>
         <ModalBody>
-         <CustomSwiper />
+          <CustomSwiper />
         </ModalBody>
         {/* <ModalFooter>
           <Button color="primary">
@@ -1469,6 +1475,63 @@ function OrderProductDetails({
                   onChange={(e) => setShippedDate(e.target.value)}
                 />
               </FormGroup>
+              <FormGroup>
+                <Label for="agentType">Agent Type</Label>
+                <Input
+                  type="select"
+                  name="agentType"
+                  id="agentType"
+                  value={deliveryAgentType}
+                  onChange={(e: any) => setDeliveryAgentType(e?.target?.value)}
+                >
+                  <option value="" disabled>
+                    Select Delivery Agent Type
+                  </option>
+                  {["ArabDeals", "Vendor", "ThirdParty"].map((el) => (
+                    <option key={el} value={el}>
+                      {el}
+                    </option>
+                  ))}
+                </Input>
+              </FormGroup>
+              <Col>
+                <FormGroup>
+                  <Label for="deliveryBoy">Select Delivery Boy</Label>
+                  <Input
+                    id="deliveryBoy"
+                    name="deliveryBoy"
+                    type="select"
+                    value={deliveryBoyId}
+                    placeholder="Select Delivery Boy"
+                    onChange={(e: any) => {
+                      const selectedValue = e?.target?.value; // The ID (value) of the selected option
+                      const selectedName =
+                        e?.target?.options[e?.target?.selectedIndex]?.text; // The name (text) of the selected option
+                      setDeliveryBoyId(selectedValue); // Save ID in state
+                      setDeliveryBoyName(selectedName); // Save name in state
+                    }}
+                  >
+                    <option value="" disabled>
+                      Select Delivery Boy
+                    </option>
+                    {deliveryAgentList &&
+                      deliveryAgentList?.getProductDeliveryTypeDeliveryAgents &&
+                      deliveryAgentList?.getProductDeliveryTypeDeliveryAgents
+                        ?.deliveryAgents?.length > 0 &&
+                      deliveryAgentList?.getProductDeliveryTypeDeliveryAgents?.deliveryAgents?.map(
+                        (agent: any) => (
+                          <option
+                            key={agent?._id}
+                            id={agent?.fullName}
+                            value={agent?._id}
+                          >
+                            {agent?.fullName}
+                          </option>
+                        )
+                      )}
+                  </Input>
+                </FormGroup>
+              </Col>
             </>
           )}
           {shippingStatus === "DELIVERED" && (
@@ -1783,16 +1846,21 @@ function OrderProductDetails({
           <FormGroup>
             <Label for="agentType">Agent Type</Label>
             <Input
-              type="text"
+              type="select"
               name="agentType"
               id="agentType"
-              disabled
-              value={
-                deliveryAgentList?.getProductDeliveryTypeDeliveryAgents
-                  ?.deliveryType
-              }
-              // onChange={(e) => setInvoiceNumber(e.target.value)}
-            />
+              value={deliveryAgentType}
+              onChange={(e: any) => setDeliveryAgentType(e?.target?.value)}
+            >
+              <option value="" disabled>
+                Select Delivery Agent Type
+              </option>
+              {["ArabDeals", "Vendor", "ThirdParty"].map((el) => (
+                <option key={el} value={el}>
+                  {el}
+                </option>
+              ))}
+            </Input>
           </FormGroup>
           <Col>
             <FormGroup>
