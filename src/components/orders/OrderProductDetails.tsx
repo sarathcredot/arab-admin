@@ -971,14 +971,14 @@ function OrderProductDetails({
                     onChange={(e) => handleShippingStatusChange(e)}
                   >
                     <option value={"POSTPONED"}>Postponed</option>
-                    <option value={"PENDING"}>Pendign</option>
+                    <option value={"PENDING"}>Pending</option>
                     <option value={"PACKAGE_IN_PROGRESS"}>
-                      PACKAGE IN PROGRESS
+                      Package in progress
                     </option>
-                    <option value={"SHIPPED"}>SHIPPED</option>
+                    <option value={"SHIPPED"}>Shipped</option>
                     <option value={"OUT_FOR_DELIVERY"}>Out For Delivery</option>
-                    <option value={"DELIVERED"}>DELIVERED</option>
-                    <option value={"CANCELED"}>CANCELED</option>
+                    <option value={"DELIVERED"}>Delivered</option>
+                    <option value={"CANCELED"}>Canceled</option>
                   </Input>
                 </FormGroup>
                 <FormGroup>
@@ -991,9 +991,9 @@ function OrderProductDetails({
                     onChange={(e) => handleReturnStatusChange(e)}
                   >
                     <option value={"NA"}>NA</option>
-                    <option value={"PENDING"}>PENDING</option>
-                    <option value={"APPROVED"}>APPROVED</option>
-                    <option value={"REJECTED"}>REJECTED</option>
+                    <option value={"PENDING"}>Pending</option>
+                    <option value={"APPROVED"}>Approved</option>
+                    <option value={"REJECTED"}>Rejected</option>
                   </Input>
                 </FormGroup>
                 <FormGroup>
@@ -1006,8 +1006,8 @@ function OrderProductDetails({
                     onChange={(e) => handleRefundStatusChange(e)}
                   >
                     <option value={"NA"}>NA</option>
-                    <option value={"PENDING"}>PENDING</option>
-                    <option value={"PAID"}>PAID</option>
+                    <option value={"PENDING"}>Pending</option>
+                    <option value={"PAID"}>Paid</option>
                   </Input>
                 </FormGroup>
               </div>
