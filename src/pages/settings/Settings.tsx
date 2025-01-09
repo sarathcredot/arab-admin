@@ -15,6 +15,15 @@ interface ShippingSettings {
     returnPeriod: number;
 }
 
+interface DeliveryBoysSettings {
+
+    orderAssignLimit: number;
+    returnOrderAssignLimit: number;
+    _id: string
+}
+
+
+
 function Settings() {
 
     const initialShippingSettings: ShippingSettings = {
@@ -23,9 +32,17 @@ function Settings() {
         returnPeriod: 0
     };
 
+    const initialDeliveryBoysSettings: DeliveryBoysSettings = {
+        orderAssignLimit: 0,
+        returnOrderAssignLimit: 0,
+        _id: ""
+    };
+
+
 
 
     const [shippingSettings, setShippingSettings] = useState<ShippingSettings>(initialShippingSettings);
+    const [deliveryBoysSettings, setdeliveryBoysSettings] = useState<DeliveryBoysSettings>(initialDeliveryBoysSettings);
 
 
 
@@ -34,6 +51,7 @@ function Settings() {
 
 
     const [shippingEdit, setShippingEdit] = useState(false);
+    const [deliveryBoysEdit, setdeliveryBoysEdit] = useState(false);
 
 
     const GET_SHIPPING_SETTINGS = gql`
@@ -45,6 +63,26 @@ function Settings() {
         }
     }
 `;
+
+
+    const GET_DELIVERYBOYS_SETTINGS = gql`
+   query GetAllDeliveryAgentConfig {
+  getAllDeliveryAgentConfig {
+    _id
+    orderAssignLimit
+    returnOrderAssignLimit
+  }
+}
+`;
+
+
+
+
+
+
+
+
+
     const GET_PAYMENT_SETTINGS = gql`
     query GetPaymentSettings {
   getPaymentSettings {
@@ -70,6 +108,31 @@ function Settings() {
         variables: {
         },
     });
+
+    const {
+
+        data: deliveryBoysConfigData,
+        loading: deliveryBoysLoding,
+        refetch: deliveryBoysRefetch
+
+    } = useQuery(GET_DELIVERYBOYS_SETTINGS, {
+        variables: {},
+    })
+
+    useEffect(() => {
+
+        if (deliveryBoysConfigData && deliveryBoysConfigData.getAllDeliveryAgentConfig) {
+
+            setdeliveryBoysSettings(deliveryBoysConfigData.getAllDeliveryAgentConfig)
+
+
+        } else {
+
+            console.log("error")
+        }
+
+    }, [deliveryBoysConfigData, deliveryBoysRefetch, deliveryBoysLoding])
+
 
     useEffect(() => {
         if (shippingData && shippingData.getShippingSettings) {
@@ -97,6 +160,17 @@ function Settings() {
         }));
     };
 
+    const handleDeliveryBoysInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setdeliveryBoysSettings((prevSettings) => ({
+            ...prevSettings,
+            [name]: parseFloat(value) || 0,
+        }));
+    };
+
+
+
+
 
     const UPDATE_SHIPPING_SETTINGS = gql`
     mutation UpdateShippingSettings($input: UpdateShippingSettingsInput!) {
@@ -109,6 +183,19 @@ function Settings() {
     `;
 
     const [UpdateShippingSettings] = useMutation(UPDATE_SHIPPING_SETTINGS);
+
+    const UPDATE_DELIVERYBOYS_SETTINGS = gql`
+   mutation UpdateDeliveryAgentConfig($input: updateDeliveryAgentConfigInput!) {
+  updateDeliveryAgentConfig(input: $input) {
+    status
+    msg
+  }
+}
+    `;
+
+    const [UpdateDeliveryBoysSettings]=useMutation(UPDATE_DELIVERYBOYS_SETTINGS);
+
+
 
 
     const handleShippingSettingsUpdate = async () => {
@@ -131,6 +218,33 @@ function Settings() {
             toast.error(error.message);
         }
     }
+
+    const handleDeliveryBoysSettingsUpdate = async () => {
+
+        console.log("deliveryBoysSetiges", deliveryBoysSettings)
+        try {
+            const result = await UpdateDeliveryBoysSettings({
+                variables: {
+                    input: {
+                       _id:deliveryBoysSettings._id,
+                       deliveryLimit:deliveryBoysSettings.orderAssignLimit,
+                       returnLimit:deliveryBoysSettings.returnOrderAssignLimit
+                    },
+                },
+            });
+
+            if (result.data.updateDeliveryAgentConfig) {
+                console.log("updated")
+                toast.success("Delivery boys settings has been updated");
+            }
+        } catch (error: any) {
+            console.error(error);
+            toast.error(error.message);
+        }
+    }
+
+
+
 
     const handleShippingSettingsCancel = async () => {
         await shippingRefetch();
@@ -393,6 +507,138 @@ function Settings() {
                                     </Card>
                                 </div>
                             </Col>
+
+                            <Col xl={12} >
+                                <div style={{}} className="clickable-card-container" >
+                                    <Card
+                                        body
+                                        className="my-2 clickable-card"
+                                        style={{
+                                            width: '100%',
+                                            height: '100%'
+                                        }}
+                                    >
+                                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "20px", marginBottom: "10px" }}>
+                                            <div style={{ display: "flex", alignItems: "center", gap: "20px", marginBottom: "10px" }}>
+                                                <div>
+                                                    <Truck icon={"truck"} size={55} color={"#e30613"} />
+                                                </div>
+                                                <CardTitle tag="h5" style={{ color: "#e30613" }}>
+                                                    Customize Delivery Boys Config
+                                                </CardTitle>
+                                            </div>
+                                            <div style={{ display: "flex", alignItems: "center", }}>
+                                                <Label style={{ marginTop: "2px", marginLeft: "10px", width: "50px" }} check>Edit :</Label>
+                                                <div className="form-control-static" >
+
+                                                    <FormGroup switch>
+                                                        <Input
+                                                            type="switch"
+                                                            style={{ width: '40px', height: "20px" }}
+                                                            checked={deliveryBoysEdit}
+                                                            onChange={(e) => setdeliveryBoysEdit(e.target.checked)}
+                                                        />
+                                                        <Label style={{ marginTop: "2px", marginLeft: "10px" }} check>{deliveryBoysEdit ? "on" : "off"}</Label>
+                                                    </FormGroup>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style={{ display: "flex", flexDirection: "row", gap: "20px" }}>
+                                            <div style={{ margin: "10px" }}>
+                                                <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+
+                                                    {/* <div style={{ display: "flex", alignItems: "center", }}>
+                                                        <p style={{ width: "200px" }}>Shipping Charge</p>
+                                                        <div style={{ width: "300px" }} className="form-control-static" >
+                                                            <div className="input-group">
+                                                                <div className="input-group-prepend">
+                                                                    <span className="input-group-text">OMR</span>
+                                                                </div>
+                                                                <Input
+                                                                    type="text"
+                                                                    name="shippingCharge"
+                                                                    id="shippingCharge"
+                                                                    value={shippingSettings.shippingCharge}
+                                                                    onChange={handleInputChange}
+                                                                    disabled={!deliveryBoysEdit}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div> */}
+
+                                                    {/* <div style={{ display: "flex", alignItems: "center", }}>
+                                                        <p style={{ width: "200px" }}>Free Threshold</p>
+                                                        <div style={{ width: "300px" }} className="form-control-static" >
+                                                            <div className="input-group">
+                                                                <div className="input-group-prepend">
+                                                                    <span className="input-group-text">OMR</span>
+                                                                </div>
+                                                                <Input
+                                                                    type="text"
+                                                                    name="freeShippingThreshold"
+                                                                    id="freeShippingThreshold"
+                                                                    value={shippingSettings.freeShippingThreshold}
+                                                                    onChange={handleInputChange}
+                                                                    disabled={!deliveryBoysEdit}
+                                                                />
+                                                            </div>
+                                                        </div>
+
+                                                    </div> */}
+
+                                                    <div style={{ display: "flex", alignItems: "center", }}>
+                                                        <p style={{ width: "200px" }}>Delivery Order Assigen Limit</p>
+                                                        <div style={{ width: "300px" }} >
+                                                            <p className="form-control-static"  >
+                                                                <div className="input-group">
+                                                                    <Input
+                                                                        type="text"
+                                                                        name="orderAssignLimit"
+                                                                        id="orderAssignLimit"
+                                                                        value={deliveryBoysSettings.orderAssignLimit}
+                                                                        onChange={handleDeliveryBoysInputChange}
+                                                                        disabled={!deliveryBoysEdit}
+                                                                    />
+                                                                </div>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div style={{ display: "flex", alignItems: "center", }}>
+                                                        <p style={{ width: "200px" }}>Return Order Assign Limit</p>
+                                                        <div style={{ width: "300px" }} >
+                                                            <p className="form-control-static"  >
+                                                                <div className="input-group">
+                                                                    <Input
+                                                                        type="text"
+                                                                        name="returnOrderAssignLimit"
+                                                                        id="returnOrderAssignLimit"
+                                                                        value={deliveryBoysSettings.returnOrderAssignLimit}
+                                                                        onChange={handleDeliveryBoysInputChange}
+                                                                        disabled={!deliveryBoysEdit}
+                                                                    />
+                                                                </div>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div style={{ display: "flex", justifyContent: "flex-end", gap: "15px" }}>
+                                                    <Button disabled={!deliveryBoysEdit} color='primary' onClick={handleDeliveryBoysSettingsUpdate}>Update</Button>
+                                                    {/* <Button color='secondary' onClick={handleShippingSettingsCancel}>Cancel</Button> */}
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </Card>
+                                </div>
+                            </Col>
+
+
                         </Row>
                     </div>
 
