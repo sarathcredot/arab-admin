@@ -165,7 +165,7 @@ const ProductListing = () => {
                 className={activeTab === "ALL" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("ALL")}
               >
-                ALL
+                All
               </NavLink>
             </NavItem>
             <NavItem>
@@ -173,7 +173,7 @@ const ProductListing = () => {
                 className={activeTab === "UNDER_VERIFICATION" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("UNDER_VERIFICATION")}
               >
-                PENDING
+                Pending
               </NavLink>
             </NavItem>
             <NavItem>
@@ -181,7 +181,7 @@ const ProductListing = () => {
                 className={activeTab === "APPROVED" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("APPROVED")}
               >
-                APPROVED
+                Approved
               </NavLink>
             </NavItem>
             <NavItem>
@@ -189,7 +189,7 @@ const ProductListing = () => {
                 className={activeTab === "REJECTED" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("REJECTED")}
               >
-                REJECTED
+                Rejected
               </NavLink>
             </NavItem>
           </Nav>

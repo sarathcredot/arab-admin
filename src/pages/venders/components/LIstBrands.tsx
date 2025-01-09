@@ -254,9 +254,11 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
                             />
                           )}
                         </td>
-                        <td
+                        <td                        
                         >
-                          <StatusIndicator status={brand.isBlocked ? "BLOCKED" : "ACTIVE"} />
+                          <div style={{ display: "flex", alignItems: "center",justifyContent:"center" }}>
+                          <StatusIndicator status={brand.isBlocked ? "Blocked" : "Active"} />
+                          </div>
                         </td>
                         <td>
                           <Link to={`/brands/${brand._id}?origin=vendor&vendorId=${id}`}>

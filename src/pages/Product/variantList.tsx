@@ -428,7 +428,7 @@ const VariantListing = () => {
                                       </Td>
                                       <Td>
                                         <StatusIndicator
-                                          status={product.isBlocked ? "BLOCKED" : "ACTIVE"}
+                                          status={product.isBlocked ? "Blocked" : "Active"}
                                         />
                                       </Td>
                                       <Td>

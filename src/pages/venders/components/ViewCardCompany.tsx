@@ -22,6 +22,7 @@ import {
 import CustomButton from "src/components/Common/CustomButton";
 import { fetchSignedUrl, useFetchSignedUrl } from "src/utils/fetchSignedUrl";
 import { vendorCompanyValidation } from "src/validation/validation";
+import { capitalize } from "lodash";
 
 
 interface ICompany {
@@ -305,7 +306,7 @@ function ViewCardCompany({ IdCompany }: IPropes) {
                       fontSize: "13px"
                     }}
                   >
-                    {companyData?.status.replace("_", " ")}
+                    {capitalize(companyData?.status.replace("_", " "))}
                   </span>
                 </p>
 

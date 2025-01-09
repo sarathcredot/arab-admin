@@ -306,24 +306,20 @@ const UserList = () => {
                                 </Td>
                                 <Td>{user.email}</Td>
                                 <Td>
-                                  <StatusIndicator status={user?.isBlocked ? "BLOCKED" : "ACTIVE"} variant={"default"} />
-                                  {/* <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                                <div
-                                  style={{
-                                    width: "8px",
-                                    height: "8px",
-                                    borderRadius: "50%",
-                                    background: user?.isBlocked ? "#dc4016" : "green",
-                                  }}
-                                />
-                                {user?.isBlocked == false ? "Active" : "Block"}
-                              </div> */}
+                                <div style={{ display: "flex", alignItems: "center",justifyContent:"center" }}>
+                                  <StatusIndicator status={user?.isBlocked ? "Blocked" : "Active"} variant={"default"} />
+                                </div>
                                 </Td>
                                 <Td>
                                   {"  "}
                                   <Button
+                                  style={{
+                                    display: "block",
+                                    margin: "auto",
+                                  }}
                                     size="sm"
                                     color="primary"
+
                                     onClick={() => navigate(`/user/view?userId=${user._id}`)}
                                   >
                                     View

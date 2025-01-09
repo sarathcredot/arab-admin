@@ -66,7 +66,7 @@ const AllOrders = () => {
                           toggle("2");
                         }}
                       >
-                        PENDING
+                        Pending
                       </NavLink>
                     </NavItem>
                     <NavItem>
@@ -76,7 +76,7 @@ const AllOrders = () => {
                           toggle("3");
                         }}
                       >
-                        IN PROGRESS
+                        In Progress
                       </NavLink>
                     </NavItem>
                     <NavItem>
@@ -86,7 +86,7 @@ const AllOrders = () => {
                           toggle("4");
                         }}
                       >
-                        COMPLETED
+                        Completed
                       </NavLink>
                     </NavItem>
                     <NavItem>
@@ -96,7 +96,7 @@ const AllOrders = () => {
                           toggle("1");
                         }}
                       >
-                        ALL
+                        All
                       </NavLink>
                     </NavItem>
                   </Nav>

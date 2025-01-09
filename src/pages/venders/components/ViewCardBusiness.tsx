@@ -22,6 +22,7 @@ import {
 import CustomButton from "src/components/Common/CustomButton";
 import { fetchSignedUrl, useFetchSignedUrl } from "src/utils/fetchSignedUrl";
 import { vendorBusinessOutletValidation } from "src/validation/validation";
+import { capitalize } from "lodash";
 
 interface IOutletRecord {
   _id: string;
@@ -352,7 +353,7 @@ function ViewCardBusiness({ IdBusiness }: IPropes) {
                         fontSize: "13px",
                       }}
                     >
-                      {outletData?.status?.replace("_", " ")}
+                      {capitalize(outletData?.status?.replace("_", " "))}
                     </span>
                   </p>
 

@@ -9,15 +9,16 @@ import styles from "./style.module.css";
 
 // Agent Type
 interface IAgent {
-  _id:string;
+  _id: string;
   fullName: string;
   contactNumber: string;
   agentType: string;
-  isActive: boolean;
+  isActive: boolean |string;
+  isAvailable: boolean |string;
   password?: string;
   userID: string;
   vendorID: string;
-  image:null,
+  image: null;
 }
 
 // vendor type
@@ -46,9 +47,9 @@ interface Props {
 }
 
 const EDIT_DELIVERY_BOY = gql`
-  mutation EditDeliveryBoy($input: EditAgentDataInput!,$image:Upload) {
-    editDeliveryAgentData(input: $input,image:$image){
-      status,
+  mutation EditDeliveryBoy($input: EditAgentDataInput!, $image: Upload) {
+    editDeliveryAgentData(input: $input, image: $image) {
+      status
       msg
     }
   }
@@ -80,8 +81,9 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
       agentType: "",
       userID: "",
       vendorID: "",
-      isActive:true,
-      image:null,
+      isActive: "",
+      isAvailable: "",
+      image: null,
     },
 
     validationSchema: EditDeliveryBoyValidation,
@@ -98,28 +100,27 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
       agentType: data?.agentType || "",
       userID: data?.userID || "",
       vendorID: data?.vendorID || null,
-      isActive: data?.isActive,
-      image:null,
+      isActive: data?.isActive?.toString(),
+      isAvailable: data?.isAvailable?.toString(),
+      image: null,
     });
   }, [isOpen, refetch]);
 
-  
   const onSubmit = async (values: any, { resetForm }: any) => {
     console.log(true);
-    
+
     try {
       let variables: any = {
         input: {
-          _id:data?._id,
+          _id: data?._id,
           fullName: values?.fullName,
           contactNumber: values?.contactNumber.toString(),
           agentType: values?.agentType,
           userID: values?.userID,
           vendorID: values?.vendorID,
+          isActive: JSON.parse(values?.isActive),
+          isAvailable: JSON.parse(values?.isAvailable),
         },
-        
-          
-        
       };
       if (values.image) {
         variables = {
@@ -127,16 +128,16 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
           image: values?.image,
         };
       }
-      console.log("variables==",variables);
-      
+      console.log("variables==", variables);
+
       const response = await editDeliveryBoy({
         variables,
       });
 
       if (response) {
         refetch();
-        console.log("response=",response);
-        
+        console.log("response=", response);
+
         toast.success("Successfully edited Delivery Boy");
         toggle();
         resetForm();
@@ -146,8 +147,7 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
     } catch (error: any) {
       toast.error(error.message);
       console.log(error.message);
-      console.log("error=",error);
-      
+      console.log("error=", error);
     }
   };
 
@@ -171,6 +171,7 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
       setVendorData(vendorDataResponse.getAllVendorsRecordsByAdmin.records);
     }
   }, [vendorDataResponse]);
+  console.log("VALUES = ",formik?.values)
   return (
     <>
       <Modal
@@ -264,12 +265,12 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
                     <option disabled>Select Vendor</option>
                     {vendorData &&
                       vendorData.map((item) => (
-                          <option
-                            key={item._id}
-                            value={item._id}
-                          >
-                            {item.fullName}
-                          </option>
+                        <option
+                          key={item._id}
+                          value={item._id}
+                        >
+                          {item.fullName}
+                        </option>
                       ))}
                   </Input>
                 </div>
@@ -286,7 +287,42 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              {formik.touched.userID && formik.errors.userID && <div className="text-danger">{formik.errors.userID}</div>}
+              {formik.touched.userID && formik.errors.userID && (
+                <div className="text-danger">{formik.errors.userID}</div>
+              )}
+            </FormGroup>
+            <FormGroup>
+              <div>
+                <Label className="form-label pt-2">Status</Label>
+                <Input
+                  name="isActive"
+                  placeholder="Select Status"
+                  type="select"
+                  value={formik.values?.isActive}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  <option disabled>Select Status</option>
+                  <option value={"true"}>Active</option>
+                  <option value={"false"}>Block</option>
+                </Input>
+              </div>
+            </FormGroup>
+            <FormGroup>
+              <div>
+                <Label className="form-label pt-2">Availability</Label>
+                <Input
+                  name="isAvailable"
+                  placeholder="Select Availability"
+                  type="select"
+                  value={formik.values?.isAvailable}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  <option value={"true"}>Available</option>
+                  <option value={"false"}>Not Available</option>
+                </Input>
+              </div>
             </FormGroup>
             <FormGroup>
               <Label

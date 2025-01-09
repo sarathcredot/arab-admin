@@ -148,7 +148,7 @@ function CompanyListing() {
             <NavLink
               className={activeTab === "UNDER_VERIFICATION" ? "tab-button active" : "tab-button"}
               onClick={() => toggleTab("UNDER_VERIFICATION")}>
-              VERIFY
+              Verify
             </NavLink>
           </NavItem>
 
@@ -157,7 +157,7 @@ function CompanyListing() {
               className={activeTab === "COMPLETED" ? "tab-button active" : "tab-button"}
               onClick={() => toggleTab("COMPLETED")}
             >
-              COMPLETED
+              Completed
             </NavLink>
           </NavItem>
 
@@ -166,7 +166,7 @@ function CompanyListing() {
               className={activeTab === "PENDING" ? "tab-button active" : "tab-button"}
               onClick={() => toggleTab("PENDING")}
             >
-              PENDING
+              Pending
             </NavLink>
           </NavItem>
 
@@ -175,7 +175,7 @@ function CompanyListing() {
               className={activeTab === "REJECTED" ? "tab-button active" : "tab-button"}
               onClick={() => toggleTab("REJECTED")}
             >
-              REJECTED
+              Rejected
             </NavLink>
           </NavItem>
         </Nav>
@@ -221,7 +221,7 @@ function CompanyListing() {
                               <th>Full Name</th>
                               <th>Company Name</th>
                               <th>CR Number</th>
-                              <th>Kyc Status</th>
+                              <th>KYC Status</th>
                               <th>Status</th>
                               <th>Action</th>
                             </tr>
@@ -234,11 +234,15 @@ function CompanyListing() {
                                 <td>{company.companyName}</td>
                                 <td>{company.crNumber}</td>
                                 <td >
-                                  <StatusIndicator status={company.isKycCompleted ? "COMPLETED" : "PENDING"} />
+                                <div style={{ display: "flex", alignItems: "center",justifyContent:"center" }}>
+                                  <StatusIndicator status={company.isKycCompleted ? "Completed" : "Pending"} />
+                                </div>
 
                                 </td>
                                 <td >
+                                <div style={{ display: "flex", alignItems: "center",justifyContent:"center" }}>
                                   <StatusIndicator status={company?.status} />
+                                </div>
 
                                 </td>
                                 <td>

@@ -22,6 +22,8 @@ import Loader from "src/components/Common/Loader";
 import { toast } from "react-toastify";
 import ProductOrdersFilters from "../ShippingOrdersFilters";
 import CustomButton from "src/components/Common/CustomButton";
+import { capitalize } from "lodash";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
 
 
@@ -512,12 +514,8 @@ message
                                                             </div>
                                                         </td>
                                                         <td>{order?.paymentMode}</td>
-                                                        <td><div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                                                            <div style={{
-                                                                width: "8px", height: "8px", borderRadius: "50%",
-                                                                background: order?.paymentStatus === "PENDING" ? "#ff9500" : (order?.paymentStatus === "IN_PROGRESS" ? "#fff200" : "green")
-                                                            }} />
-                                                            {order?.paymentStatus?.replace("_", " ")}
+                                                        <td><div style={{ display: "flex", gap: "10px", alignItems: "center",justifyContent:"center" }}>
+                                                            <StatusIndicator status={order?.paymentStatus} />
                                                         </div>
                                                         </td>
                                                         <td>

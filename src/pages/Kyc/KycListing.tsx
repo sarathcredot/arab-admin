@@ -63,14 +63,14 @@ function KycListing() {
                 className={activeTab === "CompanyList" ? "tab-button active" : "tab-button"}
                 onClick={() => handleTabChange("CompanyList")}
               >
-                COMPANY LIST
+                Company List
               </NavLink>
             </NavItem>
             <NavItem>
               <NavLink
                 className={activeTab === "OutletList" ? "tab-button active" : "tab-button"}
                 onClick={() => handleTabChange("OutletList")}>
-                OUTLET LIST
+                Outlet List
               </NavLink>
             </NavItem>
 

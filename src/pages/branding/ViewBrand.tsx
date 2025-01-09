@@ -125,7 +125,7 @@ function ViewBrands() {
               <div>
                 <span style={{ display: "flex", alignItems: "center", gap: "3px" }}>
                   <span>Status :</span>
-                  <StatusIndicator status={brandData?.isBlocked ? "BLOCKED" : "ACTIVE"} variant="chip" />
+                  <StatusIndicator status={brandData?.isBlocked ? "Blocked" : "Active"} variant="chip" />
 
                 </span>
               </div>

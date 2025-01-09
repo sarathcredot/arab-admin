@@ -145,8 +145,8 @@ const DeliveryBoys: React.FC = () => {
       type: "select",
       name: "isActive",
       options: [
-        { value: "true", label: "ACTIVE" },
-        { value: "false", label: "BLOCKED" },
+        { value: "true", label: "Active" },
+        { value: "false", label: "Blocked" },
       ],
     },
   ];
@@ -165,7 +165,7 @@ const DeliveryBoys: React.FC = () => {
                 className={activeTab === undefined ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(undefined)}
               >
-                ALL
+                All
               </NavLink>
             </NavItem>
             <NavItem>
@@ -173,7 +173,7 @@ const DeliveryBoys: React.FC = () => {
                 className={activeTab === false ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(false)}
               >
-                ALL
+                All
               </NavLink>
             </NavItem>
             <NavItem>
@@ -181,7 +181,7 @@ const DeliveryBoys: React.FC = () => {
                 className={activeTab === true ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(true)}
               >
-                ALL
+                All
               </NavLink>
             </NavItem>
           </Nav> */}
@@ -259,8 +259,8 @@ const DeliveryBoys: React.FC = () => {
                                 <th>Full Name</th>
                                 <th>Mobile Number</th>
                                 <th>Agent Type</th>
-                                <th>Status</th>
-                                <th style={{ width: "50px" }}>Action</th>
+                                <th style={{ width: "100px" }}>Status</th>
+                                <th style={{ width: "100px" }}>Action</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -272,11 +272,26 @@ const DeliveryBoys: React.FC = () => {
                                   <td>{agent.contactNumber}</td>
                                   <td>{agent.agentType}</td>
                                   <td>
-                                    <StatusIndicator status={agent.isActive === true ? "ACTIVE" : "BLOCKED"} />
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                      }}
+                                      >
+                                      <StatusIndicator
+                                        variant="default"
+                                        status={agent.isActive === true ? "Active" : "Blocked"}
+                                      />
+                                    </div>
                                   </td>
                                   <td>
                                     <Link to={`/delivery-boys/view?id=${agent._id}`}>
                                       <Button
+                                        style={{
+                                          display: "block",
+                                          margin: "auto",
+                                        }}
                                         color="primary"
                                         size="sm"
                                       >

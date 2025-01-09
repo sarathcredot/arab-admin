@@ -194,7 +194,7 @@ const CmsRecordDetails = () => {
                       <div className="col-md-12" style={{ display: "flex", alignItems: "center" }}>
                         <label >Status : &nbsp; </label>
                         <p className="form-control-static" style={{ width: "100px" }}>
-                          <StatusIndicator status={cmsRecord?.isBlocked ? "BLOCKED" : "ACTIVE"} variant="chip" />
+                          <StatusIndicator status={cmsRecord?.isBlocked ? "Blocked" : "Active"} variant="chip" />
                         </p>
                       </div>
                     </div>

@@ -387,7 +387,7 @@ const RejectedOrders = () => {
                                             width: "8px", height: "8px", borderRadius: "50%",
                                             background: order?.paymentStatus === "PENDING" ? "#ff9500" : (order.paymentStatus === "IN_PROGRESS" ? "#fff200" : "green")
                                         }} />
-                                        {order?.paymentStatus?.replace("_", " ")}
+                                        {capitalize(order?.paymentStatus?.replace("_", " "))}
                                         </div>
                                     </td> */}
                                                         <td>

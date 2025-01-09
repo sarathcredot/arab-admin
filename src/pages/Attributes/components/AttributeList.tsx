@@ -170,7 +170,7 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
                 className={activeTab === undefined ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(undefined)}
               >
-                ALL
+                All
               </NavLink>
             </NavItem>
             <NavItem>
@@ -178,7 +178,7 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
                 className={activeTab === false ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(false)}
               >
-                ACTIVE
+                Active
               </NavLink>
             </NavItem>
             <NavItem>
@@ -186,7 +186,7 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
                 className={activeTab === true ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(true)}
               >
-                BLOCKED
+                Blocked
               </NavLink>
             </NavItem>
           </Nav>
@@ -232,7 +232,7 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
                                 <th>Description</th>
                                 <th>Attribute Type</th>
                                 <th>Status</th>
-                                <th>Action</th>
+                                <th >Action</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -251,12 +251,15 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
 
                                     <td
                                     >
-                                      <StatusIndicator status={attribute?.isBlocked ? "BLOCKED" : "ACTIVE"} />
+                                      <div style={{ display: "flex", alignItems: "center",justifyContent:"center" }}>
+                                      <StatusIndicator status={attribute?.isBlocked ? "Blocked" : "Active"} />
+                                      </div>
 
                                     </td>
                                     <td>
+                                      
                                       <Link to={`/attributes/${attribute?._id}`}>
-                                        <Button size="sm" color="primary">
+                                        <Button style={{display:"block",margin:"auto"}} size="sm" color="primary">
                                           View
                                         </Button>
                                       </Link>

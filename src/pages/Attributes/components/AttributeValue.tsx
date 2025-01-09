@@ -262,7 +262,9 @@ const ValueAttributeList: React.FC = () => {
                                 <td>{attribute.priority}</td>
                                 <td
                                 >
-                                  <StatusIndicator status={attribute.isBlocked ? "BLOCKED" : "ACTIVE"} />
+                                  <div style={{display:"flex",alignItems:"center",justifyContent:"center"}}>
+                                  <StatusIndicator status={attribute.isBlocked ? "Blocked" : "Active"} />
+                                  </div>
                                 </td>
                                 {/* <td>
                               <Link to={`/attributes/${attribute._id}`}>

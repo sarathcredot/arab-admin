@@ -381,8 +381,8 @@ const CategoryList: React.FC<Props> = () => {
                                 <th>Name</th>
                                 <th>Description</th>
                                 {/* <th>Size Chart Image</th> */}
-                                <th>Status</th>
-                                <th>Actions</th>
+                                <th className="text-center">Status</th>
+                                <th style={{width:"120px",textAlign:"center"}}>Actions</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -417,10 +417,13 @@ const CategoryList: React.FC<Props> = () => {
                             </td> */}
 
                                   <td>
-                                    <StatusIndicator status={category?.isBlocked == false ? "ACTIVE" : "BLOCKED"} />
+                                  <div style={{ display: "flex", alignItems: "center",justifyContent:"center" }}>
+                                    <StatusIndicator status={category?.isBlocked == false ? "Active" : "Blocked"} />
+                                  </div>
                                   </td>
 
                                   <td >
+                                  <div style={{ display: "flex", alignItems: "center",gap:10 }}>
                                     {category.isLeaf ? null : (
                                       <Button
                                         size="sm"
@@ -435,10 +438,11 @@ const CategoryList: React.FC<Props> = () => {
                                       color="primary"
                                       size="sm"
                                       onClick={() => handleEdit(category)}
-
-                                    >
+                                      
+                                      >
                                       Edit
                                     </Button>{" "}
+                                      </div>
                                   </td>
                                 </tr>
                               ))}

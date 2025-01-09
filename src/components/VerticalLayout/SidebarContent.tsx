@@ -240,7 +240,7 @@ const SidebarContent = (props: any) => {
                       width="800px"
                       version="1.1"
                       id="Layer_1"
-                      xmlns="http://www.w3.org/2000/svg"
+                    xmlns="http://www.w3.org/2000/svg"
                       xmlnsXlink="http://www.w3.org/1999/xlink"
                       viewBox="0 0 512 512"
                       xmlSpace="preserve"
@@ -326,7 +326,7 @@ const SidebarContent = (props: any) => {
               >
                 <MdDomainVerification />
 
-                <span>{props.t("Kyc")}</span>
+                <span>{props.t("KYC")}</span>
               </Link>
             </li>
 

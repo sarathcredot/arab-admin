@@ -182,8 +182,8 @@ const CmsListing = () => {
                                 <Th data-priority="1">Page Name</Th>
                                 <Th data-priority="3">Section Name</Th>
                                 <Th data-priority="3">Images</Th>
-                                <Th data-priority="3">Status</Th>
-                                <Th data-priority="3">View</Th>
+                                <Th data-priority="3" style={{width:"100px",textAlign:"center" }}>Status</Th>
+                                <Th data-priority="3" style={{width:"100px",textAlign:"center" }}>View</Th>
                               </Tr>
                             </Thead>
                             <Tbody>
@@ -201,11 +201,18 @@ const CmsListing = () => {
                                       />
                                     </Td>
                                     <Td>
-                                      <StatusIndicator status={cmsRecord.isBlocked ? "BLOCKED" : "ACTIVE"} />
+                                    <div style={{ display: "flex", alignItems: "center",justifyContent:"center" }}>
+                                      <StatusIndicator status={cmsRecord.isBlocked ? "Blocked" : "Active"} />
+                                    </div>
 
                                     </Td>
                                     <Td>
                                       <Button
+                                      style={{
+                                        display:"block",
+                                        margin:"auto",
+                                        width:"50px"
+                                      }}
                                         color="primary"
                                         size="sm"
                                         tag={Link}

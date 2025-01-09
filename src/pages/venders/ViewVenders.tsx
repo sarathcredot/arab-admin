@@ -157,7 +157,7 @@ function ViewVenders() {
               className={activeTab === "Vendor" ? "tab-button active" : "tab-button"}
               onClick={() => handleTabChange("Vendor")}
             >
-              VENDOR
+              Vendor
             </NavLink>
           </NavItem>
           <NavItem>
@@ -165,7 +165,7 @@ function ViewVenders() {
               className={activeTab === "companydetails" ? "tab-button active" : "tab-button"}
               onClick={() => handleTabChange("companydetails")}
             >
-              COMPANY DETAILS
+              Company Details
             </NavLink>
           </NavItem>
           <NavItem>
@@ -173,7 +173,7 @@ function ViewVenders() {
               className={activeTab === "businessoutlet" ? "tab-button active" : "tab-button"}
               onClick={() => handleTabChange("businessoutlet")}
             >
-              BUSINESS OUTLET
+              Business Outlet
             </NavLink>
           </NavItem>
           <NavItem>
@@ -181,7 +181,7 @@ function ViewVenders() {
               className={activeTab === "category" ? "tab-button active" : "tab-button"}
               onClick={() => handleTabChange("category")}
             >
-              CATEGORIES
+              Catagories
             </NavLink>
           </NavItem>
           <NavItem>
@@ -189,7 +189,7 @@ function ViewVenders() {
               className={activeTab === "brands" ? "tab-button active" : "tab-button"}
               onClick={() => handleTabChange("brands")}
             >
-              BRANDS
+              Brands
             </NavLink>
           </NavItem>
           <NavItem>
@@ -197,7 +197,7 @@ function ViewVenders() {
               className={activeTab === "products" ? "tab-button active" : "tab-button"}
               onClick={() => handleTabChange("products")}
             >
-              PRODUCTS
+              Products
             </NavLink>
           </NavItem>
         </Nav>

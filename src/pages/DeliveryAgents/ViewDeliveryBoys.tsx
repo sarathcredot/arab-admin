@@ -1,17 +1,16 @@
 import { capitalCase } from "change-case";
-import Lottie from "lottie-react";
-import animation from "./noDataAnimation.json";
 
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
-  Button,
   Card,
   CardBody,
-  CardHeader,
   Col,
   Collapse,
   Container,
+  FormGroup,
+  Input,
+  Label,
   Nav,
   NavItem,
   NavLink,
@@ -34,6 +33,9 @@ import AssignedOrders from "./AssignedOrders";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import EditSettlementPopup from "./EditSettlementPopup";
 import SuspendDeliveryBoy from "./SuspendDeliveryBoy";
+import AssignedOrderBundle from "./AssignedOrderBundle";
+import AssignedReturnBundle from "./AssignedReturnBundle";
+import Confirmation from "src/components/Confirmation";
 
 // Agent Type
 interface ILicence {
@@ -67,6 +69,7 @@ interface IAgent {
   userID: string;
   agentType: string;
   isActive: boolean;
+  isAvailable: boolean;
   vendorID: string;
   licence: ILicence;
   wallet: IWallet;
@@ -86,6 +89,7 @@ const GET_DETAIL = gql`
         ID
         agentType
         isActive
+        isAvailable
         vendorID
         lastSettlementID
         licence {
@@ -116,6 +120,15 @@ const GET_DETAIL = gql`
   }
 `;
 
+const UPDATE_AVAILABILITY = gql`
+  mutation UpdateAvailableStatusByAdmin($input: UpdateAvailableStatusInput!) {
+    updateAvailableStatusByAdmin(input: $input) {
+      _id
+      message
+    }
+  }
+`;
+
 const EXPORT_SETTLEMENTS = gql`
   mutation ExportAdminSettlementHistory($input: ExportAdminSettlementHistoryInput!) {
     exportAdminSettlementHistory(input: $input) {
@@ -130,7 +143,9 @@ const ViewDeliveryBoys = () => {
   const ID = searchParams.get("id");
   console.log({ ID });
 
-  const [TAB, setTAB] = useState(false);
+  const [view, setView] = useState(false);
+  const [DATE, setDATE] = useState("");
+  const [TAB, setTAB] = useState<any>(false);
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 10;
 
@@ -146,7 +161,7 @@ const ViewDeliveryBoys = () => {
   const [filters, setFilters] = useState({
     startDate: null,
     endDate: null,
-    type: null,
+    type: "SETTLED",
   });
 
   const [isSuspendOpen, setIsSuspendOpen] = useState(false);
@@ -158,6 +173,10 @@ const ViewDeliveryBoys = () => {
     setIsOpen(!isOpen);
   };
 
+  const [openAvailable, setOpenAvailable] = useState(false);
+  const handleToggle = () => {
+    setOpenAvailable(!openAvailable);
+  };
   const handleFilterSubmit = (formData: any) => {
     setCurrentPage(0);
     setFilters({
@@ -173,7 +192,6 @@ const ViewDeliveryBoys = () => {
     refetch: refetchData,
     error,
   } = useQuery(GET_DETAIL, {
-    fetchPolicy: "network-only",
     variables: {
       input: {
         agentId: ID,
@@ -184,6 +202,7 @@ const ViewDeliveryBoys = () => {
         type: filters?.type || "SETTLED",
       },
     },
+    fetchPolicy: "network-only",
     skip: !ID,
   });
 
@@ -202,7 +221,31 @@ const ViewDeliveryBoys = () => {
     }
   }, [ID, detail]);
 
-  console.log("AGENT== ", data);
+  console.log("AGENT == ", data);
+
+  const [updateAvailability] = useMutation(UPDATE_AVAILABILITY);
+  const handleAvailability = async () => {
+
+    try {
+      const response = await updateAvailability({
+        variables: {
+          input: {
+            agentId:data?._id,
+            isAvailable: !data?.isAvailable,
+          },
+        },
+      });
+      console.log("RESPONSE AVAILABLE = ",response)
+      if (response?.data?.updateAvailableStatusByAdmin) {
+        toast.success(response?.data?.updateAvailableStatusByAdmin.message);
+        handleToggle();
+      }
+    } catch (error: any) {
+      console.log("ERROR = ", error);
+      toast.error(error);
+    }
+    refetchData();
+  };
 
   const [exportSettlements] = useMutation(EXPORT_SETTLEMENTS);
 
@@ -214,10 +257,10 @@ const ViewDeliveryBoys = () => {
         variables: {
           input: {
             agentId: data?._id,
-            endDate: null,
-            page: null,
-            size: null,
-            startDate: null,
+            page: currentPage,
+            size: pageSize,
+            startDate: filters?.startDate,
+            endDate: filters?.endDate,
           },
         },
       });
@@ -269,6 +312,12 @@ const ViewDeliveryBoys = () => {
     { text: "Delivery", link: null },
     { text: "Delivery Boys", link: `/delivery-boys` },
   ];
+
+  useEffect(() => {
+    setView(false);
+    setDATE("");
+  }, [TAB]);
+
   return (
     <>
       <div className="page-content">
@@ -278,12 +327,11 @@ const ViewDeliveryBoys = () => {
             currentPage="Details page"
           /> */}
           <h4>Detail Page</h4>
-          <Row  
+          <Row
           // style={{ padding: "12px" }}
-          
           >
             <Col
-            xs={12}
+              xs={12}
               lg={6}
               style={{ padding: 6 }}
             >
@@ -367,18 +415,22 @@ const ViewDeliveryBoys = () => {
                             <p
                               className="mb-0 "
                               style={{
-                                cursor: "pointer",
                                 width: "200px",
                                 display: "flex",
                                 alignItems: "end",
                                 gap: 6,
-                                fontWeight: "bold",
                                 zIndex: 900,
                               }}
-                              onClick={() => handleImageClick(data?.licence?.fileURL || "")}
                             >
-                              View Driving Licence
-                              <Iconify icon="mingcute:upload-line" />
+                              Driving Licence :
+                              <span
+                                style={{
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => handleImageClick(data?.licence?.fileURL || "")}
+                              >
+                                <Iconify icon="mingcute:upload-line" />
+                              </span>
                             </p>
                           </div>
                           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -386,9 +438,26 @@ const ViewDeliveryBoys = () => {
                             <p className="mb-0"> {data?.userID || "nill"}</p>
                             <p className="mb-0"> {`+968 ${data?.contactNumber}` || "nill"}</p>
                             <p className="mb-0"> {data?.agentType || "nill"}</p>
-                            <div style={{ display: "flex", alignItems: "center", scale: ".9" }}></div>
                           </div>
                         </div>
+                        <FormGroup
+                          switch
+                          className="mt-2"
+                        >
+                          <Input
+                            type="switch"
+                            // switch="success"
+                            style={{ width: "40px", height: "20px" }}
+                            checked={data?.isAvailable}
+                            onChange={handleToggle}
+                          />
+                          <Label
+                            style={{ marginTop: "3px", marginLeft: "10px" }}
+                            check
+                          >
+                            {data?.isAvailable === true ? "Available" : "Not Available"}
+                          </Label>
+                        </FormGroup>
                       </div>
                     </div>
                   </CardBody>
@@ -420,13 +489,13 @@ const ViewDeliveryBoys = () => {
                   </div>
                   <div style={{ display: "flex", gap: 10 }}>
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "150px" }}>
-                      <p className="mb-0">Total Settlement :</p>
                       <p className="mb-0">Cash In Hand :</p>
+                      <p className="mb-0">Total Settlement :</p>
                       <p className="mb-0">Last Settlement Date :</p>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                      <p className="mb-0"> {data?.wallet?.totalSettlement || 0}</p>
                       <p className="mb-0"> {data?.wallet?.cashInHand || 0}</p>
+                      <p className="mb-0"> {data?.wallet?.totalSettlement || 0}</p>
                       <p className="mb-0">
                         {" "}
                         {data?.wallet?.lastSettlementDate
@@ -449,7 +518,7 @@ const ViewDeliveryBoys = () => {
                   className={TAB === false ? "tab-button active" : "tab-button"}
                   onClick={() => setTAB(false)}
                 >
-                  SETTLEMENTS
+                  Settlements
                 </NavLink>
               </NavItem>
               <NavItem>
@@ -457,11 +526,19 @@ const ViewDeliveryBoys = () => {
                   className={TAB === true ? "tab-button active" : "tab-button"}
                   onClick={() => setTAB(true)}
                 >
-                  ORDERS
+                  Orders
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={TAB === undefined ? "tab-button active" : "tab-button"}
+                  onClick={() => setTAB(undefined)}
+                >
+                  Returns
                 </NavLink>
               </NavItem>
             </Nav>
-            {!TAB ? (
+            {TAB === false ? (
               detailLoading ? (
                 <Loader />
               ) : data && data?.settlementHistory?.length > 0 ? (
@@ -475,7 +552,7 @@ const ViewDeliveryBoys = () => {
                         padding: "10px 0",
                       }}
                     >
-                      <h4>Settlement History</h4>
+                      <h5>Settlement History</h5>
                       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                         {data?._id && (
                           <SettlementExcelList
@@ -526,13 +603,13 @@ const ViewDeliveryBoys = () => {
                         <thead>
                           <tr>
                             <th>#</th>
-                            <th>Amount</th>
-                            <th>Initial CIH</th>
-                            <th>Current CIH</th>
-                            <th>Type</th>
-                            <th>Settlement Date</th>
+                            <th>Settled Amount</th>
+                            <th>Initial Balance</th>
+                            <th>Balance</th>
+                            {/* <th>Type</th> */}
+                            <th>Settled Date</th>
                             <th>Remarks</th>
-                            {/* <th style={{ width: "50px" }}>Action</th> */}
+                            {/* <th style={{ width: "100px" }}>Action</th> */}
                           </tr>
                         </thead>
                         <tbody>
@@ -544,7 +621,7 @@ const ViewDeliveryBoys = () => {
                                 <td>{item.amount}</td>
                                 <td>{item.totalAmount}</td>
                                 <td>{item.balance}</td>
-                                <td>{item.type}</td>
+                                {/* <td>{item.type}</td> */}
                                 <td>{formattedDate.replace(/\//g, "-")}</td>
                                 <td>{item.remarks}</td>
                                 {/* {data.lastSettlementID === item._id ? (
@@ -619,28 +696,45 @@ const ViewDeliveryBoys = () => {
                   </Row>
                 </>
               ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginTop: "20px",
-                  }}
-                >
-                  
-                  <p>No Settlements</p>
-                </div>
+                <p>No Settlements</p>
+              )
+            ) : TAB ? (
+              !view ? (
+                <AssignedOrderBundle
+                  agentId={ID}
+                  setView={setView}
+                  setDATE={setDATE}
+                />
+              ) : (
+                <AssignedOrders
+                  agentId={ID}
+                  DATE={DATE}
+                />
+              )
+            ) : TAB === undefined ? (
+              !view ? (
+                <AssignedReturnBundle
+                  agentId={ID}
+                  setView={setView}
+                  setDATE={setDATE}
+                />
+              ) : (
+                <AssignedOrders
+                  agentId={ID}
+                  DATE={DATE}
+                />
               )
             ) : (
-              <AssignedOrders
-                TAB={TAB}
-                agentId={ID}
-              />
+              <p>No Returns Assigned</p>
             )}
           </Row>
         </Container>
       </div>
+      <Confirmation
+        isOpen={openAvailable}
+        toggle={handleToggle}
+        submit={handleAvailability}
+      />
     </>
   );
 };

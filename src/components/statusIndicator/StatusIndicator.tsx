@@ -1,73 +1,93 @@
-import React from 'react';
-
-
+import { capitalize } from "lodash";
+import React from "react";
+import { Badge } from "reactstrap";
 
 interface StatusIndicatorProps {
-    status: string | boolean;
-    variant?: "chip" | "default";
+  status: string | boolean | undefined;
+  variant?: "chip" | "default";
 }
 
 const StatusIndicator: React.FC<StatusIndicatorProps> = ({ status, variant = "default" }) => {
+  const getStatusColor = (status: string | boolean | undefined): string => {
+    switch (status) {
+      case "Active":
+        return "#005E2B";
+      case "Blocked":
+        return "#E30613";
+      case "CANCELED":
+        return "#E30613";
+      case "Pending":
+        return "#F97316";
+      case "PENDING":
+        return "#F97316";
+      case "SHIPPED":
+        return "#F97316";
+      case "IN_PROGRESS":
+        return "#4947D0";
+      case "Paid":
+        return "#005E2B";
+      case "Approved":
+        return "#005E2B";
+      case "UNDER_VERIFICATION":
+        return "#ff9500";
+      case "DELIVERED":
+        return "#005E2B";
+      case "COMPLETED":
+        return "#005E2B";
+      case "Completed":
+        return "#005E2B";
+      case "Rejected":
+        return "#E30613";
+      case "POSTPONED":
+        return "#5a6f05";
 
-    const getStatusColor = (status: string | boolean): string => {
 
-        switch (status) {
-            case 'ACTIVE':
-                return 'green';
-            case 'BLOCKED':
-                return 'red';
-            case 'PENDING':
-                return '#f6ff00';
-            case 'PAID':
-                return 'green';
-            case 'APPROVED':
-                return 'green';
-            case 'UNDER_VERIFICATION':
-                return '#ff9500';
-            case 'COMPLETED':
-                return 'green';
-            case 'REJECTED':
-                return 'RED';
-            default:
-                return '';
-        }
-    };
 
-    const getButtonStyle = (status: string | boolean): React.CSSProperties => {
-        return {
-            border: `1px solid ${getStatusColor(status)}`,
-            color: getStatusColor(status),
-            borderRadius: '10px',
-            padding: '2px 8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: "center",
-            minWidth: "100px",
-            maxWidth: "auto"
-        };
-    };
 
-    if (variant === "chip") {
-        return (
-            <div style={getButtonStyle(status)}>
-                {status.toString()}
-            </div>
-        );
+      default:
+        return "black";
     }
+  };
 
-    return (
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <div
-                style={{
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
-                    background: getStatusColor(status),
-                }}
-            />
-            {status.toString()}
-        </div>
-    );
+  const getButtonStyle = (status: string | boolean): React.CSSProperties => {
+    return {
+      border: `1px solid ${getStatusColor(status)}`,
+      color: getStatusColor(status),
+      borderRadius: "10px",
+      padding: "2px 8px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      minWidth: "100px",
+      maxWidth: "auto",
+    };
+  };
+
+  if (variant === "chip" && status) {
+    return <div style={getButtonStyle(status)}>{capitalize(status?.toString())}</div>;
+  }
+
+  return (
+    // <Badge
+    //   //   color={getStatusColor(status)}
+    //   pill
+    //   style={{ margin: "auto auto", padding: "5px 10px", fontSize: "12px" }}
+    //   className={`bg-${getStatusColor(status)}`}
+    // >
+    <p
+      style={{
+        background: getStatusColor(status),
+        color: "#fff",
+        padding: "3px 15px",
+        borderRadius: 20,
+        fontSize: "12px",
+        margin: 0,
+      }}
+    >
+      {status && capitalize(status.toString().replace("_", " "))}
+    </p>
+    // </Badge>
+  );
 };
 
 export default StatusIndicator;

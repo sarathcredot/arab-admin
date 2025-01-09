@@ -271,7 +271,7 @@ query GetAllCategoriesOfVendorByAdmin($input: vendorIdInput!) {
                       <td>{category.fullCategoryName}</td>
 
                       <td>
-                        <StatusIndicator status={category?.isBlocked == false ? "ACTIVE" : "BLOCKED"} />
+                        <StatusIndicator status={category?.isBlocked == false ? "Active" : "Blocked"} />
 
                       </td>
                     </tr>

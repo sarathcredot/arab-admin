@@ -119,7 +119,7 @@ const BrandList: React.FC = () => {
                 className={activeTab === null ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(null)}
               >
-                ALL
+                All
               </NavLink>
             </NavItem>
             <NavItem>
@@ -127,7 +127,7 @@ const BrandList: React.FC = () => {
                 className={activeTab === false ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(false)}
               >
-                ACTIVE
+                Active
               </NavLink>
             </NavItem>
             <NavItem>
@@ -135,7 +135,7 @@ const BrandList: React.FC = () => {
                 className={activeTab === true ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(true)}
               >
-                BLOCKED
+                Blocked
               </NavLink>
             </NavItem>
           </Nav>
@@ -183,9 +183,9 @@ const BrandList: React.FC = () => {
                               <tr>
                                 <th>No</th>
                                 <th>Brand Name</th>
-                                <th>Logo</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <th style={{width:"120px", textAlign:"center"}}>Logo</th>
+                                <th style={{width:"120px", textAlign:"center"}}>Status</th>
+                                <th style={{width:"120px", textAlign:"center"}}>Action</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -196,21 +196,29 @@ const BrandList: React.FC = () => {
 
                                   <td>
                                     {brand.logo && (
+                                    <div style={{ display: "flex", alignItems: "center",justifyContent:"center" }}>
                                       <img
                                         src={brand.logo.fileURL}
                                         alt={`Logo for ${brand.brandName}`}
                                         style={{ width: "50px", height: "50px" }}
-                                      />
-                                    )}
+                                        />
+                                    </div>
+                                      )}
                                   </td>
                                   <td
                                   >
-                                    <StatusIndicator status={brand.isBlocked ? "BLOCKED" : "ACTIVE"} />
+                                    <div style={{ display: "flex", alignItems: "center",justifyContent:"center" }}>
+                                    <StatusIndicator status={brand.isBlocked ? "Blocked" : "Active"} />
+                                    </div>
 
                                   </td>
                                   <td>
                                     <Link to={`/brands/${brand._id}`}>
                                       <Button
+                                      style={{
+                                        display:"block",
+                                        margin:"auto"
+                                      }}
                                         size="sm"
                                         color="primary"
                                       >

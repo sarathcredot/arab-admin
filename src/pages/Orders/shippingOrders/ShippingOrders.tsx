@@ -69,7 +69,7 @@ const ShippingOrders = () => {
                           toggle("2");
                         }}
                       >
-                        PENDING
+                        Pending
                       </NavLink>
                     </NavItem>
                     <NavItem>
@@ -79,7 +79,7 @@ const ShippingOrders = () => {
                           toggle("3");
                         }}
                       >
-                        PACKAGE IN PROGRESS
+                        Package In Progress
                       </NavLink>
                     </NavItem>
                     <NavItem>
@@ -89,7 +89,7 @@ const ShippingOrders = () => {
                           toggle("4");
                         }}
                       >
-                        SHIPPED
+                        Shipped
                       </NavLink>
                     </NavItem>
                     <NavItem>
@@ -99,7 +99,7 @@ const ShippingOrders = () => {
                           toggle("5");
                         }}
                       >
-                        DELIVERED
+                        Delivered
                       </NavLink>
                     </NavItem>
                     <NavItem>
@@ -109,7 +109,7 @@ const ShippingOrders = () => {
                           toggle("6");
                         }}
                       >
-                        CANCELED
+                        Canceled
                       </NavLink>
                     </NavItem>
                     <NavItem>
@@ -119,7 +119,7 @@ const ShippingOrders = () => {
                           toggle("1");
                         }}
                       >
-                        ALL
+                        All
                       </NavLink>
                     </NavItem>
                   </Nav>

@@ -54124,7 +54124,7 @@ body[data-layout=horizontal][data-layout-size=boxed] .container-fluid, body[data
   --bs-header-item-sub-color: var(--bs-secondary-color);
   --bs-sidebar-bg: #fbfaff;
   --bs-sidebar-menu-item-color: #545a6d;
-  --bs-sidebar-menu-sub-item-color: #545a6d;
+  --bs-sidebar-menu-sub-item-color: #f1f1f1;
   --bs-sidebar-menu-item-icon-color: #545a6d;
   --bs-sidebar-menu-item-icon-effact-color: rgba(84, 90, 109, 0.2);
   --bs-sidebar-menu-item-hover-color: #5156be;

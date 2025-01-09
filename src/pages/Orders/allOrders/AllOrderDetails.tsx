@@ -14,6 +14,7 @@ import OrderDetails from "src/components/orders/OrderProductDetails";
 import { formatCurrency } from "src/utils/formatCurrency";
 import OrderProductsDetails from "src/components/orders/OrderProductDetails";
 import OrderShippingAddress from "src/components/orders/OrderShippingAddress";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
 interface ShippingAddress {
   _id: string;
@@ -380,28 +381,7 @@ const ALlOrderDetails = () => {
                             <p className="form-control-static">
                               {order?.paymentMode}
                             </p>
-                            <div
-                              style={{
-                                display: "flex",
-                                gap: "10px",
-                                alignItems: "center",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  width: "8px",
-                                  height: "8px",
-                                  borderRadius: "50%",
-                                  background:
-                                    order?.orderStatus === "PENDING"
-                                      ? "#ff9500"
-                                      : order?.orderStatus === "IN_PROGRESS"
-                                      ? "#fff200"
-                                      : "green",
-                                }}
-                              />
-                              {order?.orderStatus.replace("_", " ")}
-                            </div>
+                             <StatusIndicator variant="default" status={order?.orderStatus} />
                           </div>
                         </div>
                       </div>

@@ -186,7 +186,7 @@ const VendorList: React.FC = () => {
                 className={activeTab === undefined ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(undefined)}
               >
-                ALL
+                All
               </NavLink>
             </NavItem>
             <NavItem>
@@ -194,7 +194,7 @@ const VendorList: React.FC = () => {
                 className={activeTab === false ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(false)}
               >
-                PENDING
+                Pending
               </NavLink>
             </NavItem>
             <NavItem>
@@ -202,7 +202,7 @@ const VendorList: React.FC = () => {
                 className={activeTab === true ? "tab-button active" : "tab-button"}
                 onClick={() => setActiveTab(true)}
               >
-                VERIFIED
+                Verified
               </NavLink>
             </NavItem>
 
@@ -270,9 +270,9 @@ const VendorList: React.FC = () => {
                                   <th>Mobile Number</th>
                                   <th>Email</th>
                                   <th>Company Name</th>
-                                  <th>Kyc Status</th>
+                                  <th>KYC Status</th>
                                   <th>Status</th>
-                                  <th>Action</th>
+                                  <th style={{width:"100px"}}>Action</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -283,17 +283,24 @@ const VendorList: React.FC = () => {
                                     <td>{vendor.mobileNumber}</td>
                                     <td>{vendor.email}</td>
                                     <td>{vendor.companyName}</td>
-                                    <td >
-                                      <StatusIndicator status={vendor.isKycCompleted === true ? "COMPLETED" : "PENDING"} />
+                                    <td className="">
+                                    <div style={{ display: "flex", alignItems: "center",justifyContent:"center" }}>
+                                      <StatusIndicator status={vendor.isKycCompleted === true ? "Completed" : "Pending"} />
+                                    </div>
                                     </td>
                                     <td
                                     >
-                                      <StatusIndicator status={vendor.isBlocked === true ? "BLOCKED" : "ACTIVE"} />
-
+                                    <div style={{ display: "flex", alignItems: "center",justifyContent:"center" }}>
+                                      <StatusIndicator status={vendor?.isBlocked === true ? "Blocked" : "Active"} />
+                                    </div>
                                     </td>
                                     <td>
                                       <Link to={`/vendors/view?id=${vendor._id}`}>
                                         <Button
+                                         style={{
+                                          display: "block",
+                                          margin: "auto",
+                                        }}
                                           color="primary"
                                           size="sm">
                                           View

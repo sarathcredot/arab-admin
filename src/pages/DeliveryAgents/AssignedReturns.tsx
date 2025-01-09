@@ -3,13 +3,11 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Button, Col, Collapse, Row, Table } from "reactstrap";
 import CustomButton from "src/components/Common/CustomButton";
-import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 import DynamicFilter from "src/components/filter/DynamicFilter";
 import ExportExcelList from "src/components/orders/ExportExcelList";
 import SettlementExcelList from "./ExcelLists/SettlementExcelList";
 import Loader from "src/components/Common/Loader";
 import { Link } from "react-router-dom";
-import { capitalize } from "lodash";
 
 interface Props {
   agentId: string | null;
@@ -42,34 +40,80 @@ interface IOrder {
 
 // assigned orders query
 const GET_ORDERS = gql`
-  query GetAssignedOrderByDeliveryAgent($input: GetAssignedOrderByDeliveryAgentInput) {
-    getAssignedOrderByDeliveryAgent(input: $input) {
-      maxRecords
-      records {
+  query GetAssignedReturnOrderByAgent($input: GetAssignedReturnOrderInput!) {
+  getAssignedReturnOrderByAgent(input: $input) {
+    records {
+      _id
+      userId {
         _id
-        orderId
-        itemId
-        userId
-        productName
-        sellingPrice
-        paymentStatus
-        orderDate
-        shippingStatus
-        deliveryAgentId
-        userName
+        fullName
+      }
+      productId
+      vendorId
+      vendorName
+      orderId
+      itemId
+      productName
+      shortDescription
+      skuId
+      warehouseSkuId
+      returnPeriod
+      mrp
+      sellingPrice
+      shippingCharge
+      paymentMode
+      paymentStatus
+      paymentRemark
+      orderDate
+      shippingStatus
+      shippedDate
+      deliveryDate
+      returnStatus
+      returnUserReason
+      returnAdminComment
+      returnRequestDate
+      returnRejectedDate
+      returnDate
+      refundStatus
+      refundAmount
+      refundRequestDate
+      refundDate
+      refundComment
+      cancelUserReason
+      cancelAdminComment
+      cancelledDate
+      courierId
+      invoiceNumber
+      deliveryAgentId
+      deliveryAgentName
+      returnAddress {
+        firstname
         email
-        mobileNumber
-        houseNumber
+        mobile
         streetName
+        city
+        houseNumber
+        country
+        postCode
         apartment
         suite
         unit
-        city
-        country
-        postCode
+        governorate
+        village
+        governorateID
+        villageID
       }
+      deliveryAssignedOn
+      returnOrderAssignedOn
+      returndeliveryAgentId
+      returndeliveryAgentName
+      
     }
+    totalCount
+    page
+    totalPages
   }
+}
 `;
 
 const EXPORT_ORDERS = gql`
@@ -80,7 +124,7 @@ const EXPORT_ORDERS = gql`
   }
 `;
 
-const AssignedOrders: React.FC<Props> = ({ agentId, DATE }) => {
+const AssignedReturns: React.FC<Props> = ({ agentId, DATE }) => {
   const [orders, setOrders] = useState<IOrder[]>();
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 10;
@@ -230,12 +274,11 @@ const AssignedOrders: React.FC<Props> = ({ agentId, DATE }) => {
                   <th>#</th>
                   <th>Order ID</th>
                   <th>Customer Name</th>
-                  {/* <th>Product Name</th> */}
-                  <th>Address</th>
+                  <th>Product Name</th>
                   <th>Order Date</th>
                   {/* <th>Payment Status</th> */}
-                  <th className="text-center">Status</th>
-                  <th className="text-center">Actions</th>
+                  <th>Delivery Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -246,43 +289,15 @@ const AssignedOrders: React.FC<Props> = ({ agentId, DATE }) => {
                       <td>{index + 1}</td>
                       <td>{item?.itemId}</td>
                       <td>{item?.userName}</td>
-                      {/* <td>
-                        {item?.productName?.length > 20 ? `${item?.productName.slice(0, 20)}...` : item?.productName}
-                      </td> */}
                       <td>
-                        {[item?.houseNumber, item?.apartment, item?.streetName, item?.city, item?.postCode]
-                          .filter(Boolean)
-                          .join(", ")
-                          .slice(0, 40) +
-                          ([item?.houseNumber, item?.apartment, item?.streetName, item?.city, item?.postCode]
-                            .filter(Boolean)
-                            .join(", ").length > 40
-                            ? "..."
-                            : "")}
+                        {item?.productName?.length > 20 ? `${item?.productName.slice(0, 20)}...` : item?.productName}
                       </td>
                       <td>{formattedDate.replace(/\//g, "-")}</td>
                       {/* <td>{item?.paymentStatus}</td> */}
-                      <td>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <StatusIndicator
-                            variant="default"
-                            status={item?.shippingStatus}
-                          />
-                        </div>
-                      </td>
+                      <td>{item?.shippingStatus}</td>
                       <td>
                         <Link to={`/shipping-orders/details?orderId=${item?.orderId}&_id=${item?._id}`}>
                           <Button
-                            style={{
-                              display: "block",
-                              margin: "auto",
-                            }}
                             color="primary"
                             size="sm"
                           >
@@ -357,4 +372,4 @@ const AssignedOrders: React.FC<Props> = ({ agentId, DATE }) => {
   );
 };
 
-export default AssignedOrders;
+export default AssignedReturns;

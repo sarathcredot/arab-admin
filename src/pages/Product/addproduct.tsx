@@ -618,10 +618,10 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                                 }
                               >
                                 <option value="">Select an option</option>
-                                <option value="PENDING">PENDING</option>
-                                <option value="UNDER_VERIFICATION">UNDER VERIFICATION</option>
-                                <option value="APPROVED">APPROVED</option>
-                                <option value="REJECTED">REJECTED</option>
+                                <option value="PENDING">Pending</option>
+                                <option value="UNDER_VERIFICATION">Under Verification</option>
+                                <option value="APPROVED">Approved</option>
+                                <option value="REJECTED">Rejected</option>
                               </Input>
                             )}
                           />

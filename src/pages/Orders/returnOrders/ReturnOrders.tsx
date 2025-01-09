@@ -59,7 +59,7 @@ const ReturnOrders = () => {
                         toggle("2");
                       }}
                     >
-                      PENDING
+                      Pending
                     </NavLink>
                   </NavItem>
                   <NavItem>
@@ -69,7 +69,7 @@ const ReturnOrders = () => {
                         toggle("3");
                       }}
                     >
-                      APPROVED
+                      Approved
                     </NavLink>
                   </NavItem>
                   <NavItem>
@@ -79,7 +79,7 @@ const ReturnOrders = () => {
                         toggle("4");
                       }}
                     >
-                      REJECTED
+                      Rejected
                     </NavLink>
                   </NavItem>
                   <NavItem>
@@ -89,7 +89,7 @@ const ReturnOrders = () => {
                         toggle("1");
                       }}
                     >
-                      ALL
+                      All
                     </NavLink>
                   </NavItem>
                 </Nav>

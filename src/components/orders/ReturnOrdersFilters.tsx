@@ -216,8 +216,8 @@ const ReturnOrdersFilters: React.FC<AllOrderFiltersProps> = ({ onSubmit }) => {
                                     onChange={handleChange}
                                 >
                                     <option value="">All</option>
-                                    <option value="PENDING">PENDING</option>
-                                    <option value="COMPLETED">COMPLETED</option>
+                                    <option value="PENDING">Pending</option>
+                                    <option value="COMPLETED">Completed</option>
                                 </Input>
                             </FormGroup>
                         </div>

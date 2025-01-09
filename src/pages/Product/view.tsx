@@ -429,7 +429,7 @@ const ProductDetails = () => {
                               </label>
                               <p className="form-control-static">
                                 <StatusIndicator
-                                  status={product?.isBlocked ? "BLOCKED" : "ACTIVE"}
+                                  status={product?.isBlocked ? "Blocked" : "Active"}
                                   variant="chip"
                                 />
                               </p>

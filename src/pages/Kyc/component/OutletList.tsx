@@ -152,7 +152,7 @@ function OutletListing() {
               className={activeTab === "UNDER_VERIFICATION" ? "tab-button active" : "tab-button"}
               onClick={() => toggleTab("UNDER_VERIFICATION")}
             >
-              VERIFY
+              Verify
             </NavLink>
           </NavItem>
 
@@ -161,7 +161,7 @@ function OutletListing() {
               className={activeTab === "COMPLETED" ? "tab-button active" : "tab-button"}
               onClick={() => toggleTab("COMPLETED")}
             >
-              COMPLETED
+              Completed
             </NavLink>
           </NavItem>
 
@@ -170,7 +170,7 @@ function OutletListing() {
               className={activeTab === "PENDING" ? "tab-button active" : "tab-button"}
               onClick={() => toggleTab("PENDING")}
             >
-              PENDING
+              Pending
             </NavLink>
           </NavItem>
 
@@ -180,7 +180,7 @@ function OutletListing() {
               className={activeTab === "REJECTED" ? "tab-button active" : "tab-button"}
               onClick={() => toggleTab("REJECTED")}
             >
-              REJECTED
+              Rejected
             </NavLink>
           </NavItem>
 
@@ -224,7 +224,7 @@ function OutletListing() {
                               <th>No</th>
                               <th>Full Name</th>
                               <th>Outlet Name</th>
-                              <th>Kyc Status</th>
+                              <th>KYC Status</th>
                               <th>Status</th>
                               <th>Action</th>
                             </tr>
@@ -237,10 +237,15 @@ function OutletListing() {
                                 <td>{outlet.outletName}</td>
                                 <td
                                 >
+                                  <div style={{ display: "flex", alignItems: "center",justifyContent:"center" }}>
                                   <StatusIndicator status={outlet.isKycCompleted ? "COMPLETED" : "PENDING"} />
+                                  </div>
                                 </td>
                                 <td>
-                                  <StatusIndicator status={outlet?.status} /></td>
+                                  <div style={{ display: "flex", alignItems: "center",justifyContent:"center" }}>
+                                  <StatusIndicator status={outlet?.status} />
+                                </div>
+                                  </td>
                                 <td>
                                   <Link to={`/vendors/view?id=${outlet.vendorId}&&tab=businessoutlet`}>
                                     <Button size="sm" color="primary">
