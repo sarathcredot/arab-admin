@@ -198,8 +198,8 @@ const ALlOrderDetails = () => {
             mimeType
             originalName
           }
-          username
           warehouseSkuId
+          username
           deliveryBoy {
             _id
             fullName
