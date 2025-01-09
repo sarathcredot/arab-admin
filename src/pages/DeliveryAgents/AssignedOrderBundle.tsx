@@ -49,21 +49,14 @@ const AssignedOrderBundle: React.FC<Props> = ({ agentId, setView, setDATE }) => 
   const pageSize = 10;
 
   const [filters, setFilters] = useState({
-    shippingStatus: "",
+    startDate: "",
+    endDate: "",
   });
 
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleCollapse = () => {
     setIsOpen(!isOpen);
-  };
-  const handleFilterSubmit = (formData: any) => {
-    setCurrentPage(0);
-    console.log({ formData });
-
-    setFilters({
-      shippingStatus: formData.shippingStatus,
-    });
   };
 
   const {
@@ -78,7 +71,10 @@ const AssignedOrderBundle: React.FC<Props> = ({ agentId, setView, setDATE }) => 
         _id: agentId,
         page: currentPage,
         size: pageSize,
-        search: (searchTerm && new Date(parseInt(searchTerm)).toISOString()) || "",
+        startDate: filters?.startDate || null,
+        endDate: filters?.endDate || null,
+
+        // search: (searchTerm && new Date(parseInt(searchTerm)).toISOString()) || "",
       },
     },
     skip: !agentId,
@@ -142,12 +138,35 @@ const AssignedOrderBundle: React.FC<Props> = ({ agentId, setView, setDATE }) => 
             display: "flex",
             alignItems: "end",
             justifyContent: "space-between",
-            padding: "10px 0px 15px",
+            padding: "10px 0px",
+            gap: 10,
+            // background: "#f1f1f1",
           }}
         >
           <h5>Orders History Group</h5>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            {/* <SettlementExcelList
+          <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
+            {/* start:  */}
+            <Input
+              type="date"
+              onChange={(e) => {
+                setFilters((prev) => ({
+                  ...prev,
+                  startDate: e.target.value,
+                }));
+              }}
+            />
+            {/* end:  */}
+            <Input
+              type="date"
+              onChange={(e) => {
+                setFilters((prev) => ({
+                  ...prev,
+                  endDate: e.target.value,
+                }));
+              }}
+            />
+          </div>
+          {/* <SettlementExcelList
                 agentId={agentId}
                 name={"ASSIGN_EXPORT"}
               />
@@ -174,9 +193,9 @@ const AssignedOrderBundle: React.FC<Props> = ({ agentId, setView, setDATE }) => 
                 name="Filters"
                 icon="clarity:filter-solid"
               /> */}
-          </div>
         </div>
-        <Input
+
+        {/* <Input
           type="number"
           placeholder="Search by Group ID"
           value={searchTerm}
@@ -185,7 +204,7 @@ const AssignedOrderBundle: React.FC<Props> = ({ agentId, setView, setDATE }) => 
             setSearchTerm(e.target.value);
           }}
           style={{ width: "40%", marginBottom: 15 }}
-        />
+        /> */}
         {ordersDataLoading ? (
           <Loader />
         ) : (orders && orders?.length > 0) || searchTerm ? (
@@ -210,7 +229,7 @@ const AssignedOrderBundle: React.FC<Props> = ({ agentId, setView, setDATE }) => 
                     >
                       Orders Assigned
                     </th>
-                    <th style={{ width: "100px",textAlign:"center" }}>Actions</th>
+                    <th style={{ width: "100px", textAlign: "center" }}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>

@@ -67,6 +67,8 @@ export const DeliveryBoyValidation = yup.object({
   contactNumber: yup.string().required("Phone number is required"),
   userID: yup.string().email("Invalid email address").required("Email is required"),
   agentType: yup.string().required("Agent Type is required"),
+  governorate: yup.string().required("governorate is required"),
+  village: yup.string().required("village is required"),
   password: yup.string().min(6, "password must be 6").required("Please Enter Your Password"),
 });
 export const EditDeliveryBoyValidation = yup.object({
@@ -74,6 +76,8 @@ export const EditDeliveryBoyValidation = yup.object({
   contactNumber: yup.string().required("Phone number is required"),
   userID: yup.string().email("Invalid email address").required("Email is required"),
   agentType: yup.string().required("Agent Type is required"),
+  governorate: yup.string().required("governorate is required"),
+  village: yup.string().required("street is required"),
 });
 
 // settlement validation

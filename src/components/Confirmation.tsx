@@ -40,7 +40,7 @@ const Confirmation = ({ isOpen, toggle, submit }: any) => {
           />
           <CustomButton
             name="Yes"
-            bgColor="#E30613"
+            bgColor="#000"
             width="30%"
             className=" mt-3"
             onClick={() => submit()}

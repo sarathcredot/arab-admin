@@ -15,6 +15,7 @@ import { formatCurrency } from "src/utils/formatCurrency"; import OrderProductsD
 import Iconify from "src/components/iconify";
 import OrderShippingAddress from "src/components/orders/OrderShippingAddress";
 import StatusChip from "src/components/statusIndicator/StatusChip";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
 interface ShippingAddress {
   _id: string;
@@ -337,7 +338,7 @@ const ShippingOrderDetails = () => {
                             }
                             {
                               product?.returnStatus !== "NA" &&
-                              <p className="form-control-static">Return  Status</p>
+                              <p className="form-control-static">Return Status</p>
                             }
                             {
                               product?.refundStatus !== "NA" &&
@@ -358,7 +359,10 @@ const ShippingOrderDetails = () => {
                             <p className="form-control-static">{order?.paymentMode ?? "nill"}</p>
                             {
                               product?.shippingStatus !== "NA" &&
-                              <p className="form-control-static">  <StatusChip status={product?.shippingStatus ?? ""} /></p>
+                              <p className="form-control-static"> 
+                               <StatusChip status={product?.shippingStatus ?? ""} />
+                               {/* <StatusIndicator variant="chip" status={product?.shippingStatus ?? ""} /> */}
+                               </p>
                             }
                             {
                               product?.returnStatus !== "NA" &&
