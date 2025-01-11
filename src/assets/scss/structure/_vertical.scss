@@ -151,7 +151,8 @@
                     a {
                         padding: .4rem 1.5rem .4rem 3.3rem;
                         font-size: .85rem;
-                        color: var(--#{$prefix}sidebar-menu-sub-item-color);
+                        // color: var(--#{$prefix}sidebar-menu-sub-item-color);
+                        color: #9f9f9f; // chenged the sub menu item color
 
                         &:hover {
                             color: var(--#{$prefix}sidebar-menu-item-hover-color);

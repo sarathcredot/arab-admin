@@ -38,6 +38,37 @@
         }
     }
 }
+// : #dc4016},
+div.active-hover{
+    height: 25px;
+    border: 1px solid $success ;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color:$success;
+    cursor: pointer;
+    padding: 10px;
+}
+div.blocked-hover{
+    height: 25px;
+    border: 1px solid $primary ;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color:$primary;
+    cursor: pointer;
+    padding: 10px;
+}
+div.active-hover:hover{
+    background:$success;
+    color:#fff !important;
+}
+div.blocked-hover:hover{
+    background:$primary;
+    color:#fff !important;
+}
 
 // for bubble effect
 .bg-bubbles {

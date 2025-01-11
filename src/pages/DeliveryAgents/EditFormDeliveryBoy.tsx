@@ -13,8 +13,8 @@ interface IAgent {
   fullName: string;
   contactNumber: string;
   agentType: string;
-  isActive: boolean |string;
-  isAvailable: boolean |string;
+  isActive: boolean | string;
+  isAvailable: boolean | string;
   password?: string;
   userID: string;
   vendorID: string;
@@ -35,6 +35,15 @@ interface IVendor {
   companyId: string;
   companyName: string;
   companyStatus: string;
+}
+interface ILocation {
+  name: string;
+  _id: string;
+  villages: IVillages[];
+}
+interface IVillages {
+  _id: string;
+  name: string;
 }
 
 interface Props {
@@ -68,9 +77,24 @@ const GET_VENDOR_FOR_SELECT = gql`
   }
 `;
 
+const GET_LOCATIONS = gql`
+  query GetLocationsData {
+    getLocationsData {
+      name
+      _id
+      villages {
+        _id
+        name
+      }
+    }
+  }
+`;
+
 const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childrefetch, data }) => {
   const [editDeliveryBoy] = useMutation(EDIT_DELIVERY_BOY);
   const [vendorData, setVendorData] = useState<IVendor[]>([]);
+  const [locations, setLocations] = useState<ILocation[]>([]);
+  const [villages, setVillages] = useState<IVillages[]>([]);
   console.log("vendor data==", vendorData);
   const formik = useFormik({
     enableReinitialize: true,
@@ -81,6 +105,10 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
       agentType: "",
       userID: "",
       vendorID: "",
+      governorate: "",
+      governorateID: "",
+      village: "",
+      villageID: "",
       isActive: "",
       isAvailable: "",
       image: null,
@@ -93,6 +121,13 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
   });
 
   useEffect(() => {
+    if (locations) {
+      locations.map((item, index) => {
+        if (item._id === data.governorateID) {
+          setVillages(item.villages);
+        }
+      });
+    }
     formik.setValues({
       fullName: data?.fullName || "",
       contactNumber: data?.contactNumber || "",
@@ -100,6 +135,10 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
       agentType: data?.agentType || "",
       userID: data?.userID || "",
       vendorID: data?.vendorID || null,
+      governorate: data?.governorate,
+      governorateID: data?.governorateID,
+      village: data?.village,
+      villageID: data?.villageID,
       isActive: data?.isActive?.toString(),
       isAvailable: data?.isAvailable?.toString(),
       image: null,
@@ -118,6 +157,10 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
           agentType: values?.agentType,
           userID: values?.userID,
           vendorID: values?.vendorID,
+          governorate: values?.governorate,
+          governorateID: values?.governorateID,
+          village: values?.village,
+          villageID: values?.villageID,
           isActive: JSON.parse(values?.isActive),
           isAvailable: JSON.parse(values?.isAvailable),
         },
@@ -142,8 +185,7 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
         toggle();
         resetForm();
       }
-
-      return toggle();
+      console.log("RESPONSE = ", response);
     } catch (error: any) {
       toast.error(error.message);
       console.log(error.message);
@@ -171,7 +213,17 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
       setVendorData(vendorDataResponse.getAllVendorsRecordsByAdmin.records);
     }
   }, [vendorDataResponse]);
-  console.log("VALUES = ",formik?.values)
+
+  const { error: locationError, data: locationsData } = useQuery(GET_LOCATIONS, { fetchPolicy: "network-only" });
+  useEffect(() => {
+    if (locationsData && locationsData?.getLocationsData) {
+      setLocations(locationsData?.getLocationsData);
+    }
+  }, [locationsData]);
+
+  console.log("LOCATIONS = ", locations);
+  console.log("VILLAGES = ", villages);
+  console.log("VALUES = ", formik?.values);
   return (
     <>
       <Modal
@@ -290,6 +342,91 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
               {formik.touched.userID && formik.errors.userID && (
                 <div className="text-danger">{formik.errors.userID}</div>
               )}
+            </FormGroup>
+            <FormGroup>
+              <div>
+                <Label className="form-label pt-2">Governorate</Label>
+                <Input
+                  name="governorateID"
+                  placeholder="Select Governorate"
+                  type="select"
+                  value={formik?.values?.governorateID}
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                    console.log("TARGET = ", e.target);
+                    locations.map((item) => {
+                      if (item._id === e.target.value) {
+                        setVillages(item.villages);
+
+                        formik.setFieldValue("governorate", item.name || "");
+                        formik.setFieldValue("villageID", "");
+                        formik.setFieldValue("village", "");
+                      }
+                    });
+                  }}
+                  onBlur={formik.handleBlur}
+                  defaultValue={""}
+                >
+                  <option
+                    value={""}
+                    disabled
+                  >
+                    Select Governorate
+                  </option>
+                  {locations &&
+                    locations?.map((item, index) => (
+                      <option
+                        key={index}
+                        value={item?._id}
+                      >
+                        {item?.name}
+                      </option>
+                    ))}
+                </Input>
+                {formik.touched.governorate && formik.errors.governorate && (
+                  <div className="text-danger">{formik.errors.governorate}</div>
+                )}
+              </div>
+            </FormGroup>
+            <FormGroup>
+              <div>
+                <Label className="form-label pt-2">Street</Label>
+                <Input
+                  name="villageID"
+                  placeholder="Select Street"
+                  type="select"
+                  value={formik.values?.villageID}
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                    villages.map((item) => {
+                      if (item._id === e.target.value) {
+                        formik.setFieldValue("village", item.name || "");
+                      }
+                    });
+                  }}
+                  onBlur={formik.handleBlur}
+                  defaultValue={""}
+                  disabled={!villages.length}
+                >
+                  <option
+                    value=""
+                    disabled
+                  >
+                    Select Street
+                  </option>
+                  {villages?.map((item, index) => (
+                    <option
+                      key={index}
+                      value={item?._id}
+                    >
+                      {item?.name}
+                    </option>
+                  ))}
+                </Input>
+                {formik.touched.village && formik.errors.village && (
+                  <div className="text-danger">{formik.errors.village}</div>
+                )}
+              </div>
             </FormGroup>
             <FormGroup>
               <div>

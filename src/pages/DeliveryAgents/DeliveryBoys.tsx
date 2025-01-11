@@ -32,6 +32,7 @@ interface IAgent {
   contactNumber: string;
   agentType: string;
   isActive: Boolean;
+  isAvailable: Boolean;
   vendorID: String;
   password: String;
 }
@@ -49,6 +50,7 @@ const GET_ALL_AGENT = gql`
         password
         agentType
         isActive
+        isAvailable
         vendorID
         wallet {
           cashInHand
@@ -259,6 +261,7 @@ const DeliveryBoys: React.FC = () => {
                                 <th>Full Name</th>
                                 <th>Mobile Number</th>
                                 <th>Agent Type</th>
+                                <th style={{ width: "100px" }}>Availability</th>
                                 <th style={{ width: "100px" }}>Status</th>
                                 <th style={{ width: "100px" }}>Action</th>
                               </tr>
@@ -271,6 +274,20 @@ const DeliveryBoys: React.FC = () => {
                                   <td>{agent.fullName}</td>
                                   <td>{agent.contactNumber}</td>
                                   <td>{agent.agentType}</td>
+                                  <td>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                      }}
+                                      >
+                                      <StatusIndicator
+                                        variant="default"
+                                        status={agent?.isAvailable === true ? "YES" : "NO"}
+                                      />
+                                    </div>
+                                  </td>
                                   <td>
                                     <div
                                       style={{
