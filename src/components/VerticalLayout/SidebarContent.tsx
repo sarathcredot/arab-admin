@@ -20,6 +20,7 @@ import { TbTruckDelivery } from "react-icons/tb";
 import { MdCategory, MdOutlineShoppingBag } from "react-icons/md";
 import { MdEditAttributes } from "react-icons/md";
 import { MdDomainVerification } from "react-icons/md";
+import { RiCoupon2Line } from "react-icons/ri";
 import { BiSolidBookContent } from "react-icons/bi";
 import { IoMdSettings } from "react-icons/io";
 import { LuShoppingBag } from "react-icons/lu";
@@ -455,6 +456,17 @@ const SidebarContent = (props: any) => {
                   </li>
                 </ul>
               )}
+            </li>
+            {/* COUPONS */}
+            <li className="mt-3 li-sideBar">
+              <Link
+                to="/coupons"
+                className=""
+              >
+                <RiCoupon2Line />
+
+                <span>{props.t("Coupons")}</span>
+              </Link>
             </li>
 
             <li className="mt-3 li-sideBar">

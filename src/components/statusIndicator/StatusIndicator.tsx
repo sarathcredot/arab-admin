@@ -20,6 +20,8 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({ status, variant = "de
         return "#E30613";
       case "CANCELED":
         return "#E30613";
+      case "Suspended":
+        return "#E30613";
       case "Pending":
         return "#f0ad4e";
       case "PENDING":

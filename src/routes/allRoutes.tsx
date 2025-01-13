@@ -153,6 +153,7 @@ import PageNotFound from "src/pages/Page404";
 import DeliveryBoys from "src/pages/DeliveryAgents/DeliveryBoys";
 import ViewDeliveryBoys from "src/pages/DeliveryAgents/ViewDeliveryBoys";
 import SettlementPage from "src/pages/Settlements/SettlementPage";
+import Coupons from "src/pages/Coupons";
 interface RouteProps {
   path: string;
   component: any;
@@ -160,6 +161,40 @@ interface RouteProps {
 }
 
 const adminRoutes: Array<RouteProps> = [
+
+
+  { path: "/1", component: <Inbox /> },
+  { path: "/2", component: <EmailRead /> },
+  { path: "/3", component: <InvoiceList /> },
+  { path: "/4", component: <InvoiceDetails /> },
+  { path: "/5", component: <ContactsGrid /> },
+  { path: "/6", component: <ContactsList /> },
+  { path: "/7", component: <ContactsProfile /> },
+  { path: "/8", component: <PageStarter /> },
+  { path: "/9", component: <PageMaintenance /> },
+  { path: "/10", component: <PageTimeline /> }, // this was track the timlines for updations
+  { path: "/11", component: <PageFaqs /> },
+  { path: "/12", component: <PagePricing /> },
+  { path: "/13", component: <Error404 /> },
+  { path: "/14", component: <Error500 /> },
+  { path: "/15", component: <UiAlert /> },
+  { path: "/16", component: <UiButton /> },
+  { path: "/17", component: <UiModal /> },
+  { path: "/18", component: <UiImages /> },
+  { path: "/19", component: <UiOffCanvas/> },
+  { path: "/20", component: <UiPlaceholders/> },
+  { path: "/21", component: <UiColors/> },
+  { path: "/22", component: <Notifications/> },
+  { path: "/23", component: <IconDripicons/> },
+  { path: "/24", component: <IconFontawesome/> },
+
+
+
+
+
+
+
+
   //User Profile
   { path: "/profile", component: <AdminProfile /> },
 
@@ -226,6 +261,10 @@ const adminRoutes: Array<RouteProps> = [
   { path: "/refund-orders/details", component: <RefundOrderDetails /> },
 
   { path: "/settings", component: <Settings /> },
+  
+  // COUPONS
+
+  { path: "/coupons", component: <Coupons /> },
 
   { path: "*", component: <PageNotFound /> },
 ];
