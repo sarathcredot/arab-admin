@@ -14,7 +14,7 @@ const SUSPEND_COUPON = gql`
   }
 `;
 
-const SuspendCoupon = ({ isOpen, toggle, isActive, couponID, refetch }: any) => {
+const SuspendCoupon = ({ isOpen, toggle, isActive, setCouponID, couponID, refetch }: any) => {
   const [suspendCoupon] = useMutation(SUSPEND_COUPON);
 
   const submit = async () => {
@@ -30,6 +30,7 @@ const SuspendCoupon = ({ isOpen, toggle, isActive, couponID, refetch }: any) => 
       if (response?.data?.adminSuspendTheCupone?.status) {
         toast.success(response?.data?.adminSuspendTheCupone?.msg);
         refetch();
+        setCouponID("");
         toggle();
       }
       console.log("RESPONSE = ", response);

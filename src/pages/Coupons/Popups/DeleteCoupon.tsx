@@ -14,7 +14,7 @@ const DELETE_COUPON = gql`
 }
 `;
 
-const DeleteCoupon = ({ isOpen, toggle, couponID, refetch }: any) => {
+const DeleteCoupon = ({ isOpen, toggle,setCouponID, couponID, refetch }: any) => {
   const [deleteCoupon] = useMutation(DELETE_COUPON);
 
   const submit = async () => {
@@ -28,6 +28,7 @@ const DeleteCoupon = ({ isOpen, toggle, couponID, refetch }: any) => {
       });
       if (response?.data?.adminDeleteTheCoupon?.status) {
         toast.success(response?.data?.adminDeleteTheCoupon?.msg);
+        setCouponID("");
         refetch();
         toggle();
       }

@@ -44,12 +44,47 @@ interface ICouponEdit {
 interface Props {
   isOpen: boolean;
   toggle: () => void;
-  //  IAgent | null | undefined;
   refetch?: () => void;
-  data?: ICouponEdit;
-  // data?: any;
+  couponID: string;
+  setCouponID: any;
 }
 
+const GET_COUPON_DETAIL = gql`
+  query GetOneCouponDetails($input: getOneCouponDetailsInput) {
+    getOneCouponDetails(input: $input) {
+      _id
+      name
+      code
+      description
+      discountType
+      discountValue
+      max_discount
+      minOrderAmount
+      usageLimit
+      orderCount
+      usagePerUserLimit
+      startDate
+      expiryDate
+      isActive
+      userDetailsArrya {
+        _id
+        firstName
+      }
+      productDetailsArrya {
+        _id
+        productName
+      }
+      categoriesDetailsArrya {
+        _id
+        categoryName
+      }
+      brandDeatailsArrya {
+        _id
+        brandName
+      }
+    }
+  }
+`;
 const GET_BRAND = gql`
   query GetAllBrandRecordsByAdmin($input: BrandRecordsFilter) {
     getAllBrandRecordsByAdmin(input: $input) {
@@ -101,14 +136,29 @@ const EDIT_COUPON = gql`
   }
 `;
 
-const EditCouponPopup: React.FC<Props> = ({ isOpen, toggle, refetch, data }) => {
+const EditCouponPopup: React.FC<Props> = ({ isOpen, toggle, refetch,setCouponID, couponID }) => {
   const [editCoupon] = useMutation(EDIT_COUPON);
-
+  const [coupon, setCoupon] = useState<any>();
   const [validBrands, setValidBrands] = useState([]);
   const [validCategories, setValidCategories] = useState([]);
   const [validProducts, setValidProducts] = useState([]);
   const [validUsers, setValidUsers] = useState([]);
 
+  // get coupon detail query
+  const {
+    loading: couponLoading,
+    data: couponDataResponse,
+    refetch: couponRefetch,
+  } = useQuery(GET_COUPON_DETAIL, {
+    fetchPolicy: "network-only",
+    variables: {
+      input: {
+        _id: couponID,
+      },
+    },
+    skip: !couponID,
+  });
+  console.log("COUPON = ", couponDataResponse);
   // get brands query
   const {
     loading: brandLoading,
@@ -197,7 +247,7 @@ const EditCouponPopup: React.FC<Props> = ({ isOpen, toggle, refetch, data }) => 
     try {
       let variables: any = {
         input: {
-          _id: data?._id,
+          _id: couponID,
           name: values?.name,
           code: values?.code,
           description: values?.description,
@@ -226,8 +276,9 @@ const EditCouponPopup: React.FC<Props> = ({ isOpen, toggle, refetch, data }) => 
       if (response?.data?.editCouponsByAdmin?.success) {
         toast.success(response?.data?.editCouponsByAdmin?.message);
         refetch?.();
-        // toggle();
-        // resetForm();
+        toggle();
+        resetForm();
+        setCouponID("")
       }
       console.log("RESPONSE = ", response);
     } catch (error: any) {
@@ -247,28 +298,50 @@ const EditCouponPopup: React.FC<Props> = ({ isOpen, toggle, refetch, data }) => 
   console.log("FORMIK = ", formik.values);
 
   useEffect(() => {
-    if (data) {
-      console.log("DATA = ", data);
+    if (coupon) {
+      console.log("DATA = ", coupon);
       formik.setValues({
-        name: data?.name ?? "",
-        code: data?.code ?? "",
-        description: data?.description ?? "",
-        discountType: data?.discountType ?? "",
-        max_discount: data?.max_discount ?? "",
-        discountValue: data?.discountValue ?? "",
-        minOrderAmount: data?.minOrderAmount ?? "",
-        usageLimit: data?.usageLimit ?? "",
-        usagePerUserLimit: data?.usagePerUserLimit ?? "",
-        orderCount: data?.orderCount ?? "",
-        startDate: moment(data?.startDate).format("YYYY-MM-DD") ?? "",
-        expiryDate: moment(data?.expiryDate).format("YYYY-MM-DD") ?? "",
+        name: coupon?.name ?? "",
+        code: coupon?.code ?? "",
+        description: coupon?.description ?? "",
+        discountType: coupon?.discountType ?? "",
+        max_discount: coupon?.max_discount ?? "",
+        discountValue: coupon?.discountValue ?? "",
+        minOrderAmount: coupon?.minOrderAmount ?? "",
+        usageLimit: coupon?.usageLimit ?? "",
+        usagePerUserLimit: coupon?.usagePerUserLimit ?? "",
+        orderCount: coupon?.orderCount ?? "",
+        startDate: moment(parseInt(coupon?.startDate)).format("YYYY-MM-DD") ?? "",
+        expiryDate: moment(parseInt(coupon?.expiryDate)).format("YYYY-MM-DD") ?? "",
       });
-      setValidBrands(data?.validBrands ?? []);
-      setValidCategories(data?.validCategories ?? []);
-      setValidProducts(data?.validProducts ?? []);
-      setValidUsers(data?.validUsers ?? []);
+      setValidBrands(
+        coupon?.brandDeatailsArrya
+          ? coupon?.brandDeatailsArrya.map((item: any) => ({ label: item?.brandName, value: item?._id }))
+          : []
+      );
+      setValidCategories(
+        coupon?.categoriesDetailsArrya
+          ? coupon?.categoriesDetailsArrya.map((item: any) => ({ label: item?.categoryName, value: item?._id }))
+          : []
+      );
+      setValidProducts(
+        coupon?.productDetailsArrya
+          ? coupon?.productDetailsArrya.map((item: any) => ({ label: item?.productName, value: item?._id }))
+          : []
+      );
+      setValidUsers(
+        coupon?.userDetailsArrya
+          ? coupon?.userDetailsArrya.map((item: any) => ({ label: item?.firstName, value: item?._id }))
+          : []
+      );
     }
-  }, [data]);
+  }, [coupon]);
+
+  useEffect(() => {
+    if (couponDataResponse && couponDataResponse?.getOneCouponDetails) {
+      setCoupon(couponDataResponse?.getOneCouponDetails);
+    }
+  }, [couponDataResponse]);
 
   return (
     <>

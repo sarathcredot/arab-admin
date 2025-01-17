@@ -107,30 +107,6 @@ const Coupons: React.FC = () => {
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [showSuspendModal, setShowSuspendModal] = useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
-  const [editData, setEditData] = useState<ICoupon>({
-    _id: "67849f31af7b05ed7fc77373",
-    name: "private coupon",
-    code: "USERCOUPON123",
-    description: "jt aksdhfks kdjas  sijfsd slkdjfsd skldjfsd sdlkfds sdfsd dskd",
-    orderCount: 0,
-    discountType: "FREE_SHIPPING",
-    discountValue: 0,
-    max_discount: 0,
-    minOrderAmount: 1000,
-    validCategories: null,
-    validProducts: [],
-    validUsers: [
-      {
-        user: "673c243c654d2aad9749d942",
-      },
-    ],
-    validBrands: null,
-    usageLimit: 1,
-    usagePerUserLimit: 1,
-    startDate: "2025-01-13T00:00:00.000Z",
-    expiryDate: "2025-01-30T00:00:00.000Z",
-    isActive: true,
-  });
 
   const [filters, setFilters] = useState({
     startDate: "",
@@ -138,7 +114,6 @@ const Coupons: React.FC = () => {
     isActive: "",
   });
 
-  console.log("edit data = ", editData);
   console.log("couponID = ", couponID);
 
   const toggleAddModal = () => {
@@ -184,6 +159,7 @@ const Coupons: React.FC = () => {
         isActive: filters?.isActive ? (filters?.isActive == "true" ? "true" : "false") : null,
         startDate: filters?.startDate || null,
         expiryDate: filters?.expiryDate || null,
+        search:searchTerm
       },
     },
   });
@@ -277,7 +253,7 @@ const Coupons: React.FC = () => {
                         value={searchTerm}
                         onChange={(e) => {
                           setCurrentPage(0);
-                          setSearchTerm(e.target.value);
+                          setSearchTerm(e.target.value.toUpperCase());
                         }}
                         style={{ width: "50%" }}
                       />
@@ -387,7 +363,7 @@ const Coupons: React.FC = () => {
                                         color="dark"
                                         size="sm"
                                         onClick={() => {
-                                          setEditData(item);
+                                          setCouponID(item?._id);
                                           setShowEditModal(true);
                                         }}
                                       >
@@ -481,7 +457,8 @@ const Coupons: React.FC = () => {
       <EditCouponPopup
         isOpen={showEditModal}
         toggle={toggleEditModal}
-        data={editData}
+        couponID={couponID}
+        setCouponID={setCouponID}
         refetch={couponRefetch}
       />
       <SuspendCoupon
@@ -489,12 +466,14 @@ const Coupons: React.FC = () => {
         toggle={toggleSuspendModal}
         refetch={couponRefetch}
         isActive={couponActive}
+        setCouponID={setCouponID}
         couponID={couponID}
       />
       <DeleteCoupon
         isOpen={showDeleteModal}
         toggle={toggleDeleteModal}
         refetch={couponRefetch}
+        setCouponID={setCouponID}
         couponID={couponID}
       />
     </>

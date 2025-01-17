@@ -37,6 +37,7 @@ import AssignedOrderBundle from "./AssignedOrderBundle";
 import AssignedReturnBundle from "./AssignedReturnBundle";
 import Confirmation from "src/components/Confirmation";
 import AssignedReturns from "./AssignedReturns";
+import noDataSvg from "../../assets/images/noDataSvg.svg";
 
 // Agent Type
 interface ILicence {
@@ -305,15 +306,15 @@ const ViewDeliveryBoys = () => {
       type: "date",
       name: "endDate",
     },
-    {
-      label: "Type",
-      type: "select",
-      name: "type",
-      options: [
-        { value: "SETTLED", label: "SETTLED" },
-        { value: "COLLECTED", label: "COLLECTED" },
-      ],
-    },
+    // {
+    //   label: "Type",
+    //   type: "select",
+    //   name: "type",
+    //   options: [
+    //     { value: "SETTLED", label: "SETTLED" },
+    //     { value: "COLLECTED", label: "COLLECTED" },
+    //   ],
+    // },
   ];
   const items = [
     { text: "Dashboard", link: `/` },
@@ -369,7 +370,7 @@ const ViewDeliveryBoys = () => {
                           <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
                             <h5 style={{ margin: "0" }}>{(data?.fullName && capitalCase(data?.fullName)) || "User"}</h5>
                             <div
-                              className={data?.isActive?"active-hover":"blocked-hover"}
+                              className={data?.isActive ? "active-hover" : "blocked-hover"}
                               // style={{
                               //   height: "25px",
                               //   border: `1px solid ${data?.isActive ? "green" : "#dc4016"}`,
@@ -380,7 +381,7 @@ const ViewDeliveryBoys = () => {
                               //   color: `${data?.isActive ? "green" : "#dc4016"}`,
                               //   cursor: "pointer",
                               //   padding: 10,
-                                
+
                               // }}
                               onClick={() => setIsSuspendOpen(true)}
                             >
@@ -445,8 +446,8 @@ const ViewDeliveryBoys = () => {
                           className="mt-2"
                         >
                           <Input
+                            className={data?.isAvailable === true ? "bg-success border-success" : ""}
                             type="switch"
-                            // switch="success"
                             style={{ width: "40px", height: "20px" }}
                             checked={data?.isAvailable}
                             onChange={handleToggle}
@@ -694,7 +695,22 @@ const ViewDeliveryBoys = () => {
                   </Row>
                 </>
               ) : (
-                <p>No Settlements</p>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 15,
+                    padding: 40,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    src={noDataSvg}
+                    alt="no data image"
+                  />
+                  <h4>No Settlements</h4>
+                </div>
               )
             ) : TAB ? (
               !view ? (
@@ -723,7 +739,22 @@ const ViewDeliveryBoys = () => {
                 />
               )
             ) : (
-              <p>No Returns Assigned</p>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 15,
+                  padding: 40,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <img
+                  src={noDataSvg}
+                  alt="no data image"
+                />
+                <h4>No Returns Assigned</h4>
+              </div>
             )}
           </Row>
         </Container>

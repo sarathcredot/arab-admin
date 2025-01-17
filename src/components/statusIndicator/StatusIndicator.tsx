@@ -49,7 +49,7 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({ status, variant = "de
       case "POSTPONED":
         return "#5a6f05";
       case "APPROVED":
-        return "#5bc0de";
+        return "#005E2B";
 
 
 
@@ -78,12 +78,6 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({ status, variant = "de
   }
 
   return (
-    // <Badge
-    //   //   color={getStatusColor(status)}
-    //   pill
-    //   style={{ margin: "auto auto", padding: "5px 10px", fontSize: "12px" }}
-    //   className={`bg-${getStatusColor(status)}`}
-    // >
     <p
       style={{
         background: getStatusColor(status),

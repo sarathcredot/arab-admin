@@ -7,6 +7,7 @@ import DynamicFilter from "src/components/filter/DynamicFilter";
 import ExportExcelList from "src/components/orders/ExportExcelList";
 import SettlementExcelList from "./ExcelLists/SettlementExcelList";
 import Loader from "src/components/Common/Loader";
+import noDataSvg from "../../assets/images/noDataSvg.svg";
 
 interface Props {
   agentId: string | null;
@@ -166,33 +167,6 @@ const AssignedOrderBundle: React.FC<Props> = ({ agentId, setView, setDATE }) => 
               }}
             />
           </div>
-          {/* <SettlementExcelList
-                agentId={agentId}
-                name={"ASSIGN_EXPORT"}
-              />
-              <CustomButton
-                bgColor="unset"
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "40px",
-                  borderRadius: "10px",
-                  gap: "5px",
-                  fontSize: "13px",
-                  }}
-                outline
-                color="primary"
-                name="Export"
-                icon="ph:export-bold"
-                onClick={handleExportClick}
-              />
-              <CustomButton
-                onClick={toggleCollapse}
-                name="Filters"
-                icon="clarity:filter-solid"
-              /> */}
         </div>
 
         {/* <Input
@@ -311,12 +285,17 @@ const AssignedOrderBundle: React.FC<Props> = ({ agentId, setView, setDATE }) => 
             style={{
               display: "flex",
               flexDirection: "column",
+              gap: 15,
+              padding: 40,
               alignItems: "center",
               justifyContent: "center",
-              marginTop: "20px",
             }}
           >
-            <p>No Orders Assigned</p>
+            <img
+              src={noDataSvg}
+              alt="no data image"
+            />
+            <h4>No Orders Assigned</h4>
           </div>
         )}
       </div>
