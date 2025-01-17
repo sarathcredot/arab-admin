@@ -10,6 +10,7 @@ import SettlementExcelList from "./ExcelLists/SettlementExcelList";
 import Loader from "src/components/Common/Loader";
 import { Link } from "react-router-dom";
 import { capitalize } from "lodash";
+import noDataSvg from "../../assets/images/noDataSvg.svg";
 
 interface Props {
   agentId: string | null;
@@ -232,7 +233,7 @@ const AssignedOrders: React.FC<Props> = ({ agentId, DATE }) => {
                   <th>Customer Name</th>
                   {/* <th>Product Name</th> */}
                   <th>Address</th>
-                  <th>Order Date</th>
+                  <th>Date</th>
                   {/* <th>Payment Status</th> */}
                   <th className="text-center">Status</th>
                   <th className="text-center">Actions</th>
@@ -345,12 +346,17 @@ const AssignedOrders: React.FC<Props> = ({ agentId, DATE }) => {
           style={{
             display: "flex",
             flexDirection: "column",
+            gap: 15,
+            padding: 40,
             alignItems: "center",
             justifyContent: "center",
-            marginTop: "20px",
           }}
         >
-          <p>No Orders Assigned</p>
+          <img
+            src={noDataSvg}
+            alt="no data image"
+          />
+          <h4>No Orders Assigned</h4>
         </div>
       )}
     </>

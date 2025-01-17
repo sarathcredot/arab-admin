@@ -219,7 +219,7 @@ function ViewVenders() {
                       style={{
                         height: "100px",
                         width: "100px",
-                        objectFit: "contain",
+                        objectFit: "cover",
                         borderRadius: "50%",
                         margin: "20px",
                         border: "5px solid #fff",

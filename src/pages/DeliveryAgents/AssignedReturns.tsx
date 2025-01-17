@@ -8,6 +8,8 @@ import ExportExcelList from "src/components/orders/ExportExcelList";
 import SettlementExcelList from "./ExcelLists/SettlementExcelList";
 import Loader from "src/components/Common/Loader";
 import { Link } from "react-router-dom";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
+import noDataSvg from "../../assets/images/noDataSvg.svg";
 
 interface Props {
   agentId: string | null;
@@ -18,12 +20,20 @@ interface IOrder {
   _id: string;
   orderId: string;
   itemId: string;
-  userId: string;
+  userId: {
+    _id:string;
+    fullName:string;
+  }
   productName: string;
   sellingPrice: number;
   paymentStatus: string;
   orderDate: string;
+  returnOrderAssignedOn: string;
   shippingStatus: string;
+  returnStatus: string;
+  returnAddress: {
+    firstname: string;
+  };
   deliveryAgentId: string;
   userName: string;
   email: string;
@@ -40,80 +50,90 @@ interface IOrder {
 
 // assigned orders query
 const GET_ORDERS = gql`
-  query GetAssignedReturnOrderByAgent($input: GetAssignedReturnOrderInput!) {
-  getAssignedReturnOrderByAgent(input: $input) {
-    records {
-      _id
-      userId {
+  query GetDeliveryAgentReturnOrder($input: GetDeliveryAgentReturnOrderInput!) {
+    getDeliveryAgentReturnOrder(input: $input) {
+      records {
         _id
-        fullName
+        userId {
+          _id
+          fullName
+        }
+        productId
+        vendorId
+        vendorName
+        orderId
+        itemId
+        productName
+        shortDescription
+        skuId
+        warehouseSkuId
+        returnPeriod
+        mrp
+        sellingPrice
+        shippingCharge
+        paymentMode
+        paymentStatus
+        paymentRemark
+        orderDate
+        shippingStatus
+        shippedDate
+        deliveryDate
+        returnStatus
+        returnUserReason
+        returnAdminComment
+        returnRequestDate
+        returnRejectedDate
+        returnDate
+        refundStatus
+        refundAmount
+        refundRequestDate
+        refundDate
+        refundComment
+        cancelUserReason
+        cancelAdminComment
+        cancelledDate
+        courierId
+        invoiceNumber
+        deliveryAgentId
+        deliveryAgentName
+
+        returnAddress {
+          firstname
+          email
+          mobile
+          streetName
+          city
+          houseNumber
+          country
+          postCode
+          apartment
+          suite
+          unit
+          governorate
+          village
+          governorateID
+          villageID
+        }
+        deliveryAssignedOn
+        returnOrderAssignedOn
+        returndeliveryAgentId
+        returndeliveryAgentName
+        returnCollectorBoy {
+          _id
+          fullName
+          contactNumber
+          userID
+          password
+          agentType
+          vendorID
+          ID
+        }
       }
-      productId
-      vendorId
-      vendorName
-      orderId
-      itemId
-      productName
-      shortDescription
-      skuId
-      warehouseSkuId
-      returnPeriod
-      mrp
-      sellingPrice
-      shippingCharge
-      paymentMode
-      paymentStatus
-      paymentRemark
-      orderDate
-      shippingStatus
-      shippedDate
-      deliveryDate
-      returnStatus
-      returnUserReason
-      returnAdminComment
-      returnRequestDate
-      returnRejectedDate
-      returnDate
-      refundStatus
-      refundAmount
-      refundRequestDate
-      refundDate
-      refundComment
-      cancelUserReason
-      cancelAdminComment
-      cancelledDate
-      courierId
-      invoiceNumber
-      deliveryAgentId
-      deliveryAgentName
-      returnAddress {
-        firstname
-        email
-        mobile
-        streetName
-        city
-        houseNumber
-        country
-        postCode
-        apartment
-        suite
-        unit
-        governorate
-        village
-        governorateID
-        villageID
-      }
-      deliveryAssignedOn
-      returnOrderAssignedOn
-      returndeliveryAgentId
-      returndeliveryAgentName
-      
+      totalCount
+      page
+      totalPages
     }
-    totalCount
-    page
-    totalPages
   }
-}
 `;
 
 const EXPORT_ORDERS = gql`
@@ -130,7 +150,7 @@ const AssignedReturns: React.FC<Props> = ({ agentId, DATE }) => {
   const pageSize = 10;
 
   const [filters, setFilters] = useState({
-    shippingStatus: "",
+    returnStatus: "",
   });
 
   const [isOpen, setIsOpen] = useState(false);
@@ -143,7 +163,7 @@ const AssignedReturns: React.FC<Props> = ({ agentId, DATE }) => {
     console.log({ formData });
 
     setFilters({
-      shippingStatus: formData.shippingStatus,
+      returnStatus: formData.returnStatus,
     });
   };
 
@@ -155,19 +175,19 @@ const AssignedReturns: React.FC<Props> = ({ agentId, DATE }) => {
   } = useQuery(GET_ORDERS, {
     fetchPolicy: "network-only",
     variables: {
-      input: { _id: agentId, size: pageSize, page: currentPage, shippingStatus: filters?.shippingStatus, date: DATE },
+      input: { agentId, limit: pageSize, page: currentPage, returnStatus: filters?.returnStatus, date: DATE },
     },
     skip: !agentId || !DATE,
   });
 
   useEffect(() => {
-    if (ordersData && ordersData.getAssignedOrderByDeliveryAgent) {
-      console.log("ORDERS = ", ordersData.getAssignedOrderByDeliveryAgent);
+    if (ordersData && ordersData.getDeliveryAgentReturnOrder) {
+      console.log("RETURNS = ", ordersData.getDeliveryAgentReturnOrder);
 
-      setOrders(ordersData.getAssignedOrderByDeliveryAgent.records);
+      setOrders(ordersData.getDeliveryAgentReturnOrder.records);
     }
   }, [agentId, ordersData, ordersDataLoading]);
-  console.log("DATEE = ", ordersData);
+  console.log("DATA = ", ordersData);
   const [exportOrders] = useMutation(EXPORT_ORDERS);
 
   const handleExportClick = async () => {
@@ -198,15 +218,15 @@ const AssignedReturns: React.FC<Props> = ({ agentId, DATE }) => {
   const totalPages = Math.ceil(totalRecords / pageSize);
   const filterOptions = [
     {
-      label: "Shipping Status",
+      label: "Return Status",
       type: "select",
-      name: "shippingStatus",
+      name: "returnStatus",
       options: [
-        { value: "PENDING", label: "Pending" },
-        { value: "PACKAGE_IN_PROGRESS", label: "Package In Progress" },
-        { value: "SHIPPED", label: "Shipped" },
+        { value: "APPROVED", label: "Approved" },
+        { value: "RETURNED TO WAREHOUSE", label: "Returned To Warehouse" },
+        { value: "COLLECTED", label: "Collected" },
         { value: "DELIVERED", label: "Delivered" },
-        { value: "CANCELED", label: "Canceled" },
+        { value: "REJECTED", label: "Rejected" },
       ],
     },
   ];
@@ -221,10 +241,10 @@ const AssignedReturns: React.FC<Props> = ({ agentId, DATE }) => {
               display: "flex",
               alignItems: "end",
               justifyContent: "space-between",
-              padding: "10px 0px 15px",
+              padding: "10px 0px ",
             }}
           >
-            <h5>Orders History</h5>
+            <h5>Returns History</h5>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <SettlementExcelList
                 agentId={agentId}
@@ -275,29 +295,46 @@ const AssignedReturns: React.FC<Props> = ({ agentId, DATE }) => {
                   <th>Order ID</th>
                   <th>Customer Name</th>
                   <th>Product Name</th>
-                  <th>Order Date</th>
+                  <th>Assigned Date</th>
                   {/* <th>Payment Status</th> */}
-                  <th>Delivery Status</th>
-                  <th>Actions</th>
+                  <th className="text-center">Delivery Status</th>
+                  <th className="text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {orders?.map((item, index) => {
-                  const formattedDate = new Date(item.orderDate).toLocaleDateString("en-GB");
+                  const formattedDate = new Date(item.returnOrderAssignedOn).toLocaleDateString("en-GB");
                   return (
                     <tr key={index}>
                       <td>{index + 1}</td>
                       <td>{item?.itemId}</td>
-                      <td>{item?.userName}</td>
+                      <td>{item?.returnAddress?.firstname??item?.userId?.fullName}</td>
                       <td>
                         {item?.productName?.length > 20 ? `${item?.productName.slice(0, 20)}...` : item?.productName}
                       </td>
                       <td>{formattedDate.replace(/\//g, "-")}</td>
                       {/* <td>{item?.paymentStatus}</td> */}
-                      <td>{item?.shippingStatus}</td>
+                      <td>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <StatusIndicator
+                            variant="default"
+                            status={item?.returnStatus}
+                          />
+                        </div>
+                      </td>
                       <td>
                         <Link to={`/shipping-orders/details?orderId=${item?.orderId}&_id=${item?._id}`}>
                           <Button
+                          style={{
+                            display:"block",
+                            margin:"auto"
+                          }}
                             color="primary"
                             size="sm"
                           >
@@ -357,16 +394,21 @@ const AssignedReturns: React.FC<Props> = ({ agentId, DATE }) => {
         </div>
       ) : (
         <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: "20px",
-          }}
-        >
-          <p>No Orders Assigned</p>
-        </div>
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 15,
+              padding: 40,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <img
+              src={noDataSvg}
+              alt="no data image"
+            />
+            <h4>No Return Orders Assigned</h4>
+          </div>
       )}
     </>
   );

@@ -36,6 +36,8 @@ import SuspendDeliveryBoy from "./SuspendDeliveryBoy";
 import AssignedOrderBundle from "./AssignedOrderBundle";
 import AssignedReturnBundle from "./AssignedReturnBundle";
 import Confirmation from "src/components/Confirmation";
+import AssignedReturns from "./AssignedReturns";
+import noDataSvg from "../../assets/images/noDataSvg.svg";
 
 // Agent Type
 interface ILicence {
@@ -68,6 +70,10 @@ interface IAgent {
   contactNumber: string;
   userID: string;
   agentType: string;
+  governorate: string;
+  governorateID: string;
+  village: string;
+  villageID: string;
   isActive: boolean;
   isAvailable: boolean;
   vendorID: string;
@@ -88,6 +94,10 @@ const GET_DETAIL = gql`
         userID
         ID
         agentType
+        governorate
+        governorateID
+        village
+        villageID
         isActive
         isAvailable
         vendorID
@@ -225,17 +235,16 @@ const ViewDeliveryBoys = () => {
 
   const [updateAvailability] = useMutation(UPDATE_AVAILABILITY);
   const handleAvailability = async () => {
-
     try {
       const response = await updateAvailability({
         variables: {
           input: {
-            agentId:data?._id,
+            agentId: data?._id,
             isAvailable: !data?.isAvailable,
           },
         },
       });
-      console.log("RESPONSE AVAILABLE = ",response)
+      console.log("RESPONSE AVAILABLE = ", response);
       if (response?.data?.updateAvailableStatusByAdmin) {
         toast.success(response?.data?.updateAvailableStatusByAdmin.message);
         handleToggle();
@@ -297,15 +306,15 @@ const ViewDeliveryBoys = () => {
       type: "date",
       name: "endDate",
     },
-    {
-      label: "Type",
-      type: "select",
-      name: "type",
-      options: [
-        { value: "SETTLED", label: "SETTLED" },
-        { value: "COLLECTED", label: "COLLECTED" },
-      ],
-    },
+    // {
+    //   label: "Type",
+    //   type: "select",
+    //   name: "type",
+    //   options: [
+    //     { value: "SETTLED", label: "SETTLED" },
+    //     { value: "COLLECTED", label: "COLLECTED" },
+    //   ],
+    // },
   ];
   const items = [
     { text: "Dashboard", link: `/` },
@@ -361,21 +370,22 @@ const ViewDeliveryBoys = () => {
                           <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
                             <h5 style={{ margin: "0" }}>{(data?.fullName && capitalCase(data?.fullName)) || "User"}</h5>
                             <div
-                              style={{
-                                // width: "80px",
-                                height: "25px",
-                                border: `1px solid ${data?.isActive ? "green" : "#dc4016"}`,
-                                borderRadius: "18px",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                color: `${data?.isActive ? "green" : "#dc4016"}`,
-                                cursor: "pointer",
-                                padding: 10,
-                              }}
-                              id={"Tooltip"}
+                              className={data?.isActive ? "active-hover" : "blocked-hover"}
+                              // style={{
+                              //   height: "25px",
+                              //   border: `1px solid ${data?.isActive ? "green" : "#dc4016"}`,
+                              //   borderRadius: "18px",
+                              //   display: "flex",
+                              //   alignItems: "center",
+                              //   justifyContent: "center",
+                              //   color: `${data?.isActive ? "green" : "#dc4016"}`,
+                              //   cursor: "pointer",
+                              //   padding: 10,
+
+                              // }}
                               onClick={() => setIsSuspendOpen(true)}
                             >
+                              <p style={{ margin: "0" }}> {data?.isActive == true ? "Active" : "Blocked"}</p>
                               <SuspendDeliveryBoy
                                 isOpen={isSuspendOpen}
                                 toggle={suspendToggle}
@@ -383,16 +393,7 @@ const ViewDeliveryBoys = () => {
                                 isActive={data?.isActive}
                                 refetch={refetchData}
                               />
-                              <p style={{ margin: "0" }}> {data?.isActive == true ? "Active" : "Blocked"}</p>
                             </div>
-                            <Tooltip
-                              placement={"right"}
-                              isOpen={tooltipOpen}
-                              target={"Tooltip"}
-                              toggle={toggle}
-                            >
-                              Click to Edit
-                            </Tooltip>
                           </div>
                           <CustomButton
                             name=""
@@ -445,8 +446,8 @@ const ViewDeliveryBoys = () => {
                           className="mt-2"
                         >
                           <Input
+                            className={data?.isAvailable === true ? "bg-success border-success" : ""}
                             type="switch"
-                            // switch="success"
                             style={{ width: "40px", height: "20px" }}
                             checked={data?.isAvailable}
                             onChange={handleToggle}
@@ -561,7 +562,6 @@ const ViewDeliveryBoys = () => {
                           />
                         )}
                         <CustomButton
-                          bgColor="unset"
                           style={{
                             display: "flex",
                             flexDirection: "row",
@@ -573,7 +573,6 @@ const ViewDeliveryBoys = () => {
                             fontSize: "13px",
                           }}
                           outline
-                          color="primary"
                           name="Export"
                           icon="ph:export-bold"
                           onClick={handleExportClick}
@@ -696,7 +695,22 @@ const ViewDeliveryBoys = () => {
                   </Row>
                 </>
               ) : (
-                <p>No Settlements</p>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 15,
+                    padding: 40,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    src={noDataSvg}
+                    alt="no data image"
+                  />
+                  <h4>No Settlements</h4>
+                </div>
               )
             ) : TAB ? (
               !view ? (
@@ -719,13 +733,28 @@ const ViewDeliveryBoys = () => {
                   setDATE={setDATE}
                 />
               ) : (
-                <AssignedOrders
+                <AssignedReturns
                   agentId={ID}
                   DATE={DATE}
                 />
               )
             ) : (
-              <p>No Returns Assigned</p>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 15,
+                  padding: 40,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <img
+                  src={noDataSvg}
+                  alt="no data image"
+                />
+                <h4>No Returns Assigned</h4>
+              </div>
             )}
           </Row>
         </Container>

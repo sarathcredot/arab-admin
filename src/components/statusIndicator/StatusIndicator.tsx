@@ -12,14 +12,20 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({ status, variant = "de
     switch (status) {
       case "Active":
         return "#005E2B";
+      case "YES":
+        return "#005E2B";
       case "Blocked":
+        return "#E30613";
+      case "NO":
         return "#E30613";
       case "CANCELED":
         return "#E30613";
+      case "Suspended":
+        return "#E30613";
       case "Pending":
-        return "#F97316";
+        return "#f0ad4e";
       case "PENDING":
-        return "#F97316";
+        return "#f0ad4e";
       case "SHIPPED":
         return "#F97316";
       case "IN_PROGRESS":
@@ -36,10 +42,14 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({ status, variant = "de
         return "#005E2B";
       case "Completed":
         return "#005E2B";
+      case "RETURNED TO WAREHOUSE":
+        return "#005E2B";
       case "Rejected":
         return "#E30613";
       case "POSTPONED":
         return "#5a6f05";
+      case "APPROVED":
+        return "#005E2B";
 
 
 
@@ -68,12 +78,6 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({ status, variant = "de
   }
 
   return (
-    // <Badge
-    //   //   color={getStatusColor(status)}
-    //   pill
-    //   style={{ margin: "auto auto", padding: "5px 10px", fontSize: "12px" }}
-    //   className={`bg-${getStatusColor(status)}`}
-    // >
     <p
       style={{
         background: getStatusColor(status),

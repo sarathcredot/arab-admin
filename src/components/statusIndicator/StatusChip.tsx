@@ -1,3 +1,4 @@
+import { capitalize } from 'lodash';
 import React from 'react';
 
 interface StatusChipProps {
@@ -14,9 +15,12 @@ const StatusChip: React.FC<StatusChipProps> = ({ status }) => {
             case "PACKAGE_IN_PROGRESS":
                 return { backgroundColor: "#5bc0de", color: "#ffffff" };
             case "SHIPPED":
-                return { backgroundColor: "#5cb85c", color: "#ffffff" };
+                return { backgroundColor: "#005E2B", color: "#ffffff" };
             case "DELIVERED":
-                return { backgroundColor: "#5cb85c", color: "#ffffff" };
+                // return { backgroundColor: "#5cb85c", color: "#ffffff" };
+                return { backgroundColor: "#005E2B", color: "#ffffff" };
+            case "RETURNED TO WAREHOUSE":
+                return { backgroundColor: "#005E2B", color: "#ffffff" };
             case "CANCELED":
                 return { backgroundColor: "#d9534f", color: "#ffffff" };
             case "APPROVED":
@@ -24,7 +28,7 @@ const StatusChip: React.FC<StatusChipProps> = ({ status }) => {
             case "REJECTED":
                 return { backgroundColor: "#d9534f", color: "#ffffff" };
             case "PAID":
-                return { backgroundColor: "#5cb85c", color: "#ffffff" };
+                return { backgroundColor: "#005E2B", color: "#ffffff" };
             default:
                 return { backgroundColor: "#cccccc", color: "#333333" };
         }
@@ -43,7 +47,7 @@ const StatusChip: React.FC<StatusChipProps> = ({ status }) => {
                 color: styles.backgroundColor,
             }}
         >
-            {status || "loading..."}
+            {capitalize(status) || "loading..."}
         </div>
     );
 };

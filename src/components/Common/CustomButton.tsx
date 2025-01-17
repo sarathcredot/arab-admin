@@ -8,7 +8,7 @@ interface ButtonProps extends ReactstrapButtonProps {
 }
 
 const CustomButton: React.FC<ButtonProps> = ({
-  bgColor = "black",
+  bgColor="#000",
   icon,
   width,
   color,
@@ -31,6 +31,7 @@ const CustomButton: React.FC<ButtonProps> = ({
         gap: "5px",
         fontSize: "13px",
         border: "none",
+        outlineColor:"red"
       }}
       {...rest}
     >

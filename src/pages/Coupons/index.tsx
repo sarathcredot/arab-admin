@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Select from "react-select";
 import { useSearchParams } from "react-router-dom";
 import {
   Button,
@@ -19,84 +20,113 @@ import CustomButton from "src/components/Common/CustomButton";
 import DynamicFilter from "src/components/filter/DynamicFilter";
 import FormVender from "../venders/FormVender";
 import Loader from "src/components/Common/Loader";
+import { MdEdit } from "react-icons/md";
+import { MdDeleteOutline } from "react-icons/md";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 import { Link } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
-import AddAgentForm from "./AddFormDeliveryBoy";
+// import AddAgentForm from "./AddFormDeliveryBoy";
 import Breadcrumb from "src/components/Common/Breadcrumb";
+import AddCoupon from "./Popups/AddCoupon";
+import AddCouponPopup from "./Popups/AddCouponPopup";
+import EditCouponPopup from "./Popups/EditCouponPopup";
+import SuspendCoupon from "./Popups/SuspendCoupon";
+import DeleteCoupon from "./Popups/DeleteCoupon";
+// import "./style.css"
 
-// Agent Type
-interface IAgent {
+// coupon type
+interface ICoupon {
   _id: string;
-  fullName: string;
-  contactNumber: string;
-  agentType: string;
-  isActive: Boolean;
-  isAvailable: Boolean;
-  vendorID: String;
-  password: String;
+  name: string;
+  code: string;
+  description: string;
+  discountType: string;
+  discountValue: number;
+  max_discount: number;
+  minOrderAmount: number;
+  validBrands: any; // array
+  validCategories: any; // array
+  validProducts: any; // array
+  validUsers: any; // array
+  usageLimit: number;
+  usagePerUserLimit: number;
+  orderCount: number;
+  startDate: string;
+  expiryDate: string;
+  isActive: boolean;
 }
 
-// Agent Query
-const GET_ALL_AGENT = gql`
-  query GetAllAgentData($input: getAllAgentDataInput) {
-    getAllAgentData(input: $input) {
-      maxRecords
+const GET_ALL_COUPONS = gql`
+  query Records($input: getAllCoupenToAdminInput!) {
+    getAllCoupenToAdmin(input: $input) {
       records {
         _id
-        fullName
-        contactNumber
-        userID
-        password
-        agentType
-        isActive
-        isAvailable
-        vendorID
-        wallet {
-          cashInHand
-          lastSettlementDate
-          totalSettlement
-          grandTotal
+        name
+        code
+        description
+        orderCount
+        discountType
+        couponApplicableType
+        discountValue
+        max_discount
+        minOrderAmount
+        validCategories {
+          category
         }
+        validProducts {
+          product
+        }
+        validUsers {
+          user
+        }
+        validBrands {
+          brand
+        }
+        usageLimit
+        usagePerUserLimit
+        startDate
+        expiryDate
+        isActive
       }
+      maxRecords
     }
   }
 `;
 
-const DeliveryBoys: React.FC = () => {
+const Coupons: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchParams] = useSearchParams();
-  const id = searchParams.get("id");
-  const tab = searchParams.get("tab");
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 10;
-  const [agentData, setAgentData] = useState<IAgent[]>([]);
+
+  const [couponID, setCouponID] = useState("");
+  const [couponActive, setCouponActive] = useState<boolean>();
+  const [coupons, setCoupons] = useState<ICoupon[]>([]);
   const [activeTab, setActiveTab] = useState<boolean>();
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
+  const [showSuspendModal, setShowSuspendModal] = useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+
   const [filters, setFilters] = useState({
+    startDate: "",
+    expiryDate: "",
     isActive: "",
-    agentType: "",
   });
 
-  const {
-    loading: agentLoading,
-    error: agentError,
-    data: agentDataResponse,
-    refetch: refetchAgent,
-  } = useQuery(GET_ALL_AGENT, {
-    variables: {
-      input: {
-        page: currentPage,
-        size: pageSize,
-        isActive: filters?.isActive,
-        agentType: filters?.agentType,
-        search: searchTerm,
-        settlement: false,
-      },
-    },
-  });
+  console.log("couponID = ", couponID);
+
   const toggleAddModal = () => {
     setShowAddModal(!showAddModal);
+  };
+  const toggleEditModal = () => {
+    setShowEditModal(!showEditModal);
+  };
+  const toggleSuspendModal = () => {
+    setShowSuspendModal(!showSuspendModal);
+  };
+  const toggleDeleteModal = () => {
+    setShowDeleteModal(!showDeleteModal);
   };
 
   const [isOpen, setIsOpen] = useState(false);
@@ -108,48 +138,62 @@ const DeliveryBoys: React.FC = () => {
   const handleFilterSubmit = (formData: any) => {
     setCurrentPage(0);
     setFilters({
+      startDate: formData.startDate,
+      expiryDate: formData.expiryDate,
       isActive: formData.isActive,
-      agentType: formData.agentType,
     });
   };
-  const items = [
-    { text: "Dashboard", link: `/` },
-    { text: "Delivery", link: null },
-  ];
 
+  // get coupons query
+  const {
+    loading: couponLoading,
+    error: couponError,
+    data: couponDataResponse,
+    refetch: couponRefetch,
+  } = useQuery(GET_ALL_COUPONS, {
+    fetchPolicy: "network-only",
+    variables: {
+      input: {
+        page: currentPage,
+        size: pageSize,
+        isActive: filters?.isActive ? (filters?.isActive == "true" ? "true" : "false") : null,
+        startDate: filters?.startDate || null,
+        expiryDate: filters?.expiryDate || null,
+        search:searchTerm
+      },
+    },
+  });
+  console.log("is active = ", String(filters?.isActive));
   useEffect(() => {
-    if (agentDataResponse && agentDataResponse) {
-      console.log("agenttttt====", agentDataResponse);
-
-      setAgentData(agentDataResponse.getAllAgentData.records);
-      refetchAgent();
+    if (couponDataResponse?.getAllCoupenToAdmin?.records) {
+      console.log("COUPONS = ", couponDataResponse);
+      setCoupons(couponDataResponse?.getAllCoupenToAdmin?.records);
     }
-  }, [agentDataResponse, activeTab, filters, searchTerm]);
+  }, [couponDataResponse, couponRefetch]);
 
-  if (agentError) {
-    console.error("Error fetching agent data:", agentError);
-  }
-  const totalRecords = agentDataResponse?.getAllAgentData?.maxRecords || 0;
+  const items = [{ text: "Dashboard", link: `/` }];
+
+  const totalRecords = couponDataResponse?.getAllCoupenToAdmin?.maxRecords || 0;
   const totalPages = Math.ceil(totalRecords / pageSize);
   const filterOptions = [
-    {
-      label: "Agent Type",
-      type: "select",
-      name: "agentType",
-      options: [
-        { value: "ArabDeals", label: "ArabDeals" },
-        { value: "Vendor", label: "Vendor" },
-        { value: "ThirdParty", label: "ThirdParty" },
-      ],
-    },
     {
       label: "Status",
       type: "select",
       name: "isActive",
       options: [
         { value: "true", label: "Active" },
-        { value: "false", label: "Blocked" },
+        { value: "false", label: "Suspended" },
       ],
+    },
+    {
+      label: "Start date",
+      type: "date",
+      name: "startDate",
+    },
+    {
+      label: "Expiry date",
+      type: "date",
+      name: "expiryDate",
     },
   ];
 
@@ -159,7 +203,7 @@ const DeliveryBoys: React.FC = () => {
         <Container fluid={true}>
           <Breadcrumb
             items={items}
-            currentPage="Delivery Boys"
+            currentPage="Coupons"
           />
           {/* <Nav tabs>
             <NavItem>
@@ -193,11 +237,10 @@ const DeliveryBoys: React.FC = () => {
                 <CardHeader style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
                   <CustomButton
                     onClick={() => toggleAddModal()}
-                    name="Add Delivery Boy"
+                    name="Add Coupon"
                     icon="material-symbols:add"
                   />
                 </CardHeader>
-
                 <CardHeader>
                   <Row>
                     <Col
@@ -206,11 +249,11 @@ const DeliveryBoys: React.FC = () => {
                     >
                       <Input
                         type="text"
-                        placeholder="Search by fullname"
+                        placeholder="Search by coupon code"
                         value={searchTerm}
                         onChange={(e) => {
                           setCurrentPage(0);
-                          setSearchTerm(e.target.value);
+                          setSearchTerm(e.target.value.toUpperCase());
                         }}
                         style={{ width: "50%" }}
                       />
@@ -231,19 +274,14 @@ const DeliveryBoys: React.FC = () => {
                 <CardBody>
                   <Collapse isOpen={isOpen}>
                     <DynamicFilter
+                      toggle={toggleCollapse}
                       filterOptions={filterOptions}
                       onSubmit={handleFilterSubmit}
                     />
                   </Collapse>
 
-                  <AddAgentForm
-                    isOpen={showAddModal}
-                    toggle={toggleAddModal}
-                    refetch={refetchAgent}
-                  />
-
                   <Row>
-                    {agentLoading ? (
+                    {couponLoading ? (
                       <Loader />
                     ) : (
                       <div className="table-rep-plugin">
@@ -257,34 +295,54 @@ const DeliveryBoys: React.FC = () => {
                           >
                             <thead>
                               <tr>
-                                <th>#</th>
-                                <th>Full Name</th>
-                                <th>Mobile Number</th>
-                                <th>Agent Type</th>
-                                <th style={{ width: "100px" }}>Availability</th>
-                                <th style={{ width: "100px" }}>Status</th>
-                                <th style={{ width: "100px" }}>Action</th>
+                                <th style={{ width: "30px", textAlign: "center" }}>#</th>
+                                <th>Name</th>
+                                <th>Code</th>
+                                {/* <th>Description</th> */}
+                                <th>Discount Amount</th>
+                                <th>Validity Period</th>
+                                <th>Usage Limit</th>
+                                <th style={{ width: "100px", textAlign: "center" }}>Status</th>
+                                <th style={{ width: "100px", textAlign: "center" }}>Action</th>
                               </tr>
                             </thead>
                             <tbody>
-                              {agentData?.map((agent, index) => (
-                                <tr key={agent._id}>
-                                  {/* <td>{currentPage * pageSize + index + 1}</td> */}
-                                  <td>{currentPage * pageSize + (index + 1)}</td>
-                                  <td>{agent.fullName}</td>
-                                  <td>{agent.contactNumber}</td>
-                                  <td>{agent.agentType}</td>
+                              {coupons?.map((item, index) => (
+                                <tr key={item?._id}>
+                                  <td className="text-center">{currentPage * pageSize + (index + 1)}</td>
+                                  <td>{item?.name}</td>
+                                  <td>{item?.code}</td>
+                                  {/* <td>
+                                    {item?.description&&item?.description.length > 10
+                                      ? ` ${item?.description.slice(0, 10)}...`
+                                      : item?.description}
+                                  </td> */}
+                                  <td>
+                                    {item?.discountValue && item?.discountValue !== 0 ? item?.discountValue : ""}{" "}
+                                    {item?.discountValue ? (item?.discountType === "FLAT" ? "OMR" : "%") : ""}
+                                  </td>
+                                  <td>
+                                    {new Date(item?.startDate).toLocaleDateString("en-GB").replace(/\//g, "-")} -{" "}
+                                    {new Date(item?.expiryDate).toLocaleDateString("en-GB").replace(/\//g, "-")}
+                                  </td>
+                                  <td>{item?.usageLimit}</td>
                                   <td>
                                     <div
                                       style={{
                                         display: "flex",
                                         alignItems: "center",
                                         justifyContent: "center",
+                                        cursor: "pointer",
                                       }}
-                                      >
+                                      onClick={() => {
+                                        setCouponID(item?._id);
+                                        setCouponActive(!item?.isActive);
+                                        setShowSuspendModal(true);
+                                      }}
+                                    >
                                       <StatusIndicator
                                         variant="default"
-                                        status={agent?.isAvailable === true ? "YES" : "NO"}
+                                        status={item.isActive === true ? "Active" : "Suspended"}
                                       />
                                     </div>
                                   </td>
@@ -294,27 +352,42 @@ const DeliveryBoys: React.FC = () => {
                                         display: "flex",
                                         alignItems: "center",
                                         justifyContent: "center",
+                                        gap: 10,
                                       }}
+                                    >
+                                      {/* <Button
+                                        style={{
+                                          display: "block",
+                                          // width:"100%"
+                                        }}
+                                        color="dark"
+                                        size="sm"
+                                        onClick={() => {
+                                          setCouponID(item?._id);
+                                          setShowEditModal(true);
+                                        }}
                                       >
-                                      <StatusIndicator
-                                        variant="default"
-                                        status={agent.isActive === true ? "Active" : "Blocked"}
-                                      />
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <Link to={`/delivery-boys/view?id=${agent._id}`}>
+                                        <MdEdit
+                                          style={{
+                                            fontSize: "12px",
+                                          }}
+                                        />
+                                      </Button> */}
                                       <Button
                                         style={{
                                           display: "block",
-                                          margin: "auto",
+                                          // width:"100%"
                                         }}
                                         color="primary"
                                         size="sm"
+                                        onClick={() => {
+                                          setCouponID(item?._id);
+                                          setShowDeleteModal(true);
+                                        }}
                                       >
-                                        View
+                                        <MdDeleteOutline style={{ fontSize: "14px" }} />
                                       </Button>
-                                    </Link>
+                                    </div>
                                   </td>
                                 </tr>
                               ))}
@@ -376,8 +449,35 @@ const DeliveryBoys: React.FC = () => {
           </Row>
         </Container>
       </div>
+      <AddCouponPopup
+        isOpen={showAddModal}
+        toggle={toggleAddModal}
+        refetch={couponRefetch}
+      />
+      <EditCouponPopup
+        isOpen={showEditModal}
+        toggle={toggleEditModal}
+        couponID={couponID}
+        setCouponID={setCouponID}
+        refetch={couponRefetch}
+      />
+      <SuspendCoupon
+        isOpen={showSuspendModal}
+        toggle={toggleSuspendModal}
+        refetch={couponRefetch}
+        isActive={couponActive}
+        setCouponID={setCouponID}
+        couponID={couponID}
+      />
+      <DeleteCoupon
+        isOpen={showDeleteModal}
+        toggle={toggleDeleteModal}
+        refetch={couponRefetch}
+        setCouponID={setCouponID}
+        couponID={couponID}
+      />
     </>
   );
 };
 
-export default DeliveryBoys;
+export default Coupons;

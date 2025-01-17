@@ -67,6 +67,8 @@ export const DeliveryBoyValidation = yup.object({
   contactNumber: yup.string().required("Phone number is required"),
   userID: yup.string().email("Invalid email address").required("Email is required"),
   agentType: yup.string().required("Agent Type is required"),
+  governorate: yup.string().required("governorate is required"),
+  village: yup.string().required("village is required"),
   password: yup.string().min(6, "password must be 6").required("Please Enter Your Password"),
 });
 export const EditDeliveryBoyValidation = yup.object({
@@ -74,6 +76,8 @@ export const EditDeliveryBoyValidation = yup.object({
   contactNumber: yup.string().required("Phone number is required"),
   userID: yup.string().email("Invalid email address").required("Email is required"),
   agentType: yup.string().required("Agent Type is required"),
+  governorate: yup.string().required("governorate is required"),
+  village: yup.string().required("street is required"),
 });
 
 // settlement validation
@@ -88,4 +92,20 @@ export const SettlementValidation = yup.object({
       "Amount must be greater than zero",
       (value) => value > 0 // Custom validation logic
     ),
+});
+
+// coupon validation
+
+export const CouponValidation = yup.object({
+  name: yup.string().required("Please enter coupon name"),
+  code: yup.string().required("Please enter coupon code"),
+  description: yup.string().required("Please enter description"),
+  discountType: yup.string().required("Please select discount type"),
+  // discountValue: yup.string().required("Please enter discount amount"),
+  minOrderAmount: yup.string().required("Please enter minimum order amount"),
+  usageLimit: yup.string().required("Please enter total redemptions"),
+  usagePerUserLimit: yup.string().required("Please enter per user limit"),
+  // orderCount: yup.string().required("Please enter nth order"),
+  startDate: yup.string().required("Please enter start date"),
+  // expiryDate: yup.string().required("Please enter coupon code"),
 });

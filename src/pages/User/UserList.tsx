@@ -21,12 +21,16 @@ import {
   Modal,
   ModalBody, ModalFooter,
   ModalHeader,
+  Nav,
+  NavItem,
+  NavLink,
   Row
 } from "reactstrap";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import CustomButton from "../../components/Common/CustomButton";
 import Loader from "../../components/Common/Loader";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
+import DeletedUserList from "./DeletedUserList";
 
 interface User {
   _id: string;
@@ -48,7 +52,7 @@ interface UserFilter {
 
 const UserList = () => {
   const navigate = useNavigate();
-
+  const [activeTab,setActiveTab]=useState("ALL")
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userToBlock, setUserToBlock] = useState<User | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(0);
@@ -210,6 +214,24 @@ const UserList = () => {
       <div className="page-content">
         <Container fluid={true} >
           <Breadcrumb items={items} currentPage="Users" />
+          <Nav tabs>
+            <NavItem>
+              <NavLink
+                className={activeTab === "ALL" ? "tab-button active" : "tab-button"}
+                onClick={()=>setActiveTab("ALL")}
+              >
+                All Users
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                className={activeTab === "DELETED" ? "tab-button active" : "tab-button"}
+                onClick={()=>setActiveTab("DELETED")}
+              >
+                Deleted Users
+              </NavLink>
+            </NavItem>
+          </Nav>
           <Row>
             <Col lg={12}>
               <Card>
@@ -224,16 +246,9 @@ const UserList = () => {
                         onChange={handleSearch}
                         style={{ width: "50%" }}
                       />
-                      {/* <Input
-                        type="text"
-                        name="id"
-                        placeholder="Search by user ID"
-                        value={userFilter.id}
-                        onChange={handleSearch}
-                        style={{ width: "50%" }}
-                      /> */}
+                      {activeTab==="ALL"&&
                       <Dropdown
-                        isOpen={statusDropdownOpen}
+                      isOpen={statusDropdownOpen}
                         toggle={toggleStatusDropdown}
                       >
                         <DropdownToggle caret>
@@ -253,12 +268,13 @@ const UserList = () => {
                           ))}
                         </DropdownMenu>
                       </Dropdown>
+                  }
                     </Col>
 
 
                   </Row>
                 </CardHeader>
-                <CardBody>
+                  <CardBody>
                   {usersLoading ? (
                     <Loader />
                   ) : (
@@ -270,18 +286,20 @@ const UserList = () => {
                         <Table id="tech-companies-1" className="table table-striped table-bordered">
                           <Thead>
                             <Tr>
-                              <Th>Sl.No</Th>
+                              <Th style={{width:50,textAlign:"center"}}>Sl.No</Th>
                               <Th>Phone Number</Th>
                               <Th>Fullname</Th>
                               <Th>Email</Th>
-                              <Th>Status</Th>
-                              <Th>Actions</Th>
+                              {activeTab==="ALL"&&
+                              <Th className="text-center">Status</Th>
+                            }
+                              <Th className="text-center">Actions</Th>
                             </Tr>
                           </Thead>
                           <Tbody>
                             {users.map((user, index) => (
                               <Tr key={user._id}>
-                                <Td>{currentPage * pageSize + index + 1}</Td>
+                                <Td className="text-center">{currentPage * pageSize + index + 1}</Td>
                                 <Td>{user.mobileNumber}</Td>
                                 <Td>
                                   <div style={{ display: "flex", gap: "15px", alignItems: "center", justifyContent: "space-between" }}>
@@ -305,11 +323,13 @@ const UserList = () => {
                                   </div>
                                 </Td>
                                 <Td>{user.email}</Td>
+                                {activeTab==="ALL"&&
                                 <Td>
                                 <div style={{ display: "flex", alignItems: "center",justifyContent:"center" }}>
                                   <StatusIndicator status={user?.isBlocked ? "Blocked" : "Active"} variant={"default"} />
                                 </div>
                                 </Td>
+                                }
                                 <Td>
                                   {"  "}
                                   <Button
@@ -317,10 +337,10 @@ const UserList = () => {
                                     display: "block",
                                     margin: "auto",
                                   }}
-                                    size="sm"
-                                    color="primary"
-
-                                    onClick={() => navigate(`/user/view?userId=${user._id}`)}
+                                  size="sm"
+                                  color="primary"
+                                  
+                                  onClick={() => navigate(`/user/view?userId=${user._id}`)}
                                   >
                                     View
                                   </Button>{" "}

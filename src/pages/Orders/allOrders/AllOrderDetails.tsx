@@ -381,7 +381,11 @@ const ALlOrderDetails = () => {
                             <p className="form-control-static">
                               {order?.paymentMode}
                             </p>
+                            <div style={{
+                              display:"flex",
+                            }}>
                              <StatusIndicator variant="default" status={order?.orderStatus} />
+                            </div>
                           </div>
                         </div>
                       </div>

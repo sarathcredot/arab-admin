@@ -52,22 +52,29 @@ const SuspendDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, agentId, isActive
       <Modal
         isOpen={isOpen}
         toggle={toggle}
-      >
-        <ModalHeader toggle={toggle}>Change Status</ModalHeader>
-        <ModalBody>
+        style={{
+          maxWidth:"450px"
+        }}
+        >
+        {/* <ModalHeader toggle={toggle}>Change Status</ModalHeader> */}
+        <ModalBody
+        style={{
+          padding:"30px"
+
+        }}>
           {isActive ? (
-            <p>
+            <h5>
               Are you sure you want to <b>Suspend</b> this Delivery Boy ? Please confirm your action.
-            </p>
+            </h5>
           ) : (
-            <p>
+            <h5>
               Are you sure you want to <b>activate</b> this delivery boy? Please confirm your action.
-            </p>
+            </h5>
           )}
 
-          <ModalFooter>
-            <Button color={isActive?"primary":"success"} onClick={() => handleSubmit()}>{isActive ? "Suspend" : "Active"}</Button>
-          </ModalFooter>
+          {/* <ModalFooter> */}
+            <Button style={{display:"block",marginLeft:"auto"}} color={isActive?"primary":"success"} onClick={() => handleSubmit()}>{isActive ? "Suspend" : "Active"}</Button>
+          {/* </ModalFooter> */}
         </ModalBody>
       </Modal>
     </div>
