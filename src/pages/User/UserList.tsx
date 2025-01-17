@@ -112,7 +112,7 @@ const UserList = () => {
       input: {
         page: currentPage,
         size: pageSize,
-        isBlocked: selectedStatus?.pass
+        isBlocked: selectedStatus?.pass,
         query: userFilter.mobileNumber,
         // phoneNumber: userFilter.mobileNumber,
         // ...((userFilter.id) && { _id: userFilter.id }),
