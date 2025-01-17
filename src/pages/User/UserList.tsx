@@ -57,6 +57,7 @@ const UserList = () => {
   const [userToBlock, setUserToBlock] = useState<User | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [users, setUsers] = useState<User[]>([]);
+  const [deleteStatus,setdeleteStatus]:any=useState(null)
   const [selectedStatus, setSelectedStatus] = useState<{
     value: string;
     label: string;
@@ -113,6 +114,7 @@ const UserList = () => {
         page: currentPage,
         size: pageSize,
         isBlocked: selectedStatus?.pass,
+        isDeleted:deleteStatus,
         query: userFilter.mobileNumber,
         // phoneNumber: userFilter.mobileNumber,
         // ...((userFilter.id) && { _id: userFilter.id }),
@@ -155,6 +157,7 @@ const UserList = () => {
           page: currentPage,
           size: pageSize,
           isBlocked: selectedStatus?.pass,
+          isDeleted:deleteStatus,
           query: userFilter.mobileNumber,
           // phoneNumber: userFilter.mobileNumber,
           // ...((userFilter.id) && { _id: userFilter.id }),
@@ -169,7 +172,7 @@ const UserList = () => {
 
   useEffect(() => {
     fetchData();
-  }, [selectedStatus, currentPage, userFilter, usersRefetch]);
+  }, [deleteStatus,selectedStatus, currentPage, userFilter, usersRefetch]);
 
 
   const totalPages = Math.ceil(maxRecords / pageSize);
@@ -209,6 +212,22 @@ const UserList = () => {
     { text: "Dashboard", link: `/` },
   ];
 
+  const getDelitedUsers=()=>{
+
+     setActiveTab("DELETED")
+     setdeleteStatus(true)
+
+  }
+
+  const allUsers=()=>{
+
+    setActiveTab("ALL")
+    setdeleteStatus(null)
+  }
+
+
+
+
   return (
     <>
       <div className="page-content">
@@ -218,7 +237,7 @@ const UserList = () => {
             <NavItem>
               <NavLink
                 className={activeTab === "ALL" ? "tab-button active" : "tab-button"}
-                onClick={()=>setActiveTab("ALL")}
+                onClick={allUsers}
               >
                 All Users
               </NavLink>
@@ -226,7 +245,7 @@ const UserList = () => {
             <NavItem>
               <NavLink
                 className={activeTab === "DELETED" ? "tab-button active" : "tab-button"}
-                onClick={()=>setActiveTab("DELETED")}
+                onClick={getDelitedUsers}
               >
                 Deleted Users
               </NavLink>
