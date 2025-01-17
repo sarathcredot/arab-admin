@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button, ButtonGroup, Card, CardBody, CardText, CardTitle, Col, Container, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row } from 'reactstrap'
 import Breadcrumbs from "../../components/Common/Breadcrumb"
-import { Truck, CreditCard } from 'feather-icons-react';
+import { Truck, CreditCard} from 'feather-icons-react';
 import "./settings.css"
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { formatCurrency } from 'src/utils/formatCurrency';
