@@ -174,8 +174,6 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
     },
   });
 
-  console.log("licence =", formik?.values?.image);
-  console.log("vendorID =", formik?.values?.vendorID);
   const { error: locationError, data: locationsData } = useQuery(GET_LOCATIONS, { fetchPolicy: "network-only" });
 
   useEffect(() => {
@@ -183,9 +181,6 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
       setVendorData(vendorDataResponse.getAllVendorsRecordsByAdmin.records);
     }
   }, [vendorDataResponse]);
-  useEffect(() => {
-    console.log("error", formik.errors);
-  }, [formik.errors]);
 
   useEffect(() => {
     if (locationsData && locationsData?.getLocationsData) {
@@ -193,8 +188,6 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
     }
   }, [locationsData]);
 
-  console.log("LOCATIONS = ", locations);
-  console.log("FORMIK = ", formik.values);
   return (
     <>
       <Modal

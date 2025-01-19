@@ -29,6 +29,10 @@ interface ShippingAddress {
   apartment?: string;
   suite?: string;
   unit?: string;
+  governorateID?: string;
+  governorate?: string;
+  village?: string;
+  villageID?: string;
 }
 
 interface OrderPriceInfo {
@@ -134,6 +138,10 @@ const ALlOrderDetails = () => {
           apartment
           suite
           unit
+          governorateID
+          governorate
+          village
+          villageID
         }
         orderPriceInfo {
           totalMRP
@@ -231,6 +239,12 @@ const ALlOrderDetails = () => {
             agentType
             vendorID
             ID
+          }
+          shippingAddress {
+            governorateID
+            governorate
+            village
+            villageID
           }
         }
       }
@@ -381,10 +395,15 @@ const ALlOrderDetails = () => {
                             <p className="form-control-static">
                               {order?.paymentMode}
                             </p>
-                            <div style={{
-                              display:"flex",
-                            }}>
-                             <StatusIndicator variant="default" status={order?.orderStatus} />
+                            <div
+                              style={{
+                                display: "flex",
+                              }}
+                            >
+                              <StatusIndicator
+                                variant="default"
+                                status={order?.orderStatus}
+                              />
                             </div>
                           </div>
                         </div>

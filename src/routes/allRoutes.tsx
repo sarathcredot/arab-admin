@@ -209,7 +209,7 @@ const adminRoutes: Array<RouteProps> = [
   { path: "/users", exact: true, component: <UserList /> },
   { path: "/user/view", component: <UserProfile /> },
   { path: "/style", component: <UiGeneral /> },
-  { path: "/style1", component: <FormUpload /> },
+  { path: "/style1", component: <FormElements /> },
   { path: "/style2", component: <UiOffCanvas /> },
 
   // ORDERS

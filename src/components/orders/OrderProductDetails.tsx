@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect } from "react";
+import React, { ChangeEvent, useEffect, useMemo } from "react";
 import "cleave.js/dist/addons/cleave-phone.in";
 import FeatherIcon from "feather-icons-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -195,6 +195,7 @@ function OrderProductDetails({
 
   const toggleShippingModal = () => {
     setShippingModal(!shippingModal);
+    setIsCustomize(false);
   };
 
   const handleShippingStatusChange = async (
@@ -246,6 +247,7 @@ function OrderProductDetails({
           },
         },
       });
+      
       if (result.data.updateAdminOrderProduct) {
         orderProdcutsRefetch();
         setShippingModal(!shippingModal);
@@ -256,6 +258,9 @@ function OrderProductDetails({
         setCanceledDate("");
         setCancelComment("");
         setPaymentStatus("");
+        if(shippingStatus === "SHIPPED"){
+          toggleDeliveryAssignModal();
+        }
       }
     } catch (error: any) {
       console.error(error);
@@ -331,6 +336,9 @@ function OrderProductDetails({
         setReturnDate("");
         setReturnRejectDate("");
         setReturnRequestDate("");
+        if (returnStatus === "APPROVED"){
+          toggleDeliveryAssignModal();
+        }
       }
     } catch (error: any) {
       console.error(error);
@@ -556,7 +564,6 @@ function OrderProductDetails({
       toast.error(error.message);
     }
   };
-  console.log("PRODUCT =", product);
   const UPDATE_PRODUCT = gql`
     mutation UpdateAdminOrderProduct(
       $input: UpdateAdminOrderProductInput!
@@ -581,8 +588,23 @@ function OrderProductDetails({
   const [deliveryAgentType, setDeliveryAgentType] = useState<
     "ArabDeals" | "Vendor" | "ThirdParty" | ""
   >("");
+  const [isCustomize, setIsCustomize] = useState(false);
+  const [vendorId, setVendorId] = useState("");
+  const [villageId, setVillageId] = useState("");
+  const [governateId, setGovernateId] = useState("");
+  const [villages, setvillages] = useState([]);
 
-  const [orderItemId, setOrderItemId] = useState("");
+  const [bundleCount, setBundleCount] = useState(1);
+
+  const [orderItemId, setOrderItemId] = useState<any>(null);
+
+  const handleGovernorateChange = (governorateId: any) => {
+    setGovernateId(governorateId);
+    const selectedGovernorate = getLocation?.getLocationsData?.find(
+      (g: any) => g._id === governorateId
+    );
+    setvillages(selectedGovernorate?.villages || []);
+  };
 
   const handleAssignClick = (
     itemId: string,
@@ -601,6 +623,7 @@ function OrderProductDetails({
       }
     }
   `;
+
   const ASSIGN_RETURN_ORDER = gql`
     mutation OrderAssignDeliveryAgent($input: OrderAssignDeliveryAgentInput!) {
       returnOrderAssignDeliveryAgent(input: $input) {
@@ -612,6 +635,51 @@ function OrderProductDetails({
 
   const [AssignOrder] = useMutation(ASSIGN_ORDER);
   const [AssignReturnOrder] = useMutation(ASSIGN_RETURN_ORDER);
+
+  const GET_VENDOR_FOR_SELECT = gql`
+    query GetAllVendors($input: VendorsRecordsByAdminFilter) {
+      getAllVendorsRecordsByAdmin(input: $input) {
+        maxRecords
+        records {
+          _id
+          fullName
+        }
+        message
+      }
+    }
+  `;
+
+  const GET_LOCATION = gql`
+    query GetLocationsData {
+      getLocationsData {
+        name
+        _id
+        villages {
+          _id
+          name
+        }
+      }
+    }
+  `;
+
+  const {
+    data: getLocation,
+    loading: getLocationLoading,
+    error: getLocationError,
+  } = useQuery(GET_LOCATION);
+
+  const {
+    loading: vendorLoading,
+    error: vendorError,
+    data: vendorDataResponse,
+  } = useQuery(GET_VENDOR_FOR_SELECT, {
+    fetchPolicy: "network-only",
+    variables: {
+      input: {
+        isKycCompleted: true,
+      },
+    },
+  });
 
   const GET_PRODUCT_DELIVERY_TYPE_DELIVERY_AGENTS = gql`
     query GetProductDeliveryTypeDeliveryAgents(
@@ -628,53 +696,111 @@ function OrderProductDetails({
     }
   `;
 
+  const GET_PRODUCT_DELIVERY_TYPE_DELIVERY_AGENTS_CUSTOMIZE = gql`
+    query GetDeliveryAgentlistCustomizOrderAssigen(
+      $input: getDeliveryAgentlistCustomizOrderAssigenInput
+    ) {
+      getDeliveryAgentlistCustomizOrderAssigen(input: $input) {
+        _id
+        fullName
+        contactNumber
+      }
+    }
+  `;
+
   const {
     data: deliveryAgentList,
     loading: deliveryAgentListLoading,
     error: deliveryAgentListError,
-    refetch: deliveryAgentsList,
+    refetch: refetchDeliveryAgentsList,
   } = useQuery(GET_PRODUCT_DELIVERY_TYPE_DELIVERY_AGENTS, {
     fetchPolicy: "network-only",
     variables: {
       input: {
         productId: product?.productId,
+        villageID: product?.shippingAddress?.villageID,
+        governorateID: product?.shippingAddress?.governorateID,
       },
     },
+    skip: isCustomize,
   });
+
+  const customizeInput = useMemo(() => {
+    let obj: any = {};
+
+    if (villageId) {
+      obj.villageID = villageId;
+    }
+    if (governateId) {
+      obj.governorateID = governateId;
+    }
+    if (vendorId) {
+      obj.vendorID = vendorId;
+    }
+    if (deliveryAgentType) {
+      obj.deliveryAgentType = deliveryAgentType;
+    }
+
+    return obj;
+  }, [villageId, governateId, vendorId, deliveryAgentType]);
+
+  const {
+    data: deliveryAgentListCustomize,
+    loading: deliveryAgentCustomizeListLoading,
+    error: deliveryAgentCustomizeListError,
+    refetch: refetchDeliveryAgentsListCustomize,
+  } = useQuery(GET_PRODUCT_DELIVERY_TYPE_DELIVERY_AGENTS_CUSTOMIZE, {
+    fetchPolicy: "network-only",
+    variables: {
+      input: customizeInput,
+    },
+    skip: !isCustomize,
+  });
+
+  useEffect(() => {
+    if (deliveryAgentList?.getProductDeliveryTypeDeliveryAgents?.deliveryType) {
+      setDeliveryAgentType(
+        deliveryAgentList?.getProductDeliveryTypeDeliveryAgents?.deliveryType
+      );
+    }
+  }, [deliveryAgentList]);
+
+  useEffect(() => {
+    if (isCustomize) {
+      refetchDeliveryAgentsListCustomize();
+    } else {
+      refetchDeliveryAgentsList();
+    }
+  }, [isCustomize]);
 
   const handleAssignOrder = async () => {
     try {
-      if (!orderItemId) throw new Error("Can't find order Item !");
-      if (!deliveryBoyId) throw new Error("Delivery Agent Id is required !");
-      if (!deliveryBoyName)
-        throw new Error("Delivery Agent Name is requiredItem !");
+      if (!orderItemId && !product?._id) throw new Error("Can't find order Item !");
+      if (!deliveryBoyId) throw new Error("Select a Delivery Agent!");
+      if (!deliveryBoyName) throw new Error("Select a Delivery Agent!");
 
       const variables = {
         input: {
-          orderItemId: orderItemId,
+          orderItemId: orderItemId ? orderItemId: product?._id,
           deliveryAgentId: deliveryBoyId,
           deliveryAgentName: deliveryBoyName,
+          bundleCount: bundleCount,
         },
       };
 
       let response: any = null;
 
-      console.log(assignOrderType, "ASSIGN ORDER TYPE");
       if (assignOrderType === "DELIVERY") {
         response = await AssignOrder({
           variables,
         });
       } else if (assignOrderType === "COLLECT") {
-        console.log(assignOrderType, "ASSIGN ORDER TYPE IN ELSE IF");
         response = await AssignReturnOrder({
           variables,
         });
       }
 
       const { errors, data } = response;
-
-      console.log("RESULT = ", data);
-      console.log("ERRORS = ", errors);
 
       const success = data?.orderAssignDeliveryAgent?.status
         ? data?.orderAssignDeliveryAgent?.status
@@ -685,16 +811,20 @@ function OrderProductDetails({
 
       if (success) {
         toast.success(message);
+        setVillageId("");
+        setvillages([]);
+        setGovernateId("");
+        setVendorId("");
+        setIsCustomize(false);
         toggleDeliveryAssignModal();
         orderProdcutsRefetch();
       }
     } catch (error: any) {
-      console.log(error, "ERROR");
-      toast.error("Can't Assign Order !");
+      console.log(error, "ERROR IN ASSIGN ORDER !!");
+      toast.error(error?.message);
     }
   };
 
-  console.log(deliveryAgentList, "DELIVERY AGENT LIST ");
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       <Card
@@ -829,7 +959,7 @@ function OrderProductDetails({
                     <CiEdit size={20} />
                     Edit Product
                   </Dropdown.Item>
-                  {/* <Dropdown.Item
+                  <Dropdown.Item
                     onClick={() => handleAssignClick(product?._id, "DELIVERY")}
                     style={{ display: "flex", gap: 5 }}
                     disabled={product?.shippingStatus !== "SHIPPED"}
@@ -844,7 +974,7 @@ function OrderProductDetails({
                   >
                     <CiDeliveryTruck size={20} />
                     Assign Delivery Boy (Return)
-                  </Dropdown.Item> */}
+                  </Dropdown.Item>
                   <Dropdown.Divider />
                   <Dropdown.Item
                     onClick={toggleInvoiceModal}
@@ -1463,7 +1593,6 @@ function OrderProductDetails({
                 Are you sure you want to change the status to{" "}
                 <b>{capitalCase(shippingStatus)} </b>?
               </p>
-
               <FormGroup>
                 <Label for="shippedDate">Enter Shipped Date</Label>
                 <Input
@@ -1475,6 +1604,18 @@ function OrderProductDetails({
                   onChange={(e) => setShippedDate(e.target.value)}
                 />
               </FormGroup>
+              {/* <div className="form-check form-switch mb-3" dir="ltr">
+                <input
+                  checked={isCustomize}
+                  type="checkbox"
+                  className="form-check-input"
+                  id="customSwitch1"
+                  onChange={(e: any) => setIsCustomize(e.target.checked)}
+                />
+                <label className="form-check-label" htmlFor="customSwitch1">
+                  Customize Delivery Agent Type ?
+                </label>
+              </div>
               <FormGroup>
                 <Label for="agentType">Agent Type</Label>
                 <Input
@@ -1482,6 +1623,7 @@ function OrderProductDetails({
                   name="agentType"
                   id="agentType"
                   value={deliveryAgentType}
+                  disabled={!isCustomize}
                   onChange={(e: any) => setDeliveryAgentType(e?.target?.value)}
                 >
                   <option value="" disabled>
@@ -1494,6 +1636,92 @@ function OrderProductDetails({
                   ))}
                 </Input>
               </FormGroup>
+              {isCustomize && (
+                <>
+                  {deliveryAgentType === "Vendor" && (
+                    <FormGroup>
+                      <div>
+                        <Label className="form-label pt-2">Select Vendor</Label>
+                        <Input
+                          name="vendorID"
+                          placeholder="Select Vendor"
+                          id="vendorID"
+                          type="select"
+                          value={vendorId || ""}
+                          onChange={(e) => setVendorId(e.target.value)}
+                          // onBlur={formik.handleBlur}
+                          defaultValue={
+                            vendorDataResponse?.getAllVendorsRecordsByAdmin
+                              ?.records[0]?._id
+                          }
+                        >
+                          <option value="" disabled>
+                            Select Vendor
+                          </option>
+                          {vendorDataResponse &&
+                            vendorDataResponse?.getAllVendorsRecordsByAdmin &&
+                            vendorDataResponse?.getAllVendorsRecordsByAdmin
+                              ?.records?.length > 0 &&
+                            vendorDataResponse.getAllVendorsRecordsByAdmin?.records.map(
+                              (item: any) => (
+                                <option key={item._id} value={item._id}>
+                                  {item.fullName}
+                                </option>
+                              )
+                            )}
+                        </Input>
+                      </div>
+                    </FormGroup>
+                  )}
+                  <FormGroup>
+                    <Label className="form-label pt-2">
+                      Select Governorate
+                    </Label>
+                    <Input
+                      name="governorateID"
+                      placeholder="Select Governate"
+                      id="governorateID"
+                      type="select"
+                      value={governateId || ""}
+                      onChange={(e) => handleGovernorateChange(e.target.value)}
+                    >
+                      <option value="" disabled>
+                        Select Governate
+                      </option>
+                      {getLocation?.getLocationsData &&
+                        getLocation?.getLocationsData?.length &&
+                        getLocation?.getLocationsData?.map((gov: any) => (
+                          <option key={gov._id} value={gov._id}>
+                            {gov.name}
+                          </option>
+                        ))}
+                    </Input>
+                  </FormGroup>
+                  <FormGroup>
+                    <Label className="form-label pt-2">Select Wilayat</Label>
+                    <Input
+                      name="villageID"
+                      placeholder="Select Wilayat"
+                      id="villageID"
+                      type="select"
+                      value={villageId || ""}
+                      onChange={(e) => setVillageId(e.target.value)}
+                      disabled={!villages.length}
+                    >
+                      <option value="" disabled>
+                        Select Wilayat
+                      </option>
+                      {villages &&
+                        villages?.length &&
+                        villages?.map((wil: any) => (
+                          <option key={wil._id} value={wil._id}>
+                            {wil.name}
+                          </option>
+                        ))}
+                    </Input>
+                  </FormGroup>
+                </>
+              )}
               <Col>
                 <FormGroup>
                   <Label for="deliveryBoy">Select Delivery Boy</Label>
@@ -1501,7 +1729,7 @@ function OrderProductDetails({
                     id="deliveryBoy"
                     name="deliveryBoy"
                     type="select"
-                    value={deliveryBoyId}
+                    // value={deliveryBoyId}
                     placeholder="Select Delivery Boy"
                     onChange={(e: any) => {
                       const selectedValue = e?.target?.value; // The ID (value) of the selected option
@@ -1511,27 +1739,41 @@ function OrderProductDetails({
                       setDeliveryBoyName(selectedName); // Save name in state
                     }}
                   >
-                    <option value="" disabled>
+                    <option value="" selected disabled>
                       Select Delivery Boy
                     </option>
                     {deliveryAgentList &&
-                      deliveryAgentList?.getProductDeliveryTypeDeliveryAgents &&
-                      deliveryAgentList?.getProductDeliveryTypeDeliveryAgents
-                        ?.deliveryAgents?.length > 0 &&
-                      deliveryAgentList?.getProductDeliveryTypeDeliveryAgents?.deliveryAgents?.map(
-                        (agent: any) => (
-                          <option
-                            key={agent?._id}
-                            id={agent?.fullName}
-                            value={agent?._id}
-                          >
-                            {agent?.fullName}
-                          </option>
+                    deliveryAgentList?.getProductDeliveryTypeDeliveryAgents &&
+                    deliveryAgentList?.getProductDeliveryTypeDeliveryAgents
+                      ?.deliveryAgents?.length > 0
+                      ? deliveryAgentList?.getProductDeliveryTypeDeliveryAgents?.deliveryAgents?.map(
+                          (agent: any) => (
+                            <option
+                              key={agent?._id}
+                              id={agent?.fullName}
+                              value={agent?._id}
+                            >
+                              {agent?.fullName}
+                            </option>
+                          )
                         )
-                      )}
+                      : deliveryAgentListCustomize &&
+                        deliveryAgentListCustomize?.getDeliveryAgentlistCustomizOrderAssigen
+                      ? deliveryAgentListCustomize?.getDeliveryAgentlistCustomizOrderAssigen?.map(
+                          (agent: any) => (
+                            <option
+                              key={agent?._id}
+                              id={agent?.fullName}
+                              value={agent?._id}
+                            >
+                              {agent?.fullName}
+                            </option>
+                          )
+                        )
+                      : []}
                   </Input>
                 </FormGroup>
-              </Col>
+              </Col> */}
             </>
           )}
           {shippingStatus === "DELIVERED" && (
@@ -1843,7 +2085,175 @@ function OrderProductDetails({
           Assign Delivery Boy
         </ModalHeader>
         <ModalBody>
+          <div className="form-check form-switch mb-3" dir="ltr">
+            <input
+              checked={isCustomize}
+              type="checkbox"
+              className="form-check-input"
+              id="customSwitch1"
+              onChange={(e: any) => setIsCustomize(e.target.checked)}
+            />
+            <label className="form-check-label" htmlFor="customSwitch1">
+              Customize Delivery Agent Type ?
+            </label>
+          </div>
           <FormGroup>
+            <Label for="agentType">Agent Type</Label>
+            <Input
+              type="select"
+              name="agentType"
+              id="agentType"
+              value={deliveryAgentType}
+              disabled={!isCustomize}
+              onChange={(e: any) => setDeliveryAgentType(e?.target?.value)}
+            >
+              <option value="" disabled>
+                Select Delivery Agent Type
+              </option>
+              {["ArabDeals", "Vendor", "ThirdParty"].map((el) => (
+                <option key={el} value={el}>
+                  {el}
+                </option>
+              ))}
+            </Input>
+          </FormGroup>
+          {isCustomize && (
+            <>
+              {deliveryAgentType === "Vendor" && (
+                <FormGroup>
+                  <div>
+                    <Label className="form-label pt-2">Select Vendor</Label>
+                    <Input
+                      name="vendorID"
+                      placeholder="Select Vendor"
+                      id="vendorID"
+                      type="select"
+                      value={vendorId || ""}
+                      onChange={(e) => setVendorId(e.target.value)}
+                      // onBlur={formik.handleBlur}
+                      defaultValue={
+                        vendorDataResponse?.getAllVendorsRecordsByAdmin
+                          ?.records[0]?._id
+                      }
+                    >
+                      <option value="" disabled>
+                        Select Vendor
+                      </option>
+                      {vendorDataResponse &&
+                        vendorDataResponse?.getAllVendorsRecordsByAdmin &&
+                        vendorDataResponse?.getAllVendorsRecordsByAdmin?.records
+                          ?.length > 0 &&
+                        vendorDataResponse.getAllVendorsRecordsByAdmin?.records.map(
+                          (item: any) => (
+                            <option key={item._id} value={item._id}>
+                              {item.fullName}
+                            </option>
+                          )
+                        )}
+                    </Input>
+                  </div>
+                </FormGroup>
+              )}
+              <FormGroup>
+                <Label className="form-label pt-2">Select Governorate</Label>
+                <Input
+                  name="governorateID"
+                  placeholder="Select Governate"
+                  id="governorateID"
+                  type="select"
+                  value={governateId || ""}
+                  onChange={(e) => handleGovernorateChange(e.target.value)}
+                >
+                  <option value="" disabled>
+                    Select Governate
+                  </option>
+                  {getLocation?.getLocationsData &&
+                    getLocation?.getLocationsData?.length &&
+                    getLocation?.getLocationsData?.map((gov: any) => (
+                      <option key={gov._id} value={gov._id}>
+                        {gov.name}
+                      </option>
+                    ))}
+                </Input>
+              </FormGroup>
+              <FormGroup>
+                <Label className="form-label pt-2">Select Wilayat</Label>
+                <Input
+                  name="villageID"
+                  placeholder="Select Wilayat"
+                  id="villageID"
+                  type="select"
+                  value={villageId || ""}
+                  onChange={(e) => setVillageId(e.target.value)}
+                  disabled={!villages.length}
+                >
+                  <option value="" disabled>
+                    Select Wilayat
+                  </option>
+                  {villages &&
+                    villages?.length &&
+                    villages?.map((wil: any) => (
+                      <option key={wil._id} value={wil._id}>
+                        {wil.name}
+                      </option>
+                    ))}
+                </Input>
+              </FormGroup>
+            </>
+          )}
+          <Col>
+            <FormGroup>
+              <Label for="deliveryBoy">Select Delivery Boy</Label>
+              <Input
+                id="deliveryBoy"
+                name="deliveryBoy"
+                type="select"
+                // value={deliveryBoyId}
+                placeholder="Select Delivery Boy"
+                onChange={(e: any) => {
+                  const selectedValue = e?.target?.value; // The ID (value) of the selected option
+                  const selectedName =
+                    e?.target?.options[e?.target?.selectedIndex]?.text; // The name (text) of the selected option
+                  setDeliveryBoyId(selectedValue); // Save ID in state
+                  setDeliveryBoyName(selectedName); // Save name in state
+                }}
+              >
+                <option value="" selected disabled>
+                  Select Delivery Boy
+                </option>
+                {deliveryAgentList &&
+                deliveryAgentList?.getProductDeliveryTypeDeliveryAgents &&
+                deliveryAgentList?.getProductDeliveryTypeDeliveryAgents
+                  ?.deliveryAgents?.length > 0
+                  ? deliveryAgentList?.getProductDeliveryTypeDeliveryAgents?.deliveryAgents?.map(
+                      (agent: any) => (
+                        <option
+                          key={agent?._id}
+                          id={agent?.fullName}
+                          value={agent?._id}
+                        >
+                          {agent?.fullName}
+                        </option>
+                      )
+                    )
+                  : deliveryAgentListCustomize &&
+                    deliveryAgentListCustomize?.getDeliveryAgentlistCustomizOrderAssigen
+                  ? deliveryAgentListCustomize?.getDeliveryAgentlistCustomizOrderAssigen?.map(
+                      (agent: any) => (
+                        <option
+                          key={agent?._id}
+                          id={agent?.fullName}
+                          value={agent?._id}
+                        >
+                          {agent?.fullName}
+                        </option>
+                      )
+                    )
+                  : []}
+              </Input>
+            </FormGroup>
+          </Col>
+          {/* <FormGroup>
             <Label for="agentType">Agent Type</Label>
             <Input
               type="select"
@@ -1899,7 +2309,7 @@ function OrderProductDetails({
                   )}
               </Input>
             </FormGroup>
-          </Col>
+          </Col> */}
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={handleAssignOrder}>
