@@ -27,9 +27,10 @@ interface FilterData {
 interface DynamicFilterProps {
     filterOptions: FilterOption[];
     onSubmit: (formData: FilterData) => void;
+    toggle?:() => void
 }
 
-const DynamicFilter: React.FC<DynamicFilterProps> = ({ filterOptions, onSubmit }) => {
+const DynamicFilter: React.FC<DynamicFilterProps> = ({ filterOptions, onSubmit,toggle }) => {
     const initialFormData: FilterData = {};
     filterOptions.forEach(option => {
         initialFormData[option.name] = '';
@@ -50,6 +51,7 @@ const DynamicFilter: React.FC<DynamicFilterProps> = ({ filterOptions, onSubmit }
     const handleReset = () => {
         setFormData(initialFormData);
         onSubmit(initialFormData);
+        toggle?.()
     };
 
     const chunkArray = (array: any[], size: number) => {

@@ -308,7 +308,7 @@ const SettlementPage: React.FC = () => {
 
                                       <Link to={`/delivery-boys/view?id=${item._id}`}>
                                         <Button
-                                          color="primary"
+                                          color="dark"
                                           size="sm"
                                         >
                                           Profile
@@ -331,7 +331,6 @@ const SettlementPage: React.FC = () => {
                   </Row>
                 </CardBody>
 
-                {/* pagination does not added */}
 
                 <Row style={{ marginRight: "10px" }}>
                   <Col>

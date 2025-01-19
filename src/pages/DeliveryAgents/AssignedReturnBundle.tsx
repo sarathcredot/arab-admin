@@ -7,6 +7,7 @@ import DynamicFilter from "src/components/filter/DynamicFilter";
 import ExportExcelList from "src/components/orders/ExportExcelList";
 import SettlementExcelList from "./ExcelLists/SettlementExcelList";
 import Loader from "src/components/Common/Loader";
+import noDataSvg from "../../assets/images/noDataSvg.svg";
 
 interface Props {
   agentId: string | null;
@@ -282,12 +283,17 @@ const AssignedReturnBundle: React.FC<Props> = ({ agentId, setView, setDATE }) =>
             style={{
               display: "flex",
               flexDirection: "column",
+              gap: 15,
+              padding: 40,
               alignItems: "center",
               justifyContent: "center",
-              marginTop: "20px",
             }}
           >
-            <p>No Orders Assigned</p>
+            <img
+              src={noDataSvg}
+              alt="no data image"
+            />
+            <h4>No Return Orders Assigned</h4>
           </div>
         )}
       </div>

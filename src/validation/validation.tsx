@@ -93,3 +93,19 @@ export const SettlementValidation = yup.object({
       (value) => value > 0 // Custom validation logic
     ),
 });
+
+// coupon validation
+
+export const CouponValidation = yup.object({
+  name: yup.string().required("Please enter coupon name"),
+  code: yup.string().required("Please enter coupon code"),
+  description: yup.string().required("Please enter description"),
+  discountType: yup.string().required("Please select discount type"),
+  // discountValue: yup.string().required("Please enter discount amount"),
+  minOrderAmount: yup.string().required("Please enter minimum order amount"),
+  usageLimit: yup.string().required("Please enter total redemptions"),
+  usagePerUserLimit: yup.string().required("Please enter per user limit"),
+  // orderCount: yup.string().required("Please enter nth order"),
+  startDate: yup.string().required("Please enter start date"),
+  // expiryDate: yup.string().required("Please enter coupon code"),
+});

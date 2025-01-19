@@ -19,15 +19,7 @@ const Confirmation = ({ isOpen, toggle, submit }: any) => {
           padding: "30px",
         }}
       >
-        <h5
-          style={
-            {
-              // textAlign: "center",
-            }
-          }
-        >
-          Are you sure you want to update your availability status?
-        </h5>
+        <h5>Are you sure you want to update your availability status?</h5>
         <div className=" d-flex justify-content-end gap-2">
           <CustomButton
             name="Cancel"

@@ -63,13 +63,13 @@ const SuspendDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, agentId, isActive
 
         }}>
           {isActive ? (
-            <p>
+            <h5>
               Are you sure you want to <b>Suspend</b> this Delivery Boy ? Please confirm your action.
-            </p>
+            </h5>
           ) : (
-            <p>
+            <h5>
               Are you sure you want to <b>activate</b> this delivery boy? Please confirm your action.
-            </p>
+            </h5>
           )}
 
           {/* <ModalFooter> */}

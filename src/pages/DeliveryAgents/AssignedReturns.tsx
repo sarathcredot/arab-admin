@@ -9,6 +9,7 @@ import SettlementExcelList from "./ExcelLists/SettlementExcelList";
 import Loader from "src/components/Common/Loader";
 import { Link } from "react-router-dom";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
+import noDataSvg from "../../assets/images/noDataSvg.svg";
 
 interface Props {
   agentId: string | null;
@@ -393,16 +394,21 @@ const AssignedReturns: React.FC<Props> = ({ agentId, DATE }) => {
         </div>
       ) : (
         <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: "20px",
-          }}
-        >
-          <p>No Orders Assigned</p>
-        </div>
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 15,
+              padding: 40,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <img
+              src={noDataSvg}
+              alt="no data image"
+            />
+            <h4>No Return Orders Assigned</h4>
+          </div>
       )}
     </>
   );
