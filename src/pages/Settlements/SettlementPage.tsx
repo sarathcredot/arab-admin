@@ -167,7 +167,8 @@ const SettlementPage: React.FC = () => {
   ];
 
   useEffect(() => {
-    if (agentDataResponse && agentDataResponse) {
+    if (agentDataResponse && agentDataResponse?.getAllAgentData) {
+      console.log("SETTLEMENTS = ",agentDataResponse)
       setAgentData(agentDataResponse?.getAllAgentData?.records);
     }
     refetchAgent();

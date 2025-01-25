@@ -104,7 +104,7 @@ export const CouponValidation = yup.object({
   // discountValue: yup.string().required("Please enter discount amount"),
   minOrderAmount: yup.string().required("Please enter minimum order amount"),
   usageLimit: yup.string().required("Please enter total redemptions"),
-  usagePerUserLimit: yup.string().required("Please enter per user limit"),
+  // usagePerUserLimit: yup.string().required("Please enter per user limit"),
   // orderCount: yup.string().required("Please enter nth order"),
   startDate: yup.string().required("Please enter start date"),
   // expiryDate: yup.string().required("Please enter coupon code"),

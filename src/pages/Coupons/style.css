@@ -1,5 +1,0 @@
-input[type="number"]{
-    ::-webkit-slider-thumb{
-        display: none;
-    }
-}
