@@ -349,51 +349,51 @@ const All = () => {
                           <td>{moment(order.orderDate).format("ll")}</td>
                           <td>{order.orderId}</td>
                           <td>
-                            {order?.username ||
-                              (order?.shippingAddress?.firstname && (
-                                <div
+                            {(order?.username ||
+                              order?.shippingAddress?.firstname) && (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  gap: "10px",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                {order?.username
+                                  ? capitalCase(order?.username)
+                                  : order?.shippingAddress?.firstname
+                                  ? capitalCase(
+                                      order?.shippingAddress?.firstname
+                                    )
+                                  : ""}
+                                <CustomButton
+                                  outline
+                                  disabled={
+                                    copiedPage === currentPage &&
+                                    copiedIndex === index
+                                  }
+                                  name=""
+                                  onClick={() =>
+                                    copyToClipboard(order.userId, index)
+                                  }
+                                  icon="mingcute:copy-line"
                                   style={{
                                     display: "flex",
-                                    gap: "10px",
+                                    flexDirection: "row",
                                     alignItems: "center",
-                                    justifyContent: "space-between",
+                                    justifyContent: "center",
+                                    backgroundColor: "black",
+                                    color: "white",
+                                    width: "30px",
+                                    height: "30px",
+                                    borderRadius: "50%    ",
+                                    gap: "5px",
+                                    fontSize: "10px",
+                                    border: "none",
                                   }}
-                                >
-                                  {order?.username
-                                    ? capitalCase(order?.username)
-                                    : order?.shippingAddress?.firstname
-                                    ? capitalCase(
-                                        order?.shippingAddress?.firstname
-                                      )
-                                    : ""}
-                                  <CustomButton
-                                    outline
-                                    disabled={
-                                      copiedPage === currentPage &&
-                                      copiedIndex === index
-                                    }
-                                    name=""
-                                    onClick={() =>
-                                      copyToClipboard(order.userId, index)
-                                    }
-                                    icon="mingcute:copy-line"
-                                    style={{
-                                      display: "flex",
-                                      flexDirection: "row",
-                                      alignItems: "center",
-                                      justifyContent: "center",
-                                      backgroundColor: "black",
-                                      color: "white",
-                                      width: "30px",
-                                      height: "30px",
-                                      borderRadius: "50%    ",
-                                      gap: "5px",
-                                      fontSize: "10px",
-                                      border: "none",
-                                    }}
-                                  />
-                                </div>
-                              ))}
+                                />
+                              </div>
+                            )}
                           </td>
                           <td>{order.paymentMode}</td>
                           <td>

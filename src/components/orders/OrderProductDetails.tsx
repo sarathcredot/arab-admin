@@ -247,7 +247,7 @@ function OrderProductDetails({
           },
         },
       });
-      
+
       if (result.data.updateAdminOrderProduct) {
         orderProdcutsRefetch();
         setShippingModal(!shippingModal);
@@ -258,7 +258,7 @@ function OrderProductDetails({
         setCanceledDate("");
         setCancelComment("");
         setPaymentStatus("");
-        if(shippingStatus === "SHIPPED"){
+        if (shippingStatus === "SHIPPED") {
           toggleDeliveryAssignModal();
         }
       }
@@ -336,7 +336,7 @@ function OrderProductDetails({
         setReturnDate("");
         setReturnRejectDate("");
         setReturnRequestDate("");
-        if (returnStatus === "APPROVED"){
+        if (returnStatus === "APPROVED") {
           toggleDeliveryAssignModal();
         }
       }
@@ -775,13 +775,14 @@ function OrderProductDetails({
 
   const handleAssignOrder = async () => {
     try {
-      if (!orderItemId && !product?._id) throw new Error("Can't find order Item !");
+      if (!orderItemId && !product?._id)
+        throw new Error("Can't find order Item !");
       if (!deliveryBoyId) throw new Error("Select a Delivery Agent!");
       if (!deliveryBoyName) throw new Error("Select a Delivery Agent!");
 
       const variables = {
         input: {
-          orderItemId: orderItemId ? orderItemId: product?._id,
+          orderItemId: orderItemId ? orderItemId : product?._id,
           deliveryAgentId: deliveryBoyId,
           deliveryAgentName: deliveryBoyName,
           bundleCount: bundleCount,
@@ -2082,7 +2083,7 @@ function OrderProductDetails({
 
       <Modal isOpen={deliveryAssignModal} toggle={toggleDeliveryAssignModal}>
         <ModalHeader toggle={toggleDeliveryAssignModal}>
-          Assign Delivery Boy
+          Assign Delivery Boy {assignOrderType === "COLLECT" && " (Return)"}
         </ModalHeader>
         <ModalBody>
           <div className="form-check form-switch mb-3" dir="ltr">
@@ -2097,26 +2098,42 @@ function OrderProductDetails({
               Customize Delivery Agent Type ?
             </label>
           </div>
-          <FormGroup>
-            <Label for="agentType">Agent Type</Label>
-            <Input
-              type="select"
-              name="agentType"
-              id="agentType"
-              value={deliveryAgentType}
-              disabled={!isCustomize}
-              onChange={(e: any) => setDeliveryAgentType(e?.target?.value)}
-            >
-              <option value="" disabled>
-                Select Delivery Agent Type
-              </option>
-              {["ArabDeals", "Vendor", "ThirdParty"].map((el) => (
-                <option key={el} value={el}>
-                  {el}
-                </option>
-              ))}
-            </Input>
-          </FormGroup>
+          <div style={{display: "flex", gap: "2%"}}>
+            <div style={{ width: "60%" }}>
+              <FormGroup>
+                <Label for="agentType">Agent Type</Label>
+                <Input
+                  type="select"
+                  name="agentType"
+                  id="agentType"
+                  value={deliveryAgentType}
+                  disabled={!isCustomize}
+                  onChange={(e: any) => setDeliveryAgentType(e?.target?.value)}
+                >
+                  <option value="" disabled>
+                    Select Delivery Agent Type
+                  </option>
+                  {["ArabDeals", "Vendor", "ThirdParty"].map((el) => (
+                    <option key={el} value={el}>
+                      {el}
+                    </option>
+                  ))}
+                </Input>
+              </FormGroup>
+            </div>
+            <div style={{width: "38%"}}>
+              <FormGroup>
+                <Label for="agentType">Bundle Count</Label>
+                <Input
+                  type="text"
+                  name="bundleCount"
+                  id="bundleCount"
+                  value={bundleCount}
+                  onChange={(e: any) => setBundleCount(e?.target?.value)}
+                />
+              </FormGroup>
+            </div>
+          </div>
           {isCustomize && (
             <>
               {deliveryAgentType === "Vendor" && (
