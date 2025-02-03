@@ -154,6 +154,9 @@ import DeliveryBoys from "src/pages/DeliveryAgents/DeliveryBoys";
 import ViewDeliveryBoys from "src/pages/DeliveryAgents/ViewDeliveryBoys";
 import SettlementPage from "src/pages/Settlements/SettlementPage";
 import Coupons from "src/pages/Coupons";
+import CouponDetailPage from "src/pages/Coupons/CouponDetailPage";
+import Roles from "src/pages/MultiAdmin/Roles/Roles";
+import Admins from "src/pages/MultiAdmin/Admins/Admins";
 interface RouteProps {
   path: string;
   component: any;
@@ -163,6 +166,7 @@ interface RouteProps {
 const adminRoutes: Array<RouteProps> = [
 
 
+  { path: "/100", component: <UiTabsAccordions /> },
   { path: "/1", component: <Inbox /> },
   { path: "/2", component: <EmailRead /> },
   { path: "/3", component: <InvoiceList /> },
@@ -187,6 +191,7 @@ const adminRoutes: Array<RouteProps> = [
   { path: "/22", component: <Notifications/> },
   { path: "/23", component: <IconDripicons/> },
   { path: "/24", component: <IconFontawesome/> },
+  { path: "/25", component: <UiToast/> },
 
 
 
@@ -200,8 +205,12 @@ const adminRoutes: Array<RouteProps> = [
 
   //dashboard
   { path: "/", exact: true, component: <Navigate to="/dashboard" /> },
+<<<<<<< HEAD
  
  
+=======
+  { path: "/register", exact: true, component: <Register /> },
+>>>>>>> c1fd6d0ced766ff479b71da643affd254f684129
   { path: "/dashboard", component: <Dashboard /> },
 
  
@@ -215,7 +224,7 @@ const adminRoutes: Array<RouteProps> = [
   { path: "/add-variant", component: <AddVariant /> },
   { path: "/cmslisting", component: <CmsListing /> },
   { path: "/cmstwolisting", component: <CmstwoListing /> },
-  { path: "/cms/details", component: <CmsRecordDetails /> },
+  { path: "/cmslisting/details", component: <CmsRecordDetails /> },
   { path: "/cmstwo/details", component: <CmsTwoRecordDetails /> },
   { path: "/add-cms", component: <AddCmsSection /> },
   { path: "/add-cms2", component: <AddCmstwosection /> },
@@ -269,6 +278,12 @@ const adminRoutes: Array<RouteProps> = [
   // COUPONS
 
   { path: "/coupons", component: <Coupons /> },
+  { path: "/coupons/detail", component: <CouponDetailPage /> },
+  
+  // Admin Management
+
+  { path: "/admins", component: <Admins /> },
+  { path: "/roles", component: <Roles /> },
 
   { path: "*", component: <PageNotFound /> },
 ];

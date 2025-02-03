@@ -96,7 +96,11 @@ const App = () => {
           <Route
             path={route.path}
             element={
+<<<<<<< HEAD
               <Authmiddleware path={route.path}  >
+=======
+              <Authmiddleware path={route.path}>
+>>>>>>> c1fd6d0ced766ff479b71da643affd254f684129
                 <Layout>{route.component}</Layout>
               </Authmiddleware>
             }

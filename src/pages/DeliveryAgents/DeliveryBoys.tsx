@@ -261,9 +261,9 @@ const DeliveryBoys: React.FC = () => {
                                 <th>Full Name</th>
                                 <th>Mobile Number</th>
                                 <th>Agent Type</th>
-                                <th style={{ width: "100px" }}>Availability</th>
-                                <th style={{ width: "100px" }}>Status</th>
-                                <th style={{ width: "100px" }}>Action</th>
+                                <th style={{ width: "100px",textAlign:"center" }}>Availability</th>
+                                <th style={{ width: "100px",textAlign:"center" }}>Status</th>
+                                <th style={{ width: "100px",textAlign:"center" }}>Action</th>
                               </tr>
                             </thead>
                             <tbody>

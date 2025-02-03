@@ -217,7 +217,7 @@ const CmsListing = () => {
                                         size="sm"
                                         tag={Link}
                                         to={{
-                                          pathname: "/cms/details/",
+                                          pathname: "/cmslisting/details/",
                                           search: `?_id=${cmsRecord._id}`,
                                         }}
                                       >
