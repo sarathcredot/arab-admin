@@ -96,7 +96,7 @@ const App = () => {
           <Route
             path={route.path}
             element={
-              <Authmiddleware>
+              <Authmiddleware path={route.path}  >
                 <Layout>{route.component}</Layout>
               </Authmiddleware>
             }

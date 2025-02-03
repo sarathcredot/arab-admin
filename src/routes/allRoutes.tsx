@@ -200,11 +200,15 @@ const adminRoutes: Array<RouteProps> = [
 
   //dashboard
   { path: "/", exact: true, component: <Navigate to="/dashboard" /> },
+ 
+ 
   { path: "/dashboard", component: <Dashboard /> },
 
+ 
+    { path: "/product", component: <Productlisting /> },
 
+  
 
-  { path: "/product", component: <Productlisting /> },
   { path: "/product/details", component: <View /> },
   { path: "/product/variant", component: <VariantListing /> },
   { path: "/add-product", component: <Addproduct /> },

@@ -7,9 +7,16 @@ const Authmiddleware = (props: any) => {
   const navigate = useNavigate();
 
  const token = localStorage.getItem("admin_token");
+
+ 
  
 
   useEffect(() => {
+
+      console.log("curent path",props.path)
+
+      const allowPath=[,"vendors","orders"]
+
     const token = localStorage.getItem("admin_token");
     console.log("Checking token:", token);
     if (token) {
@@ -18,6 +25,17 @@ const Authmiddleware = (props: any) => {
       console.log("Redirecting to /login");
       navigate("/login");
     }
+
+    // const checkPath=props.path?.split("/")
+
+    // if(!allowPath.includes(checkPath[1])){
+
+    //    navigate("/dashboard")
+    // }
+
+
+
+
   }, [navigate]);
 
   
