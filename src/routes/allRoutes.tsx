@@ -205,12 +205,7 @@ const adminRoutes: Array<RouteProps> = [
 
   //dashboard
   { path: "/", exact: true, component: <Navigate to="/dashboard" /> },
-<<<<<<< HEAD
- 
- 
-=======
   { path: "/register", exact: true, component: <Register /> },
->>>>>>> c1fd6d0ced766ff479b71da643affd254f684129
   { path: "/dashboard", component: <Dashboard /> },
 
  

@@ -7,14 +7,7 @@ const Authmiddleware = (props: any) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const navigate = useNavigate();
 
-<<<<<<< HEAD
- const token = localStorage.getItem("admin_token");
-
- 
- 
-=======
   // const token = localStorage.getItem("admin_token");
->>>>>>> c1fd6d0ced766ff479b71da643affd254f684129
 
   useEffect(() => {
 
