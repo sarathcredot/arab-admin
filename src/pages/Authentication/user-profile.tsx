@@ -69,7 +69,14 @@ const UserProfile = () => {
 
   const [updateProfile] = useMutation(UPDATAE_PROFILE);
 
-  const { loading: adminLoading, error: adminError, data: adminData, refetch: adminRefetch } = useQuery(GET_ADMIN);
+  const {
+    loading: adminLoading,
+    error: adminError,
+    data: adminData,
+    refetch: adminRefetch,
+  } = useQuery(GET_ADMIN, {
+    fetchPolicy: "network-only",
+  });
 
   // useEffect(() => {
   //   const authUser: any = localStorage.getItem("authUser");

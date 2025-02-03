@@ -124,7 +124,7 @@ mutation LogoutAdmin {
     error: adminError,
     data: adminData,
     refetch: adminRefetch,
-  } = useQuery(GET_ADMIN);
+  } = useQuery(GET_ADMIN,{fetchPolicy:"network-only"});
   const token = localStorage.getItem("admin_token");
   const adminImage = localStorage.getItem("adminData");
   useEffect(() => {
