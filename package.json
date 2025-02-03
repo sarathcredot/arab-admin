@@ -121,7 +121,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -151,6 +151,7 @@
     "@types/lodash": "^4.14.196",
     "@types/react-bootstrap-table2-paginator": "^2.1.2",
     "@types/react-bootstrap-table2-toolkit": "^2.1.7",
-    "babel-plugin-transform-remove-console": "^6.9.4"
+    "babel-plugin-transform-remove-console": "^6.9.4",
+    "cross-env": "^7.0.3"
   }
 }
