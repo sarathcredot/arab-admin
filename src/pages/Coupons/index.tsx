@@ -387,6 +387,18 @@ const Coupons: React.FC = () => {
                                       >
                                         <MdDeleteOutline style={{ fontSize: "14px" }} />
                                       </Button>
+                                      <Link to={`/coupons/detail?id=${item._id}`}>
+                                      <Button
+                                        style={{
+                                          display: "block",
+                                          margin: "auto",
+                                        }}
+                                        color="dark"
+                                        size="sm"
+                                      >
+                                        View
+                                      </Button>
+                                    </Link>
                                     </div>
                                   </td>
                                 </tr>
@@ -399,7 +411,7 @@ const Coupons: React.FC = () => {
                   </Row>
                 </CardBody>
 
-                {/* pagination does not added */}
+                {/* pagination */}
 
                 <Row style={{ marginRight: "10px" }}>
                   <Col>

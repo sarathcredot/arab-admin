@@ -3,7 +3,7 @@ import { Modal, ModalBody } from "reactstrap";
 import { useNavigate } from "react-router";
 import CustomButton from "./Common/CustomButton";
 
-const Confirmation = ({ isOpen, toggle, submit }: any) => {
+const Confirmation = ({ isOpen, toggle, submit,text }: any) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -19,7 +19,7 @@ const Confirmation = ({ isOpen, toggle, submit }: any) => {
           padding: "30px",
         }}
       >
-        <h5>Are you sure you want to update your availability status?</h5>
+        <h5>{text}</h5>
         <div className=" d-flex justify-content-end gap-2">
           <CustomButton
             name="Cancel"
