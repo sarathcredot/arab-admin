@@ -404,10 +404,6 @@ body[data-layout=horizontal] .footer {
   margin: 0;
   
 }
-.metismenu# {
-  display: none !important;
-
-}
 .metismenu li {
   display: block;
   width: 100%;

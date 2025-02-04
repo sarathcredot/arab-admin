@@ -34,7 +34,7 @@ const AddRole = ({ isOpen, toggle, refetch }: any) => {
   const [permissions, setPermissions] = useState<any[]>([]);
   const [errors, setErrors] = useState({
     roleName: "",
-    description: "",
+    // description: "",
     permissions: "",
   });
 
@@ -110,13 +110,15 @@ const AddRole = ({ isOpen, toggle, refetch }: any) => {
         roleName: "Please enter role name",
       }));
       return;
-    } else if (!description.trim()) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        description: "Please enter description",
-      }));
-      return;
-    } else if (!permissions.length) {
+    }
+    //  else if (!description.trim()) {
+    //   setErrors((prevErrors) => ({
+    //     ...prevErrors,
+    //     description: "Please enter description",
+    //   }));
+    //   return;
+    // }
+     else if (!permissions.length) {
       setErrors((prevErrors) => ({
         ...prevErrors,
         permissions: "Please select atleast one access for this role",
@@ -221,13 +223,13 @@ const AddRole = ({ isOpen, toggle, refetch }: any) => {
                 value={description}
                 onChange={(e) => {
                   setDescription(e.target.value);
-                  setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    description: "",
-                  }));
+                  // setErrors((prevErrors) => ({
+                  //   ...prevErrors,
+                  //   description: "",
+                  // }));
                 }}
               />
-              {errors.description && <div className="text-danger">{errors.description}</div>}
+              {/* {errors.description && <div className="text-danger">{errors.description}</div>} */}
             </FormGroup>
             <Label>Access : </Label>
             <div className="mt-4 ">
