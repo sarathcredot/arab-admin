@@ -27,6 +27,7 @@ interface profilePic {
 interface AdminData {
   email: string;
   fullName: string;
+  accType: string;
   profilePic: profilePic;
 }
 const UserProfile = () => {
@@ -50,6 +51,7 @@ const UserProfile = () => {
         record {
           email
           fullName
+          accType
           profilePic {
             fileURL
           }
@@ -234,19 +236,23 @@ const UserProfile = () => {
                     {formik.touched.fullName && formik.errors.fullName && (
                       <div className="text-danger">{formik.errors.fullName}</div>
                     )}
-                    <Label className="form-label pt-2">Email</Label>
-                    <Input
-                      name="email"
-                      className="form-control"
-                      placeholder="Enter new email"
-                      type="text"
-                      value={formik.values?.email}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                    />
+                    {data?.accType === "SUPER_ADMIN" && (
+                      <>
+                        <Label className="form-label pt-2">Email</Label>
+                        <Input
+                          name="email"
+                          className="form-control"
+                          placeholder="Enter new email"
+                          type="text"
+                          value={formik.values?.email}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                        />
 
-                    {formik.touched.email && formik.errors.email && (
-                      <div className="text-danger">{formik.errors.email}</div>
+                        {formik.touched.email && formik.errors.email && (
+                          <div className="text-danger">{formik.errors.email}</div>
+                        )}
+                      </>
                     )}
 
                     <Label className="form-label pt-2">Password</Label>
