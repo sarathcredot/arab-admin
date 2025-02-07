@@ -322,7 +322,7 @@ const UserList = () => {
                                 <Td>{user.mobileNumber}</Td>
                                 <Td>
                                   <div style={{ display: "flex", gap: "15px", alignItems: "center", justifyContent: "space-between" }}>
-                                    <p style={{ margin: "0", width: "140px" }}>  {capitalCase(`${user.firstName || ""} ${user.lastName || ""}`)}</p>
+                                    <p style={{ margin: "0", width: "140px" }}>  {capitalCase(`${user.displayName || ""} ${user.firstName || ""}`)}</p>
                                     <CustomButton outline disabled={copiedPage === currentPage && copiedIndex === index} name=""
                                       onClick={() => copyToClipboard(user._id, index)}
                                       icon="mingcute:copy-line" style={{
