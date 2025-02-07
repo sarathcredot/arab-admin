@@ -1529,7 +1529,7 @@ function OrderProductDetails({
                           <div
                             key={el?._id}
                             className={styles.returnImageContainer}
-                            onClick={toggleReturnImageSwiperModal}
+                            // onClick={toggleReturnImageSwiperModal}
                           >
                             <img
                               key={el?._id}
