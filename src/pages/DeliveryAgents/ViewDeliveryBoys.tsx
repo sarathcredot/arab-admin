@@ -763,6 +763,7 @@ const ViewDeliveryBoys = () => {
         isOpen={openAvailable}
         toggle={handleToggle}
         submit={handleAvailability}
+        text={"Are you sure you want to update your availability status?"}
       />
     </>
   );

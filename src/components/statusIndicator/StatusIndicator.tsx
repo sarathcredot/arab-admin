@@ -44,6 +44,8 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({ status, variant = "de
         return "#005E2B";
       case "RETURNED TO WAREHOUSE":
         return "#005E2B";
+      case "Inactive":
+        return "#E30613";
       case "Rejected":
         return "#E30613";
       case "POSTPONED":

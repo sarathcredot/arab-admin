@@ -646,7 +646,7 @@ const AddCouponPopup: React.FC<Props> = ({ isOpen, toggle, refetch }) => {
                 </Col>
               </Row>
             </div>
-            <div style={{ marginBottom: "20px" }}></div>
+            {/* <div style={{ marginBottom: "20px" }}></div> */}
             <h5 style={{ fontSize: "15px", marginLeft: "8px" }}>Validity Period</h5>
             <Row style={{ margin: 5, background: "#fff", borderRadius: "5px", paddingTop: "8px" }}>
               <Col>

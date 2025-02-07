@@ -109,3 +109,21 @@ export const CouponValidation = yup.object({
   startDate: yup.string().required("Please enter start date"),
   // expiryDate: yup.string().required("Please enter coupon code"),
 });
+
+// admin validation
+
+export const AdminValidation = yup.object({
+  fullName: yup.string().required("Please enter admin name"),
+  email: yup.string().email("Invalid email address").required("Email is required"),
+  accType: yup.string().required("Please select account type"),
+  password: yup.string().required("Please enter password"),
+  image: yup.mixed().required("Please select a profile image"),
+ 
+});
+
+
+export const EditAdminValidation = yup.object({
+  fullName: yup.string().required("Please enter admin name"),
+  email: yup.string().email("Invalid email address").required("Email is required"),
+  accType: yup.string().required("Please select account type"),
+});

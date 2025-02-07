@@ -801,6 +801,9 @@ function OrderProductDetails({
         });
       }
 
+
+      if(response){
+
       const { errors, data } = response;
 
       const success = data?.orderAssignDeliveryAgent?.status
@@ -820,6 +823,7 @@ function OrderProductDetails({
         toggleDeliveryAssignModal();
         orderProdcutsRefetch();
       }
+    }
     } catch (error: any) {
       console.log(error, "ERROR IN ASSIGN ORDER !!");
       toast.error(error?.message);

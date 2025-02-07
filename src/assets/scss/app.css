@@ -402,6 +402,7 @@ body[data-layout=horizontal] .footer {
 }
 .metismenu {
   margin: 0;
+  
 }
 .metismenu li {
   display: block;
@@ -447,6 +448,10 @@ body[data-layout=horizontal] .footer {
 
 #sidebar-menu {
   padding: 10px 0 30px 0;
+  /* ::-webkit-scrollbar{
+    display:none; 
+  } */
+  
 }
 #sidebar-menu .mm-active > .has-arrow:after {
   transform: rotate(90deg);

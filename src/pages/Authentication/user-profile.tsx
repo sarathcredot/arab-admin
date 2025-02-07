@@ -1,17 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Alert,
-  CardBody,
-  Button,
-  Label,
-  Input,
-  FormFeedback,
-  Form,
-} from "reactstrap";
+import { Container, Row, Col, Card, Alert, CardBody, Button, Label, Input, FormFeedback, Form } from "reactstrap";
 
 // Formik Validation
 import * as Yup from "yup";
@@ -39,6 +27,7 @@ interface profilePic {
 interface AdminData {
   email: string;
   fullName: string;
+  accType: string;
   profilePic: profilePic;
 }
 const UserProfile = () => {
@@ -62,6 +51,7 @@ const UserProfile = () => {
         record {
           email
           fullName
+          accType
           profilePic {
             fileURL
           }
@@ -71,12 +61,12 @@ const UserProfile = () => {
   `;
 
   const UPDATAE_PROFILE = gql`
-   mutation UpdateAdminProfile($input: AdminEditProfileInput!, $image: Upload) {
-  updateAdminProfile(input: $input, image: $image) {
-    _id
-    message
-  }
-}
+    mutation UpdateAdminProfile($input: AdminEditProfileInput!, $image: Upload) {
+      updateAdminProfile(input: $input, image: $image) {
+        _id
+        message
+      }
+    }
   `;
 
   const [updateProfile] = useMutation(UPDATAE_PROFILE);
@@ -86,7 +76,9 @@ const UserProfile = () => {
     error: adminError,
     data: adminData,
     refetch: adminRefetch,
-  } = useQuery(GET_ADMIN);
+  } = useQuery(GET_ADMIN, {
+    fetchPolicy: "network-only",
+  });
 
   // useEffect(() => {
   //   const authUser: any = localStorage.getItem("authUser");
@@ -116,14 +108,13 @@ const UserProfile = () => {
 
     initialValues: {
       email: "",
-      fullName: '',
+      fullName: "",
       password: "",
       image: null,
     },
     validationSchema: Yup.object({
       email: Yup.string().email("Invalid email format"),
       password: Yup.string().min(6, "Password must be at least 6 characters"),
-
     }),
     onSubmit: async (values) => {
       try {
@@ -131,7 +122,7 @@ const UserProfile = () => {
           input: {
             email: values?.email,
             password: values?.password,
-            fullName: values?.fullName
+            fullName: values?.fullName,
           },
         };
 
@@ -147,10 +138,10 @@ const UserProfile = () => {
         });
 
         if (response) {
-          adminRefetch();
+          formik.resetForm();
           localStorage.setItem("adminData", JSON.stringify("admin_Arab Deals_Data updated"));
           toast.success("Successfully Updated Profile");
-          formik.resetForm();
+          adminRefetch();
         }
       } catch (error: any) {
         toast.error(error.message);
@@ -160,20 +151,19 @@ const UserProfile = () => {
   });
 
   useEffect(() => {
-    if (
-      adminData &&
-      adminData.getAdminRecord &&
-      adminData.getAdminRecord.record
-    ) {
-      setData(adminData.getAdminRecord.record);
+    if (adminData && adminData?.getAdminRecord && adminData?.getAdminRecord?.record) {
+      setData(adminData?.getAdminRecord?.record);
+      formik.setValues({
+        ...formik.values,
+        fullName: adminData?.getAdminRecord?.record?.fullName || "",
+        email: adminData?.getAdminRecord?.record?.email || "",
+      });
     }
   }, [adminData, adminRefetch]);
 
   // document.title = "Profile | Arab Deals";
 
-  const items = [
-    { text: "Dashboard", link: `/` },
-  ];
+  const items = [{ text: "Dashboard", link: `/` }];
 
   return (
     <React.Fragment>
@@ -181,7 +171,10 @@ const UserProfile = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumb */}
-          <Breadcrumb items={items} currentPage="Profile" />
+          <Breadcrumb
+            items={items}
+            currentPage="Profile"
+          />
 
           <Row>
             <Col lg="12">
@@ -243,19 +236,23 @@ const UserProfile = () => {
                     {formik.touched.fullName && formik.errors.fullName && (
                       <div className="text-danger">{formik.errors.fullName}</div>
                     )}
-                    <Label className="form-label pt-2">Email</Label>
-                    <Input
-                      name="email"
-                      className="form-control"
-                      placeholder="Enter new email"
-                      type="text"
-                      value={formik.values?.email}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                    />
+                    {data?.accType === "SUPER_ADMIN" && (
+                      <>
+                        <Label className="form-label pt-2">Email</Label>
+                        <Input
+                          name="email"
+                          className="form-control"
+                          placeholder="Enter new email"
+                          type="text"
+                          value={formik.values?.email}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                        />
 
-                    {formik.touched.email && formik.errors.email && (
-                      <div className="text-danger">{formik.errors.email}</div>
+                        {formik.touched.email && formik.errors.email && (
+                          <div className="text-danger">{formik.errors.email}</div>
+                        )}
+                      </>
                     )}
 
                     <Label className="form-label pt-2">Password</Label>
@@ -270,11 +267,12 @@ const UserProfile = () => {
                     />
 
                     {formik.touched.password && formik.errors.password && (
-                      <div className="text-danger">
-                        {formik.errors.password}
-                      </div>
+                      <div className="text-danger">{formik.errors.password}</div>
                     )}
-                    <Label for="profileImage " className="pt-2">
+                    <Label
+                      for="profileImage "
+                      className="pt-2"
+                    >
                       Pofile Pic
                     </Label>
                     <Input
@@ -283,10 +281,7 @@ const UserProfile = () => {
                       accept="image/*"
                       name="image"
                       onChange={(event) => {
-                        formik.setFieldValue(
-                          "image",
-                          event.currentTarget.files?.[0] || []
-                        );
+                        formik.setFieldValue("image", event.currentTarget.files?.[0] || []);
                       }}
                       onBlur={formik.handleBlur}
                     />
