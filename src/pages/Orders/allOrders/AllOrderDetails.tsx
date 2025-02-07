@@ -33,6 +33,8 @@ interface ShippingAddress {
   governorate?: string;
   village?: string;
   villageID?: string;
+  label?: string;
+  address?: string;
 }
 
 interface OrderPriceInfo {
@@ -117,40 +119,42 @@ const ALlOrderDetails = () => {
 
   const GET_ORDER = gql`
     query GetAdminOrderDetails($input: GetAdminOrderDetailsInput!) {
-      getAdminOrderDetails(input: $input) {
-        _id
-        orderId
-        userId
-        paymentMode
-        orderDate
-        orderStatus
-        username
-        shippingAddress {
-          _id
-          firstname
-          email
-          mobile
-          streetName
-          city
-          houseNumber
-          country
-          postCode
-          apartment
-          suite
-          unit
-          governorateID
-          governorate
-          village
-          villageID
-        }
-        orderPriceInfo {
-          totalMRP
-          totalSellingPrice
-          totalShippingCharge
-          totalRefundAmount
-        }
-      }
+  getAdminOrderDetails(input: $input) {
+    _id
+    orderId
+    userId
+    paymentMode
+    orderDate
+    orderStatus
+    username
+    shippingAddress {
+      _id
+      firstname
+      email
+      mobile
+      streetName
+      city
+      houseNumber
+      country
+      postCode
+      apartment
+      suite
+      unit
+      governorateID
+      governorate
+      village
+      villageID
+      address
+      label
     }
+    orderPriceInfo {
+      totalMRP
+      totalSellingPrice
+      totalShippingCharge
+      totalRefundAmount
+    }
+  }
+}
   `;
 
   const GET_ORDER_PRODUCTS = gql`
