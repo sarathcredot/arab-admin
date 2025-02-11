@@ -20,7 +20,6 @@ import RightSidebar from "../CommonForBoth/RightSidebar";
 import { useSelector, useDispatch } from "react-redux";
 import { createSelector } from "reselect";
 import DesktopView from "../DesktopView/DesktopView";
-import { ToastContainer } from "react-toastify";
 const Layout = (props: any) => {
   const ref = useRef<any>();
 
@@ -204,7 +203,6 @@ const Layout = (props: any) => {
         </div>
       </div>
       {showRightSidebar ? <RightSidebar onChangeLayoutMode={onChangeLayoutMode} /> : null}
-      <ToastContainer />
     </React.Fragment>
   );
 };

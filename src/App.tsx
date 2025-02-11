@@ -140,11 +140,11 @@ const App = () => {
         autoClose: 50000,
         style: {
           background:
-            data?.type === "new_order"
+            data?.type === "new_order" || data?.type === "return_order"
               ? "#deffe8"
               : data?.type === "low_stock"
               ? "#fffade"
-              : data?.type === "return_order"
+              : data?.type === "out_of_stock"
               ? "#ffdede"
               : "#ffffff",
         },
@@ -175,14 +175,11 @@ const App = () => {
         const decoded: any = jwtDecode(token);
         console.log({ decoded });
         if (decoded?.accType === "SUB_ADMIN") {
-          const hasPermission = data?.permissions?.some((item: any) =>
-            decoded?.role?.includes(item)
-          );
-    
+          const hasPermission = data?.permissions?.some((item: any) => decoded?.role?.includes(item));
+
           if (hasPermission) {
             handleMessage(data);
           }
-          
         } else {
           handleMessage(data);
         }
