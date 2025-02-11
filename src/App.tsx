@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
 // Import Routes all
 import { adminRoutes, authRoutes } from "./routes/allRoutes";
@@ -23,7 +23,11 @@ import "./assets/scss/preloader.scss";
 // import { initFirebaseBackend } from "./helpers/firebase_helper";
 
 // import fakeBackend from "./helpers/AuthType/fakeBackend";
-import { createSelector } from 'reselect';
+import { createSelector } from "reselect";
+import socket from "./socket";
+import { toast, ToastContainer } from "react-toastify";
+import { gql, useMutation } from "@apollo/client";
+import { jwtDecode } from "jwt-decode";
 
 //api config
 // import config from "./config";
@@ -44,8 +48,17 @@ import { createSelector } from 'reselect';
 // init firebase backend
 // initFirebaseBackend(firebaseConfig);
 
-const App = () => {
+const READ_NOTIFICATION = gql`
+  mutation AddNotificationViewPersonId($input: addNotificationViewPersonIdInput!) {
+    addNotificationViewPersonId(input: $input) {
+      status
+      msg
+    }
+  }
+`;
 
+const App = () => {
+  const navigate = useNavigate();
   const selectCalendar = createSelector(
     (state: any) => state.Layout,
     (state) => ({
@@ -54,8 +67,6 @@ const App = () => {
   );
 
   const { layoutType } = useSelector(selectCalendar);
-
-
 
   function getLayout() {
     let layoutCls: Object = VerticalLayout;
@@ -70,12 +81,121 @@ const App = () => {
     return layoutCls;
   }
 
+  const [ReadNotification] = useMutation(READ_NOTIFICATION);
+
+  const handleReadNotification = async (ID: any) => {
+    try {
+      const response = await ReadNotification({
+        variables: {
+          input: {
+            notificationId: ID,
+          },
+        },
+      });
+      console.log("READ RESPONSE = ", response);
+      if (response && response?.data?.addNotificationViewPersonId?.status) {
+        console.log(response?.data?.addNotificationViewPersonId?.msg);
+      } else {
+        console.log("not read");
+      }
+    } catch (error: any) {
+      console.log("ERROR = ", error);
+    }
+  };
+
   const Layout: any = getLayout();
+  const handleMessage = (data: any) => {
+    toast(
+      <div className="d-flex w-100">
+        <div className="flex-grow-1 text-white">
+          <h6 className="mt-0 mb-1">{data?.title}</h6>
+          <div className="font-size-12 text-muted d-flex flex-column w-100 ">
+            <p className="mb-1">{data?.message}</p>
+            {/* <p className="mb-0"><i className="mdi mdi-clock-outline" /> {"3 min ago"}{" "}</p> */}
+            <span
+              className="mb-0"
+              style={{ display: "flex", marginLeft: "auto" }}
+            >
+              {" "}
+              {"Tap to view"}{" "}
+            </span>
+          </div>
+        </div>
+      </div>,
+      {
+        className: "text-black",
+        onClick: () => {
+          navigate(
+            data?.type === "new_order"
+              ? `/orders/details?orderId=${data?.orderId}`
+              : data?.type === "low_stock"
+              ? `/product/details/?_id=${data?.productId}`
+              : data?.type === "return_order"
+              ? `/return-orders/details?orderId=${data?.orderId}&_id=${data?.productId}`
+              : "/"
+          );
+          handleReadNotification(data?._id);
+        },
+        closeOnClick: true,
+        autoClose: 50000,
+        style: {
+          background:
+            data?.type === "new_order"
+              ? "#deffe8"
+              : data?.type === "low_stock"
+              ? "#fffade"
+              : data?.type === "return_order"
+              ? "#ffdede"
+              : "#ffffff",
+        },
+        hideProgressBar: true,
+        position: "top-right",
+      }
+    );
+  };
 
+  useEffect(() => {
+    console.log("socket console", socket);
+    socket.on("connect", () => {
+      console.log("✅ Socket connected:", socket.id);
+    });
 
+    socket.on("connect_error", (err) => {
+      console.log("❌ Connection error:", err);
+    });
 
+    socket.on("disconnect", (reason) => {
+      console.log("⚠️ Socket disconnected:", reason);
+    });
 
+    // Listen for notifications
+    socket.on("new_notification", (data) => {
+      const token = localStorage.getItem("admin_token");
+      if (token) {
+        const decoded: any = jwtDecode(token);
+        console.log({ decoded });
+        if (decoded?.accType === "SUB_ADMIN") {
+          const hasPermission = data?.permissions?.some((item: any) =>
+            decoded?.role?.includes(item)
+          );
+    
+          if (hasPermission) {
+            handleMessage(data);
+          }
+          
+        } else {
+          handleMessage(data);
+        }
+      } else {
+        navigate("/login");
+      }
+      console.log("SOCKET = ", data);
+    });
 
+    return () => {
+      socket.off("notification");
+    };
+  }, [socket]);
 
   return (
     <React.Fragment>
@@ -103,8 +223,8 @@ const App = () => {
             key={idx}
           />
         ))}
-
       </Routes>
+      <ToastContainer />
     </React.Fragment>
   );
 };

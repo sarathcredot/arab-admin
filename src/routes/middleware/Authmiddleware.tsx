@@ -18,11 +18,15 @@ const Authmiddleware = (props: any) => {
       console.log({ checkPath });
       const decoded: any = jwtDecode(token);
       console.log(decoded);
-
-      if (decoded.accType !== "SUPER_ADMIN") {
-        if (!decoded?.role.includes(checkPath[1]) && checkPath[1] !== "profile") {
-          navigate("/dashboard");
+      if (decoded?.accType) {
+        if (decoded?.accType !== "SUPER_ADMIN") {
+          if (!decoded?.role?.includes(checkPath[1]) && checkPath[1] !== "profile") {
+            navigate("/dashboard");
+          }
         }
+      } else {
+        console.log("Redirecting to /login");
+        navigate("/login");
       }
     } else {
       console.log("Redirecting to /login");
