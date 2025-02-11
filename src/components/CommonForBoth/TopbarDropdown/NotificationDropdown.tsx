@@ -154,13 +154,15 @@ const NotificationDropdown = (props: any) => {
             {notifications && notifications?.length
               ? notifications?.map((item: any, index) => (
                   <Link
-                    to={
-                      item?.type === "new_order"
-                        ? `/orders/details?orderId=${item?.orderId}`
-                        : item?.type === "low_stock"
-                        ? `/product/details/?_id=${item?.productId}`
-                        : "/"
-                    }
+                  to={
+                    item?.type === "new_order"
+                      ? `/orders/details?orderId=${item?.orderId}`
+                      : item?.type === "low_stock" ||item?.type === "out_of_stock"
+                      ? `/product/details/?_id=${item?.productId}`
+                      : item?.type === "return_order"
+                      ? `/return-orders/details?orderId=${item?.orderId}&_id=${item?.productId}`
+                      : "/"
+                  }
                     key={index}
                     className="text-reset notification-item"
                     onClick={() => {
