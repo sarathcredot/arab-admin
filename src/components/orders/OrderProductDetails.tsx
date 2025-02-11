@@ -31,7 +31,7 @@ import moment from "moment";
 import Iconify from "../iconify/Iconify";
 import { capitalCase } from "change-case";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { fetchSignedUrl, useFetchSignedUrl } from "src/utils/fetchSignedUrl";
 import { Dropdown } from "react-bootstrap";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -2743,6 +2743,7 @@ function OrderProductDetails({
           </Button>
         </ModalFooter>
       </Modal>
+      <ToastContainer />
     </div>
   );
 }

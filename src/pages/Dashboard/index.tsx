@@ -28,11 +28,11 @@ import RefundOrdersOverview from "./RefundOrdersOverview";
 import OrdersAmountOverview from "./OrdersAmountOverview";
 import VendorsOverview from "./VendorsOverview";
 import { useNavigate } from "react-router";
+import { ToastContainer } from "react-toastify";
 
 //meta title
 
 const Dashboard = () => {
-  
   return (
     <React.Fragment>
       <div className="page-content">
@@ -98,7 +98,7 @@ const Dashboard = () => {
           </Row> */}
         </Container>
       </div>
-      
+      <ToastContainer />
     </React.Fragment>
   );
 };

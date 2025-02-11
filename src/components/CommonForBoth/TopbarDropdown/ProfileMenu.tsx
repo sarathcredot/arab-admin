@@ -143,7 +143,7 @@ mutation LogoutAdmin {
         className="d-inline-block"
       >
         <DropdownToggle
-          className="btn header-item bg-soft-light border-start border-end"
+          className="btn header-item bg-soft-light "
           id="page-header-user-dropdown"
           tag="button"
         >
@@ -161,8 +161,8 @@ mutation LogoutAdmin {
             />
           }
 
-          <span className="d-none d-xl-inline-block ms-1 fw-medium">{data?.fullName}</span>
-          <i className="mdi mdi-chevron-down d-none d-xl-inline-block" />
+          {/* <span className="d-none d-xl-inline-block ms-1 fw-medium">{data?.fullName}</span> */}
+          {/* <i className="mdi mdi-chevron-down d-none d-xl-inline-block" /> */}
         </DropdownToggle>
 
         <DropdownMenu className="dropdown-menu-end">

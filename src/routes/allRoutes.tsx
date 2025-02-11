@@ -192,6 +192,13 @@ const adminRoutes: Array<RouteProps> = [
   { path: "/23", component: <IconDripicons/> },
   { path: "/24", component: <IconFontawesome/> },
   { path: "/25", component: <UiToast/> },
+  { path: "/26", component: <Chat/> },
+  { path: "/27", component: <FormValidation/> },
+  { path: "/28", component: <AdvancedPlugins/> },
+  { path: "/29", component: <FormEditors/> },
+  { path: "/30", component: <FormUpload/> },
+  { path: "/31", component: <FormWizard/> },
+  { path: "/32", component: <IconBoxicons/> },
 
 
 

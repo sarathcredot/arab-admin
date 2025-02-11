@@ -29,6 +29,7 @@ import slack from "../../assets/images/brands/slack.png";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import { createSelector } from "reselect";
+import NotificationBar from "../Notification/NotificationBar";
 
 const Header = (props: any) => {
   const dispatch = useDispatch();
@@ -220,21 +221,22 @@ const Header = (props: any) => {
               </DropdownMenu>
             </Dropdown> */}
 
-            {/* <NotificationDropdown />
-            <div
+            {/* <div
               onClick={() => {
                 dispatch(showRightSidebarAction(!showRightSidebar));
-              }}
-              className="dropdown d-inline-block"
-            >
-              <button
+                }}
+                className="dropdown d-inline-block"
+                >
+                <button
                 type="button"
                 className="btn header-item noti-icon right-bar-toggle"
-              >
+                >
                 <FeatherIcon icon="settings" className="icon-lg" />
-              </button>
-            </div> */}
+                </button>
+                </div> */}
+                <NotificationDropdown />
             <ProfileMenu />
+            
           </div>
         </div>
       </header>

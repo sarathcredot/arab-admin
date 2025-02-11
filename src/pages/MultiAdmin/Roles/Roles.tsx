@@ -148,7 +148,6 @@ const Roles = () => {
   const totalPages = Math.ceil(totalRecords / pageSize);
   console.log("ROLES = ", rolesDataResponse);
 
-
   return (
     <>
       <div className="page-content">
@@ -224,102 +223,100 @@ const Roles = () => {
                             <tbody>
                               {roles &&
                                 roles.map((item, index) => (
-                                  <>
-                                    <tr key={index}>
+                                  <tr key={index}>
                                     <td style={{ textAlign: "center" }}>{currentPage * pageSize + (index + 1)}</td>
-                                      <td>{item?.name}</td>
-                                      <td>{item?.description}</td>
-                                      <td>
-                                        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                                          {item?.permissions?.map((value: any, index: any) => {
-                                            return (
-                                              <p
-                                                className="m-0 shadow-success rounded-1"
-                                                style={{ padding: 5, cursor: "default" }}
-                                                key={index}
-                                              >
-                                                {value === "cmslisting"
-                                                  ? "CMS"
-                                                  : value === "kyc"
-                                                  ? "KYC"
-                                                  : value === "product"
-                                                  ? "products"
-                                                  : value === "settlement"
-                                                  ? "settlements"
-                                                  : value.replace(/-/g, " ")}
-                                              </p>
-                                            );
-                                          })}
-                                        </div>
-                                      </td>
-                                      {/* <td>assigned access </td> */}
-                                      <td style={{ textAlign: "center" }}>
-                                        <div
+                                    <td>{item?.name}</td>
+                                    <td>{item?.description}</td>
+                                    <td>
+                                      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                                        {item?.permissions?.map((value: any, index: any) => {
+                                          return (
+                                            <p
+                                              className="m-0 shadow-success rounded-1"
+                                              style={{ padding: 5, cursor: "default" }}
+                                              key={index}
+                                            >
+                                              {value === "cmslisting"
+                                                ? "CMS"
+                                                : value === "kyc"
+                                                ? "KYC"
+                                                : value === "product"
+                                                ? "products"
+                                                : value === "settlement"
+                                                ? "settlements"
+                                                : value.replace(/-/g, " ")}
+                                            </p>
+                                          );
+                                        })}
+                                      </div>
+                                    </td>
+                                    {/* <td>assigned access </td> */}
+                                    <td style={{ textAlign: "center" }}>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
+                                          cursor: "pointer",
+                                        }}
+                                      >
+                                        <FormGroup switch>
+                                          <Input
+                                            className={
+                                              item?.isEnable ? "bg-success border-success" : "bg-danger border-danger"
+                                            }
+                                            type="switch"
+                                            style={{ width: "40px", height: "20px" }}
+                                            checked={item?.isEnable}
+                                            onChange={(e) => handleStatusChange(item?._id, e.target.checked)}
+                                          />
+                                        </FormGroup>
+                                      </div>
+                                    </td>
+                                    <td style={{ width: "100px" }}>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
+                                          gap: 10,
+                                        }}
+                                      >
+                                        <Button
                                           style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            cursor: "pointer",
+                                            display: "block",
+                                            // width:"100%"
+                                          }}
+                                          color="dark"
+                                          size="sm"
+                                          onClick={() => {
+                                            setRoleID(item?._id);
+                                            setShowEditModal(true);
                                           }}
                                         >
-                                          <FormGroup switch>
-                                            <Input
-                                              className={
-                                                item?.isEnable ? "bg-success border-success" : "bg-danger border-danger"
-                                              }
-                                              type="switch"
-                                              style={{ width: "40px", height: "20px" }}
-                                              checked={item?.isEnable}
-                                              onChange={(e) => handleStatusChange(item?._id, e.target.checked)}
-                                            />
-                                          </FormGroup>
-                                        </div>
-                                      </td>
-                                      <td style={{ width: "100px" }}>
-                                        <div
+                                          <MdEdit
+                                            style={{
+                                              fontSize: "12px",
+                                            }}
+                                          />
+                                        </Button>
+                                        <Button
                                           style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            gap: 10,
+                                            display: "block",
+                                            // width:"100%"
+                                          }}
+                                          color="primary"
+                                          size="sm"
+                                          onClick={() => {
+                                            setRoleID(item?._id);
+                                            setOpenDelete(true);
                                           }}
                                         >
-                                          <Button
-                                            style={{
-                                              display: "block",
-                                              // width:"100%"
-                                            }}
-                                            color="dark"
-                                            size="sm"
-                                            onClick={() => {
-                                              setRoleID(item?._id);
-                                              setShowEditModal(true);
-                                            }}
-                                          >
-                                            <MdEdit
-                                              style={{
-                                                fontSize: "12px",
-                                              }}
-                                            />
-                                          </Button>
-                                          <Button
-                                            style={{
-                                              display: "block",
-                                              // width:"100%"
-                                            }}
-                                            color="primary"
-                                            size="sm"
-                                            onClick={() => {
-                                              setRoleID(item?._id);
-                                              setOpenDelete(true);
-                                            }}
-                                          >
-                                            <MdDeleteOutline style={{ fontSize: "14px" }} />
-                                          </Button>
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  </>
+                                          <MdDeleteOutline style={{ fontSize: "14px" }} />
+                                        </Button>
+                                      </div>
+                                    </td>
+                                  </tr>
                                 ))}
                             </tbody>
                           </Table>
@@ -334,48 +331,48 @@ const Roles = () => {
           {/* pagination */}
 
           <Row style={{ marginRight: "10px" }}>
-                  <Col>
-                    <div className="d-flex justify-content-end mt-0 ">
-                      <ul className="pagination">
-                        <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
-                          <button
-                            className="page-link"
-                            onClick={() => setCurrentPage(currentPage - 1)}
-                            disabled={currentPage === 0}
-                          >
-                            Previous
-                          </button>
-                        </li>
+            <Col>
+              <div className="d-flex justify-content-end mt-0 ">
+                <ul className="pagination">
+                  <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
+                    <button
+                      className="page-link"
+                      onClick={() => setCurrentPage(currentPage - 1)}
+                      disabled={currentPage === 0}
+                    >
+                      Previous
+                    </button>
+                  </li>
 
-                        {Array.from({ length: totalPages }, (_, index) => (
-                          <li
-                            key={index}
-                            className={`page-item ${currentPage === index ? "active" : ""}`}
-                          >
-                            <button
-                              className="page-link"
-                              onClick={() => setCurrentPage(index)}
-                            >
-                              {index + 1}
-                            </button>
-                          </li>
-                        ))}
+                  {Array.from({ length: totalPages }, (_, index) => (
+                    <li
+                      key={index}
+                      className={`page-item ${currentPage === index ? "active" : ""}`}
+                    >
+                      <button
+                        className="page-link"
+                        onClick={() => setCurrentPage(index)}
+                      >
+                        {index + 1}
+                      </button>
+                    </li>
+                  ))}
 
-                        {currentPage < totalPages - 1 && (
-                          <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
-                            <button
-                              className="page-link"
-                              onClick={() => setCurrentPage(currentPage + 1)}
-                              disabled={currentPage === totalPages - 1}
-                            >
-                              Next
-                            </button>
-                          </li>
-                        )}
-                      </ul>
-                    </div>
-                  </Col>
-                </Row>
+                  {currentPage < totalPages - 1 && (
+                    <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
+                      <button
+                        className="page-link"
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                        disabled={currentPage === totalPages - 1}
+                      >
+                        Next
+                      </button>
+                    </li>
+                  )}
+                </ul>
+              </div>
+            </Col>
+          </Row>
           {/* </Row> */}
         </Container>
       </div>
