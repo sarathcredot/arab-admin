@@ -16,6 +16,7 @@ import { withTranslation } from "react-i18next";
 import NotificationBar from "src/components/Notification/NotificationBar";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import moment from "moment";
+import { useNotification } from "src/context/NotificationContext";
 
 const GET_ALL_NOTIFICATIONS = gql`
   query AllNotification($input: getAllNotificationInput) {
@@ -54,6 +55,7 @@ const NotificationDropdown = (props: any) => {
   const [menu, setMenu] = useState(false);
   const [openBar, setOpenBar] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const { unreadCount, setUnreadCount } = useNotification();
 
   const {
     data: notificationsData,
@@ -72,6 +74,7 @@ const NotificationDropdown = (props: any) => {
   useEffect(() => {
     if (notificationsData && notificationsData?.getAllNotification?.allNotification) {
       setNotifications(notificationsData?.getAllNotification?.allNotification);
+      setUnreadCount(notificationsData?.getAllNotification?.unReadCount);
     }
   }, [notificationsData]);
 
@@ -121,9 +124,7 @@ const NotificationDropdown = (props: any) => {
             icon="bell"
             className="icon-lg"
           />
-          <span className="badge bg-danger rounded-pill">
-            {notificationsData ? notificationsData?.getAllNotification?.unReadCount : 0}
-          </span>
+          <span className="badge bg-danger rounded-pill">{unreadCount}</span>
         </DropdownToggle>
 
         <DropdownMenu className="dropdown-menu-lg dropdown-menu-end p-0">
@@ -150,45 +151,47 @@ const NotificationDropdown = (props: any) => {
             </Row>
           </div>
 
-          <SimpleBar style={{ height: "230px" }}>
-            {notifications && notifications?.length
-              ? notifications?.map((item: any, index) => (
-                  <Link
+          <SimpleBar style={{ height: "250px" }}>
+            {notifications && notifications?.length ? (
+              notifications?.map((item: any, index) => (
+                <Link
                   to={
                     item?.type === "new_order"
                       ? `/orders/details?orderId=${item?.orderId}`
-                      : item?.type === "low_stock" ||item?.type === "out_of_stock"
+                      : item?.type === "low_stock" || item?.type === "out_of_stock"
                       ? `/product/details/?_id=${item?.productId}`
                       : item?.type === "return_order"
                       ? `/return-orders/details?orderId=${item?.orderId}&_id=${item?.productId}`
                       : "/"
                   }
-                    key={index}
-                    className="text-reset notification-item"
-                    onClick={() => {
-                      handleReadNotification(item?._id);
-                      setMenu(false);
-                    }}
-                  >
-                    <div className="d-flex">
-                      {/* <div className="avatar-sm me-3">
-                  <span className="avatar-title bg-primary rounded-circle font-size-16">
-                    <i className="bx bx-cart" />
-                  </span>
-                </div> */}
-                      <div className="flex-grow-1">
-                        <h6 className="mt-0 mb-1">{item?.title}</h6>
-                        <div className="font-size-12 text-muted">
-                          <p className="mb-1">{item?.message}</p>
-                          <p className="mb-0">
-                            <i className="mdi mdi-clock-outline" /> {moment(item?.createdAt).fromNow()}{" "}
-                          </p>
-                        </div>
+                  key={index}
+                  className="text-reset notification-item"
+                  onClick={() => {
+                    handleReadNotification(item?._id);
+                    setMenu(false);
+                  }}
+                >
+                  <div className="d-flex">
+                    {/* <div className="avatar-sm me-3">
+                      <span className="avatar-title bg-primary rounded-circle font-size-16">
+                        <i className="bx bx-cart" />
+                      </span>
+                    </div> */}
+                    <div className="flex-grow-1">
+                      <h6 className="mt-0 mb-1">{item?.title}</h6>
+                      <div className="font-size-12 text-muted">
+                        <p className="mb-1">{item?.message}</p>
+                        <p className="mb-0">
+                          <i className="mdi mdi-clock-outline" /> {moment(item?.createdAt).fromNow()}{" "}
+                        </p>
                       </div>
                     </div>
-                  </Link>
-                ))
-              : null}
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <i className="text-muted font-size-12 ms-3">No notifications yet. Stay tuned for updates!</i>
+            )}
 
             {/* <Link
               to=""
@@ -257,7 +260,7 @@ const NotificationDropdown = (props: any) => {
               </div>
             </Link> */}
           </SimpleBar>
-          <div className="p-2 border-top d-grid">
+          {/* <div className="p-2 border-top d-grid">
             <p
               className="btn btn-sm btn-link font-size-14 btn-block text-center text-decoration-none"
               onClick={() => {
@@ -267,7 +270,7 @@ const NotificationDropdown = (props: any) => {
             >
               <i className="mdi mdi-arrow-right-circle me-1"></i> {props.t("View all")}{" "}
             </p>
-          </div>
+          </div> */}
         </DropdownMenu>
       </Dropdown>
       <NotificationBar

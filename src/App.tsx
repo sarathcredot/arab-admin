@@ -26,8 +26,9 @@ import "./assets/scss/preloader.scss";
 import { createSelector } from "reselect";
 import socket from "./socket";
 import { toast, ToastContainer } from "react-toastify";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { jwtDecode } from "jwt-decode";
+import { useNotification } from "./context/NotificationContext";
 
 //api config
 // import config from "./config";
@@ -48,6 +49,14 @@ import { jwtDecode } from "jwt-decode";
 // init firebase backend
 // initFirebaseBackend(firebaseConfig);
 
+export const ALL_NOTIFICATIONS_COUNT = gql`
+  query AllNotification($input: getAllNotificationInput) {
+    getAllNotification(input: $input) {
+      unReadCount
+    }
+  }
+`;
+
 const READ_NOTIFICATION = gql`
   mutation AddNotificationViewPersonId($input: addNotificationViewPersonIdInput!) {
     addNotificationViewPersonId(input: $input) {
@@ -59,6 +68,7 @@ const READ_NOTIFICATION = gql`
 
 const App = () => {
   const navigate = useNavigate();
+  const { setUnreadCount } = useNotification();
   const selectCalendar = createSelector(
     (state: any) => state.Layout,
     (state) => ({
@@ -81,6 +91,17 @@ const App = () => {
     return layoutCls;
   }
 
+  const { data: countData, refetch: countRefetch } = useQuery(ALL_NOTIFICATIONS_COUNT, {
+    variables: {
+      input: {
+        filter: "",
+      },
+    },
+    fetchPolicy: "network-only",
+  });
+
+
+
   const [ReadNotification] = useMutation(READ_NOTIFICATION);
 
   const handleReadNotification = async (ID: any) => {
@@ -98,13 +119,21 @@ const App = () => {
       } else {
         console.log("not read");
       }
+      countRefetch();
     } catch (error: any) {
       console.log("ERROR = ", error);
     }
   };
 
   const Layout: any = getLayout();
+
+  const playSound = () => {
+    const audio = new Audio("/sounds/notification_sound.mp3");
+    audio.play().catch((err) => console.log("User interaction needed to enable sound",err));
+  };
+
   const handleMessage = (data: any) => {
+    playSound();
     toast(
       <div className="d-flex w-100">
         <div className="flex-grow-1 text-white">
@@ -155,7 +184,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    console.log("socket console", socket);
     socket.on("connect", () => {
       console.log("✅ Socket connected:", socket.id);
     });
@@ -187,12 +215,23 @@ const App = () => {
         navigate("/login");
       }
       console.log("SOCKET = ", data);
+      countRefetch();
     });
 
+
     return () => {
-      socket.off("notification");
+      socket.off("new_notification");
     };
   }, [socket]);
+
+  useEffect(() => {
+    console.log("count data useeffect")
+
+    if (countData && countData?.getAllNotification?.unReadCount) {
+      console.log("true")
+      setUnreadCount(countData?.getAllNotification?.unReadCount);
+    }
+  }, [countData,countRefetch]);
 
   return (
     <React.Fragment>
