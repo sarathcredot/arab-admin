@@ -211,7 +211,7 @@ const App = () => {
           handleMessage(data);
         }
       } else {
-        // navigate("/login");
+        navigate("/login");
       }
       console.log("SOCKET = ", data);
       countRefetch();
