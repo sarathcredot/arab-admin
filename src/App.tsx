@@ -97,10 +97,9 @@ const App = () => {
         filter: "",
       },
     },
+    skip: !localStorage.getItem("admin_token"),
     fetchPolicy: "network-only",
   });
-
-
 
   const [ReadNotification] = useMutation(READ_NOTIFICATION);
 
@@ -129,7 +128,7 @@ const App = () => {
 
   const playSound = () => {
     const audio = new Audio("/sounds/notification_sound.mp3");
-    audio.play().catch((err) => console.log("User interaction needed to enable sound",err));
+    audio.play().catch((err) => console.log("User interaction needed to enable sound", err));
   };
 
   const handleMessage = (data: any) => {
@@ -212,12 +211,11 @@ const App = () => {
           handleMessage(data);
         }
       } else {
-        navigate("/login");
+        // navigate("/login");
       }
       console.log("SOCKET = ", data);
       countRefetch();
     });
-
 
     return () => {
       socket.off("new_notification");
@@ -225,13 +223,12 @@ const App = () => {
   }, [socket]);
 
   useEffect(() => {
-    console.log("count data useeffect")
+    console.log("count data useeffect");
 
     if (countData && countData?.getAllNotification?.unReadCount) {
-      console.log("true")
       setUnreadCount(countData?.getAllNotification?.unReadCount);
     }
-  }, [countData,countRefetch]);
+  }, [countData, countRefetch]);
 
   return (
     <React.Fragment>

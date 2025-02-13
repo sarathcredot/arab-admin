@@ -142,7 +142,7 @@ const Login = (props: any) => {
   useEffect(() => {
     if (!token) {
       localStorage.removeItem("desktopView");
-      navigate("/login");
+      // navigate("/login");
     } else {
       navigate("/");
     }
