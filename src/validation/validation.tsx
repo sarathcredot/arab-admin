@@ -133,4 +133,5 @@ export const ReturnPolicyValidation = yup.object({
   //   .of(yup.string().required("Condition cannot be empty"))
   //   .min(1, "At least one condition is required"),
   duration: yup.string().required("Please enter return period"),
+  returnCharge: yup.string().required("Please enter refund amound"),
 });

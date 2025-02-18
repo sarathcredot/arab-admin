@@ -13,7 +13,7 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { categoryValidation } from "src/validation/validation";
-import { useMutation, gql } from "@apollo/client";
+import { useMutation, gql, useQuery } from "@apollo/client";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { isLeafType } from "graphql";
@@ -32,6 +32,7 @@ interface Category {
   children?: Category[];
   isLeaf?: boolean;
   // sizeChart: sizeChart;
+  returnPolicy:string;
   isBlocked: boolean;
 }
 
@@ -44,6 +45,24 @@ interface Props {
   isLeaf: boolean | undefined;
   childrefetch: () => void;
 }
+
+const GET_ALL_POLICIES = gql`
+  query GetAllPoliciesBySuperAdmin($input: getAllPoliciesBySuperAdminInput) {
+  getAllPoliciesBySuperAdmin(input: $input) {
+    success
+    data {
+      _id
+      name
+      description
+      duration
+      isEnable
+      returnCharge
+      isDeleted
+    }
+    maxRecords
+  }
+}
+`;
 
 const CategoryForm: React.FC<Props> = ({
   isOpen,
@@ -67,6 +86,18 @@ const CategoryForm: React.FC<Props> = ({
 
 
 
+  // get policies
+      const {
+        loading: policiesLoading,
+        error: policiesError,
+        data: policiesDataResponse,
+        refetch: policiesRefetch,
+      } = useQuery(GET_ALL_POLICIES, {
+        fetchPolicy: "network-only",
+        variables: {
+          input: {},
+        },
+      });
 
   const POST_CATEGORY = gql`
 mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
@@ -91,7 +122,7 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
   const checking = () => {
     setIsChecked((prev) => !prev);
   };
-
+  console.log("CATEGORY EDIT = ",isEdit)
   const onSubmit = async (values: any, { resetForm }: any) => {
     try {
 
@@ -102,7 +133,8 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
             categoryName: values?.name,
             description: values?.description,
             parentId: isSelected?._id,
-            isBlocked: isBlockCategoryChecked
+            isBlocked: isBlockCategoryChecked,
+            returnPolicy:values?.returnPolicy||null
           },
         };
         if (values.image) {
@@ -135,7 +167,8 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
             description: values?.description,
             parentId: isSelected?._id,
             isLeaf: isChecked,
-            isBlocked: isBlockCategoryChecked
+            isBlocked: isBlockCategoryChecked,
+            returnPolicy:values?.returnPolicy||null
           },
         };
         if (values.image) {
@@ -170,6 +203,7 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
     initialValues: {
       name: isEdit ? isEdit.categoryName : "",
       description: isEdit ? isEdit.description : "",
+      returnPolicy: isEdit && isEdit.returnPolicy ? isEdit.returnPolicy :isSelected&& isSelected?.returnPolicy?isSelected?.returnPolicy: "",
       image: null
     },
     validationSchema: categoryValidation,
@@ -267,6 +301,37 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
               )}
             </FormGroup>
 
+            <FormGroup>
+              <Label for="returnPolicy">Return Policy</Label>
+              <div style={{
+                display:"flex",
+                alignItems:"center",
+                gap:"10px"
+              }}>
+
+              <Input
+                type="select"
+                name="returnPolicy"
+                id="returnPolicy"
+                value={formik.values?.returnPolicy}
+                onChange={formik.handleChange}
+                >
+                <option disabled value="">select return policy</option>
+                {policiesDataResponse&&policiesDataResponse?.getAllPoliciesBySuperAdmin?.data?.map((item:any,index:any)=>(
+                  <option value={item?._id} key={index}>{item?.name}</option>
+                ))}
+            </Input>
+            {formik.values?.returnPolicy&&
+            <Button
+            color="primary"
+            type="button"
+            onClick={()=>{
+              formik.setFieldValue("returnPolicy","")
+            }}
+            >Remove</Button>
+          }
+              </div>
+            </FormGroup>
 
             {!isEdit ? (
               <FormGroup check>

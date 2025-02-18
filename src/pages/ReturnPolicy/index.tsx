@@ -22,14 +22,22 @@ const GET_ALL_POLICIES = gql`
         name
         description
         duration
-        conditions
         isEnable
+        returnCharge
+        isDeleted
       }
       maxRecords
     }
   }
 `;
 
+const GET_SHIPPING_SETTINGS = gql`
+  query GetShippingSettings {
+    getShippingSettings {
+      defaultReturnPolicy
+    }
+  }
+`;
 const CHANGE_STATUS = gql`
   mutation UpdateStatusReturnPolicyByAdmin($input: updateStatusReturnPolicyByAdminInput!) {
     updateStatusReturnPolicyByAdmin(input: $input) {
@@ -81,12 +89,19 @@ const ReturnPolicy = () => {
       input: {
         page: currentPage,
         size: pageSize,
-        // isBlocked: null,
         search: searchTerm,
       },
     },
   });
 
+  const {
+    data: shippingData,
+    loading: shippingLoading,
+    refetch: shippingRefetch,
+  } = useQuery(GET_SHIPPING_SETTINGS, {
+    fetchPolicy: "network-only",
+  });
+  console.log("DEFAULT = ",shippingData)
   const [changeStatus] = useMutation(CHANGE_STATUS);
 
   const handleStatusChange = async (id: string, status: any) => {
@@ -125,15 +140,15 @@ const ReturnPolicy = () => {
       console.log("RESPONSE = ", response);
       if (response && response?.data?.deleteReturnPolicyByAdmin?.success) {
         toast.success(response?.data?.deleteReturnPolicyByAdmin?.message);
-        setOpenDelete(false);
         policiesRefetch();
       } else {
         toast.error(response?.data?.deleteReturnPolicyByAdmin?.message);
       }
     } catch (error: any) {
       console.log("ERROR = ", error);
-      toast.error(error);
+      toast.error(error?.message);
     }
+    setOpenDelete(false);
   };
 
   useEffect(() => {
@@ -212,7 +227,8 @@ const ReturnPolicy = () => {
                                 <th style={{ width: "30px", textAlign: "center" }}>#</th>
                                 <th>Policy Name</th>
                                 <th>{"Return Period (Days)"}</th>
-                                <th style={{ width: "100px", textAlign: "center" }}>Status</th>
+                                {/* <th style={{ width: "100px", textAlign: "center" }}>Status</th> */}
+                                <th style={{ width: "100px", textAlign: "center" }}>{"Refund (%)"}</th>
                                 <th style={{ width: "100px", textAlign: "center" }}>Action</th>
                               </tr>
                             </thead>
@@ -222,9 +238,23 @@ const ReturnPolicy = () => {
                                 policies.map((item, index) => (
                                   <tr key={index}>
                                     <td style={{ textAlign: "center" }}>{currentPage * pageSize + (index + 1)}</td>
-                                    <td>{item?.name}</td>
+                                    <td>
+                                      <div style={{
+                                        display:"flex",
+                                        alignItems:"center",
+                                        justifyContent:"space-between"
+                                      }}>
+                                        <p style={{margin:0}}>{item?.name}</p>
+                                        <p style={{margin:0,fontWeight:"bold"}}>
+                                          {item?._id === shippingData?.getShippingSettings?.defaultReturnPolicy
+                                            ? "[default]"
+                                            : ""}
+                                        </p>
+                                      </div>
+                                    </td>
                                     <td>{item?.duration}</td>
-                                    <td style={{ textAlign: "center" }}>
+                                    <td>{item?.returnCharge} %</td>
+                                    {/* <td style={{ textAlign: "center" }}>
                                       <div
                                         style={{
                                           display: "flex",
@@ -245,7 +275,7 @@ const ReturnPolicy = () => {
                                           />
                                         </FormGroup>
                                       </div>
-                                    </td>
+                                    </td> */}
                                     <td style={{ width: "100px" }}>
                                       <div
                                         style={{

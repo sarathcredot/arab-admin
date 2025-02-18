@@ -3,8 +3,7 @@ import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Button, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
-import { AdminValidation, ReturnPolicyValidation } from "src/validation/validation";
-import Select from "react-select";
+import { ReturnPolicyValidation } from "src/validation/validation";
 
 const CREATE_POLICY = gql`
   mutation CreateReturnPolicyBySuperAdmin($input: createReturnPolicyBySuperAdminInput!) {
@@ -18,19 +17,19 @@ const CREATE_POLICY = gql`
 const AddPolicy = ({ isOpen, toggle, refetch }: any) => {
   const [CreatePolicy] = useMutation(CREATE_POLICY);
 
-  const [conditions, setConditions] = useState<any>([""]);
-  console.log("conditions = ", conditions);
+  // const [conditions, setConditions] = useState<any>([""]);
+  // console.log("conditions = ", conditions);
   const [conditionError, setConditionError] = useState("");
 
-  const handleAddCondition = () => {
-    setConditions([...conditions, ""]);
-  };
+  // const handleAddCondition = () => {
+  //   setConditions([...conditions, ""]);
+  // };
 
-  const handleRemoveCondition = (index: any) => {
-    const updatedConditions = [...conditions];
-    updatedConditions.splice(index, 1); // Remove the remark at the specified index
-    setConditions(updatedConditions);
-  };
+  // const handleRemoveCondition = (index: any) => {
+  //   const updatedConditions = [...conditions];
+  //   updatedConditions.splice(index, 1); // Remove the remark at the specified index
+  //   setConditions(updatedConditions);
+  // };
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -38,6 +37,7 @@ const AddPolicy = ({ isOpen, toggle, refetch }: any) => {
       name: "",
       description: "",
       duration: "",
+      returnCharge: "",
     },
 
     validationSchema: ReturnPolicyValidation,
@@ -47,18 +47,18 @@ const AddPolicy = ({ isOpen, toggle, refetch }: any) => {
   });
 
   const onSubmit = async (values: any, { resetForm }: any) => {
-    if (!conditions?.length) {
-      return setConditionError("At least one condition is required");
-    } else if (!conditions?.some((item: any) => item !== "")) {
-      return setConditionError("At least one condition is required");
-    }
+    // if (!conditions?.length) {
+    //   return setConditionError("At least one condition is required");
+    // } else if (!conditions?.some((item: any) => item !== "")) {
+    //   return setConditionError("At least one condition is required");
+    // }
     try {
       let variables: any = {
         input: {
           name: values?.name,
           description: values?.description,
-          conditions,
           duration: values?.duration,
+          returnCharge: values?.returnCharge,
         },
       };
       console.log("variables=", variables);
@@ -71,9 +71,9 @@ const AddPolicy = ({ isOpen, toggle, refetch }: any) => {
         refetch?.();
         toggle();
         resetForm();
-        setConditions([""])
-      }else{
-          toast.error(response?.data?.createReturnPolicyBySuperAdmin?.message);
+        // setConditions([""]);
+      } else {
+        toast.error(response?.data?.createReturnPolicyBySuperAdmin?.message);
       }
       console.log("RESPONSE = ", response);
     } catch (error: any) {
@@ -125,7 +125,7 @@ const AddPolicy = ({ isOpen, toggle, refetch }: any) => {
                 <div className="text-danger">{formik.errors.description}</div>
               )}
             </FormGroup>
-            <FormGroup>
+            {/* <FormGroup>
               <Label for="conditions">Conditions</Label>
               {conditions?.map((condition: any, index: any) => (
                 <FormGroup
@@ -157,7 +157,7 @@ const AddPolicy = ({ isOpen, toggle, refetch }: any) => {
                         onClick={handleAddCondition}
                         style={{ borderRadius: "0px" }}
                       >
-                        + {/* Plus icon */}
+                        +
                       </Button>
                     )}{" "}
                     {index !== 0 && (
@@ -170,7 +170,7 @@ const AddPolicy = ({ isOpen, toggle, refetch }: any) => {
                         color="danger"
                         onClick={() => handleRemoveCondition(index)}
                       >
-                        - {/* Minus icon */}
+                        -
                       </Button>
                     )}
                   </div>
@@ -184,20 +184,35 @@ const AddPolicy = ({ isOpen, toggle, refetch }: any) => {
                   {conditionError}
                 </div>
               )}
-            </FormGroup>
+            </FormGroup> */}
             <FormGroup>
               <Label for="duration">Return Period</Label>
               <Input
                 type="number"
                 id="duration"
                 name="duration"
-                placeholder="Enter Return Period in Days"
+                placeholder="Enter return period in days"
                 value={formik.values?.duration}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
               {formik.touched.duration && formik.errors.duration && (
                 <div className="text-danger">{formik.errors.duration}</div>
+              )}
+            </FormGroup>
+            <FormGroup>
+              <Label for="returnCharge">Refund Amount</Label>
+              <Input
+                type="number"
+                id="returnCharge"
+                name="returnCharge"
+                placeholder="Enter refund amount in %"
+                value={formik.values?.returnCharge}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.returnCharge && formik.errors.returnCharge && (
+                <div className="text-danger">{formik.errors.returnCharge}</div>
               )}
             </FormGroup>
 

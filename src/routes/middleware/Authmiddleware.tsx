@@ -25,6 +25,7 @@ const Authmiddleware = (props: any) => {
           }
         }
       } else {
+        localStorage.removeItem("admin_token");
         console.log("Redirecting to /login");
         navigate("/login");
       }

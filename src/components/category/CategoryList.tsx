@@ -46,6 +46,7 @@ interface Category {
   description: string;
   children?: Category[];
   isLeaf: boolean;
+  returnPolicy:string;
   categoryImage?: {
     fileType: string;
     fileURL: string;
@@ -94,6 +95,7 @@ const CategoryList: React.FC<Props> = () => {
         mimeType
         originalName
       }
+      returnPolicy
     }
   }
 }
@@ -116,6 +118,7 @@ const CategoryList: React.FC<Props> = () => {
         mimeType
         originalName
       }
+      returnPolicy
     }
   }
 }
@@ -166,7 +169,9 @@ const CategoryList: React.FC<Props> = () => {
     categoryDataResponse,
     childCategoryData,
     topCategory,
-  ]);
+  ]); 
+
+  console.log("categoryDataResponse = ",categoryDataResponse)
 
   const openImageModal = (imageUrl: string) => {
     setSelectedImageUrl(imageUrl);
@@ -512,6 +517,7 @@ const CategoryList: React.FC<Props> = () => {
   }
 
   function handleEdit(data: Category) {
+    console.log("DATA = ",data)
     setEditCategory(data);
     toggleAddModal();
   }
