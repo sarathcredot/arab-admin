@@ -118,12 +118,20 @@ export const AdminValidation = yup.object({
   accType: yup.string().required("Please select account type"),
   password: yup.string().required("Please enter password"),
   image: yup.mixed().required("Please select a profile image"),
- 
 });
-
 
 export const EditAdminValidation = yup.object({
   fullName: yup.string().required("Please enter admin name"),
   email: yup.string().email("Invalid email address").required("Email is required"),
   accType: yup.string().required("Please select account type"),
+});
+export const ReturnPolicyValidation = yup.object({
+  name: yup.string().required("Please enter return policy name"),
+  description: yup.string().required("Please enter return policy description"),
+  // conditions: yup
+  //   .array()
+  //   .of(yup.string().required("Condition cannot be empty"))
+  //   .min(1, "At least one condition is required"),
+  duration: yup.string().required("Please enter return period"),
+  returnCharge: yup.string().required("Please enter refund amound"),
 });

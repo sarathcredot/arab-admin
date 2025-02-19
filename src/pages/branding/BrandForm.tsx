@@ -17,7 +17,7 @@ import {
   categoryValidation,
   vendoreValidation,
 } from "src/validation/validation";
-import { useMutation, gql } from "@apollo/client";
+import { useMutation, gql, useQuery } from "@apollo/client";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { isLeafType } from "graphql";
@@ -35,7 +35,8 @@ interface IBrand {
   logo: ILogo;
   isBlocked: boolean;
   isPopular: boolean;
-  priority: number
+  priority: number;
+  returnPolicy:string;
 }
 
 interface Props {
@@ -45,6 +46,24 @@ interface Props {
   refetch: () => void;
   childrefetch?: () => void;
 }
+
+const GET_ALL_POLICIES = gql`
+  query GetAllPoliciesBySuperAdmin($input: getAllPoliciesBySuperAdminInput) {
+  getAllPoliciesBySuperAdmin(input: $input) {
+    success
+    data {
+      _id
+      name
+      description
+      duration
+      isEnable
+      returnCharge
+      isDeleted
+    }
+    maxRecords
+  }
+}
+`;
 
 const BrandForm: React.FC<Props> = ({
   isOpen,
@@ -62,7 +81,7 @@ const BrandForm: React.FC<Props> = ({
   useEffect(() => {
     setIsBlockCategoryChecked(isEdit?.isBlocked)
   }, [isEdit?.isBlocked])
-
+console.log("IS EDIT = ",isEdit)
   const [isPopularChecked, setIsPopularChecked] = useState<any>(false);
 
   useEffect(() => {
@@ -87,10 +106,23 @@ const BrandForm: React.FC<Props> = ({
 }
   `;
 
+      // get policies
+      const {
+        loading: policiesLoading,
+        error: policiesError,
+        data: policiesDataResponse,
+        refetch: policiesRefetch,
+      } = useQuery(GET_ALL_POLICIES, {
+        fetchPolicy: "network-only",
+        variables: {
+          input: {},
+        },
+      });
+
   const [createBrand] = useMutation(POST_BRAND);
   const [updateBrand] = useMutation(PUT_BRAND);
 
-  // when clicking the add category
+  // when clicking the add brand
   const onSubmit = async (values: any, { resetForm }: any) => {
     try {
       if (isEdit) {
@@ -100,7 +132,8 @@ const BrandForm: React.FC<Props> = ({
             brandName: values.brandName,
             isBlocked: isBlockCategoryChecked,
             priority: values.priority,
-            isPopular: isPopularChecked
+            isPopular: isPopularChecked,
+            returnPolicy:values?.returnPolicy||null,
           },
         };
         if (values.image) {
@@ -128,7 +161,8 @@ const BrandForm: React.FC<Props> = ({
           brandName: values.brandName,
           isBlocked: null,
           priority: values.priority,
-          isPopular: isPopularChecked
+          isPopular: isPopularChecked,
+          returnPolicy:values?.returnPolicy||null,
 
         },
       };
@@ -160,6 +194,7 @@ const BrandForm: React.FC<Props> = ({
     initialValues: {
       brandName: isEdit ? isEdit.brandName : "",
       priority: isEdit ? isEdit.priority : "",
+      returnPolicy:isEdit && isEdit?.returnPolicy ? isEdit?.returnPolicy :"",
       image: null,
     },
     validationSchema: brandValidation,
@@ -186,7 +221,6 @@ const BrandForm: React.FC<Props> = ({
 
   return (
     <>
-      <ToastContainer />
       <Modal isOpen={isOpen} toggle={toggle}>
         <ModalHeader toggle={toggle}>{isEdit ? "Edit Brand" : "Add Brand"}</ModalHeader>
         <ModalBody>
@@ -261,6 +295,37 @@ const BrandForm: React.FC<Props> = ({
                 <div className="text-danger">{formik.errors.priority}</div>
               )}
             </FormGroup>
+            <FormGroup>
+              <Label for="returnPolicy">Return Policy</Label>
+              <div style={{
+                display:"flex",
+                alignItems:"center",
+                gap:"10px"
+              }}>
+
+              <Input
+                type="select"
+                name="returnPolicy"
+                id="returnPolicy"
+                value={formik.values?.returnPolicy}
+                onChange={formik.handleChange}
+                >
+                <option disabled value="">select return policy</option>
+                {policiesDataResponse&&policiesDataResponse?.getAllPoliciesBySuperAdmin?.data?.map((item:any,index:any)=>(
+                  <option value={item?._id} key={index}>{item?.name}</option>
+                ))}
+            </Input>
+            {formik.values?.returnPolicy&&
+            <Button
+            color="primary"
+            type="button"
+            onClick={()=>{
+              formik.setFieldValue("returnPolicy","")
+            }}
+            >Remove</Button>
+          }
+              </div>
+            </FormGroup>
 
             {isEdit ? (
               <div>
@@ -323,6 +388,7 @@ const BrandForm: React.FC<Props> = ({
           </Form>
         </ModalBody>
       </Modal>
+      <ToastContainer/>
     </>
   );
 };

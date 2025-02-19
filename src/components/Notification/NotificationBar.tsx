@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, Offcanvas, OffcanvasBody, OffcanvasHeader } from "reactstrap";
 import FeatherIcon from "feather-icons-react";
 import moment from "moment";
+import { useNotification } from "src/context/NotificationContext";
 
 const GET_ALL_NOTIFICATIONS = gql`
   query AllNotification($input: getAllNotificationInput) {
@@ -50,6 +51,7 @@ const NotificationBar = ({ isOpen, setOpen }: any) => {
   const navigate = useNavigate();
   const [userID, setUserID] = useState("");
   const [notifications, setNotifications] = useState([]);
+  const { unreadCount, setUnreadCount, updateCount } = useNotification();
 
   const toggleRightCanvas = () => {
     setOpen(!isOpen);
@@ -68,12 +70,6 @@ const NotificationBar = ({ isOpen, setOpen }: any) => {
     fetchPolicy: "network-only",
   });
 
-  useEffect(() => {
-    if (notificationsData && notificationsData?.getAllNotification?.allNotification) {
-      setNotifications(notificationsData?.getAllNotification?.allNotification);
-    }
-  }, [notificationsData]);
-
   const [ReadNotification] = useMutation(READ_NOTIFICATION);
 
   const handleReadNotification = async (ID: any) => {
@@ -88,6 +84,7 @@ const NotificationBar = ({ isOpen, setOpen }: any) => {
       console.log("READ RESPONSE = ", response);
       if (response && response?.data?.addNotificationViewPersonId?.status) {
         console.log(response?.data?.addNotificationViewPersonId?.msg);
+        refetch();
       } else {
         console.log("not read");
       }
@@ -120,7 +117,7 @@ const NotificationBar = ({ isOpen, setOpen }: any) => {
     }
   };
 
-  console.log("NOTIFICATIONS = ", notifications);
+  console.log("NOTIFICATIONS = ", notificationsData);
 
   useEffect(() => {
     const token = localStorage.getItem("admin_token");
@@ -132,6 +129,18 @@ const NotificationBar = ({ isOpen, setOpen }: any) => {
   useEffect(() => {
     refetch();
   }, [isOpen]);
+  useEffect(() => {
+    console.log("useeffect enter");
+    if (notificationsData && notificationsData?.getAllNotification?.allNotification) {
+      console.log("if enter");
+      setNotifications(notificationsData?.getAllNotification?.allNotification);
+      updateCount(notificationsData?.getAllNotification?.unReadCount);
+      // setUnreadCount(notificationsData?.getAllNotification?.unReadCount);
+    }
+  }, [notificationsData, refetch]);
+  console.log("loading = ", notificationsLoading);
+
+  console.log("count = ", unreadCount);
 
   return (
     <>
@@ -147,77 +156,85 @@ const NotificationBar = ({ isOpen, setOpen }: any) => {
               style={{
                 display: "flex",
                 flexDirection: "column",
+                // gap:5,
               }}
             >
-              {notifications && notifications?.length
-                ? notifications?.map((item: any, index) => (
-                    <Link
-                      key={index}
-                      // to={"/orders/details?orderId=ORD-1738932462568"}
-                      to={
-                        item?.type === "new_order"
-                          ? `/orders/details?orderId=${item?.orderId}`
-                          : item?.type === "low_stock" ||item?.type === "out_of_stock"
-                          ? `/product/details/?_id=${item?.productId}`
-                          : item?.type === "return_order"
-                          ? `/return-orders/details?orderId=${item?.orderId}&_id=${item?.productId}`
-                          : "/"
+              {notifications && notifications?.length ? (
+                notifications?.map((item: any, index) => (
+                  <Link
+                    key={index}
+                    // to={"/orders/details?orderId=ORD-1738932462568"}
+                    to={
+                      item?.type === "new_order"
+                        ? `/orders/details?orderId=${item?.orderId}`
+                        : item?.type === "low_stock" || item?.type === "out_of_stock"
+                        ? `/product/details/?_id=${item?.productId}`
+                        : item?.type === "return_order"
+                        ? `/return-orders/details?orderId=${item?.orderId}&_id=${item?.productId}`
+                        : "/"
+                    }
+                    className="text-reset notification-item"
+                    onClick={() => {
+                      handleReadNotification(item?._id);
+                      toggleRightCanvas();
+                    }}
+                    // style={{
+                    //   boxShadow:"0 0 10px #eee",
+                    //   borderRadius:5
+
+                    // }}
+                  >
+                    <div
+                      className="d-flex position-relative"
+                      style={
+                        item?.view?.length
+                          ? {
+                              // background: "#deffe8",
+                              opacity: item?.view?.some((value: any) => value?.id === userID) ? "0.5" : "1",
+                            }
+                          : {}
                       }
-                      className="text-reset notification-item"
-                      onClick={() => {
-                        handleReadNotification(item?._id);
-                        toggleRightCanvas();
-                      }}
                     >
-                      <div
-                        className="d-flex position-relative"
-                        style={
-                          item?.view?.length
-                            ? {
-                                // background: "#deffe8",
-                                opacity: item?.view?.some((value: any) => value?.id === userID) ? "0.5" : "1",
-                              }
-                            : {}
-                        }
-                      >
-                        {/* <div className="avatar-sm me-3">
+                      {/* <div className="avatar-sm me-3">
                   <span className="avatar-title bg-primary rounded-circle font-size-16">
                     <i className="bx bx-cart" />
                   </span>
                 </div> */}
-                        <div className="flex-grow-1 ">
-                          <h6 className="mt-0 mb-1">{item?.title}</h6>
-                          {item?.view?.some((value: any) => value?.id === userID) ? (
-                            <span
-                              style={{ zIndex: 9999 }}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                handleRemoveNotification(item?._id);
+                      <div className="flex-grow-1 ">
+                        <h6 className="mt-0 mb-1">{item?.title}</h6>
+                        {item?.view?.some((value: any) => value?.id === userID) ? (
+                          <span
+                            style={{ zIndex: 9999 }}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleRemoveNotification(item?._id);
+                            }}
+                          >
+                            <FeatherIcon
+                              icon="x"
+                              className="icon-xs"
+                              style={{
+                                position: "absolute",
+                                top: 5,
+                                right: 5,
                               }}
-                            >
-                              <FeatherIcon
-                                icon="x"
-                                className="icon-xs"
-                                style={{
-                                  position: "absolute",
-                                  top: 5,
-                                  right: 5,
-                                }}
-                              />
-                            </span>
-                          ) : null}
-                          <div className="font-size-12 text-muted">
-                            <p className="mb-1">{item?.message}</p>
-                            <p className="mb-0">
-                              <i className="mdi mdi-clock-outline" /> {moment(item?.createdAt).fromNow()}{" "}
-                            </p>
-                          </div>
+                            />
+                          </span>
+                        ) : null}
+                        <div className="font-size-12 text-muted">
+                          <p className="mb-1">{item?.message}</p>
+                          <p className="mb-0">
+                            <i className="mdi mdi-clock-outline" /> {moment(item?.createdAt).fromNow()}{" "}
+                          </p>
                         </div>
                       </div>
-                    </Link>
-                  ))
-                : null}
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <i className="text-muted font-size-12">No notifications yet. Stay tuned for updates!</i>
+              )}
             </div>
           </OffcanvasBody>
         </Offcanvas>

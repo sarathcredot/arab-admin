@@ -24,6 +24,8 @@ import { RiCoupon2Line } from "react-icons/ri";
 import { BiSolidBookContent } from "react-icons/bi";
 import { IoMdSettings } from "react-icons/io";
 import { LuShoppingBag } from "react-icons/lu";
+import { GiReceiveMoney } from "react-icons/gi";
+import { RiRefund2Fill } from "react-icons/ri";
 import Iconify from "../iconify";
 
 const SidebarContent = (props: any) => {
@@ -701,6 +703,19 @@ const SidebarContent = (props: any) => {
                     ) : null}
                   </ul>
                 )}
+              </li>
+            ) : null}
+            {adminType === "SUPER_ADMIN" || adminRoles?.includes("return-policy") ? (
+              <li className="mt-3 li-sideBar">
+                <Link
+                  to="/return-policy"
+                  className=""
+                >
+                  {/* <GiReceiveMoney /> */}
+                  <RiRefund2Fill />
+
+                  <span>{props.t("Return Policy")}</span>
+                </Link>
               </li>
             ) : null}
             {adminType === "SUPER_ADMIN" || adminRoles?.includes("settings") ? (

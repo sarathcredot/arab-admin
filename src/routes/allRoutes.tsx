@@ -157,6 +157,7 @@ import Coupons from "src/pages/Coupons";
 import CouponDetailPage from "src/pages/Coupons/CouponDetailPage";
 import Roles from "src/pages/MultiAdmin/Roles/Roles";
 import Admins from "src/pages/MultiAdmin/Admins/Admins";
+import ReturnPolicy from "src/pages/ReturnPolicy";
 interface RouteProps {
   path: string;
   component: any;
@@ -286,6 +287,10 @@ const adminRoutes: Array<RouteProps> = [
 
   { path: "/admins", component: <Admins /> },
   { path: "/roles", component: <Roles /> },
+  
+  // return Management
+
+  { path: "/return-policy", component: <ReturnPolicy /> },
 
   { path: "*", component: <PageNotFound /> },
 ];

@@ -5,7 +5,7 @@ import { Truck, CreditCard} from 'feather-icons-react';
 import "./settings.css"
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { formatCurrency } from 'src/utils/formatCurrency';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 
 //  types for state variable
@@ -13,6 +13,7 @@ interface ShippingSettings {
     shippingCharge: number;
     freeShippingThreshold: number;
     returnPeriod: number;
+    defaultReturnPolicy:string;
 }
 
 interface DeliveryBoysSettings {
@@ -23,13 +24,33 @@ interface DeliveryBoysSettings {
 }
 
 
+const GET_ALL_POLICIES = gql`
+  query GetAllPoliciesBySuperAdmin($input: getAllPoliciesBySuperAdminInput) {
+  getAllPoliciesBySuperAdmin(input: $input) {
+    success
+    data {
+      _id
+      name
+      description
+      duration
+      isEnable
+      returnCharge
+      isDeleted
+    }
+    maxRecords
+  }
+}
+`;
+
+
 
 function Settings() {
 
     const initialShippingSettings: ShippingSettings = {
         shippingCharge: 0,
         freeShippingThreshold: 0,
-        returnPeriod: 0
+        returnPeriod: 0,
+        defaultReturnPolicy:""
     };
 
     const initialDeliveryBoysSettings: DeliveryBoysSettings = {
@@ -54,14 +75,28 @@ function Settings() {
     const [deliveryBoysEdit, setdeliveryBoysEdit] = useState(false);
 
 
+
+    // get policies
+  const {
+    loading: policiesLoading,
+    error: policiesError,
+    data: policiesDataResponse,
+    refetch: policiesRefetch,
+  } = useQuery(GET_ALL_POLICIES, {
+    fetchPolicy: "network-only",
+    variables: {
+      input: {},
+    },
+  });
+
     const GET_SHIPPING_SETTINGS = gql`
     query GetShippingSettings {
-      getShippingSettings {
-        shippingCharge
-        freeShippingThreshold
-        returnPeriod
-        }
-    }
+  getShippingSettings {
+    shippingCharge
+    freeShippingThreshold
+    defaultReturnPolicy
+  }
+}
 `;
 
 
@@ -97,8 +132,7 @@ function Settings() {
         loading: shippingLoading,
         refetch: shippingRefetch,
     } = useQuery(GET_SHIPPING_SETTINGS, {
-        variables: {
-        },
+        fetchPolicy:"network-only"
     });
 
     const {
@@ -154,9 +188,10 @@ function Settings() {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+        console.log({ name, value })
         setShippingSettings((prevSettings) => ({
             ...prevSettings,
-            [name]: parseFloat(value) || 0,
+            [name]: name === "defaultReturnPolicy" ? value : parseFloat(value) || 0,
         }));
     };
 
@@ -172,15 +207,15 @@ function Settings() {
 
 
 
-    const UPDATE_SHIPPING_SETTINGS = gql`
+const UPDATE_SHIPPING_SETTINGS = gql`
     mutation UpdateShippingSettings($input: UpdateShippingSettingsInput!) {
-    updateShippingSettings(input: $input) {
-    shippingCharge
-    freeShippingThreshold
-    returnPeriod
-  }
-}
-    `;
+        updateShippingSettings(input: $input) {
+        shippingCharge
+        freeShippingThreshold
+        returnPeriod
+        defaultReturnPolicy
+    }
+}`;
 
     const [UpdateShippingSettings] = useMutation(UPDATE_SHIPPING_SETTINGS);
 
@@ -196,6 +231,7 @@ function Settings() {
     const [UpdateDeliveryBoysSettings]=useMutation(UPDATE_DELIVERYBOYS_SETTINGS);
 
 
+    console.log("SETTINGS = ",shippingSettings)
 
 
     const handleShippingSettingsUpdate = async () => {
@@ -206,6 +242,7 @@ function Settings() {
                         shippingCharge: shippingSettings.shippingCharge,
                         returnPeriod: shippingSettings.returnPeriod,
                         freeShippingThreshold: shippingSettings.freeShippingThreshold,
+                        defaultReturnPolicy:shippingSettings.defaultReturnPolicy,
                     },
                 },
             });
@@ -407,6 +444,28 @@ function Settings() {
                                                     </div>
 
                                                     <div style={{ display: "flex", alignItems: "center", }}>
+                                                        <p style={{ width: "200px" }}>Return Policy</p>
+                                                        <div style={{ width: "300px" }} >
+                                                            <p className="form-control-static">
+                                                                <div className="input-group">
+                                                                    <Input
+                                                                        type="select"
+                                                                        name="defaultReturnPolicy"
+                                                                        id="defaultReturnPolicy"
+                                                                        value={shippingSettings.defaultReturnPolicy}
+                                                                        onChange={handleInputChange}
+                                                                        disabled={!shippingEdit}
+                                                                    >
+                                                                        <option disabled value="">select policy</option>
+                                                                        {policiesDataResponse&&policiesDataResponse?.getAllPoliciesBySuperAdmin?.data?.map((item:any,index:any)=>(
+                                                                            <option value={item?._id} key={index}>{item?.name}</option>
+                                                                        ))}
+                                                                    </Input>
+                                                                </div>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    {/* <div style={{ display: "flex", alignItems: "center", }}>
                                                         <p style={{ width: "200px" }}>Return Period (days)</p>
                                                         <div style={{ width: "300px" }} >
                                                             <p className="form-control-static"  >
@@ -422,7 +481,7 @@ function Settings() {
                                                                 </div>
                                                             </p>
                                                         </div>
-                                                    </div>
+                                                    </div> */}
 
                                                 </div>
 
@@ -645,7 +704,7 @@ function Settings() {
 
                 </Container >
             </div>
-
+            <ToastContainer/>
         </React.Fragment >
     )
 }
