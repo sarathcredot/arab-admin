@@ -84,58 +84,81 @@ const ProductDetails = () => {
   const [vSizes, setVSizes] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [editedProduct, setEditedProduct] = useState<ProductData | undefined>(undefined);
+  const [returnPolicy,setReturnPolicy]= useState<any>(null)
 
   const GET_PRODUCT = gql`
     query GetProductByAdmin($input: ProductId!) {
-      getProductByAdmin(input: $input) {
-        product {
-          _id
-          vendorId
-          brandId
-          brandName
-          productName
-          shortDescription
-          skuId
-          description
-          productInfo
-          productShortInfo
-          images {
-            fileType
-            fileURL
-            mimeType
-            originalName
-          }
-          rating
-          sellingPrice
-          price
-          mrp
-          tags
-          productCode
-          categoryId
-          categoryNamePath
-          categoryIdPath
-          isBlocked
-          stock
-          status
-          offerPrice
-          attributes {
-            attributeId
-            attributeName
-            attributeValueId
-            attributeValue
-            attributeDescription
-          }
-          productDetailImages {
-            fileType
-            fileURL
-            mimeType
-            originalName
-          }
-          warehouseSkuId
-        }
-        message
+  getProductByAdmin(input: $input) {
+    product {
+      _id
+      vendorId
+      brandId
+      brandName
+      productName
+      shortDescription
+      skuId
+      description
+      productInfo
+      productShortInfo
+      images {
+        fileType
+        fileURL
+        mimeType
+        originalName
+      }
+      rating
+      sellingPrice
+      price
+      mrp
+      tags
+      productCode
+      categoryId
+      categoryNamePath
+      categoryIdPath
+      isBlocked
+      stock
+      status
+      offerPrice
+      attributes {
+        attributeId
+        attributeName
+        attributeValueId
+        attributeValue
+        attributeDescription
+      }
+      productDetailImages {
+        fileType
+        fileURL
+        mimeType
+        originalName
+      }
+      warehouseSkuId
+      delivery_type
+      returnPolicyData {
+        _id
+        name
+        description
+        duration
+        isEnable
+        returnCharge
+        isDeleted
       }
     }
+  }
+}
+  `;
+  const GET_POLICY_FOR_PRODUCT = gql`
+  query GetDefaultReturnPolicyInProduct($input: getDefaultReturnPolicyInProductInput!) {
+    getDefaultReturnPolicyInProduct(input: $input) {
+      _id
+      name
+      description
+      duration
+      isEnable
+      returnCharge
+      isDeleted
+    }
+  }
   `;
 
   const GET_VARIANTS = gql`
@@ -181,6 +204,31 @@ const ProductDetails = () => {
     },
     skip: !_id,
   });
+
+  // get policy for product from brand and category
+  const {
+    loading: policyLoading,
+    error: policyError,
+    data: policyDataResponse,
+    refetch: policyRefetch,
+  } = useQuery(GET_POLICY_FOR_PRODUCT, {
+    fetchPolicy: "network-only",
+    variables: {
+      input: {
+        brandId: product?.brandId,
+        categoryId: product?.categoryId,
+      },
+    },
+    skip:!product
+  });
+
+  useEffect(()=>{
+    console.log("POLICY = ",policyDataResponse)
+    if(policyDataResponse){
+      setReturnPolicy(policyDataResponse?.getDefaultReturnPolicyInProduct)
+    }
+  },[policyDataResponse])
+
   const {
     data: data2,
     loading: loading2,
@@ -536,10 +584,24 @@ const ProductDetails = () => {
                           </Col>
                         </Row>
                       </div>
+                      
                       <div className="border mt-3 border-dashed"></div>
+                      <div className="mt-4">
+                        <Row>
+                          <Col xl={6}>
+                            <div className="mb-3">
+                              <label htmlFor="cleave-time-format" className="form-label">
+                                {" "}
+                                Return Policy:
+                              </label>
+                              <p className="form-control-static">{product?.returnPolicyData?.name ?? returnPolicy?.name}</p>
+                            </div>
+                          </Col>
+                        </Row>
+                      </div>
 
 
-
+                      <div className="border mt-3 border-dashed"></div>
                       <div className="mt-4">
                         <Row>
                           <Col xl={4}>

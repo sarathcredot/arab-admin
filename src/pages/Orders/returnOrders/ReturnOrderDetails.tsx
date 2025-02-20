@@ -289,6 +289,16 @@ const ReturnOrderDetails = () => {
     }
   `;
 
+const GET_RETURN_POLICY = gql`
+  query GetReturnPolicyOfOrderProduct($input: getReturnPolicyOfOrderProductInput!) {
+    getReturnPolicyOfOrderProduct(input: $input) {
+      returnPolicyName
+      returnCharge
+      returnPolicyDescription
+      returnPeriod
+    }
+  }`
+
   const {
     data: orderProductData,
     loading: orderProductLoading,
@@ -298,6 +308,19 @@ const ReturnOrderDetails = () => {
     variables: {
       input: {
         _id: orderProductId,
+      },
+    },
+  });
+
+  const {
+    data: returnPolicyData,
+    loading: returnPolicyLoading,
+    error: returnPolicyError,
+    refetch: returnPolicyRefetch,
+  } = useQuery(GET_RETURN_POLICY, {
+    variables: {
+      input: {
+        orderProductId: orderProductId,
       },
     },
   });
@@ -352,6 +375,7 @@ const ReturnOrderDetails = () => {
     }
     return totalShippingCharge;
   };
+  
 
   return (
     <React.Fragment>
@@ -393,6 +417,9 @@ const ReturnOrderDetails = () => {
                                 Refund Status
                               </p>
                             )}
+                              <p className="form-control-static ">
+                                Return Policy
+                              </p>
                           </div>
                           <div>
                             <div
@@ -464,6 +491,9 @@ const ReturnOrderDetails = () => {
                                 />
                               </p>
                             )}
+                              <p className="form-control-static m-0 p-0">
+                                {returnPolicyData&& returnPolicyData?.getReturnPolicyOfOrderProduct?.returnPolicyName}
+                              </p>
                           </div>
                         </div>
                       </div>
