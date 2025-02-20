@@ -1,7 +1,15 @@
+
+
+
+
+
 {
   "name": "minia-typescript",
   "version": "2.0.0",
   "private": true,
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "@ailibs/feather-react-ts": "^3.0.3",
     "@apollo/client": "^3.8.7",
@@ -156,3 +164,4 @@
     "cross-env": "^7.0.3"
   }
 }
+
