@@ -58,7 +58,7 @@ const GET_ALL_POLICIES = gql`
       duration
       isEnable
       returnCharge
-      isDeleted
+      
     }
     maxRecords
   }
@@ -106,7 +106,7 @@ console.log("IS EDIT = ",isEdit)
 }
   `;
 
-      // get policies
+      // get all policies
       const {
         loading: policiesLoading,
         error: policiesError,

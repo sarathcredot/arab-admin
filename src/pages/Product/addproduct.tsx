@@ -62,6 +62,9 @@ interface ProductForm {
   media: any;
   images: any
   status: string;
+  delivery_type: string;
+  returnPolicy: string;
+
 }
 
 
@@ -85,6 +88,39 @@ const UPDATE_PRODUCT = gql`
   }
 }
 `;
+
+const GET_ALL_POLICIES = gql`
+  query GetAllPoliciesBySuperAdmin($input: getAllPoliciesBySuperAdminInput) {
+  getAllPoliciesBySuperAdmin(input: $input) {
+    success
+    data {
+      _id
+      name
+      description
+      duration
+      isEnable
+      returnCharge
+      
+    }
+    maxRecords
+  }
+}
+`;
+
+const GET_POLICY_FOR_PRODUCT = gql`
+query GetDefaultReturnPolicyInProduct($input: getDefaultReturnPolicyInProductInput!) {
+  getDefaultReturnPolicyInProduct(input: $input) {
+    _id
+    name
+    description
+    duration
+    isEnable
+    returnCharge
+    isDeleted
+  }
+}
+`;
+
 
 
 const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
@@ -112,6 +148,10 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [remarks, setRemarks] = useState<any>([""]);
   const [selectedbrand, setselectedbrand] = useState<any>({})
+  const [changePolicy,setChangePolicy] = useState(false)
+  const handleChangePolicy = (e:any)=>{
+    setChangePolicy(e.target.checked)
+  }
 
   const [attributeid, setattributeid] = useState<IAttribute[] | []>([]);
   const handleAddRemark = () => {
@@ -124,8 +164,48 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
     setRemarks(updatedRemarks);
   };
 
+  // get all policies
+  const {
+    loading: policiesLoading,
+    error: policiesError,
+    data: policiesDataResponse,
+    refetch: policiesRefetch,
+  } = useQuery(GET_ALL_POLICIES, {
+    fetchPolicy: "network-only",
+    variables: {
+      input: {},
+    },
+  });
+
+  // get policy for product from brand and category
+  const {
+    loading: policyLoading,
+    error: policyError,
+    data: policyDataResponse,
+    refetch: policyRefetch,
+  } = useQuery(GET_POLICY_FOR_PRODUCT, {
+    fetchPolicy: "network-only",
+    variables: {
+      input: {
+        brandId: selectedbrand?.id,
+        categoryId: selectedCategory,
+      },
+    },
+  });
+
+  useEffect(()=>{
+    console.log("POLICY = ",policyDataResponse)
+    if(policyDataResponse && !changePolicy){
+      setValue("returnPolicy",policyDataResponse?.getDefaultReturnPolicyInProduct?._id)
+    }
+  },[policyDataResponse,changePolicy])
+
   useEffect(() => {
     if (editedProduct) {
+      if(editedProduct?.returnPolicyData){
+        setChangePolicy(true)
+      }
+
       setValue("productName", editedProduct?.productName || "");
       setValue("description", editedProduct?.description || "");
       setValue("sellingPrice", editedProduct?.sellingPrice);
@@ -147,6 +227,14 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
       setValue("isBlocked", editedProduct?.isBlocked)
       setValue("warehouseSkuId", editedProduct?.warehouseSkuId)
       setValue("status", editedProduct?.status)
+      setValue("delivery_type", editedProduct?.delivery_type);
+      setValue("returnPolicy", editedProduct?.returnPolicyData&&editedProduct?.returnPolicyData?._id || "");
+
+      setselectedbrand({
+        name: editedProduct.brandName,
+        id: editedProduct.brandId,
+      });
+      setSelectedCategory(editedProduct?.categoryId)
     }
   }, [editedProduct]);
 
@@ -212,6 +300,9 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
     brand: {
       required: "Brand is required",
     },
+    delivery_type: {
+      required: "Delivery Type is required",
+    },
     rating: {
       required: "Rating is required",
       pattern: {
@@ -246,11 +337,14 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
       stock: parseInt(data?.stock),
       warehouseSkuId: data?.warehouseSkuId,
       status: data?.status,
-      tags: data.tags
+      tags: data.tags,
+      delivery_type: data?.delivery_type,
+      returnPolicy: changePolicy ? data?.returnPolicy : null,
     };
     try {
       if (Edit) {
         try {
+          console.log("FORM DATAS = ",formdatas)
           const response = await updateproduct({
             variables: { input: { ...formdatas }, images: selectedImages, productDetailImages: selectedImages2 },
           });
@@ -349,7 +443,7 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                             : "Select Category"}
                           <FontAwesomeIcon
                             icon={faAngleDown}
-                            style={{ marginRight: "5px" }}
+                            style={{ marginLeft: "5px" }}
                           />
                         </DropdownToggle>
                         <DropdownMenu>
@@ -364,6 +458,30 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                         </DropdownMenu>
                       </Dropdown>
                     </FormGroup>
+                    <Col lg={5}>
+                    <FormGroup >
+                          <Label for="delivery_type">Delivery Type:</Label>
+                          <Controller
+                            control={control}
+                            name="delivery_type"
+                            render={({ field: { value, onChange } }) => (
+                              <Input
+                                type="select"
+                                id="delivery_type"
+                                value={value}
+                                onChange={(e) =>
+                                  onChange(e.target.value)
+                                }
+                              >
+                              <option value="">Select Delivery Type</option>
+                              <option value="ArabDeals">ArabDeals</option>
+                              <option value="Vendor">Vendor</option>
+                              <option value="ThirdParty">ThirdParty</option>
+                              </Input>
+                            )}
+                          />
+                        </FormGroup>
+                    </Col>
 
 
                     <Catattribute
@@ -727,6 +845,62 @@ const AddProduct: React.FC<AddProductProps> = ({ Edit, editedProduct }) => {
                         )}
                       />
                     </FormGroup>
+                    <Col md={6}>
+
+                        <FormGroup>
+                        <div style={{display:"flex",alignItems:"center",gap:10, justifyContent:"space-between",marginBottom:"3px"}}>
+                          <Label for="returnPolicy" style={{margin:0}}>Return Policy </Label>
+                          <div style={{display:"flex",alignItems:"center",gap:10}}>
+
+                          <Label
+                            style={{ fontWeight:"lighter",color:"#737373",margin:0,fontSize:"12px"}}
+                            >
+                            change policy
+                          </Label>
+                          <FormGroup
+                          switch
+                          >
+                          <Input
+                            className={ changePolicy ? "bg-success border-success" : ""}
+                            type="switch"
+                            style={{ width: "40px", height: "20px" }}
+                            checked={changePolicy}
+                            onChange={handleChangePolicy}
+                            />
+                          
+                        </FormGroup>
+                            </div>
+                        </div>
+                          <Controller
+                            control={control}
+                            name="returnPolicy"
+                            render={({ field: { value, onChange } }) => (
+                              <>
+                                <Input
+                                  type="select"
+                                  id="returnPolicy"
+                                  value={value}
+                                  onChange={onChange}
+                                  // className={styles.inputfield}
+                                  disabled={!changePolicy}
+                                >
+
+                                <option value="">Select</option>
+                                {policiesDataResponse && policiesDataResponse?.getAllPoliciesBySuperAdmin?.data?.map((item:any,index:any)=>(
+                                  <option key={index} value={item?._id}>{item?.name}</option>
+                                ))}
+                                </Input>
+                              </>
+                            )}
+                            // rules={fieldRules.rating}
+                          />
+                            {/* <Button color="primary">Edit</Button> */}
+                            
+                          {errors?.rating ? (
+                            <div className={styles.errmsg}>{errors?.rating?.message}</div>
+                          ) : null}
+                        </FormGroup>
+                      </Col>
 
 
                     <div style={{ padding: "0px 0px 0 0px" }}>
