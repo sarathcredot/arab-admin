@@ -1,3 +1,4 @@
+import { capitalCase } from 'change-case';
 import { capitalize } from 'lodash';
 import React from 'react';
 
@@ -11,6 +12,8 @@ const StatusChip: React.FC<StatusChipProps> = ({ status }) => {
             case "NA":
                 return { backgroundColor: "#cccccc", color: "#333333" };
             case "PENDING":
+                return { backgroundColor: "#f0ad4e", color: "#ffffff" };
+            case "Pending":
                 return { backgroundColor: "#f0ad4e", color: "#ffffff" };
             case "PACKAGE_IN_PROGRESS":
                 return { backgroundColor: "#5bc0de", color: "#ffffff" };
@@ -47,7 +50,7 @@ const StatusChip: React.FC<StatusChipProps> = ({ status }) => {
                 color: styles.backgroundColor,
             }}
         >
-            {capitalize(status) || "loading..."}
+            {status?capitalCase(status) || "loading...":""}
         </div>
     );
 };

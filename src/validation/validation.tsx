@@ -135,3 +135,11 @@ export const ReturnPolicyValidation = yup.object({
   duration: yup.string().required("Please enter return period"),
   returnCharge: yup.string().required("Please enter refund amound"),
 });
+export const WarrantyPolicyValidation = yup.object({
+  name: yup.string().required("Please enter warranty policy name"),
+  description: yup.string().required("Please enter warranty policy description"),
+  duration: yup.string().required("Please enter warranty duration"),
+  warrantyType: yup
+  .array()
+  .min(1, "Please select at least one warranty type") // Ensures at least one selection
+});

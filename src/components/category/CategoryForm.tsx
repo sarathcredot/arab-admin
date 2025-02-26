@@ -33,6 +33,7 @@ interface Category {
   isLeaf?: boolean;
   // sizeChart: sizeChart;
   returnPolicy:string;
+  warrantyPolicy:string;
   isBlocked: boolean;
 }
 
@@ -46,20 +47,24 @@ interface Props {
   childrefetch: () => void;
 }
 
-const GET_ALL_POLICIES = gql`
+const GET_ALL_RETURN_POLICIES = gql`
   query GetAllPoliciesBySuperAdmin($input: getAllPoliciesBySuperAdminInput) {
   getAllPoliciesBySuperAdmin(input: $input) {
     success
     data {
       _id
       name
-      description
-      duration
-      isEnable
-      returnCharge
-      isDeleted
     }
-    maxRecords
+  }
+}
+`;
+const GET_ALL_WARRANTY_POLICIES = gql`
+  query GetAllWarrantyPoliciesBySuperAdmin($input: getAllWarrantyPoliciesBySuperAdminInput) {
+  getAllWarrantyPoliciesBySuperAdmin(input: $input) {
+    data {
+      _id
+      name
+    }
   }
 }
 `;
@@ -86,18 +91,33 @@ const CategoryForm: React.FC<Props> = ({
 
 
 
-  // get policies
-      const {
-        loading: policiesLoading,
-        error: policiesError,
-        data: policiesDataResponse,
-        refetch: policiesRefetch,
-      } = useQuery(GET_ALL_POLICIES, {
-        fetchPolicy: "network-only",
-        variables: {
-          input: {},
-        },
-      });
+// get all return policies
+const {
+  loading: policiesLoading,
+  error: policiesError,
+  data: returnPoliciesDataResponse,
+  refetch: policiesRefetch,
+} = useQuery(GET_ALL_RETURN_POLICIES, {
+  fetchPolicy: "network-only",
+  variables: {
+    input: {},
+  },
+});
+
+  // get all warranty policies
+  const {
+    loading: warrantyPoliciesLoading,
+    error: warrantyPoliciesError,
+    data: warrantyPoliciesDataResponse,
+    refetch: warrantyPoliciesRefetch,
+  } = useQuery(GET_ALL_WARRANTY_POLICIES, {
+    fetchPolicy: "network-only",
+    variables: {
+      input: {
+        isEnable:true,
+      },
+    },
+  });
 
   const POST_CATEGORY = gql`
 mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
@@ -134,7 +154,8 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
             description: values?.description,
             parentId: isSelected?._id,
             isBlocked: isBlockCategoryChecked,
-            returnPolicy:values?.returnPolicy||null
+            returnPolicy:values?.returnPolicy||null,
+            warrantyPolicy:values?.warrantyPolicy||null
           },
         };
         if (values.image) {
@@ -168,7 +189,8 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
             parentId: isSelected?._id,
             isLeaf: isChecked,
             isBlocked: isBlockCategoryChecked,
-            returnPolicy:values?.returnPolicy||null
+            returnPolicy:values?.returnPolicy||null,
+            warrantyPolicy:values?.warrantyPolicy||null
           },
         };
         if (values.image) {
@@ -204,6 +226,7 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
       name: isEdit ? isEdit.categoryName : "",
       description: isEdit ? isEdit.description : "",
       returnPolicy: isEdit && isEdit.returnPolicy ? isEdit.returnPolicy :isSelected&& isSelected?.returnPolicy?isSelected?.returnPolicy: "",
+      warrantyPolicy: isEdit && isEdit.warrantyPolicy ? isEdit.warrantyPolicy :isSelected&& isSelected?.warrantyPolicy?isSelected?.warrantyPolicy: "",
       image: null
     },
     validationSchema: categoryValidation,
@@ -211,8 +234,6 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
       await onSubmit(values, { resetForm });
     },
   });
-
-
 
   const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState<string>("");
@@ -317,7 +338,7 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
                 onChange={formik.handleChange}
                 >
                 <option disabled value="">select return policy</option>
-                {policiesDataResponse&&policiesDataResponse?.getAllPoliciesBySuperAdmin?.data?.map((item:any,index:any)=>(
+                {returnPoliciesDataResponse&&returnPoliciesDataResponse?.getAllPoliciesBySuperAdmin?.data?.map((item:any,index:any)=>(
                   <option value={item?._id} key={index}>{item?.name}</option>
                 ))}
             </Input>
@@ -327,6 +348,37 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
             type="button"
             onClick={()=>{
               formik.setFieldValue("returnPolicy","")
+            }}
+            >Remove</Button>
+          }
+              </div>
+            </FormGroup>
+            <FormGroup>
+              <Label for="warrantyPolicy">Warranty Policy</Label>
+              <div style={{
+                display:"flex",
+                alignItems:"center",
+                gap:"10px"
+              }}>
+
+              <Input
+                type="select"
+                name="warrantyPolicy"
+                id="warrantyPolicy"
+                value={formik.values?.warrantyPolicy}
+                onChange={formik.handleChange}
+                >
+                <option disabled value="">select warranty policy</option>
+                {warrantyPoliciesDataResponse&&warrantyPoliciesDataResponse?.getAllWarrantyPoliciesBySuperAdmin?.data?.map((item:any,index:any)=>(
+                  <option value={item?._id} key={index}>{item?.name}</option>
+                ))}
+            </Input>
+            {formik.values?.warrantyPolicy&&
+            <Button
+            color="primary"
+            type="button"
+            onClick={()=>{
+              formik.setFieldValue("warrantyPolicy","")
             }}
             >Remove</Button>
           }
@@ -349,6 +401,7 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
                 </Label>
               </FormGroup>
             ) : ""}
+
 
             {isEdit ? (
               <div>

@@ -33,10 +33,11 @@ interface IBrand {
   isPopular: boolean;
   priority: number;
   returnPolicy:string;
+  warrantyPolicy:string;
 }
 
 
-const GET_ONE_POLICY = gql`
+const GET_RETURN_POLICY = gql`
   query GetReturnPolicyByAdmin($input: getReturnPolicyByAdminInput!) {
     getReturnPolicyByAdmin(input: $input) {
       _id
@@ -46,6 +47,19 @@ const GET_ONE_POLICY = gql`
       isEnable
       returnCharge
       isDeleted
+    }
+  }
+`;
+const GET_WARRANTY_POLICY = gql`
+  query GetWarrantyPolicyByAdmin($input: getWarrantyPolicyByAdminInput!) {
+    getWarrantyPolicyByAdmin(input: $input) {
+      _id
+      name
+      description
+      duration
+      isEnable
+      isDeleted
+      warrantyType
     }
   }
 `;
@@ -74,6 +88,8 @@ function ViewBrands() {
       isPopular
       priority
       returnPolicy
+      warrantyPolicy
+      
     }
     message
   }
@@ -86,7 +102,7 @@ const {
   error: policyError,
   loading: policyLoading,
   refetch: policyRefetch,
-} = useQuery(GET_ONE_POLICY, {
+} = useQuery(GET_RETURN_POLICY, {
   variables: {
     input: {
       returnPolicyId: brandData?.returnPolicy,
@@ -95,6 +111,21 @@ const {
   skip:!brandData?.returnPolicy,
   fetchPolicy: "network-only",
 });
+const {
+  data: warrantyPolicyData,
+  loading: warrantyPolicyLoading,
+} = useQuery(GET_WARRANTY_POLICY, {
+  variables: {
+    input: {
+      warrantyPolicyId: brandData?.warrantyPolicy,
+    },
+  },
+  skip:!brandData?.warrantyPolicy,
+  fetchPolicy: "network-only",
+});
+
+console.log("warranty = ",warrantyPolicyData)
+
   const {
     loading: brandLoading,
     error: brandError,
@@ -183,7 +214,13 @@ const {
               <p>
               Return Policy : 
               </p>
-              <p style={{fontWeight:"bold"}}>{policyData?.getReturnPolicyByAdmin?.name||"nill"}</p>
+              <p style={{fontWeight:"bold"}}>{policyData?.getReturnPolicyByAdmin?.name||"No return policies have been attached"}</p>
+            </div>
+            <div style={{display:"flex",alignItems:"center",gap:5}}>
+              <p>
+              Warranty Policy : 
+              </p>
+              <p style={{fontWeight:"bold"}}>{warrantyPolicyData && warrantyPolicyData?.getWarrantyPolicyByAdmin?.name||"No warranty policies have been attached"}</p>
             </div>
             </div>
 

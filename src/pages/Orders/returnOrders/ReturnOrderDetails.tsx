@@ -169,124 +169,117 @@ const ReturnOrderDetails = () => {
 
   const GET_ORDER_PRODUCT = gql`
     query GetAdminOrderProduct($input: GetAdminOrderProductInput!) {
-      getAdminOrderProduct(input: $input) {
-        _id
-        userId
-        vendorId
-        productId
-        vendorName
-        itemId
-        orderId
-        productName
-        shortDescription
-        skuId
-        warehouseSkuId
-        image {
-          fileType
-          fileURL
-          mimeType
-          originalName
-        }
-        returnPeriod
-        mrp
-        sellingPrice
-        shippingCharge
-        paymentMode
-        paymentStatus
-        paymentRemark
-        orderDate
-        shippingStatus
-        shippedDate
-        deliveryDate
-        returnStatus
-        returnUserReason
-        returnAdminComment
-        returnRequestDate
-        returnRejectedDate
-        returnDate
-        refundStatus
-        refundAmount
-        refundRequestDate
-        refundDate
-        refundComment
-        cancelUserReason
-        cancelAdminComment
-        cancelledDate
-        courierId
-        invoiceNumber
-        invoice {
-          fileType
-          fileURL
-          mimeType
-          originalName
-        }
-        username
-        deliveryAgentId
-        deliveryBoy {
-          _id
-          fullName
-          contactNumber
-          userID
-          password
-          agentType
-          vendorID
-          licence {
-            fileType
-            fileURL
-            mimeType
-            originalName
-          }
-          ID
-        }
-        deliveryAgentName
-        refundBankDetails {
-          accountHolderName
-          accountNumber
-          ifscCode
-          bankName
-          branchName
-        }
-        returnAddress {
-          firstname
-          email
-          mobile
-          streetName
-          city
-          houseNumber
-          country
-          postCode
-          apartment
-          suite
-          unit
-        }
-        returnProductImage {
-          fileType
-          fileURL
-          mimeType
-          originalName
-        }
-        deliveryAssignedOn
-        returnOrderAssignedOn
-        returndeliveryAgentId
-        returndeliveryAgentName
-        returnCollectorBoy {
-          _id
-          fullName
-          contactNumber
-          userID
-          password
-          agentType
-          vendorID
-          licence {
-            fileType
-            fileURL
-            mimeType
-            originalName
-          }
-          ID
-        }
-      }
+  getAdminOrderProduct(input: $input) {
+    _id
+    userId
+    vendorId
+    productId
+    vendorName
+    itemId
+    orderId
+    productName
+    shortDescription
+    skuId
+    warehouseSkuId
+    returnPeriod
+    mrp
+    sellingPrice
+    shippingCharge
+    paymentMode
+    paymentStatus
+    paymentRemark
+    orderDate
+    shippingStatus
+    shippedDate
+    deliveryDate
+    returnStatus
+    returnUserReason
+    returnAdminComment
+    returnRequestDate
+    returnRejectedDate
+    returnDate
+    refundStatus
+    refundAmount
+    refundRequestDate
+    refundDate
+    refundComment
+    cancelUserReason
+    cancelAdminComment
+    cancelledDate
+    courierId
+    invoiceNumber
+    username
+    deliveryAgentId
+    deliveryBoy {
+      _id
+      fullName
+      contactNumber
+      userID
+      password
+      agentType
+      vendorID
+      ID
     }
+    deliveryAgentName
+    returnAddress {
+      firstname
+      email
+      mobile
+      streetName
+      city
+      houseNumber
+      country
+      postCode
+      apartment
+      suite
+      unit
+      governorate
+      village
+      governorateID
+      villageID
+      address
+    }
+    returnProductImage {
+      fileType
+      fileURL
+      mimeType
+      originalName
+    }
+    deliveryAssignedOn
+    returnOrderAssignedOn
+    returndeliveryAgentId
+    returndeliveryAgentName
+    image {
+      fileType
+      fileURL
+      mimeType
+      originalName
+    }
+    invoice {
+      fileType
+      fileURL
+      mimeType
+      originalName
+    }
+    refundBankDetails {
+      accountHolderName
+      accountNumber
+      ifscCode
+      bankName
+      branchName
+    }
+    returnCollectorBoy {
+      _id
+      fullName
+      contactNumber
+      userID
+      password
+      agentType
+      vendorID
+      ID
+    }
+  }
+}
   `;
 
 const GET_RETURN_POLICY = gql`
@@ -311,6 +304,7 @@ const GET_RETURN_POLICY = gql`
       },
     },
   });
+  console.log("orderProductData = ",orderProductData)
 
   const {
     data: returnPolicyData,
@@ -564,7 +558,7 @@ const GET_RETURN_POLICY = gql`
 
                 <CardBody>
                   <form action="#">
-                    <OrderShippingAddress order={order} />
+                    <OrderShippingAddress order={product} returnAddress={true} />
 
                     <div className="border mt-3 border-dashed"></div>
 

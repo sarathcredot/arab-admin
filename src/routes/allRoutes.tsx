@@ -158,6 +158,9 @@ import CouponDetailPage from "src/pages/Coupons/CouponDetailPage";
 import Roles from "src/pages/MultiAdmin/Roles/Roles";
 import Admins from "src/pages/MultiAdmin/Admins/Admins";
 import ReturnPolicy from "src/pages/ReturnPolicy";
+import WarrantyPolicies from "src/pages/Warranty/WarrantyPolicies";
+import ClaimsAndRequests from "src/pages/Warranty/ClaimsAndRequests";
+import WarrantyOrderProductDetails from "src/pages/Warranty/WarrantyOrderProductDetails";
 interface RouteProps {
   path: string;
   component: any;
@@ -289,6 +292,12 @@ const adminRoutes: Array<RouteProps> = [
   // return Management
 
   { path: "/return-policy", component: <ReturnPolicy /> },
+
+  // Warranty
+
+  { path: "/warranty-policies", component: <WarrantyPolicies /> },
+  { path: "/warranty-claims", component: <ClaimsAndRequests /> },
+  { path: "/warranty-claims/details", component: <WarrantyOrderProductDetails /> },
 
   { path: "*", component: <PageNotFound /> },
 ];

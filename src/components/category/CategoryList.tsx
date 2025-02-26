@@ -47,6 +47,7 @@ interface Category {
   children?: Category[];
   isLeaf: boolean;
   returnPolicy:string;
+  warrantyPolicy:string;
   categoryImage?: {
     fileType: string;
     fileURL: string;
@@ -96,6 +97,7 @@ const CategoryList: React.FC<Props> = () => {
         originalName
       }
       returnPolicy
+      # warrantyPolicy
     }
   }
 }
@@ -119,6 +121,7 @@ const CategoryList: React.FC<Props> = () => {
         originalName
       }
       returnPolicy
+      # warrantyPolicy
     }
   }
 }

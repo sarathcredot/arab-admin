@@ -26,6 +26,7 @@ import { IoMdSettings } from "react-icons/io";
 import { LuShoppingBag } from "react-icons/lu";
 import { GiReceiveMoney } from "react-icons/gi";
 import { RiRefund2Fill } from "react-icons/ri";
+import { FaUserTie } from "react-icons/fa";
 import Iconify from "../iconify";
 
 const SidebarContent = (props: any) => {
@@ -676,7 +677,7 @@ const SidebarContent = (props: any) => {
                 >
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <div style={{ display: "flex", alignItems: "center" }}>
-                      <FeatherIcon icon="shield" />
+                      <FaUserTie />
                       <span>{props.t("Admin Management")}</span>
                     </div>
                     <div
@@ -716,6 +717,43 @@ const SidebarContent = (props: any) => {
 
                   <span>{props.t("Return Policy")}</span>
                 </Link>
+              </li>
+            ) : null}
+            {adminType === "SUPER_ADMIN" || adminRoles?.includes("admins") || adminRoles?.includes("warranty") ? (
+              <li className="mt-3  li-sideBar">
+                <Link
+                  to="/warranty"
+                  onClick={(e) => handleItemClick("/warranty", e)}
+                >
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <FeatherIcon icon="shield" />
+                      <span>{props.t("Warranty")}</span>
+                    </div>
+                    <div
+                      className="arrow-down"
+                      style={{ position: "absolute", top: "30px", right: "25px" }}
+                    ></div>
+                  </div>
+                </Link>
+                {openMenus.includes("/warranty") && (
+                  <ul className={`sub-menu ${openMenus.includes("/warranty") ? "mm-show" : ""}`}>
+                    {adminType === "SUPER_ADMIN" || adminRoles?.includes("warranty-policies") ? (
+                      <li>
+                        <Link to="/warranty-policies">
+                          <FeatherIcon icon="chevron-right" /> <span>{props.t("Manage Policies")}</span>
+                        </Link>
+                      </li>
+                    ) : null}
+                    {adminType === "SUPER_ADMIN" || adminRoles?.includes("warranty-requests") ? (
+                      <li>
+                        <Link to="/warranty-claims">
+                          <FeatherIcon icon="chevron-right" /> <span>Claims&Requests</span>
+                        </Link>
+                      </li>
+                    ) : null}
+                  </ul>
+                )}
               </li>
             ) : null}
             {adminType === "SUPER_ADMIN" || adminRoles?.includes("settings") ? (

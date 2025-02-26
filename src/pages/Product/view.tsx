@@ -85,6 +85,7 @@ const ProductDetails = () => {
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [editedProduct, setEditedProduct] = useState<ProductData | undefined>(undefined);
   const [returnPolicy,setReturnPolicy]= useState<any>(null)
+  const [warrantyPolicy,setWarrantyPolicy]= useState<any>(null)
 
   const GET_PRODUCT = gql`
     query GetProductByAdmin($input: ProductId!) {
@@ -143,11 +144,20 @@ const ProductDetails = () => {
         returnCharge
         isDeleted
       }
+      warrantyPolicyData {
+        _id
+        name
+        description
+        duration
+        isEnable
+        isDeleted
+        warrantyType
+      }
     }
   }
 }
   `;
-  const GET_POLICY_FOR_PRODUCT = gql`
+const GET_POLICY_FOR_PRODUCT = gql`
   query GetDefaultReturnPolicyInProduct($input: getDefaultReturnPolicyInProductInput!) {
     getDefaultReturnPolicyInProduct(input: $input) {
       _id
@@ -159,7 +169,20 @@ const ProductDetails = () => {
       isDeleted
     }
   }
-  `;
+`;
+const GET_WARRANTY_POLICY_FOR_PRODUCT = gql`
+  query GetDefaultWarrantyPolicyInProduct($input: getDefaultWarrantyPolicyInProductInput) {
+  getDefaultWarrantyPolicyInProduct(input: $input) {
+    _id
+    name
+    description
+    duration
+    isEnable
+    isDeleted
+    warrantyType
+  }
+}
+`;
 
   const GET_VARIANTS = gql`
   query GetVariants($input: VariantsInput!) {
@@ -205,13 +228,23 @@ const ProductDetails = () => {
     skip: !_id,
   });
 
-  // get policy for product from brand and category
+  // get return policy for product from brand and category
   const {
-    loading: policyLoading,
-    error: policyError,
     data: policyDataResponse,
-    refetch: policyRefetch,
   } = useQuery(GET_POLICY_FOR_PRODUCT, {
+    fetchPolicy: "network-only",
+    variables: {
+      input: {
+        brandId: product?.brandId,
+        categoryId: product?.categoryId,
+      },
+    },
+    skip:!product
+  });
+  // get warranty policy for product from brand and category
+  const {
+    data: warrantyPolicyDataResponse,
+  } = useQuery(GET_WARRANTY_POLICY_FOR_PRODUCT, {
     fetchPolicy: "network-only",
     variables: {
       input: {
@@ -223,11 +256,17 @@ const ProductDetails = () => {
   });
 
   useEffect(()=>{
-    console.log("POLICY = ",policyDataResponse)
+    console.log("RETURN POLICY = ",policyDataResponse)
     if(policyDataResponse){
       setReturnPolicy(policyDataResponse?.getDefaultReturnPolicyInProduct)
     }
   },[policyDataResponse])
+  useEffect(()=>{
+    console.log("WARRANTY POLICY = ",warrantyPolicyDataResponse)
+    if(warrantyPolicyDataResponse){
+      setWarrantyPolicy(warrantyPolicyDataResponse?.getDefaultWarrantyPolicyInProduct)
+    }
+  },[warrantyPolicyDataResponse])
 
   const {
     data: data2,
@@ -350,6 +389,8 @@ const ProductDetails = () => {
     { text: "Products", link: `/product` },
     { text: "Variants", link: `/product/variant?productCode=${product?.productCode}` },
   ];
+
+  console.log("PRODUCT = ",product)
 
   return (
     <React.Fragment>
@@ -594,7 +635,21 @@ const ProductDetails = () => {
                                 {" "}
                                 Return Policy:
                               </label>
-                              <p className="form-control-static">{product?.returnPolicyData?.name ?? returnPolicy?.name}</p>
+                              <p className="form-control-static">{product?.returnPolicyData?.name ?? returnPolicy?.name ?? "No return policies have been attached."}</p>
+                            </div>
+                          </Col>
+                        </Row>
+                      </div>
+                      <div className="border mt-3 border-dashed"></div>
+                      <div className="mt-4">
+                        <Row>
+                          <Col xl={6}>
+                            <div className="mb-3">
+                              <label htmlFor="cleave-time-format" className="form-label">
+                                {" "}
+                                Warranty Policy:
+                              </label>
+                              <p className="form-control-static">{product?.warrantyPolicyData?.name ?? warrantyPolicy?.name ?? "No warranty policies have been attached."}</p>
                             </div>
                           </Col>
                         </Row>

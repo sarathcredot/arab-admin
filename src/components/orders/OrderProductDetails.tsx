@@ -259,7 +259,8 @@ function OrderProductDetails({
         setCancelComment("");
         setPaymentStatus("");
         if (shippingStatus === "SHIPPED") {
-          toggleDeliveryAssignModal();
+          handleAssignClick(result?.data?.updateAdminOrderProduct?._id,"DELIVERY")
+          // toggleDeliveryAssignModal();
         }
       }
     } catch (error: any) {
@@ -774,8 +775,10 @@ function OrderProductDetails({
   }, [isCustomize]);
 
   const handleAssignOrder = async () => {
+    console.log("in 1")
     try {
       if (!orderItemId && !product?._id)
+        
         throw new Error("Can't find order Item !");
       if (!deliveryBoyId) throw new Error("Select a Delivery Agent!");
       if (!deliveryBoyName) throw new Error("Select a Delivery Agent!");
@@ -800,11 +803,13 @@ function OrderProductDetails({
           variables,
         });
       }
+      console.log("assignOrderType = ",assignOrderType)
 
-
+      console.log("RESPONSE = ",response)
       if(response){
 
       const { errors, data } = response;
+      console.log("RESS = ",{errors,data})
 
       const success = data?.orderAssignDeliveryAgent?.status
         ? data?.orderAssignDeliveryAgent?.status
@@ -1096,6 +1101,7 @@ function OrderProductDetails({
             </Col>
             <Col xl={4}>
               <div>
+                
                 <FormGroup>
                   <Label for="exampleSelect">Shipping Status</Label>
                   <Input
@@ -1449,6 +1455,7 @@ function OrderProductDetails({
                     </Button>
                   </div>
                   <div className={styles.comment_image_container}>
+                    
                     <div className={styles.comment_container}>
                       <div>
                         <h5 style={{ color: "#b12349", marginBottom: "20px" }}>
@@ -1548,7 +1555,7 @@ function OrderProductDetails({
                           </div>
                         ))}
                     </div>
-                  </div>
+                    </div>
                 </CardBody>
               </Card>
             </Collapse>
@@ -1609,176 +1616,6 @@ function OrderProductDetails({
                   onChange={(e) => setShippedDate(e.target.value)}
                 />
               </FormGroup>
-              {/* <div className="form-check form-switch mb-3" dir="ltr">
-                <input
-                  checked={isCustomize}
-                  type="checkbox"
-                  className="form-check-input"
-                  id="customSwitch1"
-                  onChange={(e: any) => setIsCustomize(e.target.checked)}
-                />
-                <label className="form-check-label" htmlFor="customSwitch1">
-                  Customize Delivery Agent Type ?
-                </label>
-              </div>
-              <FormGroup>
-                <Label for="agentType">Agent Type</Label>
-                <Input
-                  type="select"
-                  name="agentType"
-                  id="agentType"
-                  value={deliveryAgentType}
-                  disabled={!isCustomize}
-                  onChange={(e: any) => setDeliveryAgentType(e?.target?.value)}
-                >
-                  <option value="" disabled>
-                    Select Delivery Agent Type
-                  </option>
-                  {["ArabDeals", "Vendor", "ThirdParty"].map((el) => (
-                    <option key={el} value={el}>
-                      {el}
-                    </option>
-                  ))}
-                </Input>
-              </FormGroup>
-              {isCustomize && (
-                <>
-                  {deliveryAgentType === "Vendor" && (
-                    <FormGroup>
-                      <div>
-                        <Label className="form-label pt-2">Select Vendor</Label>
-                        <Input
-                          name="vendorID"
-                          placeholder="Select Vendor"
-                          id="vendorID"
-                          type="select"
-                          value={vendorId || ""}
-                          onChange={(e) => setVendorId(e.target.value)}
-                          // onBlur={formik.handleBlur}
-                          defaultValue={
-                            vendorDataResponse?.getAllVendorsRecordsByAdmin
-                              ?.records[0]?._id
-                          }
-                        >
-                          <option value="" disabled>
-                            Select Vendor
-                          </option>
-                          {vendorDataResponse &&
-                            vendorDataResponse?.getAllVendorsRecordsByAdmin &&
-                            vendorDataResponse?.getAllVendorsRecordsByAdmin
-                              ?.records?.length > 0 &&
-                            vendorDataResponse.getAllVendorsRecordsByAdmin?.records.map(
-                              (item: any) => (
-                                <option key={item._id} value={item._id}>
-                                  {item.fullName}
-                                </option>
-                              )
-                            )}
-                        </Input>
-                      </div>
-                    </FormGroup>
-                  )}
-                  <FormGroup>
-                    <Label className="form-label pt-2">
-                      Select Governorate
-                    </Label>
-                    <Input
-                      name="governorateID"
-                      placeholder="Select Governate"
-                      id="governorateID"
-                      type="select"
-                      value={governateId || ""}
-                      onChange={(e) => handleGovernorateChange(e.target.value)}
-                    >
-                      <option value="" disabled>
-                        Select Governate
-                      </option>
-                      {getLocation?.getLocationsData &&
-                        getLocation?.getLocationsData?.length &&
-                        getLocation?.getLocationsData?.map((gov: any) => (
-                          <option key={gov._id} value={gov._id}>
-                            {gov.name}
-                          </option>
-                        ))}
-                    </Input>
-                  </FormGroup>
-                  <FormGroup>
-                    <Label className="form-label pt-2">Select Wilayat</Label>
-                    <Input
-                      name="villageID"
-                      placeholder="Select Wilayat"
-                      id="villageID"
-                      type="select"
-                      value={villageId || ""}
-                      onChange={(e) => setVillageId(e.target.value)}
-                      disabled={!villages.length}
-                    >
-                      <option value="" disabled>
-                        Select Wilayat
-                      </option>
-                      {villages &&
-                        villages?.length &&
-                        villages?.map((wil: any) => (
-                          <option key={wil._id} value={wil._id}>
-                            {wil.name}
-                          </option>
-                        ))}
-                    </Input>
-                  </FormGroup>
-                </>
-              )}
-              <Col>
-                <FormGroup>
-                  <Label for="deliveryBoy">Select Delivery Boy</Label>
-                  <Input
-                    id="deliveryBoy"
-                    name="deliveryBoy"
-                    type="select"
-                    // value={deliveryBoyId}
-                    placeholder="Select Delivery Boy"
-                    onChange={(e: any) => {
-                      const selectedValue = e?.target?.value; // The ID (value) of the selected option
-                      const selectedName =
-                        e?.target?.options[e?.target?.selectedIndex]?.text; // The name (text) of the selected option
-                      setDeliveryBoyId(selectedValue); // Save ID in state
-                      setDeliveryBoyName(selectedName); // Save name in state
-                    }}
-                  >
-                    <option value="" selected disabled>
-                      Select Delivery Boy
-                    </option>
-                    {deliveryAgentList &&
-                    deliveryAgentList?.getProductDeliveryTypeDeliveryAgents &&
-                    deliveryAgentList?.getProductDeliveryTypeDeliveryAgents
-                      ?.deliveryAgents?.length > 0
-                      ? deliveryAgentList?.getProductDeliveryTypeDeliveryAgents?.deliveryAgents?.map(
-                          (agent: any) => (
-                            <option
-                              key={agent?._id}
-                              id={agent?.fullName}
-                              value={agent?._id}
-                            >
-                              {agent?.fullName}
-                            </option>
-                          )
-                        )
-                      : deliveryAgentListCustomize &&
-                        deliveryAgentListCustomize?.getDeliveryAgentlistCustomizOrderAssigen
-                      ? deliveryAgentListCustomize?.getDeliveryAgentlistCustomizOrderAssigen?.map(
-                          (agent: any) => (
-                            <option
-                              key={agent?._id}
-                              id={agent?.fullName}
-                              value={agent?._id}
-                            >
-                              {agent?.fullName}
-                            </option>
-                          )
-                        )
-                      : []}
-                  </Input>
-                </FormGroup>
-              </Col> */}
             </>
           )}
           {shippingStatus === "DELIVERED" && (

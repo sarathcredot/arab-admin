@@ -37,6 +37,7 @@ interface IBrand {
   isPopular: boolean;
   priority: number;
   returnPolicy:string;
+  warrantyPolicy:string;
 }
 
 interface Props {
@@ -47,20 +48,23 @@ interface Props {
   childrefetch?: () => void;
 }
 
-const GET_ALL_POLICIES = gql`
+const GET_ALL_RETURN_POLICIES = gql`
   query GetAllPoliciesBySuperAdmin($input: getAllPoliciesBySuperAdminInput) {
   getAllPoliciesBySuperAdmin(input: $input) {
-    success
     data {
       _id
       name
-      description
-      duration
-      isEnable
-      returnCharge
-      
     }
-    maxRecords
+  }
+}
+`;
+const GET_ALL_WARRANTY_POLICIES = gql`
+  query GetAllWarrantyPoliciesBySuperAdmin($input: getAllWarrantyPoliciesBySuperAdminInput) {
+  getAllWarrantyPoliciesBySuperAdmin(input: $input) {
+    data {
+      _id
+      name
+    }
   }
 }
 `;
@@ -106,18 +110,33 @@ console.log("IS EDIT = ",isEdit)
 }
   `;
 
-      // get all policies
-      const {
-        loading: policiesLoading,
-        error: policiesError,
-        data: policiesDataResponse,
-        refetch: policiesRefetch,
-      } = useQuery(GET_ALL_POLICIES, {
-        fetchPolicy: "network-only",
-        variables: {
-          input: {},
-        },
-      });
+  // get all return policies
+  const {
+    loading: policiesLoading,
+    error: policiesError,
+    data: returnPoliciesDataResponse,
+    refetch: policiesRefetch,
+  } = useQuery(GET_ALL_RETURN_POLICIES, {
+    fetchPolicy: "network-only",
+    variables: {
+      input: {},
+    },
+  });
+
+  // get all warranty policies
+  const {
+    loading: warrantyPoliciesLoading,
+    error: warrantyPoliciesError,
+    data: warrantyPoliciesDataResponse,
+    refetch: warrantyPoliciesRefetch,
+  } = useQuery(GET_ALL_WARRANTY_POLICIES, {
+    fetchPolicy: "network-only",
+    variables: {
+      input: {
+        isEnable:true,
+      },
+    },
+  });
 
   const [createBrand] = useMutation(POST_BRAND);
   const [updateBrand] = useMutation(PUT_BRAND);
@@ -134,6 +153,7 @@ console.log("IS EDIT = ",isEdit)
             priority: values.priority,
             isPopular: isPopularChecked,
             returnPolicy:values?.returnPolicy||null,
+            warrantyPolicy:values?.warrantyPolicy||null,
           },
         };
         if (values.image) {
@@ -163,6 +183,7 @@ console.log("IS EDIT = ",isEdit)
           priority: values.priority,
           isPopular: isPopularChecked,
           returnPolicy:values?.returnPolicy||null,
+          warrantyPolicy:values?.warrantyPolicy||null,
 
         },
       };
@@ -195,6 +216,7 @@ console.log("IS EDIT = ",isEdit)
       brandName: isEdit ? isEdit.brandName : "",
       priority: isEdit ? isEdit.priority : "",
       returnPolicy:isEdit && isEdit?.returnPolicy ? isEdit?.returnPolicy :"",
+      warrantyPolicy:isEdit && isEdit?.warrantyPolicy ? isEdit?.warrantyPolicy :"",
       image: null,
     },
     validationSchema: brandValidation,
@@ -311,7 +333,7 @@ console.log("IS EDIT = ",isEdit)
                 onChange={formik.handleChange}
                 >
                 <option disabled value="">select return policy</option>
-                {policiesDataResponse&&policiesDataResponse?.getAllPoliciesBySuperAdmin?.data?.map((item:any,index:any)=>(
+                {returnPoliciesDataResponse&&returnPoliciesDataResponse?.getAllPoliciesBySuperAdmin?.data?.map((item:any,index:any)=>(
                   <option value={item?._id} key={index}>{item?.name}</option>
                 ))}
             </Input>
@@ -321,6 +343,37 @@ console.log("IS EDIT = ",isEdit)
             type="button"
             onClick={()=>{
               formik.setFieldValue("returnPolicy","")
+            }}
+            >Remove</Button>
+          }
+              </div>
+            </FormGroup>
+            <FormGroup>
+              <Label for="warrantyPolicy">Warranty Policy</Label>
+              <div style={{
+                display:"flex",
+                alignItems:"center",
+                gap:"10px"
+              }}>
+
+              <Input
+                type="select"
+                name="warrantyPolicy"
+                id="warrantyPolicy"
+                value={formik.values?.warrantyPolicy}
+                onChange={formik.handleChange}
+                >
+                <option disabled value="">select warranty policy</option>
+                {warrantyPoliciesDataResponse&&warrantyPoliciesDataResponse?.getAllWarrantyPoliciesBySuperAdmin?.data?.map((item:any,index:any)=>(
+                  <option value={item?._id} key={index}>{item?.name}</option>
+                ))}
+            </Input>
+            {formik.values?.warrantyPolicy&&
+            <Button
+            color="primary"
+            type="button"
+            onClick={()=>{
+              formik.setFieldValue("warrantyPolicy","")
             }}
             >Remove</Button>
           }

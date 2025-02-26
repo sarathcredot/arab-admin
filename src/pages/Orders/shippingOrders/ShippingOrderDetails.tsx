@@ -10,8 +10,9 @@ import "cleave.js/dist/addons/cleave-phone.in";
 import { capitalCase, sentenceCase } from "change-case";
 import moment from "moment";
 import userAvatar from "src/assets/images/users/user-dummy-img.jpg";
-import OrderDetails from "src/components/orders/OrderProductDetails";
-import { formatCurrency } from "src/utils/formatCurrency"; import OrderProductsDetails from "src/components/orders/OrderProductDetails";
+// import OrderDetails from "src/components/orders/OrderProductDetails";
+import { formatCurrency } from "src/utils/formatCurrency"; 
+import OrderProductsDetails from "src/components/orders/OrderProductDetails";
 import Iconify from "src/components/iconify";
 import OrderShippingAddress from "src/components/orders/OrderShippingAddress";
 import StatusChip from "src/components/statusIndicator/StatusChip";
@@ -139,6 +140,12 @@ const ShippingOrderDetails = () => {
       apartment
       suite
       unit
+      governorateID
+      governorate
+      village
+      villageID
+      address
+      label
     }
     orderPriceInfo {
       totalMRP
@@ -149,7 +156,6 @@ const ShippingOrderDetails = () => {
   }
 }
   `;
-
 
 
 
@@ -187,12 +193,7 @@ const ShippingOrderDetails = () => {
     productName
     shortDescription
     skuId
-    image {
-      fileType
-      fileURL
-      mimeType
-      originalName
-    }
+    warehouseSkuId
     returnPeriod
     mrp
     sellingPrice
@@ -220,13 +221,76 @@ const ShippingOrderDetails = () => {
     cancelledDate
     courierId
     invoiceNumber
+    username
+    deliveryAgentId
+    deliveryBoy {
+      _id
+      fullName
+      contactNumber
+      userID
+      password
+      agentType
+      vendorID
+      ID
+    }
+    deliveryAgentName
+    returnAddress {
+      firstname
+      email
+      mobile
+      streetName
+      city
+      houseNumber
+      country
+      postCode
+      apartment
+      suite
+      unit
+      governorate
+      village
+      governorateID
+      villageID
+      address
+    }
+    returnProductImage {
+      fileType
+      fileURL
+      mimeType
+      originalName
+    }
+    deliveryAssignedOn
+    returnOrderAssignedOn
+    returndeliveryAgentId
+    returndeliveryAgentName
+    image {
+      fileType
+      fileURL
+      mimeType
+      originalName
+    }
     invoice {
       fileType
       fileURL
       mimeType
       originalName
     }
-    warehouseSkuId
+    refundBankDetails {
+      accountHolderName
+      accountNumber
+      ifscCode
+      bankName
+      branchName
+    }
+    returnCollectorBoy {
+      _id
+      fullName
+      contactNumber
+      userID
+      password
+      agentType
+      vendorID
+      ID
+    }
   }
 }
   `

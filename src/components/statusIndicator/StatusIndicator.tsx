@@ -1,3 +1,4 @@
+import { capitalCase } from "change-case";
 import { capitalize } from "lodash";
 import React from "react";
 import { Badge } from "reactstrap";
@@ -42,9 +43,13 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({ status, variant = "de
         return "#005E2B";
       case "Completed":
         return "#005E2B";
+      case "RETURNED_TO_WAREHOUSE":
+        return "#005E2B";
       case "RETURNED TO WAREHOUSE":
         return "#005E2B";
       case "Inactive":
+        return "#E30613";
+      case "REJECTED":
         return "#E30613";
       case "Rejected":
         return "#E30613";
@@ -76,7 +81,7 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({ status, variant = "de
   };
 
   if (variant === "chip" && status) {
-    return <div style={getButtonStyle(status)}>{capitalize(status?.toString())}</div>;
+    return <div style={getButtonStyle(status)}>{capitalCase(status?.toString())}</div>;
   }
 
   return (
@@ -90,7 +95,7 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({ status, variant = "de
         margin: 0,
       }}
     >
-      {status && capitalize(status.toString().replace("_", " "))}
+      {status && capitalCase(status.toString().replace("_", " "))}
     </p>
     // </Badge>
   );

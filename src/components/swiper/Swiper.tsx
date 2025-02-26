@@ -17,10 +17,13 @@ const CustomSwiper = ({
       slidesPerView={slidesPerView}
       onSlideChange={() => console.log("slide change")}
       onSwiper={(swiper) => console.log(swiper)}
+      style={{height:"100%",background:"transparent"}}
+      navigation
+      
     >
       {data &&
         data?.length > 0 ?
-        data?.map((el: any) => <SwiperSlide key={el?._id}><img src={el?.fileURL} alt="Return product" /></SwiperSlide>): <SwiperSlide> No images found!</SwiperSlide>}
+        data?.map((el: any) => <SwiperSlide key={el?._id}><img onClick={(e)=>e.stopPropagation()} style={{height:"100%",width:"100%",objectFit:"contain"}} src={el?.fileURL} alt="images" /></SwiperSlide>): <SwiperSlide> No images found!</SwiperSlide>}
     </Swiper>
   );
 };
