@@ -219,9 +219,11 @@ const adminRoutes: Array<RouteProps> = [
   { path: "/register", exact: true, component: <Register /> },
   { path: "/dashboard", component: <Dashboard /> },
 
+ 
+    { path: "/product", component: <Productlisting /> },
 
+  
 
-  { path: "/product", component: <Productlisting /> },
   { path: "/product/details", component: <View /> },
   { path: "/product/variant", component: <VariantListing /> },
   { path: "/add-product", component: <Addproduct /> },

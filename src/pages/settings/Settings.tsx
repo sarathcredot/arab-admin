@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button, ButtonGroup, Card, CardBody, CardText, CardTitle, Col, Container, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row } from 'reactstrap'
 import Breadcrumbs from "../../components/Common/Breadcrumb"
-import { Truck, CreditCard} from 'feather-icons-react';
+import { Truck, CreditCard } from 'feather-icons-react';
 import "./settings.css"
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { formatCurrency } from 'src/utils/formatCurrency';
@@ -13,13 +13,14 @@ interface ShippingSettings {
     shippingCharge: number;
     freeShippingThreshold: number;
     returnPeriod: number;
-    defaultReturnPolicy:string;
+    defaultReturnPolicy: string;
 }
 
 interface DeliveryBoysSettings {
 
     orderAssignLimit: number;
     returnOrderAssignLimit: number;
+    warrantyCallAssignLimit:number
     _id: string
 }
 
@@ -50,12 +51,13 @@ function Settings() {
         shippingCharge: 0,
         freeShippingThreshold: 0,
         returnPeriod: 0,
-        defaultReturnPolicy:""
+        defaultReturnPolicy: ""
     };
 
     const initialDeliveryBoysSettings: DeliveryBoysSettings = {
         orderAssignLimit: 0,
         returnOrderAssignLimit: 0,
+        warrantyCallAssignLimit:0,
         _id: ""
     };
 
@@ -77,17 +79,17 @@ function Settings() {
 
 
     // get policies
-  const {
-    loading: policiesLoading,
-    error: policiesError,
-    data: policiesDataResponse,
-    refetch: policiesRefetch,
-  } = useQuery(GET_ALL_POLICIES, {
-    fetchPolicy: "network-only",
-    variables: {
-      input: {},
-    },
-  });
+    const {
+        loading: policiesLoading,
+        error: policiesError,
+        data: policiesDataResponse,
+        refetch: policiesRefetch,
+    } = useQuery(GET_ALL_POLICIES, {
+        fetchPolicy: "network-only",
+        variables: {
+            input: {},
+        },
+    });
 
     const GET_SHIPPING_SETTINGS = gql`
     query GetShippingSettings {
@@ -106,6 +108,7 @@ function Settings() {
     _id
     orderAssignLimit
     returnOrderAssignLimit
+    warrantyCallAssignLimit
   }
 }
 `;
@@ -132,7 +135,7 @@ function Settings() {
         loading: shippingLoading,
         refetch: shippingRefetch,
     } = useQuery(GET_SHIPPING_SETTINGS, {
-        fetchPolicy:"network-only"
+        fetchPolicy: "network-only"
     });
 
     const {
@@ -207,7 +210,7 @@ function Settings() {
 
 
 
-const UPDATE_SHIPPING_SETTINGS = gql`
+    const UPDATE_SHIPPING_SETTINGS = gql`
     mutation UpdateShippingSettings($input: UpdateShippingSettingsInput!) {
         updateShippingSettings(input: $input) {
         shippingCharge
@@ -228,10 +231,10 @@ const UPDATE_SHIPPING_SETTINGS = gql`
 }
     `;
 
-    const [UpdateDeliveryBoysSettings]=useMutation(UPDATE_DELIVERYBOYS_SETTINGS);
+    const [UpdateDeliveryBoysSettings] = useMutation(UPDATE_DELIVERYBOYS_SETTINGS);
 
 
-    console.log("SETTINGS = ",shippingSettings)
+    console.log("SETTINGS = ", shippingSettings)
 
 
     const handleShippingSettingsUpdate = async () => {
@@ -242,7 +245,7 @@ const UPDATE_SHIPPING_SETTINGS = gql`
                         shippingCharge: shippingSettings.shippingCharge,
                         returnPeriod: shippingSettings.returnPeriod,
                         freeShippingThreshold: shippingSettings.freeShippingThreshold,
-                        defaultReturnPolicy:shippingSettings.defaultReturnPolicy,
+                        defaultReturnPolicy: shippingSettings.defaultReturnPolicy,
                     },
                 },
             });
@@ -263,9 +266,11 @@ const UPDATE_SHIPPING_SETTINGS = gql`
             const result = await UpdateDeliveryBoysSettings({
                 variables: {
                     input: {
-                       _id:deliveryBoysSettings._id,
-                       deliveryLimit:deliveryBoysSettings.orderAssignLimit,
-                       returnLimit:deliveryBoysSettings.returnOrderAssignLimit
+                        _id: deliveryBoysSettings._id,
+                        deliveryLimit: deliveryBoysSettings.orderAssignLimit,
+                        returnLimit: deliveryBoysSettings.returnOrderAssignLimit,
+                        warrantyCalllimit:deliveryBoysSettings.warrantyCallAssignLimit
+
                     },
                 },
             });
@@ -457,7 +462,7 @@ const UPDATE_SHIPPING_SETTINGS = gql`
                                                                         disabled={!shippingEdit}
                                                                     >
                                                                         <option disabled value="">select policy</option>
-                                                                        {policiesDataResponse&&policiesDataResponse?.getAllPoliciesBySuperAdmin?.data?.map((item:any,index:any)=>(
+                                                                        {policiesDataResponse && policiesDataResponse?.getAllPoliciesBySuperAdmin?.data?.map((item: any, index: any) => (
                                                                             <option value={item?._id} key={index}>{item?.name}</option>
                                                                         ))}
                                                                     </Input>
@@ -683,6 +688,27 @@ const UPDATE_SHIPPING_SETTINGS = gql`
                                                         </div>
                                                     </div>
 
+                                                    <div style={{ display: "flex", alignItems: "center", }}>
+                                                        <p style={{ width: "200px" }}>Warranty Call Assign Limit</p>
+                                                        <div style={{ width: "300px" }} >
+                                                            <p className="form-control-static"  >
+                                                                <div className="input-group">
+                                                                    <Input
+                                                                        type="text"
+                                                                        name="warrantyCallAssignLimit"
+                                                                        id="warrantyCallAssignLimit"
+                                                                        value={deliveryBoysSettings.warrantyCallAssignLimit}
+                                                                        onChange={handleDeliveryBoysInputChange}
+                                                                        disabled={!deliveryBoysEdit}
+                                                                    />
+                                                                </div>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+
+
+
                                                 </div>
 
                                                 <div style={{ display: "flex", justifyContent: "flex-end", gap: "15px" }}>
@@ -704,7 +730,7 @@ const UPDATE_SHIPPING_SETTINGS = gql`
 
                 </Container >
             </div>
-            <ToastContainer/>
+            <ToastContainer />
         </React.Fragment >
     )
 }
