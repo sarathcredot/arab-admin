@@ -220,44 +220,24 @@ const WarrantyOrderProductDetails = () => {
             originalName
           }
         }
-      }
-    }
-  `;
-  const GET_ORDER = gql`
-    query GetAdminOrderDetails($input: GetAdminOrderDetailsInput!) {
-      getAdminOrderDetails(input: $input) {
-        _id
-        orderId
-        userId
-        paymentMode
-        orderDate
-        orderStatus
-        username
-        shippingAddress {
-          _id
-          firstname
-          email
-          mobile
-          streetName
-          city
-          houseNumber
-          country
-          postCode
-          apartment
-          suite
-          unit
-          governorateID
-          governorate
-          village
-          villageID
-          address
-          label
+        replacementReason
+        replacementShippedDate
+        replacementCompletedDate
+        returnedWarehouseDate
+        postponedDate
+        postponedReason
+        deliveryAgentId
+        productImageUploadByAgent {
+          fileType
+          fileURL
+          mimeType
+          originalName
         }
-        orderPriceInfo {
-          totalMRP
-          totalSellingPrice
-          totalShippingCharge
-          totalRefundAmount
+        deliveryAgentAssignedOn
+        deliveryAgentName
+        agent {
+          contactNumber
+          agentType
         }
       }
     }
@@ -423,18 +403,26 @@ const WarrantyOrderProductDetails = () => {
   };
 
   const handleClaimStatusSubmit = async () => {
+    let Date = null;
+    let Reason = null;
     if (claimStatus === "APPROVED") {
-      if (!claimDate) {
+      if (claimDate) {
+        Date = claimDate;
+      } else if (!claimDate) {
         toast.error("Approved Date is required");
         return;
       }
     }
     if (claimStatus === "REJECTED") {
-      if (!rejectedDate) {
+      if (rejectedDate) {
+        Date = rejectedDate;
+      } else if (!rejectedDate) {
         toast.error("Rejected Date is required");
         return;
       }
-      if (!rejectedReason) {
+      if (rejectedReason) {
+        Reason = rejectedReason;
+      } else if (!rejectedReason) {
         toast.error("rejected reason is required");
         return;
       }
@@ -446,9 +434,8 @@ const WarrantyOrderProductDetails = () => {
           input: {
             claimRequestId: request?._id,
             claimStatus: claimStatus,
-            claimDate: claimDate,
-            rejectedDate: rejectedDate,
-            rejectedReason: rejectedReason,
+            Date: Date,
+            Reason: Reason,
           },
         },
       });

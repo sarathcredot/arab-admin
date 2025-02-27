@@ -234,6 +234,7 @@ mutation CreateCategory($input: CreateCategoryInput!, $image: Upload) {
       await onSubmit(values, { resetForm });
     },
   });
+  console.log("isEdit = ",isEdit)
 
   const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState<string>("");

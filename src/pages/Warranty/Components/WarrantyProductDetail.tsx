@@ -251,7 +251,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
         setRejectedDate("");
         setRejectedReason("");
         setPaymentStatus("");
-        if (claimStatus === "APPROVED") {
+        if (claimStatus === "REPLACEMENT_SHIPPED") {          
           handleAssignClick(result?.data?.updateAdminOrderProduct?._id, "REPLACEMENT");
         }
       }
@@ -979,7 +979,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                         className="form-control-static"
                         style={{ margin: 10 }}
                       >
-                        Shipped Date
+                        Order Shipped Date
                       </p>
                     )}
                     {product?.product?.deliveryDate && (
@@ -1004,6 +1004,30 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                         style={{ margin: 10 }}
                       >
                         Request Approved Date
+                      </p>
+                    )}
+                    {product?.replacementShippedDate && (
+                      <p
+                        className="form-control-static"
+                        style={{ margin: 10 }}
+                      >
+                        Shipped Date
+                      </p>
+                    )}
+                    {product?.replacementCompletedDate && (
+                      <p
+                        className="form-control-static"
+                        style={{ margin: 10 }}
+                      >
+                        Replacement Completed Date
+                      </p>
+                    )}
+                    {product?.returnedWarehouseDate && (
+                      <p
+                        className="form-control-static"
+                        style={{ margin: 10 }}
+                      >
+                        Returned To Warehouse Date
                       </p>
                     )}
                     {product?.rejectedDate && (
@@ -1054,6 +1078,30 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                         style={{ margin: 10 }}
                       >
                         {moment(product?.claimDate).format("L")}
+                      </p>
+                    )}
+                    {product?.replacementShippedDate && (
+                      <p
+                        className="form-control-static"
+                        style={{ margin: 10 }}
+                      >
+                        {moment(product?.replacementShippedDate).format("L")}
+                      </p>
+                    )}
+                    {product?.replacementCompletedDate && (
+                      <p
+                        className="form-control-static"
+                        style={{ margin: 10 }}
+                      >
+                        {moment(product?.replacementCompletedDate).format("L")}
+                      </p>
+                    )}
+                    {product?.returnedWarehouseDate && (
+                      <p
+                        className="form-control-static"
+                        style={{ margin: 10 }}
+                      >
+                        {moment(product?.returnedWarehouseDate).format("L")}
                       </p>
                     )}
                     {product?.rejectedDate && (
@@ -1111,25 +1159,25 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                       className="form-control-static"
                       style={{ margin: 10 }}
                     >
-                      {product?.deliveryBoy?.agentType || "nill"}
+                      {product?.agent?.agentType || "nill"}
                     </p>
                     <p
                       className="form-control-static"
                       style={{ margin: 10 }}
                     >
-                      {product?.deliveryBoy?.fullName || "nill"}
+                      {product?.deliveryAgentName || "nill"}
                     </p>
                     <p
                       className="form-control-static"
                       style={{ margin: 10 }}
                     >
-                      {product?.deliveryBoy?.contactNumber || "nill"}
+                      {product?.agent?.contactNumber || "nill"}
                     </p>
                     <p
                       className="form-control-static"
                       style={{ margin: 10 }}
                     >
-                      {(product?.deliveryAssignedOn && moment(product?.deliveryAssignedOn).format("L")) || "nill"}
+                      {(product?.deliveryAgentAssignedOn && moment(product?.deliveryAgentAssignedOn).format("L")) || "nill"}
                     </p>
                   </div>
                 </div>
