@@ -756,7 +756,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                   <Dropdown.Item
                     onClick={() => handleAssignClick(product?._id, "REPLACEMENT")}
                     style={{ display: "flex", gap: 5 }}
-                    disabled={product?.claimStatus !== "APPROVED"}
+                    disabled={product?.claimStatus !== "REPLACEMENT_SHIPPED"}
                   >
                     <CiDeliveryTruck size={20} />
                     Assign Delivery Boy

@@ -113,7 +113,7 @@ const ClaimsAndRequests = () => {
         page: currentPage,
         size: pageSize,
         search: searchTerm,
-        claimStatus: selectedStatus,
+        claimStatus: searchTerm ? null : selectedStatus,
       },
     },
   });
