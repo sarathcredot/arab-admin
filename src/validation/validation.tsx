@@ -138,8 +138,10 @@ export const ReturnPolicyValidation = yup.object({
 export const WarrantyPolicyValidation = yup.object({
   name: yup.string().required("Please enter warranty policy name"),
   description: yup.string().required("Please enter warranty policy description"),
-  duration: yup.string().required("Please enter warranty duration"),
-  warrantyType: yup
-  .array()
-  .min(1, "Please select at least one warranty type") // Ensures at least one selection
+  duration: yup
+    .number()
+    .typeError("Warranty duration must be a number")
+    .positive("Warranty duration must be a positive number")
+    .required("Please enter warranty duration"),
+  warrantyType: yup.array().min(1, "Please select at least one warranty type"), // Ensures at least one selection
 });
