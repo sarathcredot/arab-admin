@@ -161,6 +161,7 @@ import ReturnPolicy from "src/pages/ReturnPolicy";
 import WarrantyPolicies from "src/pages/Warranty/WarrantyPolicies";
 import ClaimsAndRequests from "src/pages/Warranty/ClaimsAndRequests";
 import WarrantyOrderProductDetails from "src/pages/Warranty/WarrantyOrderProductDetails";
+import OrderActivityLogs from "src/pages/ActivityLogs/OrderActivityLogs";
 interface RouteProps {
   path: string;
   component: any;
@@ -272,6 +273,7 @@ const adminRoutes: Array<RouteProps> = [
 
   { path: "/shipping-orders", component: <ShippingOrders /> },
   { path: "/shipping-orders/details", component: <ShippingOrderDetails /> },
+  { path: "/shipping-orders/details/activity-log", component: <OrderActivityLogs /> },
 
   { path: "/return-orders", component: <ReturnOrders /> },
   { path: "/return-orders/details", component: <ReturnOrderDetails /> },

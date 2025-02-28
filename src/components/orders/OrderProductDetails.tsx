@@ -3,6 +3,8 @@ import "cleave.js/dist/addons/cleave-phone.in";
 import FeatherIcon from "feather-icons-react";
 import { Link, useNavigate } from "react-router-dom";
 import { CiEdit, CiDeliveryTruck } from "react-icons/ci";
+import { PiClockCounterClockwise } from "react-icons/pi";
+
 
 import {
   Button,
@@ -57,6 +59,7 @@ interface ProductEditFormData {
   refundDate: string | null;
   refundAmount: number;
   shippingCharge: number;
+  
 }
 
 function OrderProductDetails({
@@ -65,6 +68,7 @@ function OrderProductDetails({
   orderRefetch,
 }: any) {
   const navigate = useNavigate();
+  console.log("PRODUCT = ",product)
 
   // [[[[[[  shipping ]]]]]]]]
 
@@ -981,9 +985,16 @@ function OrderProductDetails({
                     onClick={() => handleAssignClick(product?._id, "COLLECT")}
                     style={{ display: "flex", gap: 5 }}
                     disabled={product?.returnStatus !== "APPROVED"}
-                  >
+                    >
                     <CiDeliveryTruck size={20} />
                     Assign Delivery Boy (Return)
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                  style={{ display: "flex", gap: 5 }}
+                  onClick={()=> navigate(`/shipping-orders/details/activity-log?orderId=${product?.orderId}&_id=${product?._id}`)}
+                  >
+                  <PiClockCounterClockwise size={20} />
+                    Activity Log
                   </Dropdown.Item>
                   <Dropdown.Divider />
                   <Dropdown.Item

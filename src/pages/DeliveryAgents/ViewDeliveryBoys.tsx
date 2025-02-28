@@ -33,11 +33,13 @@ import AssignedOrders from "./AssignedOrders";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import EditSettlementPopup from "./EditSettlementPopup";
 import SuspendDeliveryBoy from "./SuspendDeliveryBoy";
-import AssignedOrderBundle from "./AssignedOrderBundle";
-import AssignedReturnBundle from "./AssignedReturnBundle";
+import AssignedOrderBundle from "./Bundles/AssignedOrderBundle";
+import AssignedReturnBundle from "./Bundles/AssignedReturnBundle";
 import Confirmation from "src/components/Confirmation";
 import AssignedReturns from "./AssignedReturns";
 import noDataSvg from "../../assets/images/noDataSvg.svg";
+import AssignedWarrantiesBundle from "./Bundles/AssignedWarrantiesBundle";
+import AssignedWarranties from "./AssignWarranties";
 
 // Agent Type
 interface ILicence {
@@ -516,30 +518,38 @@ const ViewDeliveryBoys = () => {
             >
               <NavItem>
                 <NavLink
-                  className={TAB === false ? "tab-button active" : "tab-button"}
-                  onClick={() => setTAB(false)}
+                  className={TAB === "SETTLEMENTS" ? "tab-button active" : "tab-button"}
+                  onClick={() => setTAB("SETTLEMENTS")}
                 >
                   Settlements
                 </NavLink>
               </NavItem>
               <NavItem>
                 <NavLink
-                  className={TAB === true ? "tab-button active" : "tab-button"}
-                  onClick={() => setTAB(true)}
+                  className={TAB === "ORDERS" ? "tab-button active" : "tab-button"}
+                  onClick={() => setTAB("ORDERS")}
                 >
                   Orders
                 </NavLink>
               </NavItem>
               <NavItem>
                 <NavLink
-                  className={TAB === undefined ? "tab-button active" : "tab-button"}
-                  onClick={() => setTAB(undefined)}
+                  className={TAB === "RETURNS" ? "tab-button active" : "tab-button"}
+                  onClick={() => setTAB("RETURNS")}
                 >
                   Returns
                 </NavLink>
               </NavItem>
+              <NavItem>
+                <NavLink
+                  className={TAB === "WARRANTIES" ? "tab-button active" : "tab-button"}
+                  onClick={() => setTAB("WARRANTIES")}
+                >
+                  Warranties
+                </NavLink>
+              </NavItem>
             </Nav>
-            {TAB === false ? (
+            {TAB === "SETTLEMETS" ? (
               detailLoading ? (
                 <Loader />
               ) : data && data?.settlementHistory?.length > 0 ? (
@@ -712,7 +722,7 @@ const ViewDeliveryBoys = () => {
                   <h4>No Settlements</h4>
                 </div>
               )
-            ) : TAB ? (
+            ) : TAB==="ORDERS" ? (
               !view ? (
                 <AssignedOrderBundle
                   agentId={ID}
@@ -725,7 +735,20 @@ const ViewDeliveryBoys = () => {
                   DATE={DATE}
                 />
               )
-            ) : TAB === undefined ? (
+            ) : TAB === "RETURNS" ? (
+              !view ? (
+                <AssignedWarrantiesBundle
+                  agentId={ID}
+                  setView={setView}
+                  setDATE={setDATE}
+                />
+              ) : (
+                <AssignedWarranties
+                  agentId={ID}
+                  DATE={DATE}
+                />
+              )
+            ) :TAB === "WARRANTIES" ? (
               !view ? (
                 <AssignedReturnBundle
                   agentId={ID}

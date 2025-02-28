@@ -5,9 +5,9 @@ import { Button, Col, Collapse, Input, Row, Table } from "reactstrap";
 import CustomButton from "src/components/Common/CustomButton";
 import DynamicFilter from "src/components/filter/DynamicFilter";
 import ExportExcelList from "src/components/orders/ExportExcelList";
-import SettlementExcelList from "./ExcelLists/SettlementExcelList";
+import SettlementExcelList from "../ExcelLists/SettlementExcelList";
 import Loader from "src/components/Common/Loader";
-import noDataSvg from "../../assets/images/noDataSvg.svg";
+import noDataSvg from "src/assets/images/noDataSvg.svg";
 
 interface Props {
   agentId: string | null;
@@ -22,9 +22,9 @@ interface IOrder {
 }
 
 // get assigned orders with date group
-const GET_RETURNS_WITH_DATE = gql`
-  query Records($input: GetAssignedOrderBundleInput) {
-    getAssignedReturnOrderBundleByDeliveryAgent(input: $input) {
+const GET_ORDERS_WITH_DATE = gql`
+  query GetAssignedOrderBundleByDeliveryAgent($input: GetAssignedOrderByDeliveryAgentInput) {
+    getAssignedOrderBundleByDeliveryAgent(input: $input) {
       records {
         _id
         date
@@ -43,7 +43,7 @@ const EXPORT_ORDERS = gql`
   }
 `;
 
-const AssignedReturnBundle: React.FC<Props> = ({ agentId, setView, setDATE }) => {
+const AssignedOrderBundle: React.FC<Props> = ({ agentId, setView, setDATE }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [orders, setOrders] = useState<IOrder[]>();
   const [currentPage, setCurrentPage] = useState(0);
@@ -65,15 +65,16 @@ const AssignedReturnBundle: React.FC<Props> = ({ agentId, setView, setDATE }) =>
     loading: ordersDataLoading,
     refetch: refetchOrdersData,
     error: ordersError,
-  } = useQuery(GET_RETURNS_WITH_DATE, {
+  } = useQuery(GET_ORDERS_WITH_DATE, {
     fetchPolicy: "network-only",
     variables: {
       input: {
         _id: agentId,
-        size: pageSize,
         page: currentPage,
+        size: pageSize,
         startDate: filters?.startDate || null,
         endDate: filters?.endDate || null,
+
         // search: (searchTerm && new Date(parseInt(searchTerm)).toISOString()) || "",
       },
     },
@@ -81,10 +82,10 @@ const AssignedReturnBundle: React.FC<Props> = ({ agentId, setView, setDATE }) =>
   });
 
   useEffect(() => {
-    if (ordersData && ordersData.getAssignedReturnOrderBundleByDeliveryAgent) {
-      console.log("ORDERS = ", ordersData.getAssignedReturnOrderBundleByDeliveryAgent);
+    if (ordersData && ordersData.getAssignedOrderBundleByDeliveryAgent) {
+      console.log("ORDERS = ", ordersData.getAssignedOrderBundleByDeliveryAgent);
 
-      setOrders(ordersData.getAssignedReturnOrderBundleByDeliveryAgent.records);
+      setOrders(ordersData.getAssignedOrderBundleByDeliveryAgent.records);
     }
   }, [agentId, ordersData, ordersDataLoading]);
   console.log("DATEE = ", ordersData);
@@ -139,9 +140,11 @@ const AssignedReturnBundle: React.FC<Props> = ({ agentId, setView, setDATE }) =>
             alignItems: "end",
             justifyContent: "space-between",
             padding: "10px 0px",
+            gap: 10,
+            // background: "#f1f1f1",
           }}
         >
-          <h5>Returns History Group</h5>
+          <h5>Orders History Group</h5>
           <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
             {/* start:  */}
             <Input
@@ -165,6 +168,7 @@ const AssignedReturnBundle: React.FC<Props> = ({ agentId, setView, setDATE }) =>
             />
           </div>
         </div>
+
         {/* <Input
           type="number"
           placeholder="Search by Group ID"
@@ -197,14 +201,13 @@ const AssignedReturnBundle: React.FC<Props> = ({ agentId, setView, setDATE }) =>
                         width: 150,
                       }}
                     >
-                      Returns Assigned
+                      Orders Assigned
                     </th>
-                    <th style={{ width: "100px" }}>Actions</th>
+                    <th style={{ width: "100px", textAlign: "center" }}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {orders?.map((item, index) => {
-                    const formattedDate = new Date(item?.date).toLocaleDateString("en-GB");
                     return (
                       <tr key={index}>
                         <td className="text-center">{index + 1}</td>
@@ -218,7 +221,6 @@ const AssignedReturnBundle: React.FC<Props> = ({ agentId, setView, setDATE }) =>
                             style={{
                               display: "block",
                               margin: "auto",
-                              width: "90%",
                             }}
                             onClick={() => {
                               setView(true);
@@ -293,7 +295,7 @@ const AssignedReturnBundle: React.FC<Props> = ({ agentId, setView, setDATE }) =>
               src={noDataSvg}
               alt="no data image"
             />
-            <h4>No Return Orders Assigned</h4>
+            <h4>No Orders Assigned</h4>
           </div>
         )}
       </div>
@@ -301,4 +303,4 @@ const AssignedReturnBundle: React.FC<Props> = ({ agentId, setView, setDATE }) =>
   );
 };
 
-export default AssignedReturnBundle;
+export default AssignedOrderBundle;

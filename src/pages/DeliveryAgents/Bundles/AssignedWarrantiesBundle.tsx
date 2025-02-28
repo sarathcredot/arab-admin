@@ -5,9 +5,9 @@ import { Button, Col, Collapse, Input, Row, Table } from "reactstrap";
 import CustomButton from "src/components/Common/CustomButton";
 import DynamicFilter from "src/components/filter/DynamicFilter";
 import ExportExcelList from "src/components/orders/ExportExcelList";
-import SettlementExcelList from "./ExcelLists/SettlementExcelList";
+import SettlementExcelList from "../ExcelLists/SettlementExcelList";
 import Loader from "src/components/Common/Loader";
-import noDataSvg from "../../assets/images/noDataSvg.svg";
+import noDataSvg from "src/assets/images/noDataSvg.svg";
 
 interface Props {
   agentId: string | null;
@@ -43,7 +43,7 @@ const EXPORT_ORDERS = gql`
   }
 `;
 
-const AssignedOrderBundle: React.FC<Props> = ({ agentId, setView, setDATE }) => {
+const AssignedWarrantiesBundle: React.FC<Props> = ({ agentId, setView, setDATE }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [orders, setOrders] = useState<IOrder[]>();
   const [currentPage, setCurrentPage] = useState(0);
@@ -144,7 +144,7 @@ const AssignedOrderBundle: React.FC<Props> = ({ agentId, setView, setDATE }) => 
             // background: "#f1f1f1",
           }}
         >
-          <h5>Orders History Group</h5>
+          <h5>Warranties History Group</h5>
           <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
             {/* start:  */}
             <Input
@@ -303,4 +303,4 @@ const AssignedOrderBundle: React.FC<Props> = ({ agentId, setView, setDATE }) => 
   );
 };
 
-export default AssignedOrderBundle;
+export default AssignedWarrantiesBundle;

@@ -1592,7 +1592,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
               <FormGroup>
                 <Label for="agentType">Bundle Count</Label>
                 <Input
-                  type="text"
+                  type="number"
                   name="bundleCount"
                   id="bundleCount"
                   value={bundleCount}

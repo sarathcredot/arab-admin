@@ -93,7 +93,7 @@ const ClaimsAndRequests = () => {
   };
   const toggleTab = (tab: string) => {
     setActiveTab(tab);
-    tab === "CLAIMS" ? setSelectedStatus("APPROVED") : setSelectedStatus("PENDING");
+    tab === "CLAIMS" ? setSelectedStatus("APPROVED") :tab==="REQUESTS"? setSelectedStatus("PENDING"):setSelectedStatus("");
   };
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 10;
@@ -153,6 +153,14 @@ const ClaimsAndRequests = () => {
                 Claims
               </NavLink>
             </NavItem>
+            <NavItem>
+              <NavLink
+                className={activeTab === "ALL" ? "tab-button active" : "tab-button"}
+                onClick={() => toggleTab("ALL")}
+              >
+                All
+              </NavLink>
+            </NavItem>
           </Nav>
           <Row style={{ marginTop: "20px" }}>
             <Col lg={12}>
@@ -176,7 +184,7 @@ const ClaimsAndRequests = () => {
                     </Col>
                     <Col
                       xs={3}
-                      style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}
+                      style={{ display:activeTab==="ALL"?"none": "flex", alignItems: "center", justifyContent: "flex-end" }}
                     >
                       <Dropdown
                         isOpen={statusDropdownOpen}
