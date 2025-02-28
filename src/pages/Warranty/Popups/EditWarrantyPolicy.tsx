@@ -146,7 +146,7 @@ const EditWarrantyPolicy = ({ isOpen, toggle, warrantyID, refetch }: any) => {
                 type="number"
                 id="duration"
                 name="duration"
-                placeholder="Enter warranty duration in days"
+                placeholder="Enter warranty duration in months"
                 value={formik.values?.duration}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
