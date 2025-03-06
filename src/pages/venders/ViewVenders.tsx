@@ -1,7 +1,7 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { capitalCase } from "change-case";
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -93,6 +93,7 @@ const PUT_VENDOR_PROFILE = gql`
 `;
 
 function ViewVenders() {
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
   const tab = searchParams.get("tab");
@@ -147,7 +148,15 @@ function ViewVenders() {
   return (
     <div className="page-content">
       <Container fluid={true}>
+        <div style={{display:"flex",alignItems:"end",justifyContent:"space-between"}}>
+
         <Breadcrumb items={items} currentPage="Vendor Details" />
+            <i
+              className="bx bx-time-five clock"
+              style={{ fontSize: "20px",marginBottom:"20px" }}
+              onClick={()=>navigate(`/vendors/view/activity-log?vendor=${vendorData?.fullName}&_id=${id}`)}
+            ></i>
+        </div>
 
         <VendorCards id={id} />
 

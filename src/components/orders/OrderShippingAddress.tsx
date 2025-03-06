@@ -62,7 +62,7 @@ function OrderShippingAddress({ order,returnAddress=false,isWarranty=false }: an
                             htmlFor="cleave-date"
                             className="form-label"
                         >
-                            Shipping Address:
+                            {returnAddress?"Return Address: ":"Shipping Address:"}
                         </label>
 
                     </div>

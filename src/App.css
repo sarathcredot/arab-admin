@@ -37,3 +37,15 @@
   }
 }
 
+.render_animation{
+  opacity:0;
+  animation: render-anim 3s ease-in-out ; 
+}
+
+@keyframes render-anim {
+  from{
+    opacity:0
+  }to{
+    opacity: 1;
+  }
+}

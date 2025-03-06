@@ -162,14 +162,14 @@ const EditWarrantyPolicy = ({ isOpen, toggle, warrantyID, refetch }: any) => {
                   type="checkbox"
                   id="warrantyType-1"
                   name="warrantyType"
-                  checked={formik.values.warrantyType && formik.values.warrantyType?.includes("replacement")}
+                  checked={formik.values.warrantyType && formik.values.warrantyType?.includes("REPLACEMENT")}
                   onChange={(e) => {
                     if (e.target.checked) {
-                      formik.setFieldValue("warrantyType", [...formik.values.warrantyType, "replacement"]);
+                      formik.setFieldValue("warrantyType", [...formik.values.warrantyType, "REPLACEMENT"]);
                     } else {
                       formik.setFieldValue(
                         "warrantyType",
-                        formik.values.warrantyType.filter((item) => item !== "replacement")
+                        formik.values.warrantyType.filter((item) => item !== "REPLACEMENT")
                       );
                     }
                   }}
@@ -188,14 +188,14 @@ const EditWarrantyPolicy = ({ isOpen, toggle, warrantyID, refetch }: any) => {
                   id="warrantyType-2"
                   name="warrantyType"
                   disabled
-                  checked={formik.values.warrantyType && formik.values.warrantyType?.includes("repair")}
+                  checked={formik.values.warrantyType && formik.values.warrantyType?.includes("REPAIR")}
                   onChange={(e) => {
                     if (e.target.checked) {
-                      formik.setFieldValue("warrantyType", [...formik.values.warrantyType, "repair"]);
+                      formik.setFieldValue("warrantyType", [...formik.values.warrantyType, "REPAIR"]);
                     } else {
                       formik.setFieldValue(
                         "warrantyType",
-                        formik.values.warrantyType.filter((item) => item !== "repair")
+                        formik.values.warrantyType.filter((item) => item !== "REPAIR")
                       );
                     }
                   }}

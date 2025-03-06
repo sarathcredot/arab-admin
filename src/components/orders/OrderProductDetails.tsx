@@ -66,6 +66,8 @@ function OrderProductDetails({
   product,
   orderProdcutsRefetch,
   orderRefetch,
+  address,
+  type,
 }: any) {
   const navigate = useNavigate();
   console.log("PRODUCT = ",product)
@@ -342,7 +344,7 @@ function OrderProductDetails({
         setReturnRejectDate("");
         setReturnRequestDate("");
         if (returnStatus === "APPROVED") {
-          toggleDeliveryAssignModal();
+          handleAssignClick(product?._id, "COLLECT") 
         }
       }
     } catch (error: any) {
@@ -610,7 +612,28 @@ function OrderProductDetails({
     );
     setvillages(selectedGovernorate?.villages || []);
   };
+  
+  const handleCustomize = (value:any)=>{
+    if (value) {
+      if(type){
+        if(type==="SHIPPING"){
+          setGovernateId(address?.governorateID);
+          handleGovernorateChange(address?.governorateID);
+          setVillageId(address?.villageID);
+        }else if(type==="RETURN"){
+          setGovernateId(product?.returnAddress?.governorateID);
+          handleGovernorateChange(product?.returnAddress?.governorateID);
+          setVillageId(product?.returnAddress?.villageID);
 
+        }
+      }else{
+        setGovernateId(product?.shippingAddress?.governorateID);
+        handleGovernorateChange(product?.shippingAddress?.governorateID);
+        setVillageId(product?.shippingAddress?.villageID);
+      }
+    }
+    setIsCustomize(value)
+  }
   const handleAssignClick = (
     itemId: string,
     assingOrderType: ASSIGN_ORDER_TYPE
@@ -723,12 +746,13 @@ function OrderProductDetails({
     variables: {
       input: {
         productId: product?.productId,
-        villageID: product?.shippingAddress?.villageID,
-        governorateID: product?.shippingAddress?.governorateID,
+        villageID:type ? type === "SHIPPING"? address?.villageID :type === "RETURN"?product?.returnAddress?.villageID :product?.shippingAddress?.villageID:product?.shippingAddress?.villageID,
+        governorateID:type ? type === "SHIPPING"? address?.governorateID :type === "RETURN"?product?.returnAddress?.governorateID :product?.shippingAddress?.governorateID:product?.shippingAddress?.governorateID,
       },
     },
     skip: isCustomize,
   });
+  console.log("AGENTS = ",deliveryAgentList)
 
   const customizeInput = useMemo(() => {
     let obj: any = {};
@@ -748,6 +772,7 @@ function OrderProductDetails({
 
     return obj;
   }, [villageId, governateId, vendorId, deliveryAgentType]);
+  console.log("customizeInput = ",customizeInput)
 
   const {
     data: deliveryAgentListCustomize,
@@ -917,6 +942,7 @@ function OrderProductDetails({
                   src={product?.image?.fileURL ?? ""}
                   style={{
                     height: 80,
+                    width: 80,
                   }}
                   top
                   width="80px"
@@ -1944,7 +1970,7 @@ function OrderProductDetails({
               type="checkbox"
               className="form-check-input"
               id="customSwitch1"
-              onChange={(e: any) => setIsCustomize(e.target.checked)}
+              onChange={(e: any) => handleCustomize(e.target.checked)}
             />
             <label className="form-check-label" htmlFor="customSwitch1">
               Customize Delivery Agent Type ?
@@ -2186,7 +2212,7 @@ function OrderProductDetails({
           </Button>{" "}
           <Button
             color="secondary"
-            // onClick={toggleInvoiceModal}
+            onClick={toggleDeliveryAssignModal}
           >
             Cancel
           </Button>

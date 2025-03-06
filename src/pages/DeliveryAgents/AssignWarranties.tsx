@@ -39,36 +39,26 @@ interface IOrder {
   city: string;
   country: string;
   postCode: string;
+  deliveryAgentAssignedOn: string;
+  warrantyId: string;
+  claimStatus: string;
 }
 
 // assigned orders query
-const GET_ORDERS = gql`
-  query GetAssignedOrderByDeliveryAgent($input: GetAssignedOrderByDeliveryAgentInput) {
-    getAssignedOrderByDeliveryAgent(input: $input) {
-      maxRecords
+const GET_WARRANTIES = gql`
+  query GetDeliveryAgentWarrantyCall($input: getDeliveryAgentWarrantyCallInput!) {
+    getDeliveryAgentWarrantyCall(input: $input) {
       records {
         _id
-        orderId
-        itemId
-        userId
-        productName
-        sellingPrice
-        paymentStatus
-        orderDate
-        shippingStatus
-        deliveryAgentId
+        warrantyId
         userName
-        email
-        mobileNumber
-        houseNumber
-        streetName
-        apartment
-        suite
-        unit
-        city
-        country
-        postCode
+        productName
+        deliveryAgentAssignedOn
+        claimStatus
       }
+      totalCount
+      page
+      totalPages
     }
   }
 `;
@@ -109,19 +99,19 @@ const AssignedWarranties: React.FC<Props> = ({ agentId, DATE }) => {
     loading: ordersDataLoading,
     refetch: refetchOrdersData,
     error: ordersError,
-  } = useQuery(GET_ORDERS, {
+  } = useQuery(GET_WARRANTIES, {
     fetchPolicy: "network-only",
     variables: {
-      input: { _id: agentId, size: pageSize, page: currentPage, shippingStatus: filters?.shippingStatus, date: DATE },
+      input: { agentId: agentId, limit: pageSize, page: currentPage, claimStatus: filters?.shippingStatus, date: DATE },
     },
     skip: !agentId || !DATE,
   });
 
   useEffect(() => {
-    if (ordersData && ordersData.getAssignedOrderByDeliveryAgent) {
-      console.log("ORDERS = ", ordersData.getAssignedOrderByDeliveryAgent);
+    if (ordersData && ordersData.getDeliveryAgentWarrantyCall) {
+      console.log("ORDERS = ", ordersData.getDeliveryAgentWarrantyCall);
 
-      setOrders(ordersData.getAssignedOrderByDeliveryAgent.records);
+      setOrders(ordersData.getDeliveryAgentWarrantyCall.records);
     }
   }, [agentId, ordersData, ordersDataLoading]);
   console.log("DATEE = ", ordersData);
@@ -151,7 +141,7 @@ const AssignedWarranties: React.FC<Props> = ({ agentId, DATE }) => {
     }
   };
 
-  const totalRecords = ordersData?.getAssignedOrderByDeliveryAgent?.maxRecords || 0;
+  const totalRecords = ordersData?.getDeliveryAgentWarrantyCall?.totalCount || 0;
   const totalPages = Math.ceil(totalRecords / pageSize);
   const filterOptions = [
     {
@@ -229,10 +219,10 @@ const AssignedWarranties: React.FC<Props> = ({ agentId, DATE }) => {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Order ID</th>
+                  <th>Warranty ID</th>
                   <th>Customer Name</th>
                   {/* <th>Product Name</th> */}
-                  <th>Address</th>
+                  {/* <th>Address</th> */}
                   <th>Date</th>
                   {/* <th>Payment Status</th> */}
                   <th className="text-center">Status</th>
@@ -241,16 +231,16 @@ const AssignedWarranties: React.FC<Props> = ({ agentId, DATE }) => {
               </thead>
               <tbody>
                 {orders?.map((item, index) => {
-                  const formattedDate = new Date(item.orderDate).toLocaleDateString("en-GB");
+                  const formattedDate = new Date(item?.deliveryAgentAssignedOn).toLocaleDateString("en-GB");
                   return (
                     <tr key={index}>
                       <td>{index + 1}</td>
-                      <td>{item?.itemId}</td>
+                      <td>{item?.warrantyId}</td>
                       <td>{item?.userName}</td>
                       {/* <td>
                         {item?.productName?.length > 20 ? `${item?.productName.slice(0, 20)}...` : item?.productName}
                       </td> */}
-                      <td>
+                      {/* <td>
                         {[item?.houseNumber, item?.apartment, item?.streetName, item?.city, item?.postCode]
                           .filter(Boolean)
                           .join(", ")
@@ -260,7 +250,7 @@ const AssignedWarranties: React.FC<Props> = ({ agentId, DATE }) => {
                             .join(", ").length > 40
                             ? "..."
                             : "")}
-                      </td>
+                      </td> */}
                       <td>{formattedDate.replace(/\//g, "-")}</td>
                       {/* <td>{item?.paymentStatus}</td> */}
                       <td>
@@ -273,12 +263,12 @@ const AssignedWarranties: React.FC<Props> = ({ agentId, DATE }) => {
                         >
                           <StatusIndicator
                             variant="default"
-                            status={item?.shippingStatus}
+                            status={item?.claimStatus}
                           />
                         </div>
                       </td>
                       <td>
-                        <Link to={`/shipping-orders/details?orderId=${item?.orderId}&_id=${item?._id}`}>
+                        <Link to={`/warranty-claims/details?id=${item?._id}`}>
                           <Button
                             style={{
                               display: "block",

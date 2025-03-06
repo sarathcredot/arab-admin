@@ -114,7 +114,7 @@ const AssignedReturnBundle: React.FC<Props> = ({ agentId, setView, setDATE }) =>
     }
   };
 
-  const totalRecords = ordersData?.getAssignedOrderByDeliveryAgent?.maxRecords || 0;
+  const totalRecords = ordersData?.getAssignedReturnOrderBundleByDeliveryAgent?.maxRecords || 0;
   const totalPages = Math.ceil(totalRecords / pageSize);
   const filterOptions = [
     {

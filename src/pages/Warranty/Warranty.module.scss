@@ -1,0 +1,42 @@
+.images_container {
+  display: grid;
+  align-items: center;
+  grid-template-columns: repeat(4, 70px);
+  gap: 10px;
+
+  .image_div {
+    position: relative;
+    transition: 0.3s ease-in-out;
+    cursor: pointer;
+    .image {
+      border-radius: 8px;
+      transition: 0.3s ease-in-out;
+    }
+    .eye_icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      opacity: 0;
+      transition: 0.3s ease-in-out;
+    }
+    &:hover {
+      .image {
+        box-shadow: 0px 4px 10px #00000035;
+      }
+      .eye_icon {
+        opacity: 1;
+      }
+    }
+  }
+}
+.close_btn {
+  color: #fff;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 20px;
+  padding: 10px 15px;
+  
+}

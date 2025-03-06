@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MdDeleteOutline, MdEdit } from "react-icons/md";
-import { useSearchParams } from "react-router-dom";
+import { FiClock } from "react-icons/fi";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button, Card, CardBody, CardHeader, Col, Container, FormGroup, Input, Label, Row, Table } from "reactstrap";
 import Breadcrumb from "src/components/Common/Breadcrumb";
 import CustomButton from "src/components/Common/CustomButton";
@@ -12,6 +13,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { toast } from "react-toastify";
 import AddAdmin from "./Popups/AddAdmin";
 import EditAdmin from "./Popups/EditAdmin";
+import { capitalCase } from "change-case";
 const items = [{ text: "Dashboard", link: `/` }];
 
 const GET_ADMINS = gql`
@@ -30,6 +32,9 @@ const GET_ADMINS = gql`
           description
           permissions
           isEnable
+        }
+        admin {
+          fullName
         }
       }
     }
@@ -54,8 +59,8 @@ const DELETE_ADMIN = gql`
 `;
 
 const Admins = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [searchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 10;
 
@@ -219,9 +224,10 @@ const Admins = () => {
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Account Type</th>
+                                <th>Created By</th>
                                 <th>Role</th>
                                 <th style={{ width: "100px", textAlign: "center" }}>Status</th>
-                                <th style={{ width: "100px", textAlign: "center" }}>Action</th>
+                                <th style={{ width: "100px", textAlign: "center" }}>Actions</th>
                               </tr>
                             </thead>
 
@@ -233,12 +239,8 @@ const Admins = () => {
                                     <td>{item?.fullName}</td>
                                     <td>{item?.email}</td>
                                     {/* <td>{item?.permissions}</td> */}
-                                    <td>
-                                      {item?.accType
-                                        .replace(/[_-]/g, " ")
-                                        .toLowerCase()
-                                        .replace(/\b\w/g, (char: any) => char.toUpperCase())}{" "}
-                                    </td>
+                                    <td>{capitalCase(item?.accType)}</td>
+                                    <td>{item?.admin[0]?.fullName}</td>
                                     <td>
                                       <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
                                         {item?.roles?.length
@@ -285,6 +287,21 @@ const Admins = () => {
                                           gap: 10,
                                         }}
                                       >
+                                        <Button
+                                          style={{
+                                            display: "block",
+                                            // width:"100%"
+                                          }}
+                                          color="dark"
+                                          size="sm"
+                                          onClick={() => navigate(`/admins/activity-log?admin=${item?.fullName}&_id=${item?._id}`)}
+                                        >
+                                          <FiClock
+                                            style={{
+                                              fontSize: "12px",
+                                            }}
+                                          />
+                                        </Button>
                                         <Button
                                           style={{
                                             display: "block",

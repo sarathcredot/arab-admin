@@ -38,6 +38,7 @@ import CustomSwiper from "src/components/swiper/Swiper";
 import { capitalize } from "lodash";
 import CustomButton from "src/components/Common/CustomButton";
 import { toast } from "react-toastify";
+import styles from "./Warranty.module.scss";
 
 interface ShippingAddress {
   _id: string;
@@ -126,6 +127,98 @@ interface ShippingAddress {
 //   itemId: string | null;
 // }
 
+const GET_REQUEST = gql`
+query GetClaimRequestDetailsByAdmin($input: getClaimRequestDetailsByAdminInput!) {
+  getClaimRequestDetailsByAdmin(input: $input) {
+    _id
+    user {
+      _id
+      displayName
+    }
+    product {
+      warranty {
+        name
+        description
+        duration
+        warrantyType
+      }
+      productName
+      deliveryDate
+      shippingStatus
+      orderDate
+      paymentStatus
+      shippingCharge
+      sellingPrice
+      shortDescription
+      paymentMode
+      vendorId
+      itemId
+      courierId
+      invoiceNumber
+      warehouseSkuId
+      productId
+    }
+    createdAt
+    issueDescription
+    order
+    warrantyId
+    claimStatus
+    claimType
+    claimDate
+    rejectedReason
+    rejectedDate
+    productImage {
+      fileType
+      fileURL
+      mimeType
+      originalName
+    }
+    warrantyAddress {
+      firstname
+      email
+      mobile
+      country
+      postCode
+      governorate
+      village
+      governorateID
+      villageID
+      address
+    }
+    vendor {
+      fullName
+    }
+    products {
+      images {
+        fileType
+        fileURL
+        mimeType
+        originalName
+      }
+    }
+    replacementReason
+    replacementShippedDate
+    replacementCompletedDate
+    returnedWarehouseDate
+    postponedDate
+    postponedReason
+    deliveryAgentId
+    productImageUploadByAgent {
+      fileType
+      fileURL
+      mimeType
+      originalName
+    }
+    deliveryAgentAssignedOn
+    deliveryAgentName
+    agent {
+      contactNumber
+      agentType
+    }
+  }
+}
+`;
+
 const WarrantyOrderProductDetails = () => {
   const [searchParams] = useSearchParams();
   const requestId = searchParams.get("id");
@@ -136,9 +229,11 @@ const WarrantyOrderProductDetails = () => {
   const [claimDate, setClaimDate] = useState("");
   const [rejectedDate, setRejectedDate] = useState("");
   const [rejectedReason, setRejectedReason] = useState("");
-  const [returnSwiperModal, setReturnSwiperModal] = useState(false);
-  const toggleReturnImageSwiperModal = () => {
-    setReturnSwiperModal(!returnSwiperModal);
+  const [imageSwiperModal, setImageSwiperModal] = useState(false);
+  const [initialSlide,setInitialSlide]=useState(0)
+  const toggleImageSwiperModal = (index:any) => {
+    setInitialSlide(index)
+    setImageSwiperModal(!imageSwiperModal);
   };
   const [approveModal, setApproveModal] = useState(false);
   const toggleApproveModal = () => {
@@ -151,97 +246,7 @@ const WarrantyOrderProductDetails = () => {
 
   const orderProductId = searchParams.get("_id");
 
-  const GET_REQUEST = gql`
-    query GetClaimRequestDetailsByAdmin($input: getClaimRequestDetailsByAdminInput!) {
-      getClaimRequestDetailsByAdmin(input: $input) {
-        _id
-        user {
-          _id
-          displayName
-        }
-        product {
-          warranty {
-            name
-            description
-            duration
-            warrantyType
-          }
-          productName
-          deliveryDate
-          shippingStatus
-          orderDate
-          paymentStatus
-          shippingCharge
-          sellingPrice
-          shortDescription
-          paymentMode
-          vendorId
-          itemId
-          courierId
-          invoiceNumber
-          warehouseSkuId
-          productId
-        }
-        createdAt
-        issueDescription
-        order
-        warrantyId
-        claimStatus
-        claimType
-        claimDate
-        rejectedReason
-        rejectedDate
-        productImage {
-          fileType
-          fileURL
-          mimeType
-          originalName
-        }
-        warrantyAddress {
-          firstname
-          email
-          mobile
-          country
-          postCode
-          governorate
-          village
-          governorateID
-          villageID
-          address
-        }
-        vendor {
-          fullName
-        }
-        products {
-          images {
-            fileType
-            fileURL
-            mimeType
-            originalName
-          }
-        }
-        replacementReason
-        replacementShippedDate
-        replacementCompletedDate
-        returnedWarehouseDate
-        postponedDate
-        postponedReason
-        deliveryAgentId
-        productImageUploadByAgent {
-          fileType
-          fileURL
-          mimeType
-          originalName
-        }
-        deliveryAgentAssignedOn
-        deliveryAgentName
-        agent {
-          contactNumber
-          agentType
-        }
-      }
-    }
-  `;
+ 
 
   const {
     data: requestData,
@@ -429,7 +434,7 @@ const WarrantyOrderProductDetails = () => {
     }
 
     try {
-      const result = await UpdateRequestStatus({
+      const response = await UpdateRequestStatus({
         variables: {
           input: {
             claimRequestId: request?._id,
@@ -440,7 +445,7 @@ const WarrantyOrderProductDetails = () => {
         },
       });
 
-      if (result?.data?.updateClaimStatusByAdmin) {
+      if (response?.data?.updateClaimStatusByAdmin) {
         requestRefetch();
         setApproveModal(!approveModal);
         toast.success("Shipping Status has been updated");
@@ -539,31 +544,65 @@ const WarrantyOrderProductDetails = () => {
                         </div>
                       </div>
                     </Col>
-                    <Col xl={6}>
-                      <div
-                        className="mb-3"
-                        style={{
-                          display: "grid",
-                          alignItems: "center",
-                          gridTemplateColumns: "70px 70px 70px 70px",
-                          gap: "10px",
-                          // background: "#f1f1f1",
-                        }}
-                      >
+                    <Col
+                      xl={6}
+                      className="mt-3"
+                    >
+                      <p>Client side Images</p>
+                      <div className={styles.images_container}>
                         {request?.productImage?.map((image: any, index: any) => (
                           <>
-                            <CardImg
-                              alt="product"
-                              src={image?.fileURL ?? ""}
-                              style={{
-                                height: 70,
-                                width: 70,
-                              }}
-                              top
-                              width="80px"
-                              key={index}
-                              onClick={toggleReturnImageSwiperModal}
-                            />
+                            <div className={styles.image_div}>
+                              <CardImg
+                                className={styles.image}
+                                alt="product"
+                                src={image?.fileURL ?? ""}
+                                style={{
+                                  height: 70,
+                                  width: 70,
+                                  cursor: "pointer",
+                                }}
+                                top
+                                width="80px"
+                                key={index}
+                                onClick={()=>toggleImageSwiperModal(index)}
+                                />
+                              <div
+                                className={styles.eye_icon}
+                                onClick={()=>toggleImageSwiperModal(index)}
+                              >
+                                <i className="fas fa-eye"></i>{" "}
+                              </div>
+                            </div>
+                          </>
+                        ))}
+                      </div>
+                      <p className="mt-3">Agent side Images</p>
+                      <div className={styles.images_container}>
+                        {request?.productImageUploadByAgent?.map((image: any, index: any) => (
+                          <>
+                            <div className={styles.image_div}>
+                              <CardImg
+                                className={styles.image}
+                                alt="product"
+                                src={image?.fileURL ?? ""}
+                                style={{
+                                  height: 70,
+                                  width: 70,
+                                  cursor: "pointer",
+                                }}
+                                top
+                                width="80px"
+                                key={index}
+                                onClick={()=>toggleImageSwiperModal(index)}
+                              />
+                              <div
+                                className={styles.eye_icon}
+                                onClick={()=>toggleImageSwiperModal(index)}
+                              >
+                                <i className="fas fa-eye"></i>{" "}
+                              </div>
+                            </div>
                           </>
                         ))}
                       </div>
@@ -778,19 +817,29 @@ const WarrantyOrderProductDetails = () => {
         </ModalFooter>
       </Modal>
 
+
+
+    {/* IMAGE SWIPER MODAL */}
       <Modal
-        isOpen={returnSwiperModal}
-        toggle={toggleReturnImageSwiperModal}
+        isOpen={imageSwiperModal}
+        toggle={toggleImageSwiperModal}
         // size="lg"
         fullscreen
         style={{ "--bs-modal-bg": "transparent" } as any}
       >
-        {/* <ModalHeader toggle={toggleReturnImageSwiperModal}>Shipping Status</ModalHeader> */}
+        {/* <ModalHeader toggle={toggleImageSwiperModal}>Shipping Status</ModalHeader> */}
         <ModalBody
           style={{ background: "#00000021", backgroundColor: "#00000021" }}
-          onClick={toggleReturnImageSwiperModal}
+          onClick={toggleImageSwiperModal}
         >
-          <CustomSwiper data={request?.productImage} />
+          {/* <CustomButton
+             onClick={()=>toggleImageSwiperModal()}
+            name=""
+            icon="material-symbols-outlined"
+            color="#fff"
+           className={styles.close_btn}>
+          </CustomButton> */}
+          <CustomSwiper data={request?.productImage} initialSlide={initialSlide} />
         </ModalBody>
       </Modal>
     </React.Fragment>

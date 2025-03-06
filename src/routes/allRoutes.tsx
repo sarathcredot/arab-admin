@@ -161,7 +161,12 @@ import ReturnPolicy from "src/pages/ReturnPolicy";
 import WarrantyPolicies from "src/pages/Warranty/WarrantyPolicies";
 import ClaimsAndRequests from "src/pages/Warranty/ClaimsAndRequests";
 import WarrantyOrderProductDetails from "src/pages/Warranty/WarrantyOrderProductDetails";
-import OrderActivityLogs from "src/pages/ActivityLogs/OrderActivityLogs";
+import OrderActivityLogs from "src/pages/ActivityLogs/Order/OrderActivityLogs";
+import WarrantyActivityLogs from "src/pages/ActivityLogs/Warranty/WarrantyActivityLogs";
+import ProductActivityLogs from "src/pages/ActivityLogs/Product/ProductActivityLogs";
+import DeliveryBoyActivityLogs from "src/pages/ActivityLogs/DeliveryBoy/DeliveryBoyActivityLogs";
+import VendorActivityLogs from "src/pages/ActivityLogs/Vendor/VendorActivityLogs";
+import AdminActivityLogs from "src/pages/ActivityLogs/Admin/AdminActivityLogs";
 interface RouteProps {
   path: string;
   component: any;
@@ -221,14 +226,16 @@ const adminRoutes: Array<RouteProps> = [
   { path: "/dashboard", component: <Dashboard /> },
 
  
-    { path: "/product", component: <Productlisting /> },
-
   
-
+  
+  
+  { path: "/product", component: <Productlisting /> },
   { path: "/product/details", component: <View /> },
+  { path: "/product/details/activity-log", component: <ProductActivityLogs /> },
   { path: "/product/variant", component: <VariantListing /> },
   { path: "/add-product", component: <Addproduct /> },
   { path: "/add-variant", component: <AddVariant /> },
+
   { path: "/cmslisting", component: <CmsListing /> },
   { path: "/cmstwolisting", component: <CmstwoListing /> },
   { path: "/cmslisting/details", component: <CmsRecordDetails /> },
@@ -245,11 +252,13 @@ const adminRoutes: Array<RouteProps> = [
 
   { path: "/vendors", exact: true, component: <VendorList /> },
   { path: "/vendors/view", exact: true, component: <ViewVenders /> },
+  { path: "/vendors/view/activity-log", exact: true, component: <VendorActivityLogs /> },
   { path: "/vendors/view/analytics", exact: true, component: <VendorAnalyticsPage /> },
   
   // Delivery
   { path: "/delivery-boys", exact: true, component: <DeliveryBoys /> },
   { path: "/delivery-boys/view", exact: true, component: <ViewDeliveryBoys /> },
+  { path: "/delivery-boys/view/activity-log", exact: true, component: <DeliveryBoyActivityLogs /> },
   { path: "/settlement", exact: true, component: <SettlementPage /> },
 
 
@@ -274,35 +283,37 @@ const adminRoutes: Array<RouteProps> = [
   { path: "/shipping-orders", component: <ShippingOrders /> },
   { path: "/shipping-orders/details", component: <ShippingOrderDetails /> },
   { path: "/shipping-orders/details/activity-log", component: <OrderActivityLogs /> },
-
+  
   { path: "/return-orders", component: <ReturnOrders /> },
   { path: "/return-orders/details", component: <ReturnOrderDetails /> },
-
+  
   { path: "/refund-orders", component: <RefundOrders /> },
   { path: "/refund-orders/details", component: <RefundOrderDetails /> },
-
+  
   { path: "/settings", component: <Settings /> },
   
   // COUPONS
-
+  
   { path: "/coupons", component: <Coupons /> },
   { path: "/coupons/detail", component: <CouponDetailPage /> },
   
   // Admin Management
-
+  
   { path: "/admins", component: <Admins /> },
+  { path: "/admins/activity-log", component: <AdminActivityLogs /> },
   { path: "/roles", component: <Roles /> },
   
   // return Management
-
+  
   { path: "/return-policy", component: <ReturnPolicy /> },
-
+  
   // Warranty
-
+  
   { path: "/warranty-policies", component: <WarrantyPolicies /> },
   { path: "/warranty-claims", component: <ClaimsAndRequests /> },
   { path: "/warranty-claims/details", component: <WarrantyOrderProductDetails /> },
-
+  { path: "/warranty-claims/details/activity-log", component: <WarrantyActivityLogs /> },
+  
   { path: "*", component: <PageNotFound /> },
 ];
 

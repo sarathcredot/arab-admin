@@ -157,7 +157,7 @@ const ViewDeliveryBoys = () => {
 
   const [view, setView] = useState(false);
   const [DATE, setDATE] = useState("");
-  const [TAB, setTAB] = useState<any>(false);
+  const [TAB, setTAB] = useState<any>("SETTLEMENTS");
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 10;
 
@@ -329,6 +329,8 @@ const ViewDeliveryBoys = () => {
     setDATE("");
   }, [TAB]);
 
+  console.log("DATE = ", DATE);
+
   return (
     <>
       <div className="page-content">
@@ -337,7 +339,16 @@ const ViewDeliveryBoys = () => {
             items={items}
             currentPage="Details page"
           /> */}
-          <h4>Detail Page</h4>
+          <div
+            style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}
+          >
+            <h4>Detail Page</h4>
+            <i
+              className="bx bx-time-five clock"
+              style={{ fontSize: "20px" }}
+              onClick={()=>navigate(`/delivery-boys/view/activity-log?agent=${data?.fullName}&_id=${data?._id}`)}
+            ></i>
+          </div>
           <Row
           // style={{ padding: "12px" }}
           >
@@ -549,7 +560,7 @@ const ViewDeliveryBoys = () => {
                 </NavLink>
               </NavItem>
             </Nav>
-            {TAB === "SETTLEMETS" ? (
+            {TAB === "SETTLEMENTS" ? (
               detailLoading ? (
                 <Loader />
               ) : data && data?.settlementHistory?.length > 0 ? (
@@ -722,7 +733,7 @@ const ViewDeliveryBoys = () => {
                   <h4>No Settlements</h4>
                 </div>
               )
-            ) : TAB==="ORDERS" ? (
+            ) : TAB === "ORDERS" ? (
               !view ? (
                 <AssignedOrderBundle
                   agentId={ID}
@@ -737,19 +748,6 @@ const ViewDeliveryBoys = () => {
               )
             ) : TAB === "RETURNS" ? (
               !view ? (
-                <AssignedWarrantiesBundle
-                  agentId={ID}
-                  setView={setView}
-                  setDATE={setDATE}
-                />
-              ) : (
-                <AssignedWarranties
-                  agentId={ID}
-                  DATE={DATE}
-                />
-              )
-            ) :TAB === "WARRANTIES" ? (
-              !view ? (
                 <AssignedReturnBundle
                   agentId={ID}
                   setView={setView}
@@ -757,6 +755,19 @@ const ViewDeliveryBoys = () => {
                 />
               ) : (
                 <AssignedReturns
+                  agentId={ID}
+                  DATE={DATE}
+                />
+              )
+            ) : TAB === "WARRANTIES" ? (
+              !view ? (
+                <AssignedWarrantiesBundle
+                  agentId={ID}
+                  setView={setView}
+                  setDATE={setDATE}
+                />
+              ) : (
+                <AssignedWarranties
                   agentId={ID}
                   DATE={DATE}
                 />

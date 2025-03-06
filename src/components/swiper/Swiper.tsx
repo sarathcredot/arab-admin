@@ -9,6 +9,7 @@ const CustomSwiper = ({
   slidesPerView = 1,
   onSlideChange,
   onSwiper,
+  initialSlide=0,
   data = [],
 }: any) => {
   return (
@@ -19,6 +20,7 @@ const CustomSwiper = ({
       onSwiper={(swiper) => console.log(swiper)}
       style={{height:"100%",background:"transparent"}}
       navigation
+      initialSlide={initialSlide}
       
     >
       {data &&

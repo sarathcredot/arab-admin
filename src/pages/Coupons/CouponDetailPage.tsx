@@ -152,11 +152,11 @@ const CouponDetailPage = () => {
                     }}
                   >
                     <span style={{ fontSize: "17px", fontWeight: "500" }}>Details</span>
-                    <CustomButton
+                    {/* <CustomButton
                       name=""
                       icon="ic:baseline-delete"
                       //   onClick={editFormToggle}
-                    />
+                    /> */}
                   </CardHeader>
                   <CardBody style={{ background: "#fafafa" }}>
                     <div style={{ marginBottom: "20px" }}>

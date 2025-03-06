@@ -117,36 +117,41 @@ const RefundOrderDetails = () => {
 
   const GET_ORDER = gql`
   query GetAdminOrderDetails($input: GetAdminOrderDetailsInput!) {
-getAdminOrderDetails(input: $input) {
-  _id
-  orderId
-  userId
-  
-  paymentMode
-  orderDate
-  orderStatus
-  username
-  shippingAddress {
+  getAdminOrderDetails(input: $input) {
     _id
-    firstname
-    email
-    mobile
-    streetName
-    city
-    houseNumber
-    country
-    postCode
-    apartment
-    suite
-    unit
+    orderId
+    userId
+    paymentMode
+    orderDate
+    orderStatus
+    username
+    shippingAddress {
+      _id
+      firstname
+      email
+      mobile
+      streetName
+      city
+      houseNumber
+      country
+      postCode
+      apartment
+      suite
+      unit
+      governorateID
+      governorate
+      village
+      villageID
+      address
+      label
+    }
+    orderPriceInfo {
+      totalMRP
+      totalSellingPrice
+      totalShippingCharge
+      totalRefundAmount
+    }
   }
-  orderPriceInfo {
-    totalMRP
-    totalSellingPrice
-    totalShippingCharge
-    totalRefundAmount
-  }
-}
 }
 `;
 
@@ -166,6 +171,7 @@ query GetAdminOrderProduct($input: GetAdminOrderProductInput!) {
     productName
     shortDescription
     skuId
+    warehouseSkuId
     image {
       fileType
       fileURL
@@ -205,7 +211,64 @@ query GetAdminOrderProduct($input: GetAdminOrderProductInput!) {
       mimeType
       originalName
     }
-    warehouseSkuId
+    username
+    deliveryAgentId
+    deliveryBoy {
+      _id
+      fullName
+      contactNumber
+      userID
+      password
+      agentType
+      vendorID
+      ID
+    }
+    deliveryAgentName
+    refundBankDetails {
+      accountHolderName
+      accountNumber
+      ifscCode
+      bankName
+      branchName
+    }
+    returnAddress {
+      firstname
+      email
+      mobile
+      streetName
+      city
+      houseNumber
+      country
+      postCode
+      apartment
+      suite
+      unit
+      governorate
+      village
+      governorateID
+      villageID
+      address
+    }
+    returnProductImage {
+      fileType
+      fileURL
+      mimeType
+      originalName
+    }
+    deliveryAssignedOn
+    returnOrderAssignedOn
+    returndeliveryAgentId
+    returndeliveryAgentName
+    returnCollectorBoy {
+      _id
+      fullName
+      contactNumber
+      userID
+      password
+      agentType
+      vendorID
+      ID
+    }
   }
 }
 `
@@ -229,12 +292,6 @@ query GetAdminOrderProduct($input: GetAdminOrderProductInput!) {
       setProduct(product);
     }
   }, [orderProductData]);
-
-
-
-
-
-
 
   const {
     data: orderData,
@@ -418,7 +475,7 @@ query GetAdminOrderProduct($input: GetAdminOrderProductInput!) {
 
                 <CardBody>
                   <form action="#">
-                    <OrderShippingAddress order={order} />
+                    <OrderShippingAddress returnAddress={true} order={product} />
 
                     <div className="border mt-3 border-dashed"></div>
 

@@ -23,8 +23,8 @@ interface IOrder {
 
 // get assigned orders with date group
 const GET_ORDERS_WITH_DATE = gql`
-  query GetAssignedOrderBundleByDeliveryAgent($input: GetAssignedOrderByDeliveryAgentInput) {
-    getAssignedOrderBundleByDeliveryAgent(input: $input) {
+  query GetAssignedWarrantyCallDeliveryAgent($input: getAssignedWarrantyCallDeliveryAgentInput!) {
+    getAssignedWarrantyCallDeliveryAgent(input: $input) {
       records {
         _id
         date
@@ -82,10 +82,10 @@ const AssignedWarrantiesBundle: React.FC<Props> = ({ agentId, setView, setDATE }
   });
 
   useEffect(() => {
-    if (ordersData && ordersData.getAssignedOrderBundleByDeliveryAgent) {
-      console.log("ORDERS = ", ordersData.getAssignedOrderBundleByDeliveryAgent);
+    if (ordersData && ordersData.getAssignedWarrantyCallDeliveryAgent) {
+      console.log("ORDERS = ", ordersData.getAssignedWarrantyCallDeliveryAgent);
 
-      setOrders(ordersData.getAssignedOrderBundleByDeliveryAgent.records);
+      setOrders(ordersData.getAssignedWarrantyCallDeliveryAgent.records);
     }
   }, [agentId, ordersData, ordersDataLoading]);
   console.log("DATEE = ", ordersData);
@@ -115,7 +115,7 @@ const AssignedWarrantiesBundle: React.FC<Props> = ({ agentId, setView, setDATE }
     }
   };
 
-  const totalRecords = ordersData?.getAssignedOrderByDeliveryAgent?.maxRecords || 0;
+  const totalRecords = ordersData?.getAssignedWarrantyCallDeliveryAgent?.maxRecords || 0;
   const totalPages = Math.ceil(totalRecords / pageSize);
   const filterOptions = [
     {

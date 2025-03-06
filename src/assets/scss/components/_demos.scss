@@ -48,7 +48,6 @@
       margin-right: 16px;
       vertical-align: middle;
     }
-  
     .col-lg-4 {
       margin-top: 24px;
   
@@ -61,6 +60,10 @@
   }
 }
 
+i.clock:hover{
+  color: $primary;
+  cursor:pointer;
+}
 
 // Grid
 

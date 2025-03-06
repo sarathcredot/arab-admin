@@ -507,7 +507,7 @@ const ShippingOrderDetails = () => {
                               </label>
                             </div>
                             <div>
-                              <OrderProductsDetails product={product} orderProdcutsRefetch={orderProdcutRefetch} orderRefetch={orderRefetch} />
+                              <OrderProductsDetails type="SHIPPING" address={order?.shippingAddress} product={product} orderProdcutsRefetch={orderProdcutRefetch} orderRefetch={orderRefetch} />
                             </div>
                           </Col>
                         </Row>

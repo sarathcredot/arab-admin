@@ -3,6 +3,7 @@ import "cleave.js/dist/addons/cleave-phone.in";
 import FeatherIcon from "feather-icons-react";
 import { Link, useNavigate } from "react-router-dom";
 import { CiEdit, CiDeliveryTruck } from "react-icons/ci";
+import { PiClockCounterClockwise } from "react-icons/pi";
 
 import {
   Button,
@@ -39,27 +40,10 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { IoMdAdd } from "react-icons/io";
 
 import styles from "src/components/orders/OrderProductDetails.module.scss";
-import CustomSwiper from "src/components/swiper/Swiper";
 import Iconify from "src/components/iconify/Iconify";
 // import CustomSwiper from "../swiper/Swiper";
 
 type CLAIM_TYPE = "REPLACEMENT" | "REPAIR" | null;
-
-interface ProductEditFormData {
-  invoiceNumber: string;
-  courierId: string;
-  paymentStatus: string;
-  shippedDate: string | null;
-  deliveredDate: string | null;
-  rejectedDate: string | null;
-  returnRequestDate: string | null;
-  returnRejectDate: string | null;
-  returnDate: string | null;
-  refundRequestDate: string | null;
-  refundDate: string | null;
-  refundAmount: number;
-  shippingCharge: number;
-}
 
 function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
   const navigate = useNavigate();
@@ -74,25 +58,6 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
   const [completedDate, setCompletedDate] = useState("");
   const [warehouseDate, setWarehouseDate] = useState("");
   const [rejectedReason, setRejectedReason] = useState("");
-  const [paymentStatus, setPaymentStatus] = useState("");
-
-  // [[[[[[  return ]]]]]]]]
-
-  const [returnSwiperModal, setReturnSwiperModal] = useState(false);
-  const [returnStatus, setReturnStatus] = useState("");
-  const [returnModal, setReturnModal] = useState(false);
-  const [returnDate, setReturnDate] = useState("");
-  const [returnRejectDate, setReturnRejectDate] = useState("");
-  const [returnComment, setReturnComment] = useState("");
-  const [returnRequestDate, setReturnRequestDate] = useState("");
-
-  // [[[[[[  refund ]]]]]]]]
-
-  const [refundStatus, setRefundStatus] = useState("");
-  const [refundModal, setRefundModal] = useState(false);
-  const [refundDate, setRefundDate] = useState("");
-  const [refundRequestDate, setRefundRequestDate] = useState("");
-  const [refundComment, setRefundComment] = useState("");
 
   // [[[[[[[[[[ INVOICE ]]]]]]]]]]
 
@@ -108,44 +73,6 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
     issueDescription: "",
     adminRejectedReason: "",
   });
-
-  // [[[[[[[[[[[[ PRODUCT EDIT ]]]]]]]]]]]]
-
-  const [productEditModal, setProductEditModal] = useState(false);
-  const initialProductEditFormData: ProductEditFormData = {
-    invoiceNumber: "",
-    courierId: "",
-    paymentStatus: "",
-    shippedDate: null,
-    deliveredDate: null,
-    rejectedDate: null,
-    returnRequestDate: null,
-    returnRejectDate: null,
-    returnDate: null,
-    refundRequestDate: null,
-    refundDate: null,
-    refundAmount: 0,
-    shippingCharge: 0,
-  };
-  const [productEditFormData, setProductEditFormData] = useState<ProductEditFormData>(initialProductEditFormData);
-
-  useEffect(() => {
-    setProductEditFormData({
-      courierId: product?.courierId,
-      invoiceNumber: product?.invoiceNumber,
-      paymentStatus: product?.paymentStatus,
-      shippedDate: product?.shippedDate ? moment(product.shippedDate).format("YYYY-MM-DD") : null,
-      deliveredDate: product?.deliveryDate ? moment(product.deliveryDate).format("YYYY-MM-DD") : null,
-      rejectedDate: product?.cancelledDate ? moment(product.cancelledDate).format("YYYY-MM-DD") : null,
-      returnRequestDate: product?.returnRequestDate ? moment(product.returnRequestDate).format("YYYY-MM-DD") : null,
-      returnRejectDate: product?.returnRejectedDate ? moment(product.returnRejectedDate).format("YYYY-MM-DD") : null,
-      returnDate: product?.returnDate ? moment(product.returnDate).format("YYYY-MM-DD") : null,
-      refundRequestDate: product?.refundRequestDate ? moment(product.refundRequestDate).format("YYYY-MM-DD") : null,
-      refundDate: product?.refundDate ? moment(product.refundDate).format("YYYY-MM-DD") : null,
-      refundAmount: product?.refundAmount,
-      shippingCharge: product?.shippingCharge,
-    });
-  }, [product]);
 
   useEffect(() => {
     setCommentFormData({
@@ -250,8 +177,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
         setClaimDate("");
         setRejectedDate("");
         setRejectedReason("");
-        setPaymentStatus("");
-        if (claimStatus === "REPLACEMENT_SHIPPED") {          
+        if (claimStatus === "REPLACEMENT_SHIPPED") {
           handleAssignClick(result?.data?.updateAdminOrderProduct?._id, "REPLACEMENT");
         }
       }
@@ -262,10 +188,6 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
   };
 
   // =========================== RETURN =================================
-
-  const toggleReturnImageSwiperModal = () => {
-    setReturnSwiperModal(!returnSwiperModal);
-  };
 
   const getAdminSignedUrl = useFetchSignedUrl();
 
@@ -325,53 +247,6 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
     // }
   };
 
-  // PRODUCT
-
-  const toggleProductEditModal = () => {
-    setProductEditModal(!productEditModal);
-  };
-
-  const handleProductEditInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setProductEditFormData({
-      ...productEditFormData,
-      [name]: value,
-    });
-  };
-
-  const handleProductEditSubmit = async () => {
-    // try {
-    //   const result = await UpdateProduct({
-    //     variables: {
-    //       input: {
-    //         _id: product?._id,
-    //         courierId: productEditFormData.courierId,
-    //         invoiceNumber: productEditFormData.invoiceNumber,
-    //         paymentStatus: productEditFormData.paymentStatus,
-    //         shippedDate: productEditFormData.shippedDate,
-    //         deliveryDate: productEditFormData.deliveredDate,
-    //         cancelledDate: productEditFormData.rejectedDate,
-    //         returnRequestDate: productEditFormData.returnRequestDate,
-    //         returnRejectedDate: productEditFormData.returnRejectDate,
-    //         returnDate: productEditFormData.returnDate,
-    //         refundRequestDate: productEditFormData.refundRequestDate,
-    //         refundDate: productEditFormData.refundDate,
-    //         refundAmount: parseFloat(parseFloat(`${productEditFormData.refundAmount}`).toFixed(2)),
-    //         shippingCharge: parseFloat(parseFloat(`${productEditFormData.shippingCharge}`).toFixed(2)),
-    //       },
-    //     },
-    //   });
-    //   if (result.data.updateAdminOrderProduct) {
-    //     requestRefetch();
-    //     setProductEditModal(!productEditModal);
-    //     orderRefetch();
-    //     toast.success("Product has been updated");
-    //   }
-    // } catch (error: any) {
-    //   console.error(error);
-    //   toast.error(error.message);
-    // }
-  };
   const UPDATE_REQUEST_STATUS = gql`
     mutation UpdateClaimStatusByAdmin($input: updateClaimStatusByAdminInput!) {
       updateClaimStatusByAdmin(input: $input) {
@@ -430,17 +305,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
     }
   `;
 
-  const ASSIGN_RETURN_ORDER = gql`
-    mutation OrderAssignDeliveryAgent($input: OrderAssignDeliveryAgentInput!) {
-      returnOrderAssignDeliveryAgent(input: $input) {
-        status
-        msg
-      }
-    }
-  `;
-
   const [AssignOrder] = useMutation(ASSIGN_ORDER);
-  const [AssignReturnOrder] = useMutation(ASSIGN_RETURN_ORDER);
 
   const GET_VENDOR_FOR_SELECT = gql`
     query GetAllVendors($input: VendorsRecordsByAdminFilter) {
@@ -744,15 +609,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                     <BsThreeDotsVertical size={20} />
                   </div>
                 </Dropdown.Toggle>
-
                 <Dropdown.Menu>
-                  <Dropdown.Item
-                    onClick={toggleProductEditModal}
-                    style={{ display: "flex", gap: 5 }}
-                  >
-                    <CiEdit size={20} />
-                    Edit Product
-                  </Dropdown.Item>
                   <Dropdown.Item
                     onClick={() => handleAssignClick(product?._id, "REPLACEMENT")}
                     style={{ display: "flex", gap: 5 }}
@@ -761,47 +618,18 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                     <CiDeliveryTruck size={20} />
                     Assign Delivery Boy
                   </Dropdown.Item>
-                  <Dropdown.Divider />
                   <Dropdown.Item
-                    onClick={toggleInvoiceModal}
                     style={{ display: "flex", gap: 5 }}
+                    onClick={() =>
+                      navigate(
+                        `/warranty-claims/details/activity-log?warranty=${product?.warrantyId}&_id=${product?._id}`
+                      )
+                    }
                   >
-                    {!product?.invoiceNumber && !product?.invoice?.fileURL ? (
-                      // <Button
-                      //   onClick={toggleInvoiceModal}
-                      //   style={{
-                      //     backgroundColor: "black",
-                      //     color: "white",
-                      //     width: "100%",
-                      //     height: "40px",
-                      //     borderRadius: "10px",
-                      //     fontSize: "13px",
-                      //   }}
-                      // >
-                      <>
-                        <IoMdAdd size={20} />
-                        {`Add Invoice `}
-                        {/* <FeatherIcon icon="plus"  />  */}
-                        {/* </Button> */}
-                      </>
-                    ) : (
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: "4px",
-                        }}
-                      >
-                        <Iconify
-                          icon="ic:baseline-edit"
-                          style={{ fontSize: "5px" }}
-                          width={18}
-                        />
-                        Edit Invoice
-                      </div>
-                    )}
+                    <PiClockCounterClockwise size={20} />
+                    Activity Log
                   </Dropdown.Item>
+                  {/* <Dropdown.Divider /> */}
                 </Dropdown.Menu>
               </Dropdown>
             </div>
@@ -1177,7 +1005,8 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                       className="form-control-static"
                       style={{ margin: 10 }}
                     >
-                      {(product?.deliveryAgentAssignedOn && moment(product?.deliveryAgentAssignedOn).format("L")) || "nill"}
+                      {(product?.deliveryAgentAssignedOn && moment(product?.deliveryAgentAssignedOn).format("L")) ||
+                        "nill"}
                     </p>
                   </div>
                 </div>
@@ -1363,26 +1192,6 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
           </div>
         </CardBody>
       </Card>
-
-      {/* ================== RETURN IMAGES MODAL ===================== */}
-
-      <Modal
-        isOpen={returnSwiperModal}
-        toggle={toggleReturnImageSwiperModal}
-      >
-        <ModalHeader toggle={toggleReturnImageSwiperModal}>Shipping Status</ModalHeader>
-        <ModalBody>
-          <CustomSwiper />
-        </ModalBody>
-        {/* <ModalFooter>
-          <Button color="primary">
-            Submit
-          </Button>{" "}
-          <Button color="secondary">
-            Cancel
-          </Button>
-        </ModalFooter> */}
-      </Modal>
 
       {/* ================== CLAIM STATUS MODAL ===================== */}
 
@@ -1747,63 +1556,6 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
               </Input>
             </FormGroup>
           </Col>
-          {/* <FormGroup>
-            <Label for="agentType">Agent Type</Label>
-            <Input
-              type="select"
-              name="agentType"
-              id="agentType"
-              value={deliveryAgentType}
-              onChange={(e: any) => setDeliveryAgentType(e?.target?.value)}
-            >
-              <option value="" disabled>
-                Select Delivery Agent Type
-              </option>
-              {["ArabDeals", "Vendor", "ThirdParty"].map((el) => (
-                <option key={el} value={el}>
-                  {el}
-                </option>
-              ))}
-            </Input>
-          </FormGroup>
-          <Col>
-            <FormGroup>
-              <Label for="deliveryBoy">Select Delivery Boy</Label>
-              <Input
-                id="deliveryBoy"
-                name="deliveryBoy"
-                type="select"
-                value={deliveryBoyId}
-                placeholder="Select Delivery Boy"
-                onChange={(e: any) => {
-                  const selectedValue = e?.target?.value; // The ID (value) of the selected option
-                  const selectedName =
-                    e?.target?.options[e?.target?.selectedIndex]?.text; // The name (text) of the selected option
-                  setDeliveryBoyId(selectedValue); // Save ID in state
-                  setDeliveryBoyName(selectedName); // Save name in state
-                }}
-              >
-                <option value="" disabled>
-                  Select Delivery Boy
-                </option>
-                {deliveryAgentList &&
-                  deliveryAgentList?.getProductDeliveryTypeDeliveryAgents &&
-                  deliveryAgentList?.getProductDeliveryTypeDeliveryAgents
-                    ?.deliveryAgents?.length > 0 &&
-                  deliveryAgentList?.getProductDeliveryTypeDeliveryAgents?.deliveryAgents?.map(
-                    (agent: any) => (
-                      <option
-                        key={agent?._id}
-                        id={agent?.fullName}
-                        value={agent?._id}
-                      >
-                        {agent?.fullName}
-                      </option>
-                    )
-                  )}
-              </Input>
-            </FormGroup>
-          </Col> */}
         </ModalBody>
         <ModalFooter>
           <Button
@@ -1815,226 +1567,6 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
           <Button
             color="secondary"
             onClick={toggleDeliveryAssignModal}
-          >
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
-
-      {/*============= PRODUCT EDIT MODAL =============*/}
-
-      <Modal
-        isOpen={productEditModal}
-        toggle={toggleProductEditModal}
-        style={{ maxWidth: "1000px", width: "100%" }}
-      >
-        <ModalHeader toggle={toggleProductEditModal}>Edit Product Details</ModalHeader>
-        <ModalBody>
-          <Row>
-            <Col xl={6}>
-              <Row>
-                <Col xs={12}>
-                  <FormGroup>
-                    <Label for="invoiceNumber">Enter Invoice Number</Label>
-                    <Input
-                      type="text"
-                      name="invoiceNumber"
-                      id="invoiceNumber"
-                      value={productEditFormData.invoiceNumber}
-                      onChange={handleProductEditInputChange}
-                    />
-                  </FormGroup>
-                </Col>
-                <Col xs={12}>
-                  <FormGroup>
-                    <Label for="courierId">Enter Courier ID</Label>
-                    <Input
-                      type="text"
-                      name="courierId"
-                      id="courierId"
-                      value={productEditFormData.courierId}
-                      onChange={handleProductEditInputChange}
-                    />
-                  </FormGroup>
-                </Col>
-                <Col xs={6}>
-                  <FormGroup>
-                    <Label for="paymentStatus">Select Payment Status</Label>
-                    <Input
-                      id="paymentStatus"
-                      name="paymentStatus"
-                      type="select"
-                      value={productEditFormData.paymentStatus}
-                      onChange={handleProductEditInputChange}
-                    >
-                      <option value={"COMPLETED"}>COMPLETED</option>
-                      <option value={"PENDING"}>PENDING</option>
-                    </Input>
-                  </FormGroup>
-                </Col>
-                <Col xs={6}>
-                  <FormGroup>
-                    <Label for="shippingCharge">Shipping Charge</Label>
-                    <div className="input-group">
-                      <div className="input-group-prepend">
-                        <span className="input-group-text">OMR</span>
-                      </div>
-                      <Input
-                        type="number"
-                        name="shippingCharge"
-                        id="shippingCharge"
-                        value={productEditFormData?.shippingCharge}
-                        onChange={handleProductEditInputChange}
-                      />
-                    </div>
-                  </FormGroup>
-                </Col>
-              </Row>
-            </Col>
-            <Col xl={6}>
-              <Row>
-                <Col xl={4}>
-                  <FormGroup>
-                    <Label for="shippedDate">Shipped Date</Label>
-                    <Input
-                      type="date"
-                      name="shippedDate"
-                      id="shippedDate"
-                      value={moment(productEditFormData.shippedDate).format("YYYY-MM-DD")}
-                      onChange={handleProductEditInputChange}
-                      disabled={!["SHIPPED", "DELIVERED", "CANCELED"].includes(product?.shippingStatus)}
-                    />
-                  </FormGroup>
-                </Col>
-                <Col xl={4}>
-                  <FormGroup>
-                    <Label for="deliveredDate">Delivered Date</Label>
-                    <Input
-                      type="date"
-                      name="deliveredDate"
-                      id="deliveredDate"
-                      value={moment(productEditFormData.deliveredDate).format("YYYY-MM-DD")}
-                      onChange={handleProductEditInputChange}
-                      disabled={!["DELIVERED"].includes(product?.shippingStatus)}
-                    />
-                  </FormGroup>
-                </Col>
-                <Col xl={4}>
-                  <FormGroup>
-                    <Label for="rejectedDate">Cancelled Date</Label>
-                    <Input
-                      type="date"
-                      name="rejectedDate"
-                      id="rejectedDate"
-                      value={moment(productEditFormData.rejectedDate).format("YYYY-MM-DD")}
-                      onChange={handleProductEditInputChange}
-                      disabled={!["CANCELED"].includes(product?.shippingStatus)}
-                    />
-                  </FormGroup>
-                </Col>
-              </Row>
-
-              <Row>
-                <Col xl={4}>
-                  <FormGroup>
-                    <Label for="returnRequestDate">Return Requested</Label>
-                    <Input
-                      type="date"
-                      name="returnRequestDate"
-                      id="returnRequestDate"
-                      value={moment(productEditFormData.returnRequestDate).format("YYYY-MM-DD")}
-                      onChange={handleProductEditInputChange}
-                      disabled={!["PENDING", "APPROVED"].includes(product?.returnStatus)}
-                    />
-                  </FormGroup>
-                </Col>
-                <Col xl={4}>
-                  <FormGroup>
-                    <Label for="returnDate">Return Date</Label>
-                    <Input
-                      type="date"
-                      name="returnDate"
-                      id="returnDate"
-                      value={moment(productEditFormData.returnDate).format("YYYY-MM-DD")}
-                      onChange={handleProductEditInputChange}
-                      disabled={!["APPROVED"].includes(product?.returnStatus)}
-                    />
-                  </FormGroup>
-                </Col>
-                <Col xl={4}>
-                  <FormGroup>
-                    <Label for="returnRejectDate">Return Rejected</Label>
-                    <Input
-                      type="date"
-                      name="returnRejectDate"
-                      id="returnRejectDate"
-                      value={moment(productEditFormData.returnRejectDate).format("YYYY-MM-DD")}
-                      onChange={handleProductEditInputChange}
-                      disabled={!["REJECTED"].includes(product?.returnStatus)}
-                    />
-                  </FormGroup>
-                </Col>
-              </Row>
-
-              <Row>
-                <Col xl={4}>
-                  <FormGroup>
-                    <Label for="refundRequestDate">Refund Requested</Label>
-                    <Input
-                      type="date"
-                      name="refundRequestDate"
-                      id="refundRequestDate"
-                      value={moment(productEditFormData.refundRequestDate).format("YYYY-MM-DD")}
-                      onChange={handleProductEditInputChange}
-                      disabled={!["PENDING", "PAID"].includes(product?.refundStatus)}
-                    />
-                  </FormGroup>
-                </Col>
-                <Col xl={4}>
-                  <FormGroup>
-                    <Label for="refundDate">Refund Date</Label>
-                    <Input
-                      type="date"
-                      name="refundDate"
-                      id="refundDate"
-                      value={moment(productEditFormData.refundDate).format("YYYY-MM-DD")}
-                      onChange={handleProductEditInputChange}
-                      disabled={!["PAID"].includes(product?.refundStatus)}
-                    />
-                  </FormGroup>
-                </Col>
-                <Col xl={4}>
-                  <FormGroup>
-                    <Label for="refundAmount">Refund Amount</Label>
-                    <div className="input-group">
-                      <div className="input-group-prepend">
-                        <span className="input-group-text">OMR</span>
-                      </div>
-                      <Input
-                        type="number"
-                        name="refundAmount"
-                        id="refundAmount"
-                        value={productEditFormData?.refundAmount}
-                        disabled={!["PAID"].includes(product?.refundStatus)}
-                        onChange={handleProductEditInputChange}
-                      />
-                    </div>
-                  </FormGroup>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            color="primary"
-            onClick={handleProductEditSubmit}
-          >
-            Submit
-          </Button>{" "}
-          <Button
-            color="secondary"
-            onClick={toggleProductEditModal}
           >
             Cancel
           </Button>

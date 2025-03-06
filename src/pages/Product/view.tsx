@@ -16,6 +16,7 @@ import { formatCurrency } from "src/utils/formatCurrency";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import CustomButton from "src/components/Common/CustomButton";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
+import { PiClockCounterClockwise } from "react-icons/pi";
 
 interface IAttribute {
   attributeId: string;
@@ -399,7 +400,14 @@ const GET_WARRANTY_POLICY_FOR_PRODUCT = gql`
       ) : (
         <div className="page-content">
           <Container fluid={true}>
+            <div style={{display:"flex",alignItems:"end",justifyContent:"space-between"}}>
             <Breadcrumb items={items} currentPage="View Product" />
+            <i
+              className="bx bx-time-five clock"
+              style={{ fontSize: "20px",marginBottom:"20px" }}
+              onClick={()=>navigate(`/product/details/activity-log?_id=${product?._id}`)}
+            ></i>
+        </div>
 
             <div className="d-flex justify-content-between mb-3">
               <div style={{ width: "auto" }}>
@@ -416,11 +424,22 @@ const GET_WARRANTY_POLICY_FOR_PRODUCT = gql`
                   {product?.status}
                 </p>
               </div>
+              <div style={{display:"flex",alignItems:"center",gap:10}}>
+              {/* <PiClockCounterClockwise/> */}
+              {/* <CustomButton
+                // onClick={handleEditProduct}
+                name=""
+                icon="ic:baseline-access-time"
+                onClick={()=>navigate(`/product/details/activity-log?_id=${product?._id}`)}
+                /> */}
               <CustomButton
                 onClick={handleEditProduct}
+                // name=""
                 name="Edit Product"
                 icon="ic:baseline-edit"
-              />
+                // bgColor="red"
+                />
+                </div>
             </div>
             <Row>
               <Col lg={12}>

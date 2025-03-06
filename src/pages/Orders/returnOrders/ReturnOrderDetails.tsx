@@ -9,8 +9,6 @@ import "cleave.js/dist/addons/cleave-phone.in";
 
 import { capitalCase, sentenceCase } from "change-case";
 import moment from "moment";
-import userAvatar from "src/assets/images/users/user-dummy-img.jpg";
-import OrderDetails from "src/components/orders/OrderProductDetails";
 import { formatCurrency } from "src/utils/formatCurrency";
 import OrderProductsDetails from "src/components/orders/OrderProductDetails";
 import Iconify from "src/components/iconify";
@@ -579,6 +577,7 @@ const GET_RETURN_POLICY = gql`
                                 product={product}
                                 orderProdcutsRefetch={orderProdcutRefetch}
                                 orderRefetch={orderRefetch}
+                                type="RETURN" 
                               />
                             </div>
                           </Col>
