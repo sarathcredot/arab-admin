@@ -18,7 +18,9 @@ export const sizeValidations = yup.object().shape({
 export const vendoreValidation = yup.object({
   name: yup.string().required("Please enter a name"),
   email: yup.string().email("Invalid email address").required("Email is required"),
-  phone: yup.string().required("Phone number is required"),
+  phone: yup.string()
+  .matches(/^\d{8}$/, "Phone number must be exactly 8 digits")
+  .required("Phone number is required"),
   countryCode: yup.string().required("Country code is required"),
   image: yup.string(),
 });
@@ -64,7 +66,10 @@ export const vendorBusinessOutletValidation = yup.object().shape({
 // delivery boy validation
 export const DeliveryBoyValidation = yup.object({
   fullName: yup.string().required("Please enter a full name"),
-  contactNumber: yup.string().required("Phone number is required"),
+  contactNumber: yup
+    .string()
+    .matches(/^\d{8}$/, "Phone number must be exactly 8 digits")
+    .required("Phone number is required"),
   userID: yup.string().email("Invalid email address").required("Email is required"),
   agentType: yup.string().required("Agent Type is required"),
   governorate: yup.string().required("governorate is required"),
@@ -73,7 +78,10 @@ export const DeliveryBoyValidation = yup.object({
 });
 export const EditDeliveryBoyValidation = yup.object({
   fullName: yup.string().required("Please enter a full name"),
-  contactNumber: yup.string().required("Phone number is required"),
+  contactNumber: yup
+    .string()
+    .matches(/^\d{8}$/, "Phone number must be exactly 8 digits")
+    .required("Phone number is required"),
   userID: yup.string().email("Invalid email address").required("Email is required"),
   agentType: yup.string().required("Agent Type is required"),
   governorate: yup.string().required("governorate is required"),

@@ -177,10 +177,10 @@ const FormVender: React.FC<Props> = ({
               <div className="input-group">
                 <div className="input-group">
                   <div className="input-group-prepend">
-                    <span className="input-group-text bg-white"><Iconify icon="openmoji:flag-oman" /></span>
+                    <span className="input-group-text bg-white"><Iconify icon="openmoji:flag-oman" />{formik.values?.countryCode}</span>
                   </div>
 
-                  <Input
+                  {/* <Input
                     type="text"
                     id="countryCode"
                     name="countryCode"
@@ -190,7 +190,7 @@ const FormVender: React.FC<Props> = ({
                     onBlur={formik.handleBlur}
                     disabled
                     style={{ width: "70px", flex: "none", backgroundColor: "#f8f9fa", color: "#6c757d" }}
-                  />
+                  /> */}
                   <Input
                 type="number"
                 id="phone"

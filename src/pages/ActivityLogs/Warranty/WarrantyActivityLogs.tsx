@@ -70,7 +70,6 @@ const WarrantyActivityLogs = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          {/* <Breadcrumbs title="Pages" breadcrumbItem="Timeline" /> */}
           <Breadcrumb
             items={items}
             currentPage="Activity Log"

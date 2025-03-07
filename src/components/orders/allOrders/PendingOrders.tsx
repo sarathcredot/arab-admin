@@ -286,19 +286,7 @@ const PendingOrders = () => {
           style={{ display: "flex", gap: "20px", justifyContent: "flex-end" }}
         >
           <CustomButton
-            bgColor="unset"
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "40px",
-              borderRadius: "10px",
-              gap: "5px",
-              fontSize: "13px",
-            }}
-            outline
-            color="primary"
+            bgColor="red"
             name="Export"
             icon="ph:export-bold"
             onClick={handleExportClick}

@@ -295,9 +295,10 @@ const WarrantyPolicies = () => {
                                         <Button
                                           style={{
                                             display: "block",
-                                            // width:"100%"
+                                            // width:"100%",
+                                            background:"#000"
                                           }}
-                                          color="dark"
+                                          // color="dark"
                                           size="sm"
                                           onClick={() => {
                                             setPolicyID(item?._id);

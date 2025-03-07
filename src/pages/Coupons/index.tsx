@@ -95,7 +95,6 @@ const GET_ALL_COUPONS = gql`
 
 const Coupons: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [searchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 10;
 
@@ -392,8 +391,9 @@ const Coupons: React.FC = () => {
                                         style={{
                                           display: "block",
                                           margin: "auto",
+                                          background:"#000"
                                         }}
-                                        color="dark"
+                                        // color="dark"
                                         size="sm"
                                       >
                                         View

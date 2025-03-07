@@ -290,9 +290,9 @@ const Admins = () => {
                                         <Button
                                           style={{
                                             display: "block",
-                                            // width:"100%"
+                                            background:"#000"
                                           }}
-                                          color="dark"
+                                          // color="dark"
                                           size="sm"
                                           onClick={() => navigate(`/admins/activity-log?admin=${item?.fullName}&_id=${item?._id}`)}
                                         >
@@ -305,9 +305,9 @@ const Admins = () => {
                                         <Button
                                           style={{
                                             display: "block",
-                                            // width:"100%"
+                                            background:"#000"
                                           }}
-                                          color="dark"
+                                          // color="dark"
                                           size="sm"
                                           onClick={() => {
                                             setAdminID(item?._id);

@@ -128,95 +128,95 @@ interface ShippingAddress {
 // }
 
 const GET_REQUEST = gql`
-query GetClaimRequestDetailsByAdmin($input: getClaimRequestDetailsByAdminInput!) {
-  getClaimRequestDetailsByAdmin(input: $input) {
-    _id
-    user {
+  query GetClaimRequestDetailsByAdmin($input: getClaimRequestDetailsByAdminInput!) {
+    getClaimRequestDetailsByAdmin(input: $input) {
       _id
-      displayName
-    }
-    product {
-      warranty {
-        name
-        description
-        duration
-        warrantyType
+      user {
+        _id
+        displayName
       }
-      productName
-      deliveryDate
-      shippingStatus
-      orderDate
-      paymentStatus
-      shippingCharge
-      sellingPrice
-      shortDescription
-      paymentMode
-      vendorId
-      itemId
-      courierId
-      invoiceNumber
-      warehouseSkuId
-      productId
-    }
-    createdAt
-    issueDescription
-    order
-    warrantyId
-    claimStatus
-    claimType
-    claimDate
-    rejectedReason
-    rejectedDate
-    productImage {
-      fileType
-      fileURL
-      mimeType
-      originalName
-    }
-    warrantyAddress {
-      firstname
-      email
-      mobile
-      country
-      postCode
-      governorate
-      village
-      governorateID
-      villageID
-      address
-    }
-    vendor {
-      fullName
-    }
-    products {
-      images {
+      product {
+        warranty {
+          name
+          description
+          duration
+          warrantyType
+        }
+        productName
+        deliveryDate
+        shippingStatus
+        orderDate
+        paymentStatus
+        shippingCharge
+        sellingPrice
+        shortDescription
+        paymentMode
+        vendorId
+        itemId
+        courierId
+        invoiceNumber
+        warehouseSkuId
+        productId
+      }
+      createdAt
+      issueDescription
+      order
+      warrantyId
+      claimStatus
+      claimType
+      claimDate
+      rejectedReason
+      rejectedDate
+      productImage {
         fileType
         fileURL
         mimeType
         originalName
       }
-    }
-    replacementReason
-    replacementShippedDate
-    replacementCompletedDate
-    returnedWarehouseDate
-    postponedDate
-    postponedReason
-    deliveryAgentId
-    productImageUploadByAgent {
-      fileType
-      fileURL
-      mimeType
-      originalName
-    }
-    deliveryAgentAssignedOn
-    deliveryAgentName
-    agent {
-      contactNumber
-      agentType
+      warrantyAddress {
+        firstname
+        email
+        mobile
+        country
+        postCode
+        governorate
+        village
+        governorateID
+        villageID
+        address
+      }
+      vendor {
+        fullName
+      }
+      products {
+        images {
+          fileType
+          fileURL
+          mimeType
+          originalName
+        }
+      }
+      replacementReason
+      replacementShippedDate
+      replacementCompletedDate
+      returnedWarehouseDate
+      postponedDate
+      postponedReason
+      deliveryAgentId
+      productImageUploadByAgent {
+        fileType
+        fileURL
+        mimeType
+        originalName
+      }
+      deliveryAgentAssignedOn
+      deliveryAgentName
+      agent {
+        contactNumber
+        agentType
+      }
     }
   }
-}
 `;
 
 const WarrantyOrderProductDetails = () => {
@@ -230,9 +230,9 @@ const WarrantyOrderProductDetails = () => {
   const [rejectedDate, setRejectedDate] = useState("");
   const [rejectedReason, setRejectedReason] = useState("");
   const [imageSwiperModal, setImageSwiperModal] = useState(false);
-  const [initialSlide,setInitialSlide]=useState(0)
-  const toggleImageSwiperModal = (index:any) => {
-    setInitialSlide(index)
+  const [initialSlide, setInitialSlide] = useState(0);
+  const toggleImageSwiperModal = (index: any) => {
+    setInitialSlide(index);
     setImageSwiperModal(!imageSwiperModal);
   };
   const [approveModal, setApproveModal] = useState(false);
@@ -245,8 +245,6 @@ const WarrantyOrderProductDetails = () => {
   };
 
   const orderProductId = searchParams.get("_id");
-
- 
 
   const {
     data: requestData,
@@ -565,11 +563,11 @@ const WarrantyOrderProductDetails = () => {
                                 top
                                 width="80px"
                                 key={index}
-                                onClick={()=>toggleImageSwiperModal(index)}
-                                />
+                                onClick={() => toggleImageSwiperModal(index)}
+                              />
                               <div
                                 className={styles.eye_icon}
-                                onClick={()=>toggleImageSwiperModal(index)}
+                                onClick={() => toggleImageSwiperModal(index)}
                               >
                                 <i className="fas fa-eye"></i>{" "}
                               </div>
@@ -594,11 +592,11 @@ const WarrantyOrderProductDetails = () => {
                                 top
                                 width="80px"
                                 key={index}
-                                onClick={()=>toggleImageSwiperModal(index)}
+                                onClick={() => toggleImageSwiperModal(index)}
                               />
                               <div
                                 className={styles.eye_icon}
-                                onClick={()=>toggleImageSwiperModal(index)}
+                                onClick={() => toggleImageSwiperModal(index)}
                               >
                                 <i className="fas fa-eye"></i>{" "}
                               </div>
@@ -648,25 +646,32 @@ const WarrantyOrderProductDetails = () => {
                         </div>
                       </div> */}
                     </Col>
-                    {/* <Col
-                      xl={12}
-                      style={{ display: "flex", justifyContent: "end" }}
-                    >
+                  </Row>
+                  {request?.claimStatus === "PENDING" && (
+                    <Row>
                       <div
-                        style={{ width: "auto", marginLeft: "auto", display: "flex", alignItems: "center", gap: 10 }}
+                        style={{
+                          width: "auto",
+                          marginLeft: "auto",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 10,
+                        }}
                       >
                         <CustomButton
                           name="Approve"
                           icon="mdi:approve"
+                          onClick={() => handleRequestStatusChange("APPROVED")}
                         />
                         <CustomButton
                           name="Reject"
                           icon="material-symbols:close"
                           bgColor="#e30613"
+                          onClick={() => handleRequestStatusChange("REJECTED")}
                         />
                       </div>
-                    </Col> */}
-                  </Row>
+                    </Row>
+                  )}
                 </CardHeader>
 
                 <CardBody>
@@ -697,7 +702,7 @@ const WarrantyOrderProductDetails = () => {
                               />
                             </div>
                           </Col>
-                          {request?.claimStatus === "PENDING" && (
+                          {/* {request?.claimStatus === "PENDING" && (
                             <Col xl={12}>
                               <Card
                                 className="my-2"
@@ -729,7 +734,7 @@ const WarrantyOrderProductDetails = () => {
                                 </div>
                               </Card>
                             </Col>
-                          )}
+                          )} */}
                         </Row>
                       </div>
                     </div>
@@ -817,29 +822,23 @@ const WarrantyOrderProductDetails = () => {
         </ModalFooter>
       </Modal>
 
-
-
-    {/* IMAGE SWIPER MODAL */}
+      {/* IMAGE SWIPER MODAL */}
       <Modal
         isOpen={imageSwiperModal}
         toggle={toggleImageSwiperModal}
         // size="lg"
         fullscreen
-        style={{ "--bs-modal-bg": "transparent" } as any}
+        style={{ "--bs-modal-bg": "transparent",backdropFilter:"blur(10px)" } as any}
       >
-        {/* <ModalHeader toggle={toggleImageSwiperModal}>Shipping Status</ModalHeader> */}
+        <ModalHeader style={{border:0,padding:"10px 20px 0"}} toggle={toggleImageSwiperModal}></ModalHeader>
         <ModalBody
-          style={{ background: "#00000021", backgroundColor: "#00000021" }}
+          style={{ padding:"0 0 20px" }}
           onClick={toggleImageSwiperModal}
         >
-          {/* <CustomButton
-             onClick={()=>toggleImageSwiperModal()}
-            name=""
-            icon="material-symbols-outlined"
-            color="#fff"
-           className={styles.close_btn}>
-          </CustomButton> */}
-          <CustomSwiper data={request?.productImage} initialSlide={initialSlide} />
+          <CustomSwiper
+            data={request?.productImage}
+            initialSlide={initialSlide}
+          />
         </ModalBody>
       </Modal>
     </React.Fragment>

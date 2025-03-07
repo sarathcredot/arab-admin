@@ -123,6 +123,7 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
         input: {
           fullName: values?.fullName,
           contactNumber: values?.contactNumber.toString(),
+          // countryCode: values?.countryCode,
           agentType: values?.agentType,
           vendorID: values.agentType === "Vendor" ? values.vendorID : null,
           governorate: values?.governorate,
@@ -219,10 +220,10 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
                   <div className="input-group-prepend">
                     <span className="input-group-text bg-white">
                       <Iconify icon="openmoji:flag-oman" />
+                      {formik.values?.countryCode}
                     </span>
                   </div>
-
-                  <Input
+                  {/* <Input
                     type="text"
                     id="countryCode"
                     name="countryCode"
@@ -231,12 +232,12 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
                     onBlur={formik.handleBlur}
                     disabled
                     style={{ width: "70px", flex: "none", backgroundColor: "#f8f9fa", color: "#6c757d" }}
-                  />
+                  /> */}
                   <Input
-                    type="text"
+                    type="number"
                     id="contactNumber"
                     name="contactNumber"
-                    placeholder=" Enter Phone Number"
+                    placeholder="Enter Phone Number"
                     value={formik.values?.contactNumber}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}

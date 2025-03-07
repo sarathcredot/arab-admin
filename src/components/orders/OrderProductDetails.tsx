@@ -91,6 +91,7 @@ function OrderProductDetails({
   const [returnRejectDate, setReturnRejectDate] = useState("");
   const [returnComment, setReturnComment] = useState("");
   const [returnRequestDate, setReturnRequestDate] = useState("");
+  const [initialSlide,setInitialSlide] = useState(0)
 
   // [[[[[[  refund ]]]]]]]]
 
@@ -1569,15 +1570,45 @@ function OrderProductDetails({
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div className={styles.image_container}>
+                      <div className={styles.image_container}>
                       {product?.returnProductImage &&
                         product?.returnProductImage?.length > 0 &&
-                        product?.returnProductImage?.map((el: any) => (
+                        product?.returnProductImage?.map((el: any,index:any) => (
+                          <>
                           <div
                             key={el?._id}
                             className={styles.returnImageContainer}
-                            // onClick={toggleReturnImageSwiperModal}
+                            onClick={()=>{
+                              setInitialSlide(index)
+                              toggleReturnImageSwiperModal()
+                            }}
+                          >
+                            <img
+                              key={el?._id}
+                              src={el?.fileURL}
+                              alt="Return product Image"
+                              width={100}
+                              height={100}
+                            />
+                            <div className={styles.viewIcon}>
+                              <i className="fas fa-eye"></i>{" "}
+                            </div>
+                          </div>
+                          </>
+                        ))}
+                    </div>
+                    </div>
+                    {/* <div className={styles.image_container}>
+                      {product?.returnProductImage &&
+                        product?.returnProductImage?.length > 0 &&
+                        product?.returnProductImage?.map((el: any,index:any) => (
+                          <div
+                            key={el?._id}
+                            className={styles.returnImageContainer}
+                            onClick={()=>{
+                              setInitialSlide(index)
+                              toggleReturnImageSwiperModal()
+                            }}
                           >
                             <img
                               key={el?._id}
@@ -1591,7 +1622,7 @@ function OrderProductDetails({
                             </div>
                           </div>
                         ))}
-                    </div>
+                    </div> */}
                     </div>
                 </CardBody>
               </Card>
@@ -1602,21 +1633,18 @@ function OrderProductDetails({
 
       {/* ================== RETURN IMAGES MODAL ===================== */}
 
-      <Modal isOpen={returnSwiperModal} toggle={toggleReturnImageSwiperModal}>
-        <ModalHeader toggle={toggleReturnImageSwiperModal}>
-          Shipping Status
-        </ModalHeader>
-        <ModalBody>
-          <CustomSwiper />
+      <Modal 
+        isOpen={returnSwiperModal} 
+        toggle={toggleReturnImageSwiperModal}
+        fullscreen
+        style={{ "--bs-modal-bg": "transparent",backdropFilter:"blur(10px)" } as any}
+      >
+        <ModalHeader style={{border:0,padding:"10px 20px 0"}} toggle={toggleReturnImageSwiperModal}></ModalHeader>
+        <ModalBody
+          style={{ padding:"0 0 20px" }}
+        >
+          <CustomSwiper data={product?.returnProductImage} initialSlide={initialSlide} />
         </ModalBody>
-        {/* <ModalFooter>
-          <Button color="primary">
-            Submit
-          </Button>{" "}
-          <Button color="secondary">
-            Cancel
-          </Button>
-        </ModalFooter> */}
       </Modal>
 
       {/* ================== SHIPPPING MODAL ===================== */}

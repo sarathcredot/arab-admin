@@ -168,7 +168,7 @@ const SettlementPage: React.FC = () => {
 
   useEffect(() => {
     if (agentDataResponse && agentDataResponse?.getAllAgentData) {
-      console.log("SETTLEMENTS = ",agentDataResponse)
+      console.log("SETTLEMENTS = ", agentDataResponse);
       setAgentData(agentDataResponse?.getAllAgentData?.records);
     }
     refetchAgent();
@@ -217,19 +217,7 @@ const SettlementPage: React.FC = () => {
                       style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 10 }}
                     >
                       <CustomButton
-                        bgColor="unset"
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          height: "40px",
-                          borderRadius: "10px",
-                          gap: "5px",
-                          fontSize: "13px",
-                        }}
-                        outline
-                        color="primary"
+                        bgColor="black"
                         name="Export"
                         icon="ph:export-bold"
                         onClick={handleExportClick}
@@ -309,7 +297,8 @@ const SettlementPage: React.FC = () => {
 
                                       <Link to={`/delivery-boys/view?id=${item._id}`}>
                                         <Button
-                                          color="dark"
+                                          // color="dark"
+                                          style={{background:"#000"}}
                                           size="sm"
                                         >
                                           Profile
@@ -331,7 +320,6 @@ const SettlementPage: React.FC = () => {
                     />
                   </Row>
                 </CardBody>
-
 
                 <Row style={{ marginRight: "10px" }}>
                   <Col>

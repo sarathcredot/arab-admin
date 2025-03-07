@@ -285,9 +285,10 @@ const Roles = () => {
                                         <Button
                                           style={{
                                             display: "block",
-                                            // width:"100%"
+                                            // width:"100%",
+                                            background:"#000"
                                           }}
-                                          color="dark"
+                                          // color="dark"
                                           size="sm"
                                           onClick={() => {
                                             setRoleID(item?._id);
