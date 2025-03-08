@@ -62,6 +62,7 @@ interface UserData {
   lastName: string;
   displayName: string;
   mobileNumber: string;
+  countryCode: string;
 }
 
 
@@ -137,6 +138,7 @@ query GetUserRecordByAdmin($input: userInput!) {
       displayName
       mobileNumber
       isBlocked
+      countryCode
     }
   }
 }
@@ -285,6 +287,7 @@ query GetUserRecordByAdmin($input: userInput!) {
             lastName: values?.lastName,
             displayName: values?.lastName + " " + values?.lastName,
             mobileNumber: values?.mobileNumber,
+            countryCode: values?.countryCode,
             isBlocked: values.isBlocked === 'true' ? true : false
           }
 
@@ -466,7 +469,7 @@ query GetUserRecordByAdmin($input: userInput!) {
                           <p className="mb-0"> {data?.displayName && capitalCase(data?.displayName) || "nill"}</p>
                           <p className="mb-0"> {data?._id || "nill"}</p>
                           <p className="mb-0"> {data?.email || "nill"}</p>
-                          <p className="mb-0">  {`+968 ${data?.mobileNumber}` || "nill"}</p>
+                          <p className="mb-0">  {`${data?.countryCode||"+968"} ${data?.mobileNumber}` || "nill"}</p>
                         </div>
 
                       </div>
@@ -491,6 +494,7 @@ query GetUserRecordByAdmin($input: userInput!) {
                 <DynamicFilter
                   filterOptions={filterOptions}
                   onSubmit={handleFilterSubmit}
+                  toggle={toggleCollapse}
                 />
               </Collapse>
               {

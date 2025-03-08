@@ -42,6 +42,7 @@ import { IoMdAdd } from "react-icons/io";
 
 import styles from "./OrderProductDetails.module.scss";
 import CustomSwiper from "../swiper/Swiper";
+import ConfirmationOtpPopup from "./ConfirmationOtpPopup";
 
 type ASSIGN_ORDER_TYPE = "COLLECT" | "DELIVERY" | null;
 
@@ -62,6 +63,25 @@ interface ProductEditFormData {
   
 }
 
+const CREATE_SHIPPING_OTP = gql`
+  mutation UpdateAdminOrderProductOtpSent($input: updateAdminOrderProductOtpSentInput) {
+    updateAdminOrderProductOtpSent(input: $input) {
+      status
+      otp
+      msg
+    }
+  }
+`;
+const VERIFY_SHIPPING_OTP = gql`
+  mutation DeliveryStatusOtpVerifyAdmin($input: deliveryStatusOtpVerifyAdminInput) {
+    deliveryStatusOtpVerifyAdmin(input: $input) {
+      status
+      msg
+    }
+  }
+`;
+
+
 function OrderProductDetails({
   product,
   orderProdcutsRefetch,
@@ -76,11 +96,16 @@ function OrderProductDetails({
 
   const [shippingModal, setShippingModal] = useState(false);
   const [shippingStatus, setShippingStatus] = useState("");
-  const [shippedDate, setShippedDate] = useState("");
-  const [deliveredDate, setDeliveredDate] = useState("");
-  const [canceledDate, setCanceledDate] = useState("");
+  const [shippedDate, setShippedDate] = useState<any>(null);
+  const [deliveredDate, setDeliveredDate] = useState<any>(null);
+  const [canceledDate, setCanceledDate] = useState<any>(null);
   const [cancelComment, setCancelComment] = useState("");
   const [paymentStatus, setPaymentStatus] = useState("");
+  const [shippingOTP,setShippingOTP] = useState<string>("")
+  const [openShippingStatusOTP,setOpenShippingStatusOTP] = useState<boolean>(false)
+  const [paymentMode,setPaymentMode] = useState<string>("")
+  const [CreateShippingOTP] = useMutation(CREATE_SHIPPING_OTP)
+  const [VerifyShippingOTP] = useMutation(VERIFY_SHIPPING_OTP)
 
   // [[[[[[  return ]]]]]]]]
 
@@ -203,53 +228,116 @@ function OrderProductDetails({
   const toggleShippingModal = () => {
     setShippingModal(!shippingModal);
     setIsCustomize(false);
+    orderRefetch();
+  };
+  const toggleShippingOtpModal = ()=>{
+    setOpenShippingStatusOTP(!openShippingStatusOTP)
   };
 
   const handleShippingStatusChange = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setShippingModal(!shippingModal);
     setShippingStatus(e.target.value);
-  };
+    if(e.target.value==="DELIVERED" || e.target.value==="OUT_FOR_DELIVERY"){
+      if(product?.deliveryAgentId){
+        setShippingModal(!shippingModal);
+      }else{
+        toast.error("Please assign a delivery agent before proceeding.")
+      }
+    }else if(e.target.value==="CANCELED"){
+      if(product?.deliveryAgentId){
+        try {
+          const response = await CreateShippingOTP({
+            variables:{
+              input:{
+                orderId:product?._id
+              }
+            }
+          })
+          if(response?.data?.updateAdminOrderProductOtpSent?.status){
+            const data = response?.data?.updateAdminOrderProductOtpSent;
+            toast.success(data?.msg||"OTP has been sent to the customer.")
+            toggleShippingOtpModal();
 
-  const handleShippingStatusSubmit = async () => {
-    if (shippingStatus === "SHIPPED") {
-      if (!shippedDate) {
-        toast.error("Shipped Date is required");
-        return;
+          }
+        } catch (error:any) {
+          toast.error(error)
+        }
+
+      }else{
+        setShippingModal(!shippingModal);
       }
     }
-    if (shippingStatus === "DELIVERED") {
-      if (!deliveredDate) {
-        toast.error("Delivered Date is required");
-        return;
+    else {
+      setShippingModal(!shippingModal);
+    }
+  };
+
+  const handleShippingOTP = async () => {
+    if(paymentMode&& paymentStatus){
+
+      setShippingModal(!shippingModal);
+      try {
+          const response = await CreateShippingOTP({
+            variables:{
+              input:{
+                orderId:product?._id
+              }
+            }
+          })
+          if(response?.data?.updateAdminOrderProductOtpSent?.status){
+            const data = response?.data?.updateAdminOrderProductOtpSent;
+            toast.success(data?.msg||"OTP has been sent to the customer.")
+            toggleShippingOtpModal()
+          }
+        } catch (error:any) {
+          toast.error(error)
+        }
+      }else{
+        toast.error("To proceed, please select a payment method and set the payment status.")
       }
+  }
+
+
+  const handleShippingStatusSubmit = async () => {
+    // if (shippingStatus === "SHIPPED") {
+      // if (!shippedDate) {
+      //   toast.error("Shipped Date is required");
+      //   return;
+      // }
+    // }
+    if (shippingStatus === "DELIVERED") {
+      // if (!deliveredDate) {
+      //   toast.error("Delivered Date is required");
+      //   return;
+      // }
       if (!paymentStatus) {
         toast.error("Payment Status is required");
         return;
       }
     }
     if (shippingStatus === "CANCELED") {
-      if (!canceledDate) {
-        toast.error("Canceled Date is required");
-        return;
-      }
+      // if (!canceledDate) {
+      //   toast.error("Canceled Date is required");
+      //   return;
+      // }
       if (!cancelComment) {
         toast.error("Canceled comment is required");
         return;
       }
     }
 
+    console.log({shippedDate,deliveredDate,canceledDate})
     try {
       const result = await UpdateProduct({
         variables: {
           input: {
             _id: product?._id,
             shippingStatus: shippingStatus,
-            shippedDate: shippedDate,
-            deliveryDate: deliveredDate,
+            shippedDate:shippingStatus==="SHIPPED"?new Date().toISOString().split("T")[0]: null,
+            deliveryDate: shippingStatus==="DELIVERED"?new Date().toISOString().split("T")[0]: null,
             paymentStatus: paymentStatus,
-            cancelledDate: canceledDate,
+            cancelledDate: shippingStatus==="CANCELED"?new Date().toISOString().split("T")[0]: null,
             cancelAdminComment: cancelComment,
           },
         },
@@ -257,12 +345,12 @@ function OrderProductDetails({
 
       if (result.data.updateAdminOrderProduct) {
         orderProdcutsRefetch();
-        setShippingModal(!shippingModal);
+        setShippingModal(false);
         orderRefetch();
         toast.success("Shipping Status has been updated");
-        setShippedDate("");
-        setDeliveredDate("");
-        setCanceledDate("");
+        setShippedDate(null);
+        setDeliveredDate(null);
+        setCanceledDate(null);
         setCancelComment("");
         setPaymentStatus("");
         if (shippingStatus === "SHIPPED") {
@@ -271,10 +359,66 @@ function OrderProductDetails({
         }
       }
     } catch (error: any) {
-      console.error(error);
+      console.log("ERROR = ",error);
       toast.error(error.message);
     }
   };
+
+  const submitDeliveryOTP =async ()=>{
+      try {
+        const response = await VerifyShippingOTP({
+          variables:{
+            input:{
+              agentId: product?.deliveryAgentId,
+              code: shippingOTP,
+              deliveryStatus: shippingStatus,
+              orderItemId: product?._id,
+              paymentMode: paymentMode,
+              remarks: null,
+              // returnRemark: null,
+              // returnStatus: returnStatus,
+            }
+          }
+      });
+      if(response?.data?.deliveryStatusOtpVerifyAdmin?.status){
+        const data = response?.data?.deliveryStatusOtpVerifyAdmin;
+        toast.success(data?.msg)
+        toggleShippingOtpModal()
+        setShippingOTP("")
+        // setShippingModal(!shippingModal);
+        handleShippingStatusSubmit()
+
+      }
+    } catch (error:any) {
+      console.log("ERROR = ",error)
+      toast.error(error.message)
+    }
+  }
+  const submitCancelOTP = async ()=>{
+    try {
+        const response = await VerifyShippingOTP({
+          variables:{
+            input:{
+              agentId: product?.deliveryAgentId,
+              orderItemId: product?._id,
+              code: shippingOTP,
+              deliveryStatus: shippingStatus,
+            }
+          }
+      });
+      if(response?.data?.deliveryStatusOtpVerifyAdmin?.status){
+        const data = response?.data?.deliveryStatusOtpVerifyAdmin;
+        toast.success(data?.msg)
+        toggleShippingOtpModal()
+        setShippingOTP("")
+        setShippingModal(!shippingModal);
+
+      }
+    } catch (error:any) {
+      console.log("ERROR = ",error)
+      toast.error(error.message)
+    }
+  }
 
   // =========================== RETURN =================================
 
@@ -865,6 +1009,8 @@ function OrderProductDetails({
     }
   };
 
+  console.log("PRODUCTTTT = ",product)
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       <Card
@@ -1003,7 +1149,7 @@ function OrderProductDetails({
                   <Dropdown.Item
                     onClick={() => handleAssignClick(product?._id, "DELIVERY")}
                     style={{ display: "flex", gap: 5 }}
-                    disabled={product?.shippingStatus !== "SHIPPED"}
+                    disabled={!["SHIPPED","POSTPONED"].includes(product?.shippingStatus)}
                   >
                     <CiDeliveryTruck size={20} />
                     Assign Delivery Boy
@@ -1149,8 +1295,7 @@ function OrderProductDetails({
                     value={product?.shippingStatus}
                     onChange={(e) => handleShippingStatusChange(e)}
                   >
-                    <option value={"POSTPONED"}>Postponed</option>
-                    <option value={"PENDING"}>Pending</option>
+                    <option disabled value={"PENDING"}>Pending</option>
                     <option value={"PACKAGE_IN_PROGRESS"}>
                       Package in progress
                     </option>
@@ -1158,6 +1303,7 @@ function OrderProductDetails({
                     <option value={"OUT_FOR_DELIVERY"}>Out For Delivery</option>
                     <option value={"DELIVERED"}>Delivered</option>
                     <option value={"CANCELED"}>Canceled</option>
+                    <option value={"POSTPONED"}>Postponed To Tomorrow</option>
                   </Input>
                 </FormGroup>
                 <FormGroup>
@@ -1664,13 +1810,25 @@ function OrderProductDetails({
               <b>{capitalCase(shippingStatus)} </b> ?
             </p>
           )}
+          {shippingStatus === "OUT_FOR_DELIVERY" && (
+            <p>
+              Are you sure you want to change the status to{" "}
+              <b>{capitalCase(shippingStatus)} </b> ?
+            </p>
+          )}
+          {shippingStatus === "POSTPONED" && (
+            <p>
+              Are you sure you want to postpone this order to tomorrow ?
+              {/* <b>{capitalCase(shippingStatus)} </b> ? */}
+            </p>
+          )}
           {shippingStatus === "SHIPPED" && (
             <>
               <p>
                 Are you sure you want to change the status to{" "}
                 <b>{capitalCase(shippingStatus)} </b>?
               </p>
-              <FormGroup>
+              {/* <FormGroup>
                 <Label for="shippedDate">Enter Shipped Date</Label>
                 <Input
                   type="date"
@@ -1680,17 +1838,17 @@ function OrderProductDetails({
                   value={shippedDate}
                   onChange={(e) => setShippedDate(e.target.value)}
                 />
-              </FormGroup>
+              </FormGroup> */}
             </>
           )}
           {shippingStatus === "DELIVERED" && (
             <>
-              <p>
+              {/* <p>
                 Are you sure you want to change the status to{" "}
                 <b>{capitalCase(shippingStatus)} </b>?
-              </p>
+              </p> */}
 
-              <FormGroup>
+              {/* <FormGroup>
                 <Label for="deliveredDate">Enter Delivered Date</Label>
                 <Input
                   type="date"
@@ -1699,8 +1857,22 @@ function OrderProductDetails({
                   value={deliveredDate}
                   onChange={(e) => setDeliveredDate(e.target.value)}
                 />
-              </FormGroup>
+              </FormGroup> */}
 
+              <FormGroup>
+                <Label for="paymentMode">Select Payment Method</Label>
+                <Input
+                  id="paymentMode"
+                  name="paymentMode"
+                  type="select"
+                  value={paymentMode}
+                  onChange={(e) => setPaymentMode(e.target.value)}
+                >
+                  <option value={""}>Select Payment Method</option>
+                  <option value={"COD"}>CASH ON DELIVERY</option>
+                  <option value={"CARD"}>CARD ON DELIVERY</option>
+                </Input>
+              </FormGroup>
               <FormGroup>
                 <Label for="paymentStatus">Select Payment Status</Label>
                 <Input
@@ -1724,7 +1896,7 @@ function OrderProductDetails({
                 <b>{capitalCase(shippingStatus)} </b>?
               </p>
 
-              <FormGroup>
+              {/* <FormGroup>
                 <Label for="canceledDate">Enter Canceled Date</Label>
                 <Input
                   type="date"
@@ -1733,7 +1905,7 @@ function OrderProductDetails({
                   value={canceledDate}
                   onChange={(e) => setCanceledDate(e.target.value)}
                 />
-              </FormGroup>
+              </FormGroup> */}
               <FormGroup>
                 <Label for="cancelComment">Admin Comment</Label>
                 <Input
@@ -1748,7 +1920,7 @@ function OrderProductDetails({
           )}
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={handleShippingStatusSubmit}>
+          <Button color="primary" onClick={shippingStatus==="DELIVERED"?handleShippingOTP:handleShippingStatusSubmit}>
             Submit
           </Button>{" "}
           <Button color="secondary" onClick={toggleShippingModal}>
@@ -2646,6 +2818,7 @@ function OrderProductDetails({
         </ModalFooter>
       </Modal>
       <ToastContainer />
+      <ConfirmationOtpPopup submit={shippingStatus==="DELIVERED"?submitDeliveryOTP:shippingStatus==="CANCELED"?submitCancelOTP:()=>{}} isOpen={openShippingStatusOTP} toggle={toggleShippingOtpModal} otp={shippingOTP} setOtp={setShippingOTP}  />
     </div>
   );
 }

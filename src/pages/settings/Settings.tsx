@@ -385,7 +385,7 @@ function Settings() {
                                                     <Truck icon={"truck"} size={55} color={"#e30613"} />
                                                 </div>
                                                 <CardTitle tag="h5" style={{ color: "#e30613" }}>
-                                                    Customize Shipping
+                                                    Customise Shipping
                                                 </CardTitle>
                                             </div>
                                             <div style={{ display: "flex", alignItems: "center", }}>
@@ -449,7 +449,7 @@ function Settings() {
                                                     </div>
 
                                                     <div style={{ display: "flex", alignItems: "center", }}>
-                                                        <p style={{ width: "200px" }}>Return Policy</p>
+                                                        <p style={{ width: "200px" }}>Default Return Policy</p>
                                                         <div style={{ width: "300px" }} >
                                                             <p className="form-control-static">
                                                                 <div className="input-group">
@@ -588,7 +588,7 @@ function Settings() {
                                                     <Truck icon={"truck"} size={55} color={"#e30613"} />
                                                 </div>
                                                 <CardTitle tag="h5" style={{ color: "#e30613" }}>
-                                                    Customize Delivery Boys Config
+                                                    Customise Delivery Boys Config
                                                 </CardTitle>
                                             </div>
                                             <div style={{ display: "flex", alignItems: "center", }}>
