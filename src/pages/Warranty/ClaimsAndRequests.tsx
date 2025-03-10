@@ -68,7 +68,7 @@ const GET_ALL_REQUESTS = gql`
 
 const ClaimsAndRequests = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [activeTab, setActiveTab] = useState("REQUESTS");
+  const [activeTab, setActiveTab] = useState("ALL");
   const statusOptions =
     activeTab === "REQUESTS"
       ? ["PENDING", "REJECTED"]
@@ -82,7 +82,7 @@ const ClaimsAndRequests = () => {
           "POSTPONED",
         ];
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState<any>("PENDING");
+  const [selectedStatus, setSelectedStatus] = useState<any>("");
   const toggleStatusDropdown = () => {
     setStatusDropdownOpen(!statusDropdownOpen);
   };

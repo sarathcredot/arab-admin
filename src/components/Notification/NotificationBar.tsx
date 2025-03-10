@@ -134,8 +134,8 @@ const NotificationBar = ({ isOpen, setOpen }: any) => {
     if (notificationsData && notificationsData?.getAllNotification?.allNotification) {
       console.log("if enter");
       setNotifications(notificationsData?.getAllNotification?.allNotification);
-      updateCount(notificationsData?.getAllNotification?.unReadCount);
-      // setUnreadCount(notificationsData?.getAllNotification?.unReadCount);
+      // updateCount(notificationsData?.getAllNotification?.unReadCount);
+      setUnreadCount(notificationsData?.getAllNotification?.unReadCount||0);
     }
   }, [notificationsData, refetch]);
   console.log("loading = ", notificationsLoading);

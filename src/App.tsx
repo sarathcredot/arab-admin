@@ -226,7 +226,7 @@ const App = () => {
     console.log("count data useeffect");
 
     if (countData && countData?.getAllNotification?.unReadCount) {
-      setUnreadCount(countData?.getAllNotification?.unReadCount);
+      setUnreadCount(countData?.getAllNotification?.unReadCount||0);
     }
   }, [countData, countRefetch]);
 

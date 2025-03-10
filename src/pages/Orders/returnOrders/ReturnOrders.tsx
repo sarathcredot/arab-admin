@@ -20,7 +20,7 @@ import "../orders.css";
 import { useSearchParams } from "react-router-dom";
 
 const ReturnOrders = () => {
-  const [activeTab, setActiveTab] = useState("2");
+  const [activeTab, setActiveTab] = useState("1");
 
   const toggle = (tab: any) => {
     if (activeTab !== tab) setActiveTab(tab);
@@ -51,7 +51,16 @@ const ReturnOrders = () => {
             <Col lg={12}>
               <div>
                 <Nav tabs>
-
+                <NavItem>
+                    <NavLink
+                      className={activeTab === "1" ? "tab-button active" : "tab-button"}
+                      onClick={() => {
+                        toggle("1");
+                      }}
+                    >
+                      All
+                    </NavLink>
+                  </NavItem>
                   <NavItem>
                     <NavLink
                       className={activeTab === "2" ? "tab-button active" : "tab-button"}
@@ -82,16 +91,7 @@ const ReturnOrders = () => {
                       Rejected
                     </NavLink>
                   </NavItem>
-                  <NavItem>
-                    <NavLink
-                      className={activeTab === "1" ? "tab-button active" : "tab-button"}
-                      onClick={() => {
-                        toggle("1");
-                      }}
-                    >
-                      All
-                    </NavLink>
-                  </NavItem>
+                  
                 </Nav>
                 <TabContent activeTab={activeTab}>
                   <TabPane tabId="1">

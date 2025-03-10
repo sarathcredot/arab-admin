@@ -62,15 +62,9 @@ const SuspendDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, agentId, isActive
           padding:"30px"
 
         }}>
-          {isActive ? (
-            <h5>
-              Are you sure you want to <b>Suspend</b> this Delivery Boy ? Please confirm your action.
+            <h5 style={{marginBottom:30}}>
+              Are you sure you want to <b>{isActive?"Suspend":"activate"}</b> this Delivery Boy ? Please confirm your action.
             </h5>
-          ) : (
-            <h5>
-              Are you sure you want to <b>activate</b> this delivery boy? Please confirm your action.
-            </h5>
-          )}
 
           {/* <ModalFooter> */}
             <Button style={{display:"block",marginLeft:"auto"}} color={isActive?"primary":"success"} onClick={() => handleSubmit()}>{isActive ? "Suspend" : "Active"}</Button>

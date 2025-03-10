@@ -41,9 +41,85 @@ import { IoMdAdd } from "react-icons/io";
 
 import styles from "src/components/orders/OrderProductDetails.module.scss";
 import Iconify from "src/components/iconify/Iconify";
+import ConfirmationOtpPopup from "src/components/orders/ConfirmationOtpPopup";
 // import CustomSwiper from "../swiper/Swiper";
 
 type CLAIM_TYPE = "REPLACEMENT" | "REPAIR" | null;
+
+const ASSIGN_ORDER = gql`
+  mutation WarrantyCallAssignDeliveryAgent($input: warrantyCallAssignDeliveryAgent!) {
+    warrantyCallAssignDeliveryAgent(input: $input) {
+      status
+      msg
+    }
+  }
+`;
+
+const GET_VENDOR_FOR_SELECT = gql`
+  query GetAllVendors($input: VendorsRecordsByAdminFilter) {
+    getAllVendorsRecordsByAdmin(input: $input) {
+      maxRecords
+      records {
+        _id
+        fullName
+      }
+      message
+    }
+  }
+`;
+
+const GET_LOCATION = gql`
+  query GetLocationsData {
+    getLocationsData {
+      name
+      _id
+      villages {
+        _id
+        name
+      }
+    }
+  }
+`;
+const GET_PRODUCT_DELIVERY_TYPE_DELIVERY_AGENTS = gql`
+  query GetProductDeliveryTypeDeliveryAgents($input: GetProductDeliveryTypeDeliveryAgentsInput!) {
+    getProductDeliveryTypeDeliveryAgents(input: $input) {
+      deliveryType
+      deliveryAgents {
+        _id
+        fullName
+        agentType
+      }
+    }
+  }
+`;
+
+const GET_PRODUCT_DELIVERY_TYPE_DELIVERY_AGENTS_CUSTOMIZE = gql`
+  query GetDeliveryAgentlistCustomizOrderAssigen($input: getDeliveryAgentlistCustomizOrderAssigenInput) {
+    getDeliveryAgentlistCustomizOrderAssigen(input: $input) {
+      _id
+      fullName
+      contactNumber
+    }
+  }
+`;
+
+const UPDATE_REQUEST_STATUS = gql`
+  mutation UpdateClaimStatusByAdmin($input: updateClaimStatusByAdminInput!) {
+    updateClaimStatusByAdmin(input: $input) {
+      success
+      message
+      otp
+    }
+  }
+`;
+const VERIFY_OTP = gql`
+  mutation ClaimOtpVerificationByAdminAGentStatus($input: claimOtpVerificationByAdminAGentStatusInput) {
+    claimOtpVerificationByAdminAGentStatus(input: $input) {
+      status
+      msg
+    }
+  }
+`;
 
 function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
   const navigate = useNavigate();
@@ -52,12 +128,14 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
 
   const [approveModal, setApproveModal] = useState(false);
   const [claimStatus, setClaimStatus] = useState("");
-  const [claimDate, setClaimDate] = useState("");
-  const [rejectedDate, setRejectedDate] = useState("");
-  const [shippedDate, setShippedDate] = useState("");
-  const [completedDate, setCompletedDate] = useState("");
-  const [warehouseDate, setWarehouseDate] = useState("");
+  // const [claimDate, setClaimDate] = useState("");
+  // const [rejectedDate, setRejectedDate] = useState("");
+  // const [shippedDate, setShippedDate] = useState("");
+  // const [completedDate, setCompletedDate] = useState("");
+  // const [warehouseDate, setWarehouseDate] = useState("");
   const [rejectedReason, setRejectedReason] = useState("");
+  const [shippingOTP, setShippingOTP] = useState<string>("");
+  const [openShippingStatusOTP, setOpenShippingStatusOTP] = useState<boolean>(false);
 
   // [[[[[[[[[[ INVOICE ]]]]]]]]]]
 
@@ -96,34 +174,52 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
   };
 
   // =========================  SHIPPING ================================
+  const [AssignOrder] = useMutation(ASSIGN_ORDER);
+  const [UpdateRequestStatus] = useMutation(UPDATE_REQUEST_STATUS);
+  const [VerifyOTP] = useMutation(VERIFY_OTP);
 
   const toggleApproveModal = () => {
     setApproveModal(!approveModal);
     setIsCustomize(false);
   };
+  const toggleShippingOtpModal = () => {
+    setOpenShippingStatusOTP(!openShippingStatusOTP);
+  };
 
   const handleRequestStatusChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setApproveModal(!approveModal);
     setClaimStatus(e.target.value);
+
+    if (
+      e.target.value === "REPLACEMENT_COMPLETED" ||
+      e.target.value === "OUT_FOR_DELIVERY" ||
+      e.target.value === "RETURNED_TO_WAREHOUSE" ||
+      e.target.value === "POSTPONED"
+    ) {
+      if (product?.deliveryAgentId) {
+        setApproveModal(!approveModal);
+      } else {
+        toast.error("Please assign a delivery agent before proceeding.");
+      }
+    } else {
+      setApproveModal(!approveModal);
+    }
   };
 
   const handleClaimStatusSubmit = async () => {
-    let Date = null;
+    // let Date = null;
     let Reason = null;
+    let agentStatus = false;
     if (claimStatus === "APPROVED") {
-      if (claimDate) {
-        Date = claimDate;
-      } else {
-        toast.error("Approved Date is required");
-        return;
-      }
+      // if (claimDate) {
+      //   Date = claimDate;
+      // } else {
+      //   toast.error("Approved Date is required");
+      //   return;
+      // }
     }
     if (claimStatus === "REJECTED") {
-      if (rejectedDate) {
-        Date = rejectedDate;
-      } else {
-        toast.error("Rejected Date is required");
-        return;
+      if (product?.deliveryAgentId) {
+        agentStatus = true;
       }
       if (rejectedReason) {
         Reason = rejectedReason;
@@ -132,29 +228,17 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
         return;
       }
     }
-    if (claimStatus === "REPLACEMENT_SHIPPED") {
-      if (shippedDate) {
-        Date = shippedDate;
-      } else {
-        toast.error("Shipped Date is required");
-        return;
-      }
+    if (claimStatus === "OUT_FOR_DELIVERY") {
+      agentStatus = true;
     }
     if (claimStatus === "REPLACEMENT_COMPLETED") {
-      if (completedDate) {
-        Date = completedDate;
-      } else {
-        toast.error("Replacement completed Date is required");
-        return;
-      }
+      agentStatus = true;
     }
     if (claimStatus === "RETURNED_TO_WAREHOUSE") {
-      if (warehouseDate) {
-        Date = warehouseDate;
-      } else {
-        toast.error("Returned to warehouse Date is required");
-        return;
-      }
+      agentStatus = true;
+    }
+    if (claimStatus === "POSTPONED") {
+      agentStatus = true;
     }
 
     try {
@@ -163,27 +247,59 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
           input: {
             claimRequestId: product?._id,
             claimStatus: claimStatus,
-            Date: Date,
+            Date: new Date().toISOString().split("T")[0],
             Reason: Reason,
+            agentStatus,
           },
         },
       });
-
-      if (result?.data?.updateClaimStatusByAdmin) {
-        requestRefetch();
+      console.log("RESULT = ", result);
+      if (result?.data?.updateClaimStatusByAdmin?.success) {
+        const data = result?.data?.updateClaimStatusByAdmin;
         setApproveModal(!approveModal);
-        orderRefetch();
-        toast.success("Shipping Status has been updated");
-        setClaimDate("");
-        setRejectedDate("");
-        setRejectedReason("");
-        if (claimStatus === "REPLACEMENT_SHIPPED") {
-          handleAssignClick(result?.data?.updateAdminOrderProduct?._id, "REPLACEMENT");
+        if (data?.otp) {
+          toggleShippingOtpModal();
+        } else {
+          requestRefetch();
+          orderRefetch();
+          setRejectedReason("");
+          // setClaimDate("");
+          // setRejectedDate("");
+          toast.success("Shipping Status has been updated");
+          if (claimStatus === "REPLACEMENT_SHIPPED") {
+            handleAssignClick(result?.data?.updateAdminOrderProduct?._id, "REPLACEMENT");
+          }
         }
       }
     } catch (error: any) {
       console.error(error);
       toast.error(error.message);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    try {
+      const result = await VerifyOTP({
+        variables: {
+          input: {
+            agentId: product?.deliveryAgentId,
+            claimRequestId: product?._id,
+            claimStatus: claimStatus,
+            code: shippingOTP,
+            remarks: rejectedReason,
+          },
+        },
+      });
+      if (result?.data?.claimOtpVerificationByAdminAGentStatus?.status) {
+        toast.success(result?.data?.claimOtpVerificationByAdminAGentStatus?.msg);
+        requestRefetch();
+        orderRefetch();
+        setRejectedReason("");
+        toggleShippingOtpModal();
+      }
+    } catch (error: any) {
+      console.log("ERROR = ", error);
+      toast.error(error?.message || error);
     }
   };
 
@@ -247,17 +363,6 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
     // }
   };
 
-  const UPDATE_REQUEST_STATUS = gql`
-    mutation UpdateClaimStatusByAdmin($input: updateClaimStatusByAdminInput!) {
-      updateClaimStatusByAdmin(input: $input) {
-        success
-        message
-      }
-    }
-  `;
-
-  const [UpdateRequestStatus] = useMutation(UPDATE_REQUEST_STATUS);
-
   //DELIVERY BOY ASSIGN ORDER ==============================================
 
   const [deliveryAssignModal, setDeliveryAssignModal] = useState(false);
@@ -296,43 +401,6 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
     setClaimType(claimType);
   };
 
-  const ASSIGN_ORDER = gql`
-    mutation WarrantyCallAssignDeliveryAgent($input: warrantyCallAssignDeliveryAgent!) {
-      warrantyCallAssignDeliveryAgent(input: $input) {
-        status
-        msg
-      }
-    }
-  `;
-
-  const [AssignOrder] = useMutation(ASSIGN_ORDER);
-
-  const GET_VENDOR_FOR_SELECT = gql`
-    query GetAllVendors($input: VendorsRecordsByAdminFilter) {
-      getAllVendorsRecordsByAdmin(input: $input) {
-        maxRecords
-        records {
-          _id
-          fullName
-        }
-        message
-      }
-    }
-  `;
-
-  const GET_LOCATION = gql`
-    query GetLocationsData {
-      getLocationsData {
-        name
-        _id
-        villages {
-          _id
-          name
-        }
-      }
-    }
-  `;
-
   const { data: getLocation, loading: getLocationLoading, error: getLocationError } = useQuery(GET_LOCATION);
 
   const {
@@ -347,29 +415,6 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
       },
     },
   });
-
-  const GET_PRODUCT_DELIVERY_TYPE_DELIVERY_AGENTS = gql`
-    query GetProductDeliveryTypeDeliveryAgents($input: GetProductDeliveryTypeDeliveryAgentsInput!) {
-      getProductDeliveryTypeDeliveryAgents(input: $input) {
-        deliveryType
-        deliveryAgents {
-          _id
-          fullName
-          agentType
-        }
-      }
-    }
-  `;
-
-  const GET_PRODUCT_DELIVERY_TYPE_DELIVERY_AGENTS_CUSTOMIZE = gql`
-    query GetDeliveryAgentlistCustomizOrderAssigen($input: getDeliveryAgentlistCustomizOrderAssigenInput) {
-      getDeliveryAgentlistCustomizOrderAssigen(input: $input) {
-        _id
-        fullName
-        contactNumber
-      }
-    }
-  `;
 
   const {
     data: deliveryAgentList,
@@ -755,10 +800,11 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                       id="exampleSelect"
                       name="select"
                       type="select"
-                      value={""}
+                      value={product?.claimStatus}
                       disabled
                     >
-                      <option value={""}>NA</option>
+                      <option value={"PENDING"}>Pending</option>
+                      <option value={"REJECTED"}>Rejected</option>
                     </Input>
                   ) : (
                     <Input
@@ -768,16 +814,20 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                       value={product?.claimStatus}
                       onChange={(e) => handleRequestStatusChange(e)}
                     >
-                      {/* <option value={"PENDING"}>Pending</option>
+                      <option
+                        disabled
+                        value={"PENDING"}
+                      >
+                        Pending
+                      </option>
                       <option value={"REJECTED"}>Rejected</option>
-                      <option value={"APPROVED"}>Approved</option> */}
-                      <option value={""}>NA</option>
-                      <option value={"POSTPONED"}>Postponed</option>
+                      <option value={"APPROVED"}>Approved</option>
                       <option value={"PACKAGE_IN_PROGRESS"}>Package in progress</option>
                       <option value={"REPLACEMENT_SHIPPED"}>Shipped</option>
                       <option value={"OUT_FOR_DELIVERY"}>Out for delivery</option>
                       <option value={"REPLACEMENT_COMPLETED"}>Replacement Completed</option>
                       <option value={"RETURNED_TO_WAREHOUSE"}>Returned to warehouse</option>
+                      <option value={"POSTPONED"}>Postponed to tomorrow</option>
                     </Input>
                   )}
                 </FormGroup>
@@ -1130,7 +1180,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                     </Button>
                   </div>
                   <div className={styles.comment_image_container}>
-                    <div className={styles.comment_container}>
+                    <div style={{width:"100%"}}>
                       <div>
                         <h5 style={{ color: "#b12349", marginBottom: "20px" }}>Warranty</h5>
                         <div
@@ -1147,14 +1197,14 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                               width: "100%",
                             }}
                           >
-                            <h6>User Reason</h6>
+                            <h6 style={{width:"180px"}}>User Reason</h6>
                             <div>
                               <p>: {product?.issueDescription || "nill"}</p>
                             </div>
                           </div>
                           {product?.claimStatus === "REJECTED" && (
                             <div style={{ display: "flex", gap: "20px" }}>
-                              <h6>Admin Rejected Reason</h6>
+                              <h6 style={{width:"180px"}}>Admin Rejected Reason</h6>
                               <div>
                                 <p>: {product?.rejectedReason || "nill"}</p>
                               </div>
@@ -1211,7 +1261,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
               <p>
                 Are you sure you want to <b>{capitalCase(claimStatus)} this Request </b>?
               </p>
-              <FormGroup>
+              {/* <FormGroup>
                 <Label for="claimDate">Enter Approved Date</Label>
                 <Input
                   type="date"
@@ -1221,7 +1271,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                   value={claimDate}
                   onChange={(e) => setClaimDate(e.target.value)}
                 />
-              </FormGroup>
+              </FormGroup> */}
             </>
           )}
           {claimStatus === "REJECTED" && (
@@ -1230,7 +1280,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                 Are you sure you want to <b>{capitalCase(claimStatus)} this Request </b>?
               </p>
 
-              <FormGroup>
+              {/* <FormGroup>
                 <Label for="rejectedDate">Enter Rejected Date</Label>
                 <Input
                   type="date"
@@ -1239,7 +1289,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                   value={rejectedDate}
                   onChange={(e) => setRejectedDate(e.target.value)}
                 />
-              </FormGroup>
+              </FormGroup> */}
               <FormGroup>
                 <Label for="rejectedReason">Admin Rejected Reason</Label>
                 <Input
@@ -1272,7 +1322,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
               <p>
                 Are you sure you want to change the status to <b>{capitalCase(claimStatus)} </b>?
               </p>
-              <FormGroup>
+              {/* <FormGroup>
                 <Label for="shippedDate">Enter Shipped Date</Label>
                 <Input
                   type="date"
@@ -1282,7 +1332,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                   value={shippedDate}
                   onChange={(e) => setShippedDate(e.target.value)}
                 />
-              </FormGroup>
+              </FormGroup> */}
             </>
           )}
           {claimStatus === "REPLACEMENT_COMPLETED" && (
@@ -1290,7 +1340,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
               <p>
                 Are you sure you want to change the status to <b>{capitalCase(claimStatus)} </b>?
               </p>
-              <FormGroup>
+              {/* <FormGroup>
                 <Label for="shippedDate">Enter Completed Date</Label>
                 <Input
                   type="date"
@@ -1300,7 +1350,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                   value={completedDate}
                   onChange={(e) => setCompletedDate(e.target.value)}
                 />
-              </FormGroup>
+              </FormGroup> */}
             </>
           )}
           {claimStatus === "RETURNED_TO_WAREHOUSE" && (
@@ -1308,7 +1358,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
               <p>
                 Are you sure you want to change the status to <b>{capitalCase(claimStatus)} </b>?
               </p>
-              <FormGroup>
+              {/* <FormGroup>
                 <Label for="shippedDate">Enter returned to warehouse Date</Label>
                 <Input
                   type="date"
@@ -1318,7 +1368,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                   value={warehouseDate}
                   onChange={(e) => setWarehouseDate(e.target.value)}
                 />
-              </FormGroup>
+              </FormGroup> */}
             </>
           )}
         </ModalBody>
@@ -1643,6 +1693,13 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
         </ModalFooter>
       </Modal>
       <ToastContainer />
+      <ConfirmationOtpPopup
+        submit={handleVerifyOtp}
+        isOpen={openShippingStatusOTP}
+        toggle={toggleShippingOtpModal}
+        otp={shippingOTP}
+        setOtp={setShippingOTP}
+      />
     </div>
   );
 }

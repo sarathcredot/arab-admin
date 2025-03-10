@@ -1999,7 +1999,7 @@ function OrderProductDetails({
               </p>
 
               <FormGroup>
-                <Label for="returnRejectDate ">Enter Canceled Date</Label>
+                <Label for="returnRejectDate ">Enter Rejected Date</Label>
                 <Input
                   type="date"
                   name="returnRejectDate"

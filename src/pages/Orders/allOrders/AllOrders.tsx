@@ -27,7 +27,7 @@ import ExportExcelList from "src/components/orders/ExportExcelList";
 
 
 const AllOrders = () => {
-  const [activeTab, setActiveTab] = useState("2");
+  const [activeTab, setActiveTab] = useState("1");
 
 
 
@@ -59,6 +59,16 @@ const AllOrders = () => {
               <Row>
                 <Col xs={12}>
                   <Nav tabs>
+                  <NavItem>
+                      <NavLink
+                        className={activeTab === "1" ? "tab-button active" : "tab-button"}
+                        onClick={() => {
+                          toggle("1");
+                        }}
+                      >
+                        All
+                      </NavLink>
+                    </NavItem>
                     <NavItem>
                       <NavLink
                         className={activeTab === "2" ? "tab-button active" : "tab-button"}
@@ -89,16 +99,7 @@ const AllOrders = () => {
                         Completed
                       </NavLink>
                     </NavItem>
-                    <NavItem>
-                      <NavLink
-                        className={activeTab === "1" ? "tab-button active" : "tab-button"}
-                        onClick={() => {
-                          toggle("1");
-                        }}
-                      >
-                        All
-                      </NavLink>
-                    </NavItem>
+                    
                   </Nav>
                 </Col>
 

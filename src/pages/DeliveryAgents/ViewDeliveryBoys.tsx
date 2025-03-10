@@ -70,6 +70,7 @@ interface IAgent {
   _id: string;
   fullName: string;
   contactNumber: string;
+  countryCode: string;
   userID: string;
   agentType: string;
   governorate: string;
@@ -93,6 +94,7 @@ const GET_DETAIL = gql`
         _id
         fullName
         contactNumber
+        countryCode
         userID
         ID
         agentType
@@ -450,7 +452,7 @@ const ViewDeliveryBoys = () => {
                           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                             <p className="mb-0"> {(data?.fullName && capitalCase(data?.fullName)) || "nill"}</p>
                             <p className="mb-0"> {data?.userID || "nill"}</p>
-                            <p className="mb-0"> {`+968 ${data?.contactNumber}` || "nill"}</p>
+                            <p className="mb-0"> {`${data?.countryCode} ${data?.contactNumber}` || "nill"}</p>
                             <p className="mb-0"> {data?.agentType || "nill"}</p>
                           </div>
                         </div>

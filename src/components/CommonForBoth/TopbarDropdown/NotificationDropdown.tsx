@@ -74,7 +74,7 @@ const NotificationDropdown = (props: any) => {
   useEffect(() => {
     if (notificationsData && notificationsData?.getAllNotification?.allNotification) {
       setNotifications(notificationsData?.getAllNotification?.allNotification);
-      setUnreadCount(notificationsData?.getAllNotification?.unReadCount);
+      setUnreadCount(notificationsData?.getAllNotification?.unReadCount||0);
     }
   }, [notificationsData]);
 

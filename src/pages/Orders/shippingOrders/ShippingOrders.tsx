@@ -23,7 +23,7 @@ import { useSearchParams } from "react-router-dom";
 
 
 const ShippingOrders = () => {
-  const [activeTab, setActiveTab] = useState("2");
+  const [activeTab, setActiveTab] = useState("1");
 
   const toggle = (tab: any) => {
     if (activeTab !== tab) setActiveTab(tab);
@@ -61,7 +61,16 @@ const ShippingOrders = () => {
                 <Col xs={12}>
 
                   <Nav tabs>
-
+                  <NavItem>
+                      <NavLink
+                        className={activeTab === "1" ? "tab-button active" : "tab-button"}
+                        onClick={() => {
+                          toggle("1");
+                        }}
+                      >
+                        All
+                      </NavLink>
+                    </NavItem>
                     <NavItem>
                       <NavLink
                         className={activeTab === "2" ? "tab-button active" : "tab-button"}
@@ -112,16 +121,7 @@ const ShippingOrders = () => {
                         Canceled
                       </NavLink>
                     </NavItem>
-                    <NavItem>
-                      <NavLink
-                        className={activeTab === "1" ? "tab-button active" : "tab-button"}
-                        onClick={() => {
-                          toggle("1");
-                        }}
-                      >
-                        All
-                      </NavLink>
-                    </NavItem>
+                    
                   </Nav>
                 </Col>
 

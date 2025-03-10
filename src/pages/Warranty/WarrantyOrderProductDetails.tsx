@@ -202,13 +202,13 @@ const GET_REQUEST = gql`
       returnedWarehouseDate
       postponedDate
       postponedReason
-      deliveryAgentId
       productImageUploadByAgent {
         fileType
         fileURL
         mimeType
         originalName
       }
+      deliveryAgentId
       deliveryAgentAssignedOn
       deliveryAgentName
       agent {
@@ -226,8 +226,8 @@ const WarrantyOrderProductDetails = () => {
   const [request, setRequest] = useState<any>();
   const [product, setProduct] = useState<any | null>(null);
   const [claimStatus, setClaimStatus] = useState("");
-  const [claimDate, setClaimDate] = useState("");
-  const [rejectedDate, setRejectedDate] = useState("");
+  // const [claimDate, setClaimDate] = useState("");
+  // const [rejectedDate, setRejectedDate] = useState("");
   const [rejectedReason, setRejectedReason] = useState("");
   const [imageSwiperModal, setImageSwiperModal] = useState(false);
   const [initialSlide, setInitialSlide] = useState(0);
@@ -406,23 +406,23 @@ const WarrantyOrderProductDetails = () => {
   };
 
   const handleClaimStatusSubmit = async () => {
-    let Date = null;
+    // let Date = null;
     let Reason = null;
-    if (claimStatus === "APPROVED") {
-      if (claimDate) {
-        Date = claimDate;
-      } else if (!claimDate) {
-        toast.error("Approved Date is required");
-        return;
-      }
-    }
+    // if (claimStatus === "APPROVED") {
+    //   if (claimDate) {
+    //     Date = claimDate;
+    //   } else if (!claimDate) {
+    //     toast.error("Approved Date is required");
+    //     return;
+    //   }
+    // }
     if (claimStatus === "REJECTED") {
-      if (rejectedDate) {
-        Date = rejectedDate;
-      } else if (!rejectedDate) {
-        toast.error("Rejected Date is required");
-        return;
-      }
+      // if (rejectedDate) {
+      //   Date = rejectedDate;
+      // } else if (!rejectedDate) {
+      //   toast.error("Rejected Date is required");
+      //   return;
+      // }
       if (rejectedReason) {
         Reason = rejectedReason;
       } else if (!rejectedReason) {
@@ -437,7 +437,7 @@ const WarrantyOrderProductDetails = () => {
           input: {
             claimRequestId: request?._id,
             claimStatus: claimStatus,
-            Date: Date,
+            Date: new Date().toISOString().split("T")[0],
             Reason: Reason,
           },
         },
@@ -447,8 +447,8 @@ const WarrantyOrderProductDetails = () => {
         requestRefetch();
         setApproveModal(!approveModal);
         toast.success("Shipping Status has been updated");
-        setClaimDate("");
-        setRejectedDate("");
+        // setClaimDate("");
+        // setRejectedDate("");
         setRejectedReason("");
       }
     } catch (error: any) {
@@ -764,7 +764,7 @@ const WarrantyOrderProductDetails = () => {
               <p>
                 Are you sure you want to <b>Approve </b> this Request ?
               </p>
-              <FormGroup>
+              {/* <FormGroup>
                 <Label for="claimDate">Enter Approved Date</Label>
                 <Input
                   type="date"
@@ -774,7 +774,7 @@ const WarrantyOrderProductDetails = () => {
                   value={claimDate}
                   onChange={(e) => setClaimDate(e.target.value)}
                 />
-              </FormGroup>
+              </FormGroup> */}
             </>
           )}
           {claimStatus === "REJECTED" && (
@@ -783,7 +783,7 @@ const WarrantyOrderProductDetails = () => {
                 Are you sure you want to <b>Reject </b> this Request ?
               </p>
 
-              <FormGroup>
+              {/* <FormGroup>
                 <Label for="rejectedDate">Enter Rejected Date</Label>
                 <Input
                   type="date"
@@ -792,7 +792,7 @@ const WarrantyOrderProductDetails = () => {
                   value={rejectedDate}
                   onChange={(e) => setRejectedDate(e.target.value)}
                 />
-              </FormGroup>
+              </FormGroup> */}
               <FormGroup>
                 <Label for="rejectedReason">Admin Rejected Reason</Label>
                 <Input

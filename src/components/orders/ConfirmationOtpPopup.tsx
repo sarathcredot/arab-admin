@@ -6,7 +6,7 @@ type Props = {
   otp: string;
   setOtp: Dispatch<SetStateAction<string>>;
   toggle: () => void;
-  submit: () => void|null;
+  submit: () => Promise<void>|void|null;
 };
 
 const ConfirmationOtpPopup = ({ isOpen, toggle, otp, setOtp,submit }: Props) => {
