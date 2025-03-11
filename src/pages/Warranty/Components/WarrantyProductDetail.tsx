@@ -376,7 +376,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
   const [governateId, setGovernateId] = useState("");
   const [villages, setvillages] = useState([]);
 
-  const [bundleCount, setBundleCount] = useState(1);
+  const [bundleCount, setBundleCount] = useState("1");
 
   const [orderItemId, setOrderItemId] = useState<any>(null);
 
@@ -491,7 +491,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
           warrantyCallID: product?._id,
           deliveryAgentId: deliveryBoyId,
           deliveryAgentName: deliveryBoyName,
-          bundleCount: bundleCount,
+          bundleCount: parseInt(bundleCount),
         },
       };
 
@@ -1180,7 +1180,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                     </Button>
                   </div>
                   <div className={styles.comment_image_container}>
-                    <div style={{width:"100%"}}>
+                    <div style={{ width: "100%" }}>
                       <div>
                         <h5 style={{ color: "#b12349", marginBottom: "20px" }}>Warranty</h5>
                         <div
@@ -1197,14 +1197,14 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
                               width: "100%",
                             }}
                           >
-                            <h6 style={{width:"180px"}}>User Reason</h6>
+                            <h6 style={{ width: "160px" }}>User Reason</h6>
                             <div>
                               <p>: {product?.issueDescription || "nill"}</p>
                             </div>
                           </div>
                           {product?.claimStatus === "REJECTED" && (
                             <div style={{ display: "flex", gap: "20px" }}>
-                              <h6 style={{width:"180px"}}>Admin Rejected Reason</h6>
+                              <h6 style={{ width: "180px" }}>Admin Rejected Reason</h6>
                               <div>
                                 <p>: {product?.rejectedReason || "nill"}</p>
                               </div>
@@ -1451,7 +1451,7 @@ function WarrantyProductDetail({ product, requestRefetch, orderRefetch }: any) {
               <FormGroup>
                 <Label for="agentType">Bundle Count</Label>
                 <Input
-                  type="number"
+                  type="text"
                   name="bundleCount"
                   id="bundleCount"
                   value={bundleCount}

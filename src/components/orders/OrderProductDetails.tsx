@@ -746,7 +746,7 @@ function OrderProductDetails({
   const [governateId, setGovernateId] = useState("");
   const [villages, setvillages] = useState([]);
 
-  const [bundleCount, setBundleCount] = useState(1);
+  const [bundleCount, setBundleCount] = useState("1");
 
   const [orderItemId, setOrderItemId] = useState<any>(null);
 
@@ -962,7 +962,7 @@ function OrderProductDetails({
           orderItemId: orderItemId ? orderItemId : product?._id,
           deliveryAgentId: deliveryBoyId,
           deliveryAgentName: deliveryBoyName,
-          bundleCount: bundleCount,
+          bundleCount: parseInt(bundleCount),
         },
       };
 

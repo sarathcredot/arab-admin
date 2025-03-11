@@ -341,14 +341,12 @@ const ViewDeliveryBoys = () => {
             items={items}
             currentPage="Details page"
           /> */}
-          <div
-            style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}
-          >
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <h4>Detail Page</h4>
             <i
               className="bx bx-time-five clock"
               style={{ fontSize: "20px" }}
-              onClick={()=>navigate(`/delivery-boys/view/activity-log?agent=${data?.fullName}&_id=${data?._id}`)}
+              onClick={() => navigate(`/delivery-boys/view/activity-log?agent=${data?.fullName}&_id=${data?._id}`)}
             ></i>
           </div>
           <Row
@@ -415,12 +413,6 @@ const ViewDeliveryBoys = () => {
                             icon="ic:baseline-edit"
                             onClick={editToggle}
                           />
-                          <EditFormDeliveryBoy
-                            isOpen={editmodal}
-                            toggle={editToggle}
-                            data={data}
-                            refetch={refetchData}
-                          />
                         </div>
                         <div style={{ display: "flex", gap: 10 }}>
                           <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "80px" }}>
@@ -452,7 +444,7 @@ const ViewDeliveryBoys = () => {
                           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                             <p className="mb-0"> {(data?.fullName && capitalCase(data?.fullName)) || "nill"}</p>
                             <p className="mb-0"> {data?.userID || "nill"}</p>
-                            <p className="mb-0"> {`${data?.countryCode} ${data?.contactNumber}` || "nill"}</p>
+                            <p className="mb-0"> {`${data?.countryCode || "+968"} ${data?.contactNumber || "nill"}`}</p>
                             <p className="mb-0"> {data?.agentType || "nill"}</p>
                           </div>
                         </div>
@@ -800,6 +792,12 @@ const ViewDeliveryBoys = () => {
         toggle={handleToggle}
         submit={handleAvailability}
         text={"Are you sure you want to update your availability status?"}
+      />
+      <EditFormDeliveryBoy
+        isOpen={editmodal}
+        toggle={editToggle}
+        data={data}
+        refetch={refetchData}
       />
     </>
   );

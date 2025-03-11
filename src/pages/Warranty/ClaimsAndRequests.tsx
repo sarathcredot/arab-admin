@@ -137,6 +137,14 @@ const ClaimsAndRequests = () => {
             currentPage="Claims and Requests"
           />
           <Nav tabs>
+          <NavItem>
+              <NavLink
+                className={activeTab === "ALL" ? "tab-button active" : "tab-button"}
+                onClick={() => toggleTab("ALL")}
+              >
+                All
+              </NavLink>
+            </NavItem>
             <NavItem>
               <NavLink
                 className={activeTab === "REQUESTS" ? "tab-button active" : "tab-button"}
@@ -151,14 +159,6 @@ const ClaimsAndRequests = () => {
                 onClick={() => toggleTab("CLAIMS")}
               >
                 Claims
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={activeTab === "ALL" ? "tab-button active" : "tab-button"}
-                onClick={() => toggleTab("ALL")}
-              >
-                All
               </NavLink>
             </NavItem>
           </Nav>
