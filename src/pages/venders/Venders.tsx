@@ -270,9 +270,9 @@ const VendorList: React.FC = () => {
                                   <th>Mobile Number</th>
                                   <th>Email</th>
                                   <th>Company Name</th>
-                                  <th>KYC Status</th>
-                                  <th>Status</th>
-                                  <th style={{width:"100px"}}>Action</th>
+                                  <th style={{textAlign:"center"}}>KYC Status</th>
+                                  <th style={{textAlign:"center"}}>Status</th>
+                                  <th style={{width:"100px",textAlign:"center"}}>Action</th>
                                 </tr>
                               </thead>
                               <tbody>

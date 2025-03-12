@@ -252,11 +252,11 @@ query GetAllCategoriesOfVendorByAdmin($input: vendorIdInput!) {
               <Table id="tech-companies-1" className="table table-striped table-bordered">
                 <thead>
                   <tr>
-                    <th>Sl.No</th>
+                    <th style={{width:"10px"}}>#</th>
                     <th>Name</th>
                     <th>Category full Name</th>
 
-                    <th>Status</th>
+                    <th style={{width:"100px",textAlign:"center"}}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -271,7 +271,10 @@ query GetAllCategoriesOfVendorByAdmin($input: vendorIdInput!) {
                       <td>{category.fullCategoryName}</td>
 
                       <td>
+                        <div style={{display:"flex",alignItems:"center",justifyContent:"center"}}>
+
                         <StatusIndicator status={category?.isBlocked == false ? "Active" : "Blocked"} />
+                        </div>
 
                       </td>
                     </tr>

@@ -192,21 +192,21 @@ const VendorProducts = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th data-priority="1">Sl.No</Th>
+                      <Th data-priority="1">#</Th>
                       <Th data-priority="1">Name</Th>
-                      <Th>Product Code</Th>
+                      <Th style={{whiteSpace:"nowrap"}}>Product Code</Th>
                       <Th data-priority="3">Short Description</Th>
                       <Th data-priority="3">Category</Th>
-                      <Th data-priority="1">Image</Th>
+                      <Th style={{textAlign:"center"}} data-priority="1">Image</Th>
                       {/* <Th data-priority="3"> Verify Status</Th> */}
-                      <Th data-priority="3">Action</Th>
+                      <Th style={{textAlign:"center"}}data-priority="3">Action</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
                     {products?.map((product: Product, index: number) => (
                       <Tr key={index}>
                         <Td>{currentPage * pageSize + index + 1}</Td>
-                        <Td><p style={{ maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product?.productName}</p></Td>
+                        <Td><p style={{  overflow: "hidden", textOverflow: "ellipsis" }}>{product?.productName}</p></Td>
                         <Td>{product?.productCode}</Td>
                         <Td ><p style={{ maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product?.shortDescription}</p></Td>
                         <Td>{product?.categoryNamePath}</Td>

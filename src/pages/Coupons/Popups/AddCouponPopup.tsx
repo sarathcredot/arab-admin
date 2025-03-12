@@ -569,7 +569,7 @@ const AddCouponPopup: React.FC<Props> = ({ isOpen, toggle, refetch }) => {
                       }
                       isMulti
                       isLoading={brandLoading}
-                      placeholder="Select Users for Private Coupon"
+                      placeholder="Select Users"
                       value={validUsers}
                       isDisabled={!isPrivate}
                       onChange={(selected: any) => {

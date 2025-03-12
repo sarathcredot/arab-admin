@@ -226,11 +226,11 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
               <Table id="tech-companies-1" className="table table-striped table-bordered">
                 <thead>
                   <tr>
-                    <th>Sl.No</th>
+                    <th style={{width:"20px"}}>#</th>
                     <th>Brand Name</th>
                     <th>Logo</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <th style={{width:"100px",textAlign:"center"}}>Status</th>
+                    <th style={{width:"100px",textAlign:"center"}}>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -261,7 +261,8 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
                           </div>
                         </td>
                         <td>
-                          <Link to={`/brands/${brand._id}?origin=vendor&vendorId=${id}`}>
+                          
+                          <Link style={{display:"flex",alignItems:"center",justifyContent:"center"}} to={`/brands/${brand._id}?origin=vendor&vendorId=${id}`}>
                             <Button color="primary" size="sm">
                               View
                             </Button>

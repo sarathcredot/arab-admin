@@ -86,7 +86,8 @@
     ul {
         li {
             a {
-                display: block;
+                display: flex;
+                align-items: center;
                 padding: .62rem 1.5rem;
                 // color: $sidebar-menu-item-color;
                 color: #FFF ;
@@ -94,7 +95,8 @@
                 font-size: .9rem;
                 transition: all .4s;
                 font-weight: $font-weight-medium;
-
+                overflow: hidden;
+                
                 i {
                     display: inline-block;
                     min-width: 1.75rem;
@@ -105,19 +107,32 @@
                     color: var(--#{$prefix}sidebar-menu-item-icon-color);
                     transition: all .4s;
                 }
-
+                .icon_div{
+                    width: 28px ;
+                    height: 28px;
+                    overflow: hidden;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 50%;
+                    margin-right: 10px;
+                }
+                .arrow_icon{
+                    border-radius: 50%;
+                    margin-right: 6px;
+                }
                 svg {
-                    height: 24px;
-                    width: 24px;
+                    height: 18px;
+                    width: 18px;
                     // color: var(--#{$prefix}sidebar-menu-item-icon-color);
                     color: #FFF ;
                     // fill: var(--#{$prefix}sidebar-menu-item-icon-effact-color);
                     fill: #FFF;
-                    margin-right: 10px;
-                    margin-top: -3px;
+                    // margin-right: 10px;
+                    // margin-top: -3px;
                     background-color:  rgba(254, 0, 0, 0.03);
-                    border-radius: 50%;
-                    padding: 5px;
+                    // border-radius: 50%;
+                    // padding: 5px;
                 }
 
                 &:hover {
@@ -128,7 +143,10 @@
                         // color: var(--#{$prefix}sidebar-menu-item-hover-color);
                         color: aliceblue !important;
                     }
+                    .icon_div{
+                        background-color:  #FFF !important;
 
+                    }
                     svg {
                         // color: var(--#{$prefix}sidebar-menu-item-hover-color);
                         color: #FFF !important;
@@ -149,7 +167,7 @@
                 li {
 
                     a {
-                        padding: .4rem 1.5rem .4rem 3.3rem;
+                        padding: .4rem 1.5rem .4rem 3rem;
                         font-size: .85rem;
                         // color: var(--#{$prefix}sidebar-menu-sub-item-color);
                         color: #9f9f9f; // chenged the sub menu item color
@@ -196,7 +214,10 @@
             // color: var(--#{$prefix}sidebar-menu-item-active-color) !important;
             // color:aliceblue !important;
         }
+        .icon_div{
+            background-color:  #FFF !important;
 
+        }
         svg {
             // color: var(--#{$prefix}sidebar-menu-item-active-color) !important;
             // color: #FFF !important;
