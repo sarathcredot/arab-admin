@@ -295,7 +295,7 @@ const AssignedWarrantiesBundle: React.FC<Props> = ({ agentId, setView, setDATE }
               src={noDataSvg}
               alt="no data image"
             />
-            <h4>No Orders Assigned</h4>
+            <h4>No Warranty Pickups Assigned</h4>
           </div>
         )}
       </div>

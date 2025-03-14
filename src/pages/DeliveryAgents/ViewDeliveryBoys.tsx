@@ -781,7 +781,7 @@ const ViewDeliveryBoys = () => {
                   src={noDataSvg}
                   alt="no data image"
                 />
-                <h4>No Returns Assigned</h4>
+                {/* <h4>No Returns Assigned</h4> */}
               </div>
             )}
           </Row>

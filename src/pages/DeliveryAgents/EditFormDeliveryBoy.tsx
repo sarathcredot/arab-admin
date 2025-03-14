@@ -390,10 +390,10 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
             </FormGroup>
             <FormGroup>
               <div>
-                <Label className="form-label pt-2">Street</Label>
+                <Label className="form-label pt-2">Wilayat</Label>
                 <Input
                   name="villageID"
-                  placeholder="Select Street"
+                  placeholder="Select Wilayat"
                   type="select"
                   value={formik.values?.villageID}
                   onChange={(e) => {
@@ -412,7 +412,7 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
                     value=""
                     disabled
                   >
-                    Select Street
+                    Select Wilayat
                   </option>
                   {villages?.map((item, index) => (
                     <option

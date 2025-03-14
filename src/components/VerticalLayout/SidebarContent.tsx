@@ -421,8 +421,33 @@ const SidebarContent = (props: any) => {
                   className=""
                 >
                   <div className="icon_div">
-                    {/* <FeatherIcon icon="users" />  */}
                     <svg
+                      width="58"
+                      height="50"
+                      viewBox="0 0 58 50"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M52.6478 17.29L24.7178 17.3C25.3178 18.8 25.6478 20.43 25.6478 22.14C25.6478 24.78 24.8678 27.24 23.5178 29.3C22.9478 30.18 22.2778 30.99 21.5078 31.71C21.8578 31.82 22.1978 31.95 22.5378 32.1C25.2578 33.3 27.3578 35.66 28.2178 38.55C28.4878 39.46 28.6278 40.42 28.6278 41.42V46.76H49.5778C50.8378 46.7 52.0378 46.16 52.9078 45.24C53.7878 44.33 54.2678 43.11 54.2778 41.85V18.77C54.2378 18.37 54.0478 17.99 53.7478 17.72C53.4478 17.44 53.0578 17.29 52.6478 17.29Z"
+                        // fill="white"
+                      />
+                      <path
+                        d="M56.1214 2.35991C55.2014 1.43991 53.9514 0.919912 52.6514 0.909912H13.3514C12.0514 0.919912 10.8014 1.43991 9.88141 2.35991C8.96141 3.27991 8.44141 4.51991 8.44141 5.82991V9.61991C9.71141 9.19991 11.0814 8.97991 12.4914 8.97991C15.8814 8.97991 18.9814 10.2599 21.3114 12.3799H55.9314C56.3614 12.3799 56.7814 12.1999 57.0814 11.8999C57.3814 11.5999 57.5614 11.1699 57.5614 10.7399V5.82991C57.5614 4.51991 57.0414 3.27991 56.1214 2.35991Z"
+                        // fill="white"
+                      />
+                      <path
+                        d="M11.7198 30.77C11.9698 30.79 12.2299 30.8 12.4899 30.8C17.2699 30.8 21.1498 26.91 21.1498 22.14C21.1498 20.35 20.5998 18.68 19.6698 17.3C18.1098 15 15.4799 13.48 12.4899 13.48C7.71985 13.48 3.83984 17.36 3.83984 22.14C3.83984 26.65 7.30985 30.37 11.7198 30.77Z"
+                        // fill="white"
+                      />
+                      <path
+                        d="M20.8094 36.27C20.0894 35.93 19.2894 35.74 18.4494 35.74H6.53937C3.40937 35.74 0.859375 38.29 0.859375 41.42V49.09H24.1294V41.42C24.1294 41.08 24.0994 40.75 24.0294 40.42C23.7094 38.57 22.4794 37.02 20.8094 36.27Z"
+                        // fill="white"
+                      />
+                    </svg>
+
+                    {/* <FeatherIcon icon="users" />  */}
+                    {/* <svg
                       width="63"
                       height="54"
                       viewBox="0 0 63 54"
@@ -450,7 +475,7 @@ const SidebarContent = (props: any) => {
                         // stroke="#9F9F9F"
                         strokeWidth="4.5"
                       />
-                    </svg>
+                    </svg> */}
                   </div>
                   <span>{props.t("Vendors")}</span>
                 </Link>
@@ -565,14 +590,22 @@ const SidebarContent = (props: any) => {
                     {adminType === "SUPER_ADMIN" || adminRoles?.includes("delivery-boys") ? (
                       <li>
                         <Link to="/delivery-boys">
-                          <FeatherIcon className="arrow_icon" icon="chevron-right" /> <span>{props.t("Delivery Boys")}</span>
+                          <FeatherIcon
+                            className="arrow_icon"
+                            icon="chevron-right"
+                          />{" "}
+                          <span>{props.t("Delivery Boys")}</span>
                         </Link>
                       </li>
                     ) : null}
                     {adminType === "SUPER_ADMIN" || adminRoles?.includes("settlement") ? (
                       <li>
                         <Link to="/settlement">
-                          <FeatherIcon className="arrow_icon" icon="chevron-right" /> <span>{props.t("Settlements")}</span>
+                          <FeatherIcon
+                            className="arrow_icon"
+                            icon="chevron-right"
+                          />{" "}
+                          <span>{props.t("Settlements")}</span>
                         </Link>
                       </li>
                     ) : null}
@@ -587,7 +620,7 @@ const SidebarContent = (props: any) => {
                   className=""
                 >
                   <div className="icon_div">
-                  {/* <MdDomainVerification /> */}
+                    {/* <MdDomainVerification /> */}
                     <svg
                       width="60"
                       height="60"
@@ -714,14 +747,22 @@ const SidebarContent = (props: any) => {
                     {adminType === "SUPER_ADMIN" || adminRoles?.includes("category") ? (
                       <li>
                         <Link to="/category">
-                          <FeatherIcon className="arrow_icon" icon="chevron-right" /> <span>{props.t("Category List")}</span>
+                          <FeatherIcon
+                            className="arrow_icon"
+                            icon="chevron-right"
+                          />{" "}
+                          <span>{props.t("Category List")}</span>
                         </Link>
                       </li>
                     ) : null}
                     {adminType === "SUPER_ADMIN" || adminRoles?.includes("assign-attribute") ? (
                       <li>
                         <Link to="/assign-attribute">
-                          <FeatherIcon className="arrow_icon" icon="chevron-right" /> <span>{props.t("Assign Attribute")}</span>
+                          <FeatherIcon
+                            className="arrow_icon"
+                            icon="chevron-right"
+                          />{" "}
+                          <span>{props.t("Assign Attribute")}</span>
                         </Link>
                       </li>
                     ) : null}
@@ -834,21 +875,33 @@ const SidebarContent = (props: any) => {
                     {adminType === "SUPER_ADMIN" || adminRoles?.includes("orders") ? (
                       <li>
                         <Link to="/orders">
-                          <FeatherIcon className="arrow_icon" icon="chevron-right" /> <span>{props.t("All Orders")}</span>
+                          <FeatherIcon
+                            className="arrow_icon"
+                            icon="chevron-right"
+                          />{" "}
+                          <span>{props.t("All Orders")}</span>
                         </Link>
                       </li>
                     ) : null}
                     {adminType === "SUPER_ADMIN" || adminRoles?.includes("shipping-orders") ? (
                       <li>
                         <Link to="/shipping-orders">
-                          <FeatherIcon className="arrow_icon" icon="chevron-right" /> <span>{props.t("Shipping Orders")}</span>
+                          <FeatherIcon
+                            className="arrow_icon"
+                            icon="chevron-right"
+                          />{" "}
+                          <span>{props.t("Shipping Orders")}</span>
                         </Link>
                       </li>
                     ) : null}
                     {adminType === "SUPER_ADMIN" || adminRoles?.includes("return-orders") ? (
                       <li>
                         <Link to="/return-orders">
-                          <FeatherIcon className="arrow_icon" icon="chevron-right" /> <span>{props.t("Return orders")}</span>
+                          <FeatherIcon
+                            className="arrow_icon"
+                            icon="chevron-right"
+                          />{" "}
+                          <span>{props.t("Return orders")}</span>
                         </Link>
                       </li>
                     ) : null}
@@ -856,7 +909,11 @@ const SidebarContent = (props: any) => {
                     {adminType === "SUPER_ADMIN" || adminRoles?.includes("refund-orders") ? (
                       <li>
                         <Link to="/refund-orders">
-                          <FeatherIcon className="arrow_icon" icon="chevron-right" /> <span>{props.t("Refund orders")}</span>
+                          <FeatherIcon
+                            className="arrow_icon"
+                            icon="chevron-right"
+                          />{" "}
+                          <span>{props.t("Refund orders")}</span>
                         </Link>
                       </li>
                     ) : null}
@@ -909,7 +966,6 @@ const SidebarContent = (props: any) => {
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <div className="icon_div">
-                        {/* <BiSolidBookContent /> */}
                         <svg
                           width="60"
                           height="60"
@@ -940,7 +996,10 @@ const SidebarContent = (props: any) => {
                   <ul className={`sub-menu ${openMenus.includes("/cms") ? "mm-show" : ""}`}>
                     <li>
                       <Link to="/cmslisting">
-                        <FeatherIcon className="arrow_icon" icon="chevron-right" />
+                        <FeatherIcon
+                          className="arrow_icon"
+                          icon="chevron-right"
+                        />
                         <span>{props.t("Pages")}</span>
                       </Link>
                     </li>
@@ -957,8 +1016,7 @@ const SidebarContent = (props: any) => {
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <div className="icon_div">
-                        {/* <FaUserTie /> */}
-                        <svg
+                        {/* <svg
                           width="60"
                           height="60"
                           viewBox="0 0 60 60"
@@ -994,6 +1052,26 @@ const SidebarContent = (props: any) => {
                               />
                             </clipPath>
                           </defs>
+                        </svg> */}
+                        <svg
+                          width="56"
+                          height="50"
+                          viewBox="0 0 56 50"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M52.9711 28.4C51.7811 27.66 51.0111 26.4 51.0111 25C51.0111 23.6 51.7811 22.34 52.9711 21.6C53.7811 21.09 54.3011 20.69 54.6711 20.21C55.4811 19.16 55.8411 17.83 55.6711 16.51C55.5411 15.53 54.9511 14.52 53.7811 12.5C52.6011 10.48 52.0211 9.47 51.2211 8.87C50.1611 8.06 48.8211 7.7 47.5011 7.88C46.8911 7.96 46.2811 8.2 45.4311 8.65C44.1911 9.3 42.7011 9.33 41.4911 8.63C40.2711 7.93 39.5511 6.64 39.5011 5.24C39.4611 4.3 39.3711 3.65 39.1411 3.09C38.6211 1.86 37.6411 0.89 36.4111 0.38C35.4811 0 34.3111 0 31.9611 0C29.6111 0 28.4411 0 27.5211 0.38C26.2811 0.89 25.3011 1.86 24.7911 3.09C24.5611 3.65 24.4611 4.3 24.4311 5.24C24.4111 5.88 24.2511 6.49 23.9611 7.03C27.0411 9.68 28.9911 13.61 28.9911 17.98V18.11C29.9011 17.71 30.9011 17.5 31.9611 17.5C36.1411 17.5 39.5211 20.86 39.5211 25C39.5211 29.14 36.1411 32.5 31.9611 32.5C28.8311 32.5 26.1511 30.61 25.0011 27.92C24.3611 28.61 23.6411 29.23 22.8711 29.76C28.2311 30.51 32.3611 35.13 32.3611 40.68V49.72C32.3611 49.82 32.3611 49.91 32.3511 50C34.4411 50 35.5311 49.98 36.4111 49.62C37.6411 49.11 38.6211 48.14 39.1411 46.91C39.3711 46.35 39.4611 45.7 39.5011 44.76C39.5511 43.36 40.2711 42.07 41.4911 41.37C42.7011 40.67 44.1911 40.7 45.4311 41.35C46.2811 41.8 46.8911 42.04 47.5011 42.12C48.8211 42.3 50.1611 41.94 51.2211 41.13C52.0211 40.53 52.6011 39.52 53.7811 37.5C54.9511 35.48 55.5411 34.47 55.6711 33.49C55.8411 32.17 55.4811 30.84 54.6711 29.79C54.3011 29.31 53.7811 28.91 52.9711 28.4Z"
+                            // fill="white"
+                          />
+                          <path
+                            d="M11.5298 27.97C12.4798 28.27 13.4898 28.42 14.5398 28.42C20.2998 28.42 24.9898 23.74 24.9898 17.98C24.9898 14.24 23.0198 10.96 20.0698 9.12002C18.4698 8.10002 16.5698 7.52002 14.5398 7.52002C8.77985 7.52002 4.08984 12.21 4.08984 17.98C4.08984 22.69 7.22985 26.68 11.5298 27.97Z"
+                            // fill="white"
+                          />
+                          <path
+                            d="M21.3209 33.6499H7.76094C3.87094 33.6499 0.710938 36.7999 0.710938 40.6799V49.7199C0.710938 49.8599 0.83094 49.9699 0.97094 49.9699H28.1009C28.2009 49.9699 28.2809 49.9199 28.3209 49.8499C28.3509 49.8099 28.3609 49.7699 28.3609 49.7199V40.6799C28.3609 36.7999 25.2009 33.6499 21.3209 33.6499Z"
+                            // fill="white"
+                          />
                         </svg>
                       </div>
 
@@ -1010,14 +1088,22 @@ const SidebarContent = (props: any) => {
                     {adminType === "SUPER_ADMIN" || adminRoles?.includes("admins") ? (
                       <li>
                         <Link to="/admins">
-                          <FeatherIcon className="arrow_icon" icon="chevron-right" /> <span>{props.t("Admins")}</span>
+                          <FeatherIcon
+                            className="arrow_icon"
+                            icon="chevron-right"
+                          />{" "}
+                          <span>{props.t("Admins")}</span>
                         </Link>
                       </li>
                     ) : null}
                     {adminType === "SUPER_ADMIN" || adminRoles?.includes("roles") ? (
                       <li>
                         <Link to="/roles">
-                          <FeatherIcon className="arrow_icon" icon="chevron-right" /> <span>{props.t("Roles")}</span>
+                          <FeatherIcon
+                            className="arrow_icon"
+                            icon="chevron-right"
+                          />{" "}
+                          <span>{props.t("Roles")}</span>
                         </Link>
                       </li>
                     ) : null}
@@ -1092,7 +1178,6 @@ const SidebarContent = (props: any) => {
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <div className="icon_div">
-                        <FeatherIcon icon="shield" />
                         {/* <svg
                           width="63"
                           height="60"
@@ -1126,6 +1211,34 @@ const SidebarContent = (props: any) => {
                             strokeWidth="2.5"
                           />
                         </svg> */}
+                        <svg
+                          width="55"
+                          height="50"
+                          viewBox="0 0 55 50"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M45.6796 10.6999C44.9596 9.89988 44.1296 9.19988 43.2596 8.72988L29.6996 1.21988C26.7996 -0.400117 22.0996 -0.400117 19.1996 1.21988L5.64956 8.71988C4.76956 9.18988 3.94956 9.86988 3.22956 10.6899C2.17956 11.8599 2.52956 13.7399 3.89956 14.5399L23.1496 25.6899C23.9496 26.1399 24.9296 26.1399 25.6996 25.6899L44.9496 14.5399C46.3296 13.7399 46.6796 11.8599 45.6796 10.6899V10.6999Z"
+                            // fill="white"
+                          />
+                          <path
+                            d="M21.75 28.1L3.77 17.67C2.07 16.7 0 17.95 0 19.92V32.82C0 36.39 2.5 40.74 5.55 42.47C5.55 42.47 14.22 47.2 19.38 49.72C21.08 50.55 23 49.3 23 47.39V30.34C23 29.42 22.5 28.57 21.75 28.09V28.1Z"
+                            // fill="white"
+                          />
+                          <path
+                            d="M30.2216 47.6499C29.3316 46.4299 28.8216 44.9999 28.7616 43.4999C28.7116 43.1499 28.6216 42.7299 28.4916 42.3299C28.3216 41.9899 28.1116 41.6799 27.8716 41.3899C26.8416 40.3099 26.1516 38.8799 25.9516 37.3199L25.9016 36.9899L25.9516 36.6599C26.1516 35.0999 26.8416 33.6699 27.9316 32.5299C28.1216 32.2999 28.3216 31.9899 28.4916 31.6499C28.6216 31.2699 28.7016 30.8599 28.7416 30.4599C28.7816 28.9799 29.3516 27.4499 30.3416 26.2399L30.3916 26.1899L27.1016 28.0999C26.3516 28.5699 25.8516 29.4199 25.8516 30.3499V47.3999C25.8516 49.2999 27.7816 50.5499 29.4816 49.7199C30.1216 49.4099 30.8016 49.0699 31.5216 48.6999C31.2216 48.5199 30.9216 48.3199 30.6516 48.0899L30.2216 47.6499Z"
+                            // fill="white"
+                          />
+                          <path
+                            d="M32.9609 24.7C33.5909 24.49 34.2509 24.37 34.9309 24.34C35.2709 24.3 35.6909 24.2 36.1009 24.07C36.4309 23.9 36.7409 23.69 37.0309 23.45C38.1109 22.42 39.5309 21.73 41.0909 21.52L41.4309 21.48L41.7609 21.52C43.2709 21.73 44.6609 22.38 45.7809 23.42C46.0809 23.67 46.4109 23.88 46.7709 24.05C47.1709 24.18 47.5809 24.27 47.9909 24.31C48.2809 24.32 48.5609 24.35 48.8509 24.4V19.92C48.8509 17.95 46.7809 16.7 45.0809 17.67L32.9609 24.7Z"
+                            // fill="white"
+                          />
+                          <path
+                            d="M53.1219 34.28C52.6719 33.75 52.3419 33.24 52.0819 32.7L52.0219 32.56C51.8219 31.96 51.6719 31.33 51.6019 30.7C51.5519 29.61 51.2119 28.65 50.6219 27.85C50.1019 27.43 49.4919 27.12 48.8519 26.96C48.5219 26.86 48.1719 26.81 47.8319 26.8C47.1219 26.74 46.5019 26.6 45.9019 26.39L45.7819 26.35C45.2019 26.08 44.6719 25.74 44.1819 25.34L44.0819 25.25C43.3419 24.57 42.4219 24.14 41.4319 24C40.3919 24.14 39.4519 24.59 38.7019 25.31C38.1719 25.76 37.6619 26.09 37.1219 26.35L36.9819 26.41C36.3819 26.62 35.7619 26.76 35.1319 26.83C34.0419 26.88 33.0819 27.22 32.2719 27.83C31.6319 28.61 31.2619 29.6 31.2319 30.61C31.1719 31.32 31.0319 31.94 30.8319 32.54L30.7719 32.67C30.5119 33.22 30.1819 33.73 29.7919 34.19C29.0219 35.01 28.5619 35.95 28.4219 36.99H28.4319C28.5619 38.02 29.0219 38.97 29.7319 39.72C30.1819 40.25 30.5119 40.76 30.7719 41.3L30.8319 41.44C31.0319 42.04 31.1719 42.67 31.2519 43.3C31.3019 44.39 31.6419 45.35 32.2319 46.16H32.2419C32.8919 46.7 33.6819 47.05 34.5119 47.16C34.6819 47.19 34.8519 47.2 35.0219 47.21C35.7319 47.27 36.3419 47.41 36.9319 47.61L37.0919 47.67C37.6219 47.94 38.1319 48.27 38.5919 48.65C39.4219 49.43 40.3819 49.88 41.4219 50H41.4319C42.4519 49.86 43.4019 49.41 44.1519 48.69C44.6819 48.25 45.1819 47.92 45.7219 47.65L45.8819 47.59C46.4819 47.38 47.1019 47.24 47.7219 47.17C48.8119 47.12 49.7719 46.79 50.5719 46.18H50.5819C51.2219 45.4 51.5919 44.4 51.6219 43.39C51.6819 42.67 51.8219 42.06 52.0219 41.46L52.0819 41.32C52.3419 40.78 52.6719 40.27 53.0619 39.81C53.8319 38.99 54.2919 38.05 54.4219 37.01C54.2919 35.98 53.8319 35.03 53.1219 34.28ZM37.4719 35.77L38.4019 36.58L40.2819 38.5L45.7119 32.27L47.6319 34.09L41.2919 41.15V41.13L41.1819 41.24L40.7419 41.69L39.9419 41.57L39.5519 41.4L39.3619 41.22L35.6419 37.5L37.4719 35.77Z"
+                            // fill="white"
+                          />
+                        </svg>
                       </div>
                       <span>{props.t("Warranty")}</span>
                     </div>
@@ -1140,14 +1253,22 @@ const SidebarContent = (props: any) => {
                     {adminType === "SUPER_ADMIN" || adminRoles?.includes("warranty-policies") ? (
                       <li>
                         <Link to="/warranty-policies">
-                          <FeatherIcon className="arrow_icon" icon="chevron-right" /> <span>{props.t("Manage Policies")}</span>
+                          <FeatherIcon
+                            className="arrow_icon"
+                            icon="chevron-right"
+                          />{" "}
+                          <span>{props.t("Manage Policies")}</span>
                         </Link>
                       </li>
                     ) : null}
                     {adminType === "SUPER_ADMIN" || adminRoles?.includes("warranty-requests") ? (
                       <li>
                         <Link to="/warranty-claims">
-                          <FeatherIcon className="arrow_icon" icon="chevron-right" /> <span>Claims&Requests</span>
+                          <FeatherIcon
+                            className="arrow_icon"
+                            icon="chevron-right"
+                          />{" "}
+                          <span>Claims&Requests</span>
                         </Link>
                       </li>
                     ) : null}
