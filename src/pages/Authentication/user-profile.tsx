@@ -138,7 +138,7 @@ const UserProfile = () => {
         });
 
         if (response) {
-          formik.resetForm();
+          // formik.resetForm();
           localStorage.setItem("adminData", JSON.stringify("admin_Arab Deals_Data updated"));
           toast.success("Successfully Updated Profile");
           adminRefetch();
@@ -261,6 +261,7 @@ const UserProfile = () => {
                       className="form-control"
                       placeholder="Enter new password"
                       type="password"
+                      
                       value={formik.values?.password}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}

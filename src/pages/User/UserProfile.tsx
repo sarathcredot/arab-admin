@@ -18,6 +18,7 @@ import {
   ModalBody,
   ModalFooter,
   Collapse,
+  InputGroupText,
 } from "reactstrap";
 
 // Formik Validation
@@ -450,7 +451,7 @@ query GetUserRecordByAdmin($input: userInput!) {
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                          <h5 style={{ margin: "0" }}>{data?.displayName && capitalCase(data?.displayName) || "User"}</h5>
+                          <h5 style={{ margin: "0" }}>{data?.firstName && capitalCase(data?.firstName) || "User"}</h5>
                           <div style={{ width: "80px", height: '20px', border: `1px solid ${data?.isBlocked ? "#dc4016" : "green"}`, borderRadius: "18px", display: "flex", alignItems: "center", justifyContent: "center", color: `${data?.isBlocked ? "#dc4016" : "green"}` }}>
                             <p style={{ margin: "0" }}>  {data?.isBlocked == false ? "Active" : "Blocked"}</p>
                           </div>
@@ -460,13 +461,13 @@ query GetUserRecordByAdmin($input: userInput!) {
                       <div style={{ display: "flex" }}>
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "5px", width: "80px" }}>
-                          <p className="mb-0">Fullname :</p>
+                          <p className="mb-0">Full Name :</p>
                           <p className="mb-0">ID :</p>
                           <p className="mb-0">Email :</p>
                           <p className="mb-0">Phone : </p>
                         </div>
                         <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                          <p className="mb-0"> {data?.displayName && capitalCase(data?.displayName) || "nill"}</p>
+                          <p className="mb-0"> {data?.firstName && capitalCase(data?.firstName) || "nill"}</p>
                           <p className="mb-0"> {data?._id || "nill"}</p>
                           <p className="mb-0"> {data?.email || "nill"}</p>
                           <p className="mb-0">  {`${data?.countryCode||"+968"} ${data?.mobileNumber}` || "nill"}</p>
@@ -578,11 +579,11 @@ query GetUserRecordByAdmin($input: userInput!) {
                     style={{ display: "flex", flexDirection: "column", gap: "15px" }}
                   >
                     <div>
-                      <Label className="form-label">Firstname</Label>
+                      <Label className="form-label">Full Name</Label>
                       <Input
                         name="firstName"
                         className="form-control"
-                        placeholder="Enter firstname"
+                        placeholder="Enter Full Name"
                         type="text"
                         value={formik.values?.firstName}
                         onChange={formik.handleChange}
@@ -595,7 +596,7 @@ query GetUserRecordByAdmin($input: userInput!) {
                     </div>
 
 
-                    <div>
+                    {/* <div>
                       <Label className="form-label">Lastname</Label>
                       <Input
                         name="lastName"
@@ -610,7 +611,7 @@ query GetUserRecordByAdmin($input: userInput!) {
                       {formik.touched.lastName && formik.errors.lastName && (
                         <div className="text-danger">{formik.errors.lastName}</div>
                       )}
-                    </div>
+                    </div> */}
 
                     <div>
                       <Label className="form-label">Email</Label>
@@ -629,29 +630,11 @@ query GetUserRecordByAdmin($input: userInput!) {
                       )}
                     </div>
                     <div>
-                      <Label>Country code</Label>
+                    <Label className="form-label pt-2">Phone Number</Label>
                       <div className="input-group">
-                        <div className="input-group">
-                          <div className="input-group-prepend">
                             <span className="input-group-text"><Iconify icon="openmoji:flag-oman" /></span>
-                          </div>
+                          <InputGroupText>{formik.values?.countryCode}</InputGroupText>
 
-                          <Input
-                            type="text"
-                            id="countryCode"
-                            name="countryCode"
-                            placeholder="Please enter your country code"
-                            value={formik.values?.countryCode}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            disabled
-                          />
-                        </div>
-                      </div>
-
-                    </div>
-                    <div>
-                      <Label className="form-label pt-2">Phone Number</Label>
                       <Input
                         name="mobileNumber"
                         className="form-control"
@@ -662,6 +645,7 @@ query GetUserRecordByAdmin($input: userInput!) {
                         onBlur={formik.handleBlur}
                       />
 
+                      </div>
                       {formik.touched.mobileNumber && formik.errors.mobileNumber && (
                         <div className="text-danger">
                           {formik.errors.mobileNumber}

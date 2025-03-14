@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form, FormGroup, Label, Input, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import {
+  Button,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  InputGroupText,
+} from "reactstrap";
 import { useFormik } from "formik";
 import { DeliveryBoyValidation } from "src/validation/validation";
 import { gql, useMutation, useQuery } from "@apollo/client";
@@ -220,7 +231,7 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
                   <div className="input-group-prepend">
                     <span className="input-group-text bg-white">
                       <Iconify icon="openmoji:flag-oman" />
-                      {formik.values?.countryCode}
+                      {/* {formik.values?.countryCode} */}
                     </span>
                   </div>
                   {/* <Input
@@ -233,6 +244,7 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
                     disabled
                     style={{ width: "70px", flex: "none", backgroundColor: "#f8f9fa", color: "#6c757d" }}
                   /> */}
+                  <InputGroupText>{formik.values?.countryCode}</InputGroupText>
                   <Input
                     type="number"
                     id="contactNumber"
@@ -241,6 +253,7 @@ const AddFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childref
                     value={formik.values?.contactNumber}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
+                    // style={{ borderLeft: "none", paddingLeft: 0 }}
                   />
                 </div>
               </div>

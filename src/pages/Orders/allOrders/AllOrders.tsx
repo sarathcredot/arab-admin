@@ -105,7 +105,13 @@ const AllOrders = () => {
 
 
                 <TabContent activeTab={activeTab}>
-
+                <TabPane tabId="1">
+                    <Row>
+                      <Col sm="12">
+                        <All />
+                      </Col>
+                    </Row>
+                  </TabPane>
                   <TabPane tabId="2">
                     <Row>
                       <Col sm="12">
@@ -127,13 +133,7 @@ const AllOrders = () => {
                       </Col>
                     </Row>
                   </TabPane>
-                  <TabPane tabId="1">
-                    <Row>
-                      <Col sm="12">
-                        <All />
-                      </Col>
-                    </Row>
-                  </TabPane>
+                  
                 </TabContent>
               </Row>
             </Col>

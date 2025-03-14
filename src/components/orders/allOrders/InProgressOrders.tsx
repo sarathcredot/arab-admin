@@ -286,7 +286,7 @@ const InProgressOrders = () => {
           style={{ display: "flex", gap: "20px", justifyContent: "flex-end" }}
         >
           <CustomButton
-            bgColor="red"
+            bgColor="#000"
             name="Export"
             icon="ph:export-bold"
             onClick={handleExportClick}

@@ -125,7 +125,7 @@ export const AdminValidation = yup.object({
   email: yup.string().email("Invalid email address").required("Email is required"),
   accType: yup.string().required("Please select account type"),
   password: yup.string().required("Please enter password"),
-  image: yup.mixed().required("Please select a profile image"),
+  // image: yup.mixed().required("Please select a profile image"),
 });
 
 export const EditAdminValidation = yup.object({

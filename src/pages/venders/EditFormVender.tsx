@@ -9,6 +9,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  InputGroupText,
 } from "reactstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -173,7 +174,7 @@ const EditFormVender: React.FC<Props> = ({
               )}
             </FormGroup>
 
-            <FormGroup>
+            {/* <FormGroup>
               <Label>Country code</Label>
               <div className="input-group">
                 <div className="input-group">
@@ -197,19 +198,30 @@ const EditFormVender: React.FC<Props> = ({
               {formik.touched.countryCode && formik.errors.countryCode && (
                 <div className="text-danger">{formik.errors.countryCode}</div>
               )}
-            </FormGroup>
+            </FormGroup> */}
 
-            <FormGroup>
-              <Label for="categoryDescription">Phone number</Label>
-              <Input
+<FormGroup>
+              <Label>Phone number</Label>
+              <div className="input-group">
+                <div className="input-group">
+                  <div className="input-group-prepend">
+                    <span className="input-group-text bg-white"><Iconify icon="openmoji:flag-oman" />
+                    {/* {formik.values?.countryCode} */}
+                    </span>
+                  </div>
+                 <InputGroupText>{formik.values?.countryCode}</InputGroupText>
+                  <Input
                 type="number"
                 id="phone"
                 name="phone"
-                placeholder="Please enter your mobile number"
+                placeholder="Enter your mobile number"
                 value={formik.values?.phone}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
+                </div>
+              </div>
+
               {formik.touched.phone && formik.errors.phone && (
                 <div className="text-danger">{formik.errors.phone}</div>
               )}

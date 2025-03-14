@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form, FormGroup, Label, Input, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { Button, Form, FormGroup, Label, Input, Modal, ModalHeader, ModalBody, ModalFooter, InputGroupText } from "reactstrap";
 import { useFormik } from "formik";
 import { DeliveryBoyValidation, EditDeliveryBoyValidation } from "src/validation/validation";
 import { gql, useMutation, useQuery } from "@apollo/client";
@@ -257,17 +257,7 @@ const EditFormDeliveryBoy: React.FC<Props> = ({ isOpen, toggle, refetch, childre
                       <Iconify icon="openmoji:flag-oman" />
                     </span>
                   </div>
-
-                  <Input
-                    type="text"
-                    id="countryCode"
-                    name="countryCode"
-                    value={formik.values?.countryCode}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    disabled
-                    style={{ width: "70px", flex: "none", backgroundColor: "#f8f9fa", color: "#6c757d" }}
-                  />
+                  <InputGroupText>{formik.values?.countryCode}</InputGroupText>
                   <Input
                     type="text"
                     id="contactNumber"

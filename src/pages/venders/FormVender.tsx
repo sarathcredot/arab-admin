@@ -9,6 +9,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  InputGroupText,
 } from "reactstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -147,7 +148,7 @@ const FormVender: React.FC<Props> = ({
                 type="text"
                 id="name"
                 name="name"
-                placeholder="Please enter name"
+                placeholder="Enter name"
                 value={formik.values?.name}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -162,7 +163,7 @@ const FormVender: React.FC<Props> = ({
                 type="text"
                 id="email"
                 name="email"
-                placeholder="Please enter your email address"
+                placeholder="Enter your email address"
                 value={formik.values?.email}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -177,25 +178,16 @@ const FormVender: React.FC<Props> = ({
               <div className="input-group">
                 <div className="input-group">
                   <div className="input-group-prepend">
-                    <span className="input-group-text bg-white"><Iconify icon="openmoji:flag-oman" />{formik.values?.countryCode}</span>
+                    <span className="input-group-text bg-white"><Iconify icon="openmoji:flag-oman" />
+                    {/* {formik.values?.countryCode} */}
+                    </span>
                   </div>
-
-                  {/* <Input
-                    type="text"
-                    id="countryCode"
-                    name="countryCode"
-                    placeholder="Please enter your country code"
-                    value={formik.values?.countryCode}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    disabled
-                    style={{ width: "70px", flex: "none", backgroundColor: "#f8f9fa", color: "#6c757d" }}
-                  /> */}
+                 <InputGroupText>{formik.values?.countryCode}</InputGroupText>
                   <Input
                 type="number"
                 id="phone"
                 name="phone"
-                placeholder="Please enter your mobile number"
+                placeholder="Enter your mobile number"
                 value={formik.values?.phone}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
