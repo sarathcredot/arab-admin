@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import AddAdmin from "./Popups/AddAdmin";
 import EditAdmin from "./Popups/EditAdmin";
 import { capitalCase } from "change-case";
+import Pagination from "src/components/Pagination";
 const items = [{ text: "Dashboard", link: `/` }];
 
 const GET_ADMINS = gql`
@@ -290,11 +291,13 @@ const Admins = () => {
                                         <Button
                                           style={{
                                             display: "block",
-                                            background:"#000"
+                                            background: "#000",
                                           }}
                                           // color="dark"
                                           size="sm"
-                                          onClick={() => navigate(`/admins/activity-log?admin=${item?.fullName}&_id=${item?._id}`)}
+                                          onClick={() =>
+                                            navigate(`/admins/activity-log?admin=${item?.fullName}&_id=${item?._id}`)
+                                          }
                                         >
                                           <FiClock
                                             style={{
@@ -305,7 +308,7 @@ const Admins = () => {
                                         <Button
                                           style={{
                                             display: "block",
-                                            background:"#000"
+                                            background: "#000",
                                           }}
                                           // color="dark"
                                           size="sm"
@@ -345,52 +348,16 @@ const Admins = () => {
                     )}
                   </Row>
                 </CardBody>
+                {/* pagination */}
+                {totalPages > 1 && (
+                  <Pagination
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    totalButtonsToShow={3}
+                    totalPages={totalPages}
+                  />
+                )}
               </Card>
-            </Col>
-          </Row>
-          {/* pagination */}
-
-          <Row style={{ marginRight: "10px" }}>
-            <Col>
-              <div className="d-flex justify-content-end mt-0 ">
-                <ul className="pagination">
-                  <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
-                    <button
-                      className="page-link"
-                      onClick={() => setCurrentPage(currentPage - 1)}
-                      disabled={currentPage === 0}
-                    >
-                      Previous
-                    </button>
-                  </li>
-
-                  {Array.from({ length: totalPages }, (_, index) => (
-                    <li
-                      key={index}
-                      className={`page-item ${currentPage === index ? "active" : ""}`}
-                    >
-                      <button
-                        className="page-link"
-                        onClick={() => setCurrentPage(index)}
-                      >
-                        {index + 1}
-                      </button>
-                    </li>
-                  ))}
-
-                  {currentPage < totalPages - 1 && (
-                    <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
-                      <button
-                        className="page-link"
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                        disabled={currentPage === totalPages - 1}
-                      >
-                        Next
-                      </button>
-                    </li>
-                  )}
-                </ul>
-              </div>
             </Col>
           </Row>
         </Container>

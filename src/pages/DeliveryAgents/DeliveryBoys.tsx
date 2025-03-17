@@ -24,6 +24,7 @@ import { Link } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
 import AddAgentForm from "./AddFormDeliveryBoy";
 import Breadcrumb from "src/components/Common/Breadcrumb";
+import Pagination from "src/components/Pagination";
 
 // Agent Type
 interface IAgent {
@@ -261,9 +262,9 @@ const DeliveryBoys: React.FC = () => {
                                 <th>Full Name</th>
                                 <th>Mobile Number</th>
                                 <th>Agent Type</th>
-                                <th style={{ width: "100px",textAlign:"center" }}>Availability</th>
-                                <th style={{ width: "100px",textAlign:"center" }}>Status</th>
-                                <th style={{ width: "100px",textAlign:"center" }}>Action</th>
+                                <th style={{ width: "100px", textAlign: "center" }}>Availability</th>
+                                <th style={{ width: "100px", textAlign: "center" }}>Status</th>
+                                <th style={{ width: "100px", textAlign: "center" }}>Action</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -281,7 +282,7 @@ const DeliveryBoys: React.FC = () => {
                                         alignItems: "center",
                                         justifyContent: "center",
                                       }}
-                                      >
+                                    >
                                       <StatusIndicator
                                         variant="default"
                                         status={agent?.isAvailable === true ? "YES" : "NO"}
@@ -295,7 +296,7 @@ const DeliveryBoys: React.FC = () => {
                                         alignItems: "center",
                                         justifyContent: "center",
                                       }}
-                                      >
+                                    >
                                       <StatusIndicator
                                         variant="default"
                                         status={agent.isActive === true ? "Active" : "Blocked"}
@@ -327,8 +328,15 @@ const DeliveryBoys: React.FC = () => {
                 </CardBody>
 
                 {/* pagination does not added */}
-
-                <Row style={{ marginRight: "10px" }}>
+                {totalPages > 1 && (
+                  <Pagination
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    totalButtonsToShow={3}
+                    totalPages={totalPages}
+                  />
+                )}
+                {/* <Row style={{ marginRight: "10px" }}>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">
@@ -370,7 +378,7 @@ const DeliveryBoys: React.FC = () => {
                       </ul>
                     </div>
                   </Col>
-                </Row>
+                </Row> */}
               </Card>
             </Col>
           </Row>

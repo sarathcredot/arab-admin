@@ -12,6 +12,7 @@ import { toast, ToastContainer } from "react-toastify";
 import Confirmation from "src/components/Confirmation";
 import AddWarrantyPolicy from "./Popups/AddWarrantyPolicy";
 import EditWarrantyPolicy from "./Popups/EditWarrantyPolicy";
+import Pagination from "src/components/Pagination";
 // import EditPolicy from "./Popups/EditPolicy";
 const items = [
   { text: "Dashboard", link: `/` },
@@ -296,7 +297,7 @@ const WarrantyPolicies = () => {
                                           style={{
                                             display: "block",
                                             // width:"100%",
-                                            background:"#000"
+                                            background: "#000",
                                           }}
                                           // color="dark"
                                           size="sm"
@@ -335,53 +336,17 @@ const WarrantyPolicies = () => {
                       </div>
                     )}
                   </Row>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-          {/* pagination */}
-
-          <Row style={{ marginRight: "10px" }}>
-            <Col>
-              <div className="d-flex justify-content-end mt-0 ">
-                <ul className="pagination">
-                  <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
-                    <button
-                      className="page-link"
-                      onClick={() => setCurrentPage(currentPage - 1)}
-                      disabled={currentPage === 0}
-                    >
-                      Previous
-                    </button>
-                  </li>
-
-                  {Array.from({ length: totalPages }, (_, index) => (
-                    <li
-                      key={index}
-                      className={`page-item ${currentPage === index ? "active" : ""}`}
-                    >
-                      <button
-                        className="page-link"
-                        onClick={() => setCurrentPage(index)}
-                      >
-                        {index + 1}
-                      </button>
-                    </li>
-                  ))}
-
-                  {currentPage < totalPages - 1 && (
-                    <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
-                      <button
-                        className="page-link"
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                        disabled={currentPage === totalPages - 1}
-                      >
-                        Next
-                      </button>
-                    </li>
+                  </CardBody>
+                  {/* pagination */}
+                  {totalPages > 1 && (
+                    <Pagination
+                      currentPage={currentPage}
+                      setCurrentPage={setCurrentPage}
+                      totalButtonsToShow={3}
+                      totalPages={totalPages}
+                    />
                   )}
-                </ul>
-              </div>
+              </Card>
             </Col>
           </Row>
         </Container>

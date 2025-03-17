@@ -28,6 +28,7 @@ import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 import { Link } from "react-router-dom";
 import { capitalize } from "lodash";
 import { capitalCase } from "change-case";
+import Pagination from "src/components/Pagination";
 
 const items = [
   { text: "Dashboard", link: `/` },
@@ -93,7 +94,11 @@ const ClaimsAndRequests = () => {
   };
   const toggleTab = (tab: string) => {
     setActiveTab(tab);
-    tab === "CLAIMS" ? setSelectedStatus("APPROVED") :tab==="REQUESTS"? setSelectedStatus("PENDING"):setSelectedStatus("");
+    tab === "CLAIMS"
+      ? setSelectedStatus("APPROVED")
+      : tab === "REQUESTS"
+      ? setSelectedStatus("PENDING")
+      : setSelectedStatus("");
   };
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 10;
@@ -137,7 +142,7 @@ const ClaimsAndRequests = () => {
             currentPage="Claims and Requests"
           />
           <Nav tabs>
-          <NavItem>
+            <NavItem>
               <NavLink
                 className={activeTab === "ALL" ? "tab-button active" : "tab-button"}
                 onClick={() => toggleTab("ALL")}
@@ -184,7 +189,11 @@ const ClaimsAndRequests = () => {
                     </Col>
                     <Col
                       xs={3}
-                      style={{ display:activeTab==="ALL"?"none": "flex", alignItems: "center", justifyContent: "flex-end" }}
+                      style={{
+                        display: activeTab === "ALL" ? "none" : "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                      }}
                     >
                       <Dropdown
                         isOpen={statusDropdownOpen}
@@ -304,52 +313,16 @@ const ClaimsAndRequests = () => {
                     )}
                   </Row>
                 </CardBody>
+                {/* pagination */}
+                {totalPages > 1 && (
+                  <Pagination
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                  totalButtonsToShow={3}
+                  totalPages={totalPages}
+                  />
+                )}
               </Card>
-            </Col>
-          </Row>
-          {/* pagination */}
-
-          <Row style={{ marginRight: "10px" }}>
-            <Col>
-              <div className="d-flex justify-content-end mt-0 ">
-                <ul className="pagination">
-                  <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
-                    <button
-                      className="page-link"
-                      onClick={() => setCurrentPage(currentPage - 1)}
-                      disabled={currentPage === 0}
-                    >
-                      Previous
-                    </button>
-                  </li>
-
-                  {Array.from({ length: totalPages }, (_, index) => (
-                    <li
-                      key={index}
-                      className={`page-item ${currentPage === index ? "active" : ""}`}
-                    >
-                      <button
-                        className="page-link"
-                        onClick={() => setCurrentPage(index)}
-                      >
-                        {index + 1}
-                      </button>
-                    </li>
-                  ))}
-
-                  {currentPage < totalPages - 1 && (
-                    <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
-                      <button
-                        className="page-link"
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                        disabled={currentPage === totalPages - 1}
-                      >
-                        Next
-                      </button>
-                    </li>
-                  )}
-                </ul>
-              </div>
             </Col>
           </Row>
         </Container>

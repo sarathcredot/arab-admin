@@ -27,6 +27,7 @@ import { toast } from "react-toastify";
 import ExportExcelList from "src/components/orders/ExportExcelList";
 import SettlementPopup from "../DeliveryAgents/SettlementPopup";
 import Iconify from "src/components/iconify/Iconify";
+import Pagination from "src/components/Pagination";
 
 // Agent Type// Agent Type
 interface ILicence {
@@ -298,7 +299,7 @@ const SettlementPage: React.FC = () => {
                                       <Link to={`/delivery-boys/view?id=${item._id}`}>
                                         <Button
                                           // color="dark"
-                                          style={{background:"#000"}}
+                                          style={{ background: "#000" }}
                                           size="sm"
                                         >
                                           Profile
@@ -320,50 +321,14 @@ const SettlementPage: React.FC = () => {
                     />
                   </Row>
                 </CardBody>
-
-                <Row style={{ marginRight: "10px" }}>
-                  <Col>
-                    <div className="d-flex justify-content-end mt-0 ">
-                      <ul className="pagination">
-                        <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
-                          <button
-                            className="page-link"
-                            onClick={() => setCurrentPage(currentPage - 1)}
-                            disabled={currentPage === 0}
-                          >
-                            Previous
-                          </button>
-                        </li>
-
-                        {Array.from({ length: totalPages }, (_, index) => (
-                          <li
-                            key={index}
-                            className={`page-item ${currentPage === index ? "active" : ""}`}
-                          >
-                            <button
-                              className="page-link"
-                              onClick={() => setCurrentPage(index)}
-                            >
-                              {index + 1}
-                            </button>
-                          </li>
-                        ))}
-
-                        {currentPage < totalPages - 1 && (
-                          <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
-                            <button
-                              className="page-link"
-                              onClick={() => setCurrentPage(currentPage + 1)}
-                              disabled={currentPage === totalPages - 1}
-                            >
-                              Next
-                            </button>
-                          </li>
-                        )}
-                      </ul>
-                    </div>
-                  </Col>
-                </Row>
+                {totalPages > 1 && (
+                  <Pagination
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    totalButtonsToShow={3}
+                    totalPages={totalPages}
+                  />
+                )}
               </Card>
             </Col>
           </Row>

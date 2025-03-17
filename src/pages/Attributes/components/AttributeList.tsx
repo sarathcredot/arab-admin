@@ -23,6 +23,7 @@ import AttributeForm from "./AttributeForm";
 import CustomButton from "src/components/Common/CustomButton";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 import Loader from "src/components/Common/Loader";
+import Pagination from "src/components/Pagination";
 
 interface IAttribute {
   _id: string;
@@ -272,8 +273,10 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
                       </div>
                   }
                 </CardBody>
-
-                <Row style={{ marginRight: "10px" }}>
+                {
+                  totalPages>1&&(<Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalButtonsToShow={3} totalPages={totalPages}  />)
+                }
+                {/* <Row style={{ marginRight: "10px" }}>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">
@@ -322,7 +325,7 @@ mutation UpdateVendorProfileByAdmin($input: VendorEditProfileByAdminInput!) {
                       </ul>
                     </div>
                   </Col>
-                </Row>
+                </Row> */}
               </Card>
             </Col>
           </Row>

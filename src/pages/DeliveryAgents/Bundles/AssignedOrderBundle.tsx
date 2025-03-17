@@ -8,6 +8,7 @@ import ExportExcelList from "src/components/orders/ExportExcelList";
 import SettlementExcelList from "../ExcelLists/SettlementExcelList";
 import Loader from "src/components/Common/Loader";
 import noDataSvg from "src/assets/images/noDataSvg.svg";
+import Pagination from "src/components/Pagination";
 
 interface Props {
   agentId: string | null;
@@ -236,7 +237,16 @@ const AssignedOrderBundle: React.FC<Props> = ({ agentId, setView, setDATE }) => 
                 </tbody>
               </Table>
             </div>
-            <Row style={{ marginRight: "10px" }}>
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                totalButtonsToShow={3}
+                totalPages={totalPages}
+                style={{marginRight:0,padding:0}}
+              />
+            )}
+            {/* <Row style={{ marginRight: "10px" }}>
               <Col>
                 <div className="d-flex justify-content-end mt-0 ">
                   <ul className="pagination">
@@ -278,7 +288,7 @@ const AssignedOrderBundle: React.FC<Props> = ({ agentId, setView, setDATE }) => 
                   </ul>
                 </div>
               </Col>
-            </Row>
+            </Row> */}
           </>
         ) : (
           <div

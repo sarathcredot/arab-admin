@@ -25,6 +25,7 @@ import { toast } from "react-toastify";
 import AllOrderFilters from "../AllOrderFilters";
 import CustomButton from "src/components/Common/CustomButton";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
+import Pagination from "src/components/Pagination";
 
 interface ShippingAddress {
   _id: string;
@@ -325,7 +326,7 @@ const PendingOrders = () => {
                         <th>Username</th>
                         <th>Payment Mode</th>
                         <th>Order Status</th>
-                        <th>Post Code</th>
+                        {/* <th>Post Code</th> */}
                         <th>Amount</th>
                         <th>View</th>
                       </tr>
@@ -398,7 +399,7 @@ const PendingOrders = () => {
                               />
                             </div>
                           </td>
-                          <td>
+                          {/* <td>
                             {" "}
                             <div
                               style={{
@@ -411,7 +412,7 @@ const PendingOrders = () => {
                             >
                               {order.shippingAddress["postCode"]}
                             </div>
-                          </td>
+                          </td> */}
                           <td>
                             <div
                               style={{
@@ -476,7 +477,10 @@ const PendingOrders = () => {
             )}
           </div>
         </CardBody>
-        <Row>
+        {
+          totalPages>1&&(<Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalButtonsToShow={3} totalPages={totalPages}  />)
+        }
+        {/* <Row>
           <Col>
             <div className="d-flex justify-content-end mt-0 me-3">
               <ul className="pagination">
@@ -530,7 +534,7 @@ const PendingOrders = () => {
               </ul>
             </div>
           </Col>
-        </Row>
+        </Row> */}
       </Card>
     </div>
   );

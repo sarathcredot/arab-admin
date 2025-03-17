@@ -8,6 +8,7 @@ import ExportExcelList from "src/components/orders/ExportExcelList";
 import SettlementExcelList from "../ExcelLists/SettlementExcelList";
 import Loader from "src/components/Common/Loader";
 import noDataSvg from "src/assets/images/noDataSvg.svg";
+import Pagination from "src/components/Pagination";
 
 interface Props {
   agentId: string | null;
@@ -199,7 +200,7 @@ const AssignedReturnBundle: React.FC<Props> = ({ agentId, setView, setDATE }) =>
                     >
                       Returns Assigned
                     </th>
-                    <th style={{ width: "100px" }}>Actions</th>
+                    <th style={{ width: "100px",textAlign:"center" }}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -218,7 +219,7 @@ const AssignedReturnBundle: React.FC<Props> = ({ agentId, setView, setDATE }) =>
                             style={{
                               display: "block",
                               margin: "auto",
-                              width: "90%",
+                              // width: "90%",
                             }}
                             onClick={() => {
                               setView(true);
@@ -234,7 +235,16 @@ const AssignedReturnBundle: React.FC<Props> = ({ agentId, setView, setDATE }) =>
                 </tbody>
               </Table>
             </div>
-            <Row style={{ marginRight: "10px" }}>
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                totalButtonsToShow={3}
+                totalPages={totalPages}
+                style={{marginRight:0,padding:0}}
+              />
+            )}
+            {/* <Row style={{ marginRight: "10px" }}>
               <Col>
                 <div className="d-flex justify-content-end mt-0 ">
                   <ul className="pagination">
@@ -276,7 +286,7 @@ const AssignedReturnBundle: React.FC<Props> = ({ agentId, setView, setDATE }) =>
                   </ul>
                 </div>
               </Col>
-            </Row>
+            </Row> */}
           </>
         ) : (
           <div

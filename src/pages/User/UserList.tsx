@@ -31,6 +31,7 @@ import CustomButton from "../../components/Common/CustomButton";
 import Loader from "../../components/Common/Loader";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 import DeletedUserList from "./DeletedUserList";
+import Pagination from "src/components/Pagination";
 
 interface User {
   _id: string;
@@ -372,7 +373,10 @@ const UserList = () => {
                     </div>
                   )}
                 </CardBody>
-                <Row>
+                {
+                  totalPages>1&&(<Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalButtonsToShow={3} totalPages={totalPages}  />)
+                }
+                {/* <Row>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 me-3">
                       <ul className="pagination">
@@ -421,7 +425,7 @@ const UserList = () => {
                       </ul>
                     </div>
                   </Col>
-                </Row>
+                </Row> */}
               </Card>
             </Col>
           </Row>

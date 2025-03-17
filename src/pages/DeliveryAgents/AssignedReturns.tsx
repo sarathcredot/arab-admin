@@ -10,6 +10,7 @@ import Loader from "src/components/Common/Loader";
 import { Link } from "react-router-dom";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 import noDataSvg from "../../assets/images/noDataSvg.svg";
+import Pagination from "src/components/Pagination";
 
 interface Props {
   agentId: string | null;
@@ -21,9 +22,9 @@ interface IOrder {
   orderId: string;
   itemId: string;
   userId: {
-    _id:string;
-    fullName:string;
-  }
+    _id: string;
+    fullName: string;
+  };
   productName: string;
   sellingPrice: number;
   paymentStatus: string;
@@ -308,7 +309,7 @@ const AssignedReturns: React.FC<Props> = ({ agentId, DATE }) => {
                     <tr key={index}>
                       <td>{index + 1}</td>
                       <td>{item?.itemId}</td>
-                      <td>{item?.returnAddress?.firstname??item?.userId?.fullName}</td>
+                      <td>{item?.returnAddress?.firstname ?? item?.userId?.fullName}</td>
                       <td>
                         {item?.productName?.length > 20 ? `${item?.productName.slice(0, 20)}...` : item?.productName}
                       </td>
@@ -331,10 +332,10 @@ const AssignedReturns: React.FC<Props> = ({ agentId, DATE }) => {
                       <td>
                         <Link to={`/shipping-orders/details?orderId=${item?.orderId}&_id=${item?._id}`}>
                           <Button
-                          style={{
-                            display:"block",
-                            margin:"auto"
-                          }}
+                            style={{
+                              display: "block",
+                              margin: "auto",
+                            }}
                             color="primary"
                             size="sm"
                           >
@@ -348,7 +349,16 @@ const AssignedReturns: React.FC<Props> = ({ agentId, DATE }) => {
               </tbody>
             </Table>
           </div>
-          <Row style={{ marginRight: "10px" }}>
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              totalButtonsToShow={3}
+              totalPages={totalPages}
+              style={{marginRight:0,padding:0}}
+            />
+          )}
+          {/* <Row style={{ marginRight: "10px" }}>
             <Col>
               <div className="d-flex justify-content-end mt-0 ">
                 <ul className="pagination">
@@ -390,25 +400,25 @@ const AssignedReturns: React.FC<Props> = ({ agentId, DATE }) => {
                 </ul>
               </div>
             </Col>
-          </Row>
+          </Row> */}
         </div>
       ) : (
         <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 15,
-              padding: 40,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <img
-              src={noDataSvg}
-              alt="no data image"
-            />
-            <h4>No Return Orders Assigned</h4>
-          </div>
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 15,
+            padding: 40,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <img
+            src={noDataSvg}
+            alt="no data image"
+          />
+          <h4>No Return Orders Assigned</h4>
+        </div>
       )}
     </>
   );

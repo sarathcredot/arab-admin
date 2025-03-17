@@ -11,6 +11,7 @@ import Loader from "src/components/Common/Loader";
 import { Link } from "react-router-dom";
 import { capitalize } from "lodash";
 import noDataSvg from "../../assets/images/noDataSvg.svg";
+import Pagination from "src/components/Pagination";
 
 interface Props {
   agentId: string | null;
@@ -297,7 +298,16 @@ const AssignedOrders: React.FC<Props> = ({ agentId, DATE }) => {
               </tbody>
             </Table>
           </div>
-          <Row style={{ marginRight: "10px" }}>
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              totalButtonsToShow={3}
+              totalPages={totalPages}
+              style={{marginRight:0,padding:0}}
+            />
+          )}
+          {/* <Row style={{ marginRight: "10px" }}>
             <Col>
               <div className="d-flex justify-content-end mt-0 ">
                 <ul className="pagination">
@@ -339,7 +349,7 @@ const AssignedOrders: React.FC<Props> = ({ agentId, DATE }) => {
                 </ul>
               </div>
             </Col>
-          </Row>
+          </Row> */}
         </div>
       ) : (
         <div

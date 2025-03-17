@@ -8,6 +8,7 @@ import { gql, useQuery } from "@apollo/client";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 import Loader from "src/components/Common/Loader";
+import Pagination from "src/components/Pagination";
 
 
 const GET_PRODUCTS = gql`
@@ -275,57 +276,10 @@ const ProductListing = () => {
                   }
                 </div>
               </div>
-              <Row>
-                <Col>
-                  <div className="d-flex justify-content-end mt-0 ">
-                    <ul className="pagination">
-                      <li
-                        className={`page-item ${currentPage === 0 ? "disabled" : ""
-                          }`}
-                      >
-                        <button
-                          className="page-link"
-                          onClick={() => setCurrentPage(currentPage - 1)}
-                          disabled={currentPage === 0}
-                        >
-                          Previous
-                        </button>
-                      </li>
-
-                      {Array.from({ length: totalPages }, (_, index) => (
-                        <li
-                          key={index}
-                          className={`page-item ${currentPage === index ? "active" : ""
-                            }`}
-                        >
-                          <button
-                            className="page-link"
-                            onClick={() => setCurrentPage(index)}
-                          >
-                            {index + 1}
-                          </button>
-                        </li>
-                      ))}
-
-                      {currentPage < totalPages - 1 && (
-                        <li
-                          className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
-                            }`}
-                        >
-                          <button
-                            className="page-link"
-                            onClick={() => setCurrentPage(currentPage + 1)}
-                            disabled={currentPage === totalPages - 1}
-                          >
-                            Next
-                          </button>
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                </Col>
-              </Row>
             </CardBody>
+                {
+                  totalPages>1&&(<Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalButtonsToShow={3} totalPages={totalPages}  />)
+                }
           </Card>
         </Container>
       </div>

@@ -5,6 +5,7 @@ import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { Link } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
+import Pagination from "src/components/Pagination";
 
 const GET_ALL_CMS2_RECORDS = gql`
   query GetAllCms2RecordsByAdmin($input: Cms2RecordsByAdminFilter) {
@@ -191,7 +192,10 @@ const CmstwoListing = () => {
                       </Table>
                     </div>
                   </div>
-                  <Row>
+                  {
+                    totalPages>1&&(<Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalButtonsToShow={3} totalPages={totalPages}  />)
+                  }
+                  {/* <Row>
                     <Col>
                       <div className="d-flex justify-content-end mt-0 ">
                         <ul className="pagination">
@@ -240,7 +244,7 @@ const CmstwoListing = () => {
                         </ul>
                       </div>
                     </Col>
-                  </Row>
+                  </Row> */}
                 </CardBody>
               </Card>
             </Col>

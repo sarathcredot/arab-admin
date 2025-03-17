@@ -40,6 +40,7 @@ import AssignedReturns from "./AssignedReturns";
 import noDataSvg from "../../assets/images/noDataSvg.svg";
 import AssignedWarrantiesBundle from "./Bundles/AssignedWarrantiesBundle";
 import AssignedWarranties from "./AssignWarranties";
+import Pagination from "src/components/Pagination";
 
 // Agent Type
 interface ILicence {
@@ -616,7 +617,7 @@ const ViewDeliveryBoys = () => {
                       >
                         <thead>
                           <tr>
-                            <th>#</th>
+                            <th style={{width:"20px"}}>#</th>
                             <th>Settled Amount</th>
                             <th>Initial Balance</th>
                             <th>Balance</th>
@@ -665,49 +666,15 @@ const ViewDeliveryBoys = () => {
                       </Table>
                     </div>
                   </div>
-                  <Row style={{ marginRight: "10px" }}>
-                    <Col>
-                      <div className="d-flex justify-content-end mt-0 ">
-                        <ul className="pagination">
-                          <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
-                            <button
-                              className="page-link"
-                              onClick={() => setCurrentPage(currentPage - 1)}
-                              disabled={currentPage === 0}
-                            >
-                              Previous
-                            </button>
-                          </li>
-
-                          {Array.from({ length: totalPages }, (_, index) => (
-                            <li
-                              key={index}
-                              className={`page-item ${currentPage === index ? "active" : ""}`}
-                            >
-                              <button
-                                className="page-link"
-                                onClick={() => setCurrentPage(index)}
-                              >
-                                {index + 1}
-                              </button>
-                            </li>
-                          ))}
-
-                          {currentPage < totalPages - 1 && (
-                            <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
-                              <button
-                                className="page-link"
-                                onClick={() => setCurrentPage(currentPage + 1)}
-                                disabled={currentPage === totalPages - 1}
-                              >
-                                Next
-                              </button>
-                            </li>
-                          )}
-                        </ul>
-                      </div>
-                    </Col>
-                  </Row>
+                  {totalPages > 1 && (
+                    <Pagination
+                      currentPage={currentPage}
+                      setCurrentPage={setCurrentPage}
+                      totalButtonsToShow={3}
+                      totalPages={totalPages}
+                      style={{marginRight:0,padding:0}}
+                    />
+                  )}
                 </>
               ) : (
                 <div

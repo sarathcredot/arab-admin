@@ -23,6 +23,8 @@ import ProductOrdersFilters from "../ShippingOrdersFilters";
 import Loader from "src/components/Common/Loader";
 import CustomButton from "src/components/Common/CustomButton";
 import { capitalize } from "lodash";
+import Pagination from "src/components/Pagination";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
 
 
@@ -509,14 +511,19 @@ message
                                                             </div>
                                                         </td>
                                                         <td>{order?.paymentMode}</td>
-                                                        <td><div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                                                        <td>
+                                                            <div style={{ display: "flex", gap: "10px", alignItems: "center",justifyContent:"center" }}>
+                                                                <StatusIndicator status={order?.paymentStatus} />
+                                                            </div>
+                                                        </td>
+                                                        {/* <td><div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                                                             <div style={{
                                                                 width: "8px", height: "8px", borderRadius: "50%",
                                                                 background: order?.paymentStatus === "PENDING" ? "#ff9500" : (order?.paymentStatus === "IN_PROGRESS" ? "#fff200" : "green")
                                                             }} />
                                                             {capitalize(order?.paymentStatus?.replace("_", " "))}
                                                         </div>
-                                                        </td>
+                                                        </td> */}
                                                         <td>
                                                             <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                                                                 <div>
@@ -559,7 +566,10 @@ message
                         }
                     </div>
                 </CardBody>
-                <Row>
+                {
+                    totalPages>1&&(<Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalButtonsToShow={3} totalPages={totalPages}  />)
+                }
+                {/* <Row>
                     <Col>
                         <div className="d-flex justify-content-end mt-0 me-3">
 
@@ -612,7 +622,7 @@ message
                             </ul>
                         </div>
                     </Col>
-                </Row>
+                </Row> */}
             </Card>
         </div>
     )

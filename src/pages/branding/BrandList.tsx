@@ -24,6 +24,7 @@ import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 import Loader from "src/components/Common/Loader";
 import { isBoolean } from "lodash";
 import { act } from "react-dom/test-utils";
+import Pagination from "src/components/Pagination";
 
 interface IBrandRecord {
   _id: string;
@@ -234,8 +235,10 @@ const BrandList: React.FC = () => {
                       </div>
                   }
                 </CardBody>
-
-                <Row style={{ marginRight: "10px" }}>
+                {
+                  totalPages>1&&(<Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalButtonsToShow={3} totalPages={totalPages}  />)
+                }
+                {/* <Row style={{ marginRight: "10px" }}>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">
@@ -284,7 +287,7 @@ const BrandList: React.FC = () => {
                       </ul>
                     </div>
                   </Col>
-                </Row>
+                </Row> */}
               </Card>
             </Col>
           </Row>

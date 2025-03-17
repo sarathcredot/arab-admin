@@ -32,6 +32,7 @@ import AddCouponPopup from "./Popups/AddCouponPopup";
 import EditCouponPopup from "./Popups/EditCouponPopup";
 import SuspendCoupon from "./Popups/SuspendCoupon";
 import DeleteCoupon from "./Popups/DeleteCoupon";
+import Pagination from "src/components/Pagination";
 // import "./style.css"
 
 // coupon type
@@ -412,8 +413,10 @@ const Coupons: React.FC = () => {
                 </CardBody>
 
                 {/* pagination */}
-
-                <Row style={{ marginRight: "10px" }}>
+                {
+                  totalPages>1&&(<Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalButtonsToShow={3} totalPages={totalPages}  />)
+                }
+                {/* <Row style={{ marginRight: "10px" }}>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">
@@ -455,7 +458,7 @@ const Coupons: React.FC = () => {
                       </ul>
                     </div>
                   </Col>
-                </Row>
+                </Row> */}
               </Card>
             </Col>
           </Row>

@@ -22,6 +22,8 @@ import Iconify from "src/components/iconify";
 import ReturnOrdersFilters from "../ReturnOrdersFilters";
 import Loader from "src/components/Common/Loader";
 import CustomButton from "src/components/Common/CustomButton";
+import Pagination from "src/components/Pagination";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
 interface FileData {
   fileType: string;
@@ -475,6 +477,11 @@ const All = () => {
                             </td>
                             <td>{order.paymentMode}</td>
                             <td>
+                              <div style={{ display: "flex", gap: "10px", alignItems: "center",justifyContent:"center" }}>
+                                  <StatusIndicator status={order?.returnStatus} />
+                              </div>
+                            </td>
+                            {/* <td>
                               <div
                                 style={{
                                   display: "flex",
@@ -497,7 +504,7 @@ const All = () => {
                                 />
                                 {order?.returnStatus?.replace("_", " ")}
                               </div>
-                            </td>
+                            </td> */}
                             <td>
                               <div
                                 style={{
@@ -561,61 +568,9 @@ const All = () => {
             )}
           </div>
         </CardBody>
-        <Row>
-          <Col>
-            <div className="d-flex justify-content-end mt-0 me-3">
-              <ul className="pagination">
-                {currentPage !== 0 && (
-                  <li
-                    className={`page-item ${
-                      currentPage === 0 ? "disabled" : ""
-                    }`}
-                  >
-                    <button
-                      className="page-link"
-                      onClick={() => setCurrentPage(currentPage - 1)}
-                      disabled={currentPage === 0}
-                    >
-                      Previous
-                    </button>
-                  </li>
-                )}
-
-                {Array.from({ length: totalPages }, (_, index) => (
-                  <li
-                    key={index}
-                    className={`page-item ${
-                      currentPage === index ? "active" : ""
-                    }`}
-                  >
-                    <button
-                      className="page-link"
-                      onClick={() => setCurrentPage(index)}
-                    >
-                      {index + 1}
-                    </button>
-                  </li>
-                ))}
-
-                {currentPage < totalPages - 1 && (
-                  <li
-                    className={`page-item ${
-                      currentPage === totalPages - 1 ? "disabled" : ""
-                    }`}
-                  >
-                    <button
-                      className="page-link"
-                      onClick={() => setCurrentPage(currentPage + 1)}
-                      disabled={currentPage === totalPages - 1}
-                    >
-                      Next
-                    </button>
-                  </li>
-                )}
-              </ul>
-            </div>
-          </Col>
-        </Row>
+        {
+          totalPages>1&&(<Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalButtonsToShow={3} totalPages={totalPages}  />)
+        }
       </Card>
     </div>
   );

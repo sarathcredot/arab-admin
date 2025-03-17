@@ -43,6 +43,8 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({ status, variant = "de
         return "#005E2B";
       case "Completed":
         return "#005E2B";
+      case "PAID":
+        return "#005E2B";
       case "RETURNED_TO_WAREHOUSE":
         return "#005E2B";
       case "RETURNED TO WAREHOUSE":

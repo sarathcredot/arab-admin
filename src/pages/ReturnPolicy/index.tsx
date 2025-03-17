@@ -11,6 +11,7 @@ import { toast, ToastContainer } from "react-toastify";
 import AddPolicy from "./Popups/AddPolicy";
 import Confirmation from "src/components/Confirmation";
 import EditPolicy from "./Popups/EditPolicy";
+import Pagination from "src/components/Pagination";
 const items = [{ text: "Dashboard", link: `/` }];
 
 const GET_ALL_POLICIES = gql`
@@ -101,7 +102,7 @@ const ReturnPolicy = () => {
   } = useQuery(GET_SHIPPING_SETTINGS, {
     fetchPolicy: "network-only",
   });
-  console.log("DEFAULT = ",shippingData)
+  console.log("DEFAULT = ", shippingData);
   const [changeStatus] = useMutation(CHANGE_STATUS);
 
   const handleStatusChange = async (id: string, status: any) => {
@@ -239,13 +240,15 @@ const ReturnPolicy = () => {
                                   <tr key={index}>
                                     <td style={{ textAlign: "center" }}>{currentPage * pageSize + (index + 1)}</td>
                                     <td>
-                                      <div style={{
-                                        display:"flex",
-                                        alignItems:"center",
-                                        justifyContent:"space-between"
-                                      }}>
-                                        <p style={{margin:0}}>{item?.name}</p>
-                                        <p style={{margin:0,fontWeight:"bold"}}>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "space-between",
+                                        }}
+                                      >
+                                        <p style={{ margin: 0 }}>{item?.name}</p>
+                                        <p style={{ margin: 0, fontWeight: "bold" }}>
                                           {item?._id === shippingData?.getShippingSettings?.defaultReturnPolicy
                                             ? "[default]"
                                             : ""}
@@ -289,7 +292,7 @@ const ReturnPolicy = () => {
                                           style={{
                                             display: "block",
                                             // width:"100%",
-                                            background:"#000",
+                                            background: "#000",
                                           }}
                                           // color="dark"
                                           size="sm"
@@ -328,53 +331,17 @@ const ReturnPolicy = () => {
                       </div>
                     )}
                   </Row>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-          {/* pagination */}
-
-          <Row style={{ marginRight: "10px" }}>
-            <Col>
-              <div className="d-flex justify-content-end mt-0 ">
-                <ul className="pagination">
-                  <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
-                    <button
-                      className="page-link"
-                      onClick={() => setCurrentPage(currentPage - 1)}
-                      disabled={currentPage === 0}
-                    >
-                      Previous
-                    </button>
-                  </li>
-
-                  {Array.from({ length: totalPages }, (_, index) => (
-                    <li
-                      key={index}
-                      className={`page-item ${currentPage === index ? "active" : ""}`}
-                    >
-                      <button
-                        className="page-link"
-                        onClick={() => setCurrentPage(index)}
-                      >
-                        {index + 1}
-                      </button>
-                    </li>
-                  ))}
-
-                  {currentPage < totalPages - 1 && (
-                    <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
-                      <button
-                        className="page-link"
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                        disabled={currentPage === totalPages - 1}
-                      >
-                        Next
-                      </button>
-                    </li>
+                  </CardBody>
+                  {/* pagination */}
+                  {totalPages > 1 && (
+                    <Pagination
+                      currentPage={currentPage}
+                      setCurrentPage={setCurrentPage}
+                      totalButtonsToShow={3}
+                      totalPages={totalPages}
+                    />
                   )}
-                </ul>
-              </div>
+              </Card>
             </Col>
           </Row>
         </Container>

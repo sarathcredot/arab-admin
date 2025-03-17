@@ -25,6 +25,7 @@ import AllOrderFilters from "../AllOrderFilters";
 import Loader from "src/components/Common/Loader";
 import CustomButton from "src/components/Common/CustomButton";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
+import Pagination from "src/components/Pagination";
 
 interface ShippingAddress {
   _id: string;
@@ -80,8 +81,8 @@ interface FilterData {
 
 const All = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [currentPage, setCurrentPage] = useState<number>(0);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(0);
   const pageSize = 10;
   const [maxRecords, setMaxRecords] = useState<number>(0);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -325,7 +326,7 @@ const All = () => {
                         <th>Username</th>
                         <th>Payment Mode</th>
                         <th>Order Status</th>
-                        <th>Address</th>
+                        {/* <th>Address</th> */}
                         <th>Amount</th>
                         <th>View</th>
                       </tr>
@@ -399,10 +400,10 @@ const All = () => {
                               />
                             </div>
                           </td>
-                          <td>
+                          {/* <td>
                             {" "}
                             {`${order.shippingAddress["streetName"]},  ${order.shippingAddress["city"]}`}
-                          </td>
+                          </td> */}
                           <td>
                             <div
                               style={{
@@ -467,7 +468,8 @@ const All = () => {
             )}
           </div>
         </CardBody>
-        <Row>
+        <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalButtonsToShow={3} totalPages={totalPages}  />
+        {/* <Row>
           <Col>
             <div className="d-flex justify-content-end mt-0 me-3">
               <ul className="pagination">
@@ -487,21 +489,25 @@ const All = () => {
                   </li>
                 )}
 
-                {Array.from({ length: totalPages }, (_, index) => (
-                  <li
-                    key={index}
+                {Array.from({ length: endPage - startPage }, (_, index) => {
+                  const pageIndex = startPage + index;
+                  return(
+
+                    <li
+                    key={pageIndex}
                     className={`page-item ${
-                      currentPage === index ? "active" : ""
+                      currentPage === pageIndex ? "active" : ""
                     }`}
                   >
                     <button
                       className="page-link"
-                      onClick={() => setCurrentPage(index)}
+                      onClick={() => setCurrentPage(pageIndex)}
                     >
-                      {index + 1}
+                      {pageIndex  + 1}
                     </button>
                   </li>
-                ))}
+                  )
+                })}
 
                 {currentPage < totalPages - 1 && (
                   <li
@@ -521,7 +527,8 @@ const All = () => {
               </ul>
             </div>
           </Col>
-        </Row>
+        </Row> */}
+
       </Card>
     </div>
   );

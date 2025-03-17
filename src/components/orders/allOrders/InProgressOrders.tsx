@@ -25,6 +25,7 @@ import { toast } from "react-toastify";
 import AllOrderFilters from "../AllOrderFilters";
 import CustomButton from "src/components/Common/CustomButton";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
+import Pagination from "src/components/Pagination";
 
 interface ShippingAddress {
   _id: string;
@@ -324,7 +325,7 @@ const InProgressOrders = () => {
                         <th>Username</th>
                         <th>Payment Mode</th>
                         <th>Order Status</th>
-                        <th>Address</th>
+                        {/* <th>Address</th> */}
                         <th>Amount</th>
                         <th>View</th>
                       </tr>
@@ -398,10 +399,10 @@ const InProgressOrders = () => {
                               />
                             </div>
                           </td>
-                          <td>
+                          {/* <td>
                             {" "}
                             {`${order.shippingAddress["streetName"]},  ${order.shippingAddress["city"]}`}
-                          </td>
+                          </td> */}
                           <td>
                             <div
                               style={{
@@ -466,7 +467,10 @@ const InProgressOrders = () => {
             )}
           </div>
         </CardBody>
-        <Row>
+        {
+          totalPages>1&&(<Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalButtonsToShow={3} totalPages={totalPages}  />)
+        }
+        {/* <Row>
           <Col>
             <div className="d-flex justify-content-end mt-0 me-3">
               <ul className="pagination">
@@ -520,7 +524,7 @@ const InProgressOrders = () => {
               </ul>
             </div>
           </Col>
-        </Row>
+        </Row> */}
       </Card>
     </div>
   );

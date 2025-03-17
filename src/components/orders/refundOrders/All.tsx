@@ -20,6 +20,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Iconify from "src/components/iconify";
 import RefundOrdersFilters from "../RefundOrdersFilters";
 import CustomButton from "src/components/Common/CustomButton";
+import Pagination from "src/components/Pagination";
+import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 
 
 
@@ -405,14 +407,19 @@ const All = () => {
                                                 </div>
                                             </td>
                                             <td>{order.paymentMode}</td>
-                                            <td><div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                                            <td>
+                                                <div style={{ display: "flex", gap: "10px", alignItems: "center",justifyContent:"center" }}>
+                                                    <StatusIndicator status={order?.refundStatus} />
+                                                </div>
+                                            </td>
+                                            {/* <td><div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                                                 <div style={{
                                                     width: "8px", height: "8px", borderRadius: "50%",
                                                     background: order?.refundStatus === "PENDING" ? "#ff9500" : (order?.refundStatus === "PAID" ? "green" : "")
                                                 }} />
                                                 {order?.refundStatus}
                                             </div>
-                                            </td>
+                                            </td> */}
                                             <td>
                                                 <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                                                     <div>
@@ -453,7 +460,10 @@ const All = () => {
                         </div>
                     </div>
                 </CardBody>
-                <Row>
+                {
+                    totalPages>1&&(<Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalButtonsToShow={3} totalPages={totalPages}  />)
+                }
+                {/* <Row>
                     <Col>
                         <div className="d-flex justify-content-end mt-0 me-3">
                             <ul className="pagination">
@@ -505,7 +515,7 @@ const All = () => {
                             </ul>
                         </div>
                     </Col>
-                </Row>
+                </Row> */}
             </Card>
         </div>
     )

@@ -20,6 +20,7 @@ import Breadcrumb from "src/components/Common/Breadcrumb";
 import CustomButton from "src/components/Common/CustomButton";
 import Loader from "src/components/Common/Loader";
 import DynamicFilter from "src/components/filter/DynamicFilter";
+import Pagination from "src/components/Pagination";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 interface IStatus {
   status: boolean;
@@ -261,8 +262,10 @@ function OutletListing() {
                     </div>
                 }
               </CardBody>
-
-              <Row style={{ marginRight: "10px" }}>
+                {
+                  totalPages>1&&(<Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalButtonsToShow={3} totalPages={totalPages}  />)
+                }
+              {/* <Row style={{ marginRight: "10px" }}>
                 <Col>
                   <div className="d-flex justify-content-end mt-0 ">
                     <ul className="pagination">
@@ -311,7 +314,7 @@ function OutletListing() {
                     </ul>
                   </div>
                 </Col>
-              </Row>
+              </Row> */}
             </Card>
           </Col>
         </Row>

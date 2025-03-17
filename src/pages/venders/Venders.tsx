@@ -22,6 +22,7 @@ import Loader from "src/components/Common/Loader";
 import CustomButton from "src/components/Common/CustomButton";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 import DynamicFilter from "src/components/filter/DynamicFilter";
+import Pagination from "src/components/Pagination";
 
 
 interface IVendor {
@@ -168,8 +169,8 @@ const VendorList: React.FC = () => {
       type: 'select',
       name: 'status',
       options: [
-        { value: 'true', label: 'COMPLETED' },
-        { value: 'false', label: 'PENDING' },
+        { value: 'false', label: 'Active' },
+        { value: 'true', label: 'Blocked' },
       ],
     },
   ];
@@ -244,6 +245,7 @@ const VendorList: React.FC = () => {
                     <DynamicFilter
                       filterOptions={filterOptions}
                       onSubmit={handleFilterSubmit}
+                      toggle={()=>setIsOpen(!isOpen)}
                     />
                   </Collapse>
 
@@ -316,8 +318,10 @@ const VendorList: React.FC = () => {
                     }
                   </Row>
                 </CardBody>
-
-                <Row style={{ marginRight: "10px" }}>
+                {
+                  totalPages>1&&(<Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalButtonsToShow={3} totalPages={totalPages}  />)
+                }
+                {/* <Row style={{ marginRight: "10px" }}>
                   <Col>
                     <div className="d-flex justify-content-end mt-0 ">
                       <ul className="pagination">
@@ -366,7 +370,7 @@ const VendorList: React.FC = () => {
                       </ul>
                     </div>
                   </Col>
-                </Row>
+                </Row> */}
               </Card>
             </Col>
           </Row>

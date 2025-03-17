@@ -9,6 +9,7 @@ import Breadcrumb from "../../components/Common/Breadcrumb";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
 import CustomButton from "src/components/Common/CustomButton";
 import Loader from "src/components/Common/Loader";
+import Pagination from "src/components/Pagination";
 
 const GET_ALL_CMS_RECORDS = gql`
 query GetAllCmsRecordsByAdmin($input: CmsRecordsByAdminFilter) {
@@ -232,7 +233,10 @@ const CmsListing = () => {
                       }
                     </div>
                   </div>
-                  <Row>
+                  {
+                  totalPages>1&&(<Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalButtonsToShow={3} totalPages={totalPages}  />)
+                  }
+                  {/* <Row>
                     <Col>
                       <div className="d-flex justify-content-end mt-0 ">
                         <ul className="pagination">
@@ -281,7 +285,7 @@ const CmsListing = () => {
                         </ul>
                       </div>
                     </Col>
-                  </Row>
+                  </Row> */}
                 </CardBody>
               </Card>
             </Col>

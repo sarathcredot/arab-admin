@@ -25,6 +25,7 @@ import AllOrderFilters from "../AllOrderFilters";
 import Loader from "src/components/Common/Loader";
 import CustomButton from "src/components/Common/CustomButton";
 import StatusIndicator from "src/components/statusIndicator/StatusIndicator";
+import Pagination from "src/components/Pagination";
 
 interface ShippingAddress {
   _id: string;
@@ -325,7 +326,7 @@ const CompletedOrders = () => {
                         <th>Username</th>
                         <th>Payment Mode</th>
                         <th>Order Status</th>
-                        <th>Address</th>
+                        {/* <th>Address</th> */}
                         <th>Amount</th>
                         <th>View</th>
                       </tr>
@@ -399,10 +400,10 @@ const CompletedOrders = () => {
                               />
                             </div>
                           </td>
-                          <td>
+                          {/* <td>
                             {" "}
                             {`${order.shippingAddress["streetName"]},  ${order.shippingAddress["city"]}`}
-                          </td>
+                          </td> */}
                           <td>
                             <div
                               style={{
@@ -467,7 +468,10 @@ const CompletedOrders = () => {
             )}
           </div>
         </CardBody>
-        <Row>
+        {
+          totalPages>1&&(<Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalButtonsToShow={3} totalPages={totalPages}  />)
+        }
+        {/* <Row>
           <Col>
             <div className="d-flex justify-content-end mt-0 me-3">
               <ul className="pagination">
@@ -521,7 +525,7 @@ const CompletedOrders = () => {
               </ul>
             </div>
           </Col>
-        </Row>
+        </Row> */}
       </Card>
     </div>
   );

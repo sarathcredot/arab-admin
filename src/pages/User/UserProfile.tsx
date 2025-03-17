@@ -52,6 +52,7 @@ import CustomButton from "src/components/Common/CustomButton";
 import Iconify from "src/components/iconify";
 import DynamicFilter from "src/components/filter/DynamicFilter";
 import Loader from "src/components/Common/Loader";
+import Pagination from "src/components/Pagination";
 
 
 interface UserData {
@@ -508,7 +509,15 @@ query GetUserRecordByAdmin($input: userInput!) {
               }
 
             </div>
-            <Row>
+            {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              totalButtonsToShow={3}
+              totalPages={totalPages}
+            />
+          )}
+            {/* <Row>
               <Col>
                 <div className="d-flex justify-content-end mt-0 me-3">
                   <ul className="pagination">
@@ -557,7 +566,7 @@ query GetUserRecordByAdmin($input: userInput!) {
                   </ul>
                 </div>
               </Col>
-            </Row>
+            </Row> */}
           </div>
 
 

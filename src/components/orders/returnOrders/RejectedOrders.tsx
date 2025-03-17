@@ -22,6 +22,7 @@ import Iconify from "src/components/iconify";
 import ReturnOrdersFilters from "../ReturnOrdersFilters";
 import Loader from "src/components/Common/Loader";
 import CustomButton from "src/components/Common/CustomButton";
+import Pagination from "src/components/Pagination";
 
 interface FileData {
   fileType: string;
@@ -538,7 +539,10 @@ const RejectedOrders = () => {
             )}
           </div>
         </CardBody>
-        <Row>
+        {
+          totalPages>1&&(<Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalButtonsToShow={3} totalPages={totalPages}  />)
+        }
+        {/* <Row>
           <Col>
             <div className="d-flex justify-content-end mt-0 me-3">
               <ul className="pagination">
@@ -582,7 +586,7 @@ const RejectedOrders = () => {
               </ul>
             </div>
           </Col>
-        </Row>
+        </Row> */}
       </Card>
     </div>
   );
